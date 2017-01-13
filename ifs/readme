@@ -1,0 +1,36 @@
+Welcome to the IFS project
+
+This project is meant to create a simple website that allows students:
+	Login or Register
+	Select Tools
+	Upload a File
+	Run Assessment
+	Receive Feedback
+
+/******************************************************/
+Technology used is Nodejs, Express, Common Express middleware, angular, bootstrap and mysql/cassandra.
+
+/******************************************************/
+
+Run the application 
+npm start 
+
+Run the application for development
+npm test
+
+these are scripts declared in package.json
+
+/******************************************************/
+
+If you need to install a library or package make sure to save it in the package.json
+
+For Deployment and development
+npm install packageName --save 
+
+For Development only
+ npm install packageName --save-dev
+
+We shouldn't have to many global package installs but if needed
+npm install -g nodemon -> globally installs nodemon
+
+-> Nodemon is a development tool to monitor the application and automaticallly apply most changes
