@@ -4,36 +4,52 @@ html
         include ../../shared/views/angularHeaders.pug
         title #{title}
     body( ng-app='myApp' ng-controller='toolCtrl')
+        div.row.col-md-12
+            <navbar-Directive logged-In="false">  </navbar-Directive>
         div.row
             div.col-md-12.text-center
                 h1 Welcome to the tool test page
         div.row
             div(class="col-md-8 col-md-offset-2")
-                div.panel.panel-primary
-                    div.panel-heading
-                        h4.panel-title.text-center
-                            p {{ toolName }}
-                    div.panel-body
-                        h5 Tool tester:
-                        ul.list-group
-                            li(class="list-group-item" ng-repeat="option in tool.options" )
-                                div(class="row" ng-if="option.type == 'checkbox'")
-                                    div(class="col-md-10" )
-                                        p {{ option.displayName }}
-                                    div(class="col-md-2 text-center")
-                                        input(type="checkbox")
-                                div(class="row" ng-if="option.type == 'text'")
-                                    div(class="col-md-8" )
-                                        p {{ option.displayName }}
-                                    div(class="col-md-4")
-                                        input(type="text")
-                                div(class="row" ng-if="option.type == 'select'")
-                                    div(class="col-md-9" )
-                                        p {{ option.displayName }}
-                                    div(class="col-md-3 text-center")
-                                       select
-                                            option( ng-repeat='val in option.values') {{ val }}
-                    div.panel-footer
-                        h5 This is the footer.
+                form(id="uploadForm", enctype="multipart/form-data", action="/tool/file/upload/" method="post")
+                    div.panel.panel-primary
+                        div.panel-heading
+                            h4.panel-title.text-center
+                                p {{ toolName }}
+                        div.panel-body
+                            h5 Tool tester:
+                            ul.list-group
+                                li(class="list-group-item" ng-repeat="option in tool.options" )
+                                    div(class="row" ng-if="option.type == 'checkbox'")
+                                        div(class="col-md-10" )
+                                            p {{ option.displayName }}
+                                        div(class="col-md-2 text-center")
+                                            input(type="checkbox")
+                                    div(class="row" ng-if="option.type == 'text'")
+                                        div(class="col-md-8" )
+                                            p {{ option.displayName }}
+                                        div(class="col-md-4")
+                                            input(type="text")
+                                    div(class="row" ng-if="option.type == 'select'")
+                                        div(class="col-md-9" )
+                                            p {{ option.displayName }}
+                                        div(class="col-md-3 text-center")
+                                           select
+                                                option( ng-repeat='val in option.values') {{ val }}
+                        div.panel-footer
+                            h5 This is the footer.
+
+                    div.panel.panel-primary
+                        div.panel-heading
+                            h4.panel-title.text-center
+                                p File Upload
+                        div.panel-body.text-center
+                            h4 Please select files to upload
+                            hr
+                            input(type="file" name="file")
+                            hr
+                            input(type="submit" value="Upload Value" name="submit")
+                                
         script(src="shared/modules/angularApp.js")
         script(src="components/Tool/toolController.js")
+        script(src="shared/UI_components/navigationBarDirective.js")

@@ -1,0 +1,15 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    body( ng-app='myApp' ng-controller='preferencesCtrl')
+        div.row.col-md-12
+            <navbar-Directive logged-In="true">  </navbar-Directive>
+        div.row
+            div(class="col-md-6 col-md-offset-3" style="background-color:gray")
+                h2 Preferences
+                form(id="preferencesFrm" name="preferences" method="post" action="/preferences")
+                    div.form-actions
+                        button(type="submit" class="btn btn-primary") Save
+        script(src="shared/modules/angularApp.js")
+        script(src="components/Preferences/preferencesController.js")
+        script(src="shared/UI_components/navigationBarDirective.js")

@@ -18,6 +18,5 @@ app.controller( "toolCtrl", function($scope) {
                 "values": [ 'ansi/c89', 'c99','c11','gnu11' ]
             }
         ]
-        
     };
 });

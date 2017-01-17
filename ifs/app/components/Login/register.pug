@@ -6,19 +6,21 @@ block content
             <navbar-Directive logged-In="false">  </navbar-Directive>
         div.row
             div(class="col-md-6 col-md-offset-3" style="background-color:gray")
-                h2 Welcome Back!
-                form(id="loginFrm" name="login" method="post" action="/login")
+                h2 Sign Up for Free
+                form(id="registerFrm" name="register" method="post" action="/register")
+                    div.form-group
+                        label( for="inputFirstName") First Name
+                        input( id="inputFirstName"  type="text" class="form-control" placeholder="First Name" )
+                        label( for="inputLastName") Last Name
+                        input( id="inputLastName"  type="text" class="form-control" placeholder="Last Name" )
                     div.form-group
                         label( for="inputEmail") Email Address
-                        input( id="inputEmail"  type="email" "name"="username" class="form-control" placeholder="Enter Email" )
+                        input( id="inputEmail"  type="email" name="username" class="form-control" placeholder="Enter Email" )
                     div.form-group
                         label( for="pwd") Password
                         input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd")
-                    p.forgot
-                        a(href="#") Forgot password?
                     div.form-actions
-                        button(type="submit" class="btn btn-primary") Login
-                        a(href="/register" class="btn btn-link") Register
+                        button(type="submit" class="btn btn-primary") Register
         script(src="shared/modules/angularApp.js")
         script(src="components/Login/loginController.js")
         script(src="shared/UI_components/navigationBarDirective.js")

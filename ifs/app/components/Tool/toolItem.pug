@@ -1,0 +1,18 @@
+div(class="row" ng-if="option.type == 'checkbox'")
+  div(class="col-md-10" )
+    p {{ option.displayName }}
+  div(class="col-md-2 text-center")
+    input(type="checkbox")
+
+div(class="row" ng-if="option.type == 'text'")
+  div(class="col-md-8" )
+    p {{ option.displayName }}
+  div(class="col-md-4")
+    input(type="text")
+
+div(class="row" ng-if="option.type == 'select'")
+  div(class="col-md-9" )
+    p {{ option.displayName }}
+  div(class="col-md-3 text-center")
+    select
+      option( ng-repeat='val in option.values') {{ val }}
