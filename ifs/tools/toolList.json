@@ -1,0 +1,38 @@
+{
+    "tools": [
+        { 
+            "displayName": "Spell Checker", 
+            "progName":"Hunspell", 
+            "optionsFile": "./tools/hunSpell/options.json",
+            "options" :  [ {
+                    "displayName": "Dictionary",
+                    "type": "select",
+                    "values": [ "en_US", "en_GB", "en_CA", "en_AU"],
+                    "name": "listThing"
+                },
+                {
+                    "displayName": "Great Feature",
+                    "type": "checkbox",
+                    "name": "lastThing"
+                }
+            ]
+        },
+        { 
+            "displayName": "Grammar Checker",
+            "progName":"Grammarly",
+            "optionsFile": "./tools/grammarly/options.json",
+            "options": [{
+                    "displayName": "TESTER Dictionary",
+                    "type": "select",
+                    "values": [ "en_US", "en_GB", "en_CA", "en_AU"],
+                    "name": "listThing"
+                },
+                {
+                    "displayName": "Different Great Feature",
+                    "type": "checkbox",
+                    "name": "lastThing"
+                }
+            ]
+        }
+    ]
+}
