@@ -1,0 +1,19 @@
+{
+    "preferences" : {
+        "displayName": "Preferences",
+        "name": "preferencesOptions",
+        "options": [{
+                "displayName":"Please select your department",
+                "name": "departmentSelect",
+                "type": "select",
+                "values": [ "CIS", "PSY" ]
+            },
+            {
+                "displayName": "Please select your course",
+                "name": "courseSelect",
+                "type": "select",
+                "values": [ "CIS1500",  "CIS2500", "CIS2750", "CIS3100", "PSY1500",  "PSY2500"]
+            }
+        ]
+    }
+}

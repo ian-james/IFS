@@ -11,7 +11,7 @@ var _ = require('lodash');
 module.exports = function( app, passport ) {
 
     /* Catch all for ensuring people are authenticated users. Includes a couple safe pages.
-    */
+        
     function isAuthenticated(req,res,next) {
         var nonSecurePaths = ['/', '/login', '/register', '/about'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
@@ -23,10 +23,12 @@ module.exports = function( app, passport ) {
             res.redirect('/login');
         }
     }
-    //TODO: Uncomment this when we want session authentication to matter.
-    //  Right now mostly dev, so it's just annoying if testing.
-    //app.use( isAuthenticated )
 
+     //Uncomment this when we want session authentication to matter.
+     // Right now mostly dev, so it's just annoying if testing.
+    app.use( isAuthenticated )
+    */
+   
     app.get("/", function(req,res) {
         res.render(viewPath + "login", { title: 'Login  TESTER Screen'});
     })

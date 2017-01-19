@@ -1,10 +1,20 @@
 extends ../../shared/views/pageLayout.pug
+include ../../shared/UI_components/formSubmit.pug
 
 block content
-    div(class="col-md-6 col-md-offset-3" style="background-color:gray")
-        h2 Preferences
+    link(rel="stylesheet" href="components/Preferences/preferences.css")
+    div(class="col-md-6 col-md-offset-3" ng-controller="prefCtrl")
         form(id="preferencesFrm" name="preferences" method="post" action="/preferences")
-            div.form-actions
-                button(type="submit" class="btn btn-primary") Save
+            div.panel.panel-primary
+                div.panel-heading
+                    h4.panel-title.text-center
+                       p  {{ prefsList.displayName }}
+
+                        div.panel-body
+                            ul.list-group
+                                li(class="list-group-item" ng-repeat="option in prefsList.options" )
+                                    include ../Tool/toolInput.pug
+
+            +formSubmit("Save")
 
     script(src="components/Preferences/preferencesController.js")

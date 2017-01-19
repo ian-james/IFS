@@ -16,34 +16,10 @@ block content
                             h5 Tool tester:
                             ul.list-group
                                 li(class="list-group-item" ng-repeat="option in tool.options" )
-                                    div(class="row" ng-if="option.type == 'checkbox'")
-                                        div(class="col-md-10" )
-                                            p {{ option.displayName }}
-                                        div(class="col-md-2 text-center")
-                                            input(type="checkbox" name="{{option.name}}" id="{{option.name}}")
-                                    div(class="row" ng-if="option.type == 'text'")
-                                        div(class="col-md-8" )
-                                            p {{ option.displayName }}
-                                        div(class="col-md-4")
-                                            input(type="text" name="{{option.name}}"  id="{{option.name}}")
-                                    div(class="row" ng-if="option.type == 'select'")
-                                        div(class="col-md-9" )
-                                            p {{ option.displayName }}
-                                        div(class="col-md-3 text-center")
-                                           select(id="{{option.name}}" name="{{option.name}}")
-                                                option( ng-repeat='val in option.values') {{val }}
-                        div.panel-footer
+                                    include toolInput.pu
+g                        div.panel-footer
                             h5 This is the footer.
 
-                div.panel.panel-primary
-                    div.panel-heading
-                        h4.panel-title.text-center
-                            p File Upload
-                    div.panel-body.text-center
-                        h4 Please select files to upload
-                        hr
-                        input(type="file" name="file")
-                        hr
-                        input(type="submit" value="Upload Value" name="submit")
+                include ../FileUpload/fileUploadPanel.pug
 
     script(src="components/Tool/toolController.js")

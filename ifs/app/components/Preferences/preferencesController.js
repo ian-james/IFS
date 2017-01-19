@@ -1,16 +1,8 @@
-app.controller( "preferencesCtrl", function($scope) {
-    $scope.classesCIS = [
-        'CIS1500',
-        'CIS2500',
-        'CIS2750',
-        'CIS3100',
-        "None"
-    ];
+app.controller( "prefCtrl", function($scope, $http) {
 
-    $scope.classesPSY = [
-        'PSY1500',
-        "None"
-    ];
-
-    $scope.department = [ 'CIS', 'PSY'];
+    $scope.prefssList = [];
+    $http.get('/preference/data').then( function(res) {
+        $scope.prefsList= res.data;
+        console.log(JSON.stringify(res.data) );
+    });
 });
