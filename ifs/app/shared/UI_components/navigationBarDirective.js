@@ -8,4 +8,4 @@ app.directive( 'navbarDirective', function() {
         link: function( scope, element, attrs ) {
         }
     };
-})
+});

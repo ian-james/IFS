@@ -2,3 +2,5 @@ ifs.sublime-project
 ifs.sublime-workspace
 ifs/node_modules/
 ifs/uploads/
+ifs/errorFile.pop
+npm-debug.log

@@ -10,11 +10,10 @@ var logger = require('morgan');
 app.use( logger('dev'));
 
 // Parses incoming requests  ( not multipart)
-/*
+// NOTE: This works with passport but I'm not sure multer does...might have a small conflict.
 var bodyParser = require('body-parser');
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({extended: false}) );
-*/
 
 // Middleware to over routes
 var methodOverride = require("method-override");

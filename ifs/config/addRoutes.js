@@ -13,8 +13,12 @@ require(componentsPath + "/Login/loginRoutes")(app, passport);
 //Tool Page and information
 require(componentsPath + "/Tool/toolRoutes") (app);
 
+//File Upload routes
+require(componentsPath + "/FileUpload/fileUploadRoutes")(app);
+
 // Preferences page Routes
 require(componentsPath + "/Preferences/preferencesRoutes")(app);
 
-
+// Survey page routes
+require(componentsPath + '/Survey/surveyRoutes')(app);
 }

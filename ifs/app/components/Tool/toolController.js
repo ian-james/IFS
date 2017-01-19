@@ -3,7 +3,6 @@
         The main route /tool is server side in toolRoutes.js
 */
 app.controller( "toolCtrl", function($scope, $http) {
-
     $scope.toolList=[];
     $http.get('/tool/data').then( function(res) {
         // NOTE: This uses a second route to load data into controller.

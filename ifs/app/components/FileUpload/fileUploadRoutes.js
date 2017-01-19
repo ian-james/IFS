@@ -1,8 +1,8 @@
 var router = require('express').Router();
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
-var ccp = require(viewPath + 'createChildProcess.js');
-var hunspellData = ccp.testObj;
+//var ccp = require(viewPath + 'createChildProcess.js');
+//var hunspellData = ccp.testObj;
 
 module.exports = function (app) {
 
@@ -64,6 +64,7 @@ module.exports = function (app) {
         console.log("********************");
         console.log(req.body);
         console.log("END *********************");
+        res.end("File is uploaded");
 
         //for each file create a subdirectory to test their functions or whatever
         // files[i].originalName

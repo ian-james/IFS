@@ -6,10 +6,22 @@ var dbconfig = require('./database');
 
 var connection = mysql.createConnection( dbconfig.connection );
 
-// Tell mysql to use the database
-connection.query ('USE ' + dbconfig.database );
+connection.connect( function(err) {
+    if(err) {
+        console.log('error connecting: ' + err.stack );
+    }
+    else {
+        console.log("Connected on id " + connection.threadId );
+        // Tell mysql to use the database
+        connection.query ('USE ' + dbconfig.database );
+    }
+});
+
+
 
 module.exports = function (passport) {
+
+    console.log("Adding ")
 
     passport.serializeUser ( function(user,done) {
         done(null, user.id);
@@ -95,4 +107,5 @@ module.exports = function (passport) {
             }
         )
     );
+
 };

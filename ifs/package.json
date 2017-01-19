@@ -46,6 +46,7 @@
     "q": "^1.4.1"
   },
   "devDependencies": {
+    "lodash": "^4.17.4",
     "nodemon": "^1.11.0"
   }
 }

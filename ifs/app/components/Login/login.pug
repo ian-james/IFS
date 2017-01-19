@@ -1,24 +1,18 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
-    body( ng-app='myApp' ng-controller='loginCtrl')
-        div.row.col-md-12
-            <navbar-Directive logged-In="false">  </navbar-Directive>
-        div.row
-            div(class="col-md-6 col-md-offset-3" style="background-color:gray")
-                h2 Welcome Back!
-                form(id="loginFrm" name="login" method="post" action="/login")
-                    div.form-group
-                        label( for="inputEmail") Email Address
-                        input( id="inputEmail"  type="email" "name"="username" class="form-control" placeholder="Enter Email" )
-                    div.form-group
-                        label( for="pwd") Password
-                        input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd")
-                    p.forgot
-                        a(href="#") Forgot password?
-                    div.form-actions
-                        button(type="submit" class="btn btn-primary") Login
-                        a(href="/register" class="btn btn-link") Register
-        script(src="shared/modules/angularApp.js")
-        script(src="components/Login/loginController.js")
-        script(src="shared/UI_components/navigationBarDirective.js")
+    div(class="row" ng-controller="loginCtrl")
+        div(class="col-md-6 col-md-offset-3" style="background-color:gray")
+            h2 Welcome Back!
+            form(id="loginFrm" name="login" method="post" action="/login")
+                div.form-group
+                    label( for="inputEmail") Email Address
+                    input( id="inputEmail"  type="email" "name"="username" class="form-control" placeholder="Enter Email" )
+                div.form-group
+                    label( for="pwd") Password
+                    input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd")
+                p.forgot
+                    a(href="#") Forgot password?
+                div.form-actions
+                    button(type="submit" class="btn btn-primary") Login
+                    a(href="/register" class="btn btn-link") Register

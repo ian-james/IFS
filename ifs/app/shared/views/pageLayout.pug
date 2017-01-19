@@ -1,9 +1,17 @@
 html
     head
         block meta
+        include headIncludes.pug
         title #{title}
         block head
-            include headIncludes.pug
+            
             include angularHeaders.pug
+            script(src="shared/modules/angularApp.js")
+            script(src="shared/UI_components/navigationBarDirective.js")
+            script(src="components/Login/loginController.js")
         block scripts
-    block content
+
+    body(ng-app="myApp")
+        include ../UI_components/appNavBar.pug
+
+        block content
