@@ -21,4 +21,8 @@ require(componentsPath + "/Preferences/preferencesRoutes")(app);
 
 // Survey page routes
 require(componentsPath + '/Survey/surveyRoutes')(app);
+
+//Feedback pages routes
+require(componentsPath + '/Feedback/feedbackRoutes')(app);
+
 }

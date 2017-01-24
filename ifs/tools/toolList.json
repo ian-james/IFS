@@ -11,9 +11,19 @@
                     "name": "listThing"
                 },
                 {
-                    "displayName": "Great Feature",
+                    "displayName": "Print lines with misspelled words",
                     "type": "checkbox",
-                    "name": "lastThing"
+                    "name": "printLine"
+                },
+                {
+                    "displayName": "Check special characters or unicode",
+                    "type" : "checkbox",
+                    "name": "checkUnicode"
+                },
+                {
+                    "displayName" : "Warning with rare or uncommon words",
+                    "type" : "checkbox",
+                    "name" : "warningUncommonWords"
                 }
             ]
         },
