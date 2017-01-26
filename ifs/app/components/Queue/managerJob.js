@@ -47,17 +47,11 @@ function loadAllTools(job, done)
     for(var i = 0;i < options.length;i++)
     {
         var cmdObj = options[i];
-        console.log("CmdObj",cmdObj);
         var cmd = cmdObj['progName'] + ( cmdObj['options'] || '');
         cmdObj["runCmd"] = cmd;
 
         promises.push( cjob.makeJob( cmdObj ));
     }
-
-    
-    //cjob.makeJob( { "prog": "ls -l | grep ad"} ).then( function(x){ console.log(x); });
-    //promises.push( cjob.makeJob( "ls -l | grep ad") );
-    //promises.push( cjob.makeJob( "ls -lh | grep ts") );    
 
     runChildJob( cjob.jobType );
     
@@ -76,45 +70,13 @@ function loadAllTools(job, done)
 function runManagerJob() {
 
     queue.process(jobType, function(job,done) {
-/*
-        var domain = require('domain').create();
-
-        domain.on('error', function(err) {
-            done(err);
-        });
-
-        domain.run( function() {
-            console.log("Running Job!", jobName);
-            console.log("Load all tools")
-            loadAllTools( job, done );
-        });
-        */
-        console.log("Running Parent!", jobType);
-        console.log("Load all tools")
         loadAllTools( job, done );
-       
     });
 }
 
 function runChildJob( jobName ){
 
     queue.process(jobName, function(job,done) {
-/*
-        var domain = require('domain').create();
-
-        domain.on('error', function(err) {
-            done(err);
-        });
-
-        domain.run( function() {
-            console.log("Running Job!", jobName);
-            console.log("Load all tools")
-            cJob.handleTool( job, done );
-        });
-        */
-       
-        console.log("Running Job!", jobName);
-        console.log("Load all tools")
         cjob.handleTool( job, done );
     });
 }

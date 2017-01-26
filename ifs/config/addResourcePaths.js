@@ -18,5 +18,6 @@ module.exports = function (app) {
     app.use( "/bootstrap", express.static(  nodeModulesPath + "angular-ui-bootstrap/dist/") );
 
     // Static Files
-    app.use( express.static( path.join( __dirname + "/../app/") ) );
+    app.use( "/config", express.static( path.join( __dirname + "/..") ) );
+    app.use( express.static( path.join( __dirname, "/../app/") ) );
 }

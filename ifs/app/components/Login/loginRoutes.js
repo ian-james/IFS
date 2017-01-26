@@ -6,6 +6,9 @@ var router = require('express').Router();
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var maxCookieAge = 1000*60*5; //TODO: Moves this to sessionConfig
+
+var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
+
 //var _ = require('lodash');
 
 module.exports = function( app, passport ) {
@@ -14,8 +17,7 @@ module.exports = function( app, passport ) {
         
     function isAuthenticated(req,res,next) {
         var nonSecurePaths = ['/', '/login', '/register', '/about'];
-        var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
-        console.log( "Result:", result);
+        var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});        
         if(result >= 0 || (req.user && req.user.authenticated)) {
             next();
         }
@@ -31,7 +33,7 @@ module.exports = function( app, passport ) {
    
     app.get("/", function(req,res) {
         res.render(viewPath + "login", { title: 'Login  TESTER Screen'});
-    })
+    });
 
     // Load the login page
     app.get( "/login", function(req,res){

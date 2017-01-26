@@ -34,9 +34,6 @@ function makeToolJob( toolOpts, jobOpts )  {
 // programName and arguments
 function runSingleTool( job, done )
 { 
-    //TODO: tool 
-    //console.log("job is ", job.data );
-    //console.log("job is ", job.data.tool.runCmd );
     var child = exec(job.data.tool.runCmd, function(error,stdout, stderr) {
         if(error) {
             job.emit('failed');

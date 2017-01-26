@@ -9,7 +9,7 @@ app.directive( 'questionDirective', function() {
         templateUrl: "components/Survey/question.pug",
         controller: "surveyCtrl",
         link: function( scope, element, attrs ) {
-            console.log( scope)
+            //Todo
         }
     };
 });

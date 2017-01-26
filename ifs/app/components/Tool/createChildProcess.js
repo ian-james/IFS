@@ -30,8 +30,6 @@ module.exports = {
             // Symbol (:)
             // N - Words[,]
             if( allLines.length > 0) {
-                //console.log("allLines->", allLines[0]);
-
                 // Check for some of the hunspell app information.
                 if(allLines[0].indexOf("@") == 0)
                     return;
@@ -43,11 +41,9 @@ module.exports = {
 
                 var rePart1 = /^([&]) (\w+) (\d+) (\d+)/;
                 var res1 = firstPart.match(rePart1);
-                //console.log("RES1:", res1 );
 
                 var rePart2 = /(\w+)/g;
                 var res2 = secondPart.match(rePart2);
-                //console.log("RES2:", res2 );
 
                 var feedbackItem = {};
                 feedbackItem['recommendations'] = [
@@ -59,7 +55,6 @@ module.exports = {
                     }
                 ];
                 feedbackItems.push(feedbackItem);
-                // console.log(feedbackItem['recommendations']);
             }
 
         });

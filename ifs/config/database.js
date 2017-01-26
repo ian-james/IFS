@@ -5,8 +5,8 @@ module.exports = {
         'password' : 'mysqlRootPassword',
     },
     'database' :  "IFS",
-    'users_table' : "users"
-
+    'users_table' : "users",
+    'raw_feedback_table' : 'rawFeedback'
 };
 
 /*var mysql = require('mysql');

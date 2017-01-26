@@ -23,7 +23,6 @@ require("./addRoutes.js")(app);
 // Error handling in common format (err,req,res,next)
 var errorHandler = require('errorhandler');
 if( app.get('env') === 'development' ){
-    console.log("Using development errorHandler");
     app.use( errorHandler() );
 }
 

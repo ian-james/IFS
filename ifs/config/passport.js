@@ -4,14 +4,16 @@ var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 var dbconfig = require('./database');
 
+var path = require('path');
 var connection = mysql.createConnection( dbconfig.connection );
+var Logger = require( path.join( __dirname, "/loggingConfig") );
 
 connection.connect( function(err) {
     if(err) {
-        console.log('error connecting: ' + err.stack );
+        Logger.error('error connecting: ' + err.stack );
     }
     else {
-        console.log("Connected on id " + connection.threadId );
+        Logger.info("Connected on id " + connection.threadId );
         // Tell mysql to use the database
         connection.query ('USE ' + dbconfig.database );
     }
@@ -20,8 +22,6 @@ connection.connect( function(err) {
 
 
 module.exports = function (passport) {
-
-    console.log("Adding ")
 
     passport.serializeUser ( function(user,done) {
         done(null, user.id);
@@ -44,21 +44,21 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                console.log("Trying Local Loggin");
+                Logger.info("Trying to loggin")
 
                 connection.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
                     if(err)
                     {
-                        console.log( err );
+                        Logger.error( err );
                         return done(err);
                     }
 
                     if(rows.length) {
-                        console.log(" Nothing Found", rows[0]);
+                        Logger.info(" Didn't find authorization", rows[0]);
                         return done( null, false );//, req.flash('signupMessage', 'That user is already taken'));                    
                     }
                     else{
-                        console.log("INSIDE ADD");
+                        Logger.info("Adding new user");
                         var newUser = { 
                             username: username,
                             password: bcrypt.hashSync( password, null, null )
@@ -88,19 +88,17 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                console.log("Trying Local Loggin");
-
                 connection.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
                     if(err) {
                         return done(err);
                     }
 
                     if(!rows.length) {
-                        return done( null, false); //req.flash('signupMessage', 'User not found!'));
+                        return done( null, false);
                     }
 
                     if( !bcrypt.compareSync(password, rows[0].password))
-                        return done( null, false);// req.flash('loginMessage', 'Incorrect password'));
+                        return done( null, false);
 
                     return done(null, rows[0]);
                 });

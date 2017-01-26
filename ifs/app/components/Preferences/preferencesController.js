@@ -1,8 +1,8 @@
+
 app.controller( "prefCtrl", function($scope, $http) {
 
-    $scope.prefssList = [];
+    $scope.prefsList = [];
     $http.get('/preference/data').then( function(res) {
         $scope.prefsList= res.data;
-        console.log(JSON.stringify(res.data) );
     });
 });

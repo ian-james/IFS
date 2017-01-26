@@ -2,39 +2,42 @@
 
 module.exports = function (app) {
 
-// Add middleware for view Engine (Jade/Pug)
-app.set( 'view engine', 'pug');
+    // Add middleware for view Engine (Jade/Pug)
+    app.set( 'view engine', 'pug');
 
-// A logging middleware 
-var logger = require('morgan');
-app.use( logger('dev'));
+    // A logging middleware 
+    // Winston Middleware but customized
+    var configPath = __dirname + "/";
+    var myLogger = require( configPath + "loggingConfig");
 
-// Parses incoming requests  ( not multipart)
-// NOTE: This works with passport but I'm not sure multer does...might have a small conflict.
-var bodyParser = require('body-parser');
-app.use( bodyParser.json() );
-app.use( bodyParser.urlencoded({extended: false}) );
+    var logger = require('morgan')({"stream": myLogger.stream } );
+    app.use( logger );
 
-// Middleware to over routes
-var methodOverride = require("method-override");
-app.use( methodOverride() );
+    // Parses incoming requests  ( not multipart)
+    // NOTE: This works with passport but I'm not sure multer does...might have a small conflict.
+    var bodyParser = require('body-parser');
+    app.use( bodyParser.json() );
+    app.use( bodyParser.urlencoded({extended: false}) );
 
-// Passport included
-var passport = require('passport');
+    // Middleware to over routes
+    var methodOverride = require("method-override");
+    app.use( methodOverride() );
 
-// Express-sessional information
-var session = require('express-session');
-app.use( session({
-    secret: 'ifsSecretSessionInfo',
-    resave: true,
-    saveUninitialized: true
-    })
-);
+    // Passport included
+    var passport = require('passport');
 
-//Require passport routes
-require( "./passport") (passport);
+    // Express-sessional information
+    var session = require('express-session');
+    app.use( session({
+        secret: 'ifsSecretSessionInfo',
+        resave: true,
+        saveUninitialized: true
+        })
+    );
 
-app.use( passport.initialize() );
-app.use( passport.session());
+    //Require passport routes
+    require( "./passport") (passport);
 
+    app.use( passport.initialize() );
+    app.use( passport.session());
 }

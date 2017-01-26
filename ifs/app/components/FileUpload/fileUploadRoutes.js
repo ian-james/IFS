@@ -1,13 +1,10 @@
 var router = require('express').Router();
 var path = require('path');
+var Q = require('q');
 var viewPath = path.join( __dirname + "/");
-//var ccp = require(viewPath + '../Tool/createChildProcess.js');
-//var hunspellData = ccp.testObj;
 
 var manager = require('../Queue/managerJob');
-
-var Q = require('q');
-
+var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
 
 module.exports = function (app) {
 
@@ -50,7 +47,7 @@ module.exports = function (app) {
             if( extension >= 0 )
             {
                 filename = originalName.substr(0,extension) + "-" + Date.now() +  originalName.substr(extension);
-                console.log(filename);
+                Logger.info(filename);
             }
             callback(null, filename );
         }
@@ -63,12 +60,11 @@ module.exports = function (app) {
         limits: limits,
         fileFilter: fileFilter
     });
-    app.post('/tool/file/upload', upload.any(), function(req,res,next) {
 
-        console.log("//Too/file/upload:> Request Body");
-        console.log("********************");
-        console.log(req.body);
-        console.log("END *********************");
+    app.post('/tool/file/upload', upload.any(), function(req,res,next) {
+        //console.log("********************");
+        Logger.info(req.body);
+        //console.log("END *********************");
 
         var temp = [{
             displayName: "Display Hunspell ",
@@ -81,54 +77,27 @@ module.exports = function (app) {
             options:" -lh | grep ts"
         }];
 
-        manager.makeJob(temp).then( function(x) { console.log("!!!!!!! XXXXXXXXXXXXXXXXX !!!!!!!!!!!!!!!!!");
-            console.log(x);
-
-            console.log("Breakup");
-            for(var i = 0;i < x['result'].length;i++)
-                console.log("J",i, ":", x['result'][i].job , "   ->>>>>>>>> result", x['result'][i].result);
-
-            console.log("!!!!!!! XXXXXXXXXXXXXXXXX !!!!!!!!!!!!!!!!!");
+        manager.makeJob(temp).then( function(x) {
+            var allResults = [];
+            for(var i = 0;i < x['result'].length;i++) {
+               var tempJob = x['result'][i].job;
+               tempJob['result'] = x['result'][i].result;
+               Logger.info("J",i, ":",  tempJob );
+               allResults.push(tempJob);
+            }
+            return allResults;
+        })
+        .then( function(result) {
+            res.render(viewPath + "../Feedback/feedbackWaiting", { title: 'Feedback', test:"Tester", result:result});
+            res.end();
+        })
+        .catch( function(err){
+            res.status(500, {
+                error: e
+            });
         });
 
         manager.runJob();
-
-        //for each file create a subdirectory to test their functions or whatever
-        // files[i].originalName
-        // 
-        // We should generate a model for the quesiton while this runs
-        // Create the child process here.
-        
-        // This example will run hunspell and output to the console.
-        
-        /*console.log("Before Tool upload");
-        console.log(req.files[0]);
-        var file = req.files[0].filename;
-        console.log(req.files[0].filename);
-
-        // Pop the temporary file name.
-        hunspellData.targs.pop();
-        hunspellData.targs.push( req.files[0].path );
-        var hunspellTool = ccp.hunspellTool( hunspellData.progName, hunspellData.targs );
-        console.log("After Tool upload");
-        */
-        res.redirect('/feedbackWaiting');
-        res.end("File is uploaded");
-
-        /*
-        upload( req,res, function(err) {
-            if( err ) {
-                console.log("Error: upload file");
-                return res.end("Error: uploading");
-            }
-            else {
-                console.log("Before Tool upload");
-                var hunspellTool = ccp.hunspellTool( hunspellData.progName, hunspellData.args );
-                console.log("After Tool upload");
-                res.end("File is uploaded");
-            }
-        });
-        */
         
     });
 }

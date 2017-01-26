@@ -4,3 +4,4 @@ ifs/node_modules/
 ifs/uploads/
 ifs/errorFile.pop
 npm-debug.log
+ifs/logs/
