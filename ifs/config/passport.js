@@ -19,8 +19,6 @@ connection.connect( function(err) {
     }
 });
 
-
-
 module.exports = function (passport) {
 
     passport.serializeUser ( function(user,done) {

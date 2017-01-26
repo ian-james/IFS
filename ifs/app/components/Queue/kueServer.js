@@ -3,9 +3,6 @@ var kOptions = require("./kuaServerConfig.js").testKue;
 
 var queue = kue.createQueue(kOptions.kueOpts);
 
-var manager =  require("./managerJob");
-var cjob = require('./childJob');
-
 // Watch for stuck jobs, as PER REQUEST on GITHUB
 queue.watchStuckJobs(kOptions.options.watchStuckTime);
 

@@ -13,6 +13,20 @@ module.exports = function (app) {
     var logger = require('morgan')({"stream": myLogger.stream } );
     app.use( logger );
 
+    var cookieParser = require('cookie-parser');
+
+     //i18n
+    var i18n = require("i18n");
+    i18n.configure({
+        locales:['en','fr'],
+        defaultLocale: 'en',
+        cookie: 'i18n',
+        queryParameter: 'lang',
+        directory: './languages'
+    });
+
+    app.use(cookieParser('ifsSecretSessionInfo'));
+
     // Parses incoming requests  ( not multipart)
     // NOTE: This works with passport but I'm not sure multer does...might have a small conflict.
     var bodyParser = require('body-parser');
@@ -31,9 +45,12 @@ module.exports = function (app) {
     app.use( session({
         secret: 'ifsSecretSessionInfo',
         resave: true,
-        saveUninitialized: true
+        saveUninitialized: true,
+        cookie: {maxAge:60000}
         })
     );
+
+    app.use( i18n.init );
 
     //Require passport routes
     require( "./passport") (passport);

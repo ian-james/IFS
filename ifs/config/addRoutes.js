@@ -7,6 +7,9 @@ module.exports = function (app) {
     var componentsPath = path.join( appPath + "/components");
     var passport = require('passport');
 
+    // i18n Translation Routes
+    require( path.join( __dirname, "/i18nRoutes"))(app);
+
     // Dev team Controllers
     require(componentsPath + "/Login/loginRoutes")(app, passport);
 
@@ -24,5 +27,4 @@ module.exports = function (app) {
 
     //Feedback pages routes
     require(componentsPath + '/Feedback/feedbackRoutes')(app);
-
 }

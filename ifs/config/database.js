@@ -4,9 +4,14 @@ module.exports = {
         'user' : 'root',
         'password' : 'mysqlRootPassword',
     },
-    'database' :  "IFS",
-    'users_table' : "users",
-    'raw_feedback_table' : 'rawFeedback'
+    'database' :  'IFS',
+    'users_table' : 'users',
+    'raw_feedback_table' : 'rawFeedback',
+    'survey_table': 'survey',
+    'survey_results_table': 'surveyResult',
+    'feedback_table':'feedback',
+    'users_interation_table': 'usersInteraction',
+    'preferences_table': 'preferences'
 };
 
 /*var mysql = require('mysql');
