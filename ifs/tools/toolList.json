@@ -5,6 +5,7 @@
             "progName":"hunspell", 
             "runType": "cli",
             "optionsFile": "./tools/hunSpell/options.json",
+            "parseCmd": "",
             "defaultArg": "-a",
             "options" :  [ {
                     "displayName": "Dictionary",
@@ -29,6 +30,8 @@
             "progName":"wc",
             "runType": "cli",
             "optionsFile": "./tools/grammarly/options.json",
+            "defaultArg": "",
+            "parseCmd": "basicBad",
             "options": [{
                     "displayName": "Word Count",
                     "type": "checkbox",

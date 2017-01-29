@@ -105,6 +105,7 @@ module.exports = function (app) {
         .then( function(result) {
             res.render(viewPath + "../Feedback/feedbackWaiting", { title: 'Feedback', test:"Tester", result:result});
             res.end();
+            console.log("ENDING");
         })
         .catch( function(err){
             res.status(500, {

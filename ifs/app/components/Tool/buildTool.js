@@ -28,6 +28,50 @@ function getJsonTool( toolsJson, targetTool ){
     return tool;
 }
 
+// This function parses the form data into separate tool object
+// Note data remains in the received form but gets classified.
+function parseFormSelection( formData ) {
+
+    var isDone = false;
+    var toolMarker = 'tool-';
+    var targetTool = {};
+    var progName ="";
+    var option = {};
+    var tool = undefined;
+
+    var toolOptions = { 'files': formData['files'], 'tools':[] };
+  
+    _.forEach( formData, function(value, key ) {
+
+        if( key == "submit") {
+            if(tool) {
+                toolOptions.tools.push( tool );
+            }
+            isDone = true;
+        }
+
+        if( !isDone ){
+
+            if( _.startsWith(key, toolMarker) ) {
+
+                if(tool) {
+                    toolOptions.tools.push( tool );
+                }
+
+                progName = key.substr( toolMarker.length );
+                tool = { 'progName': progName, 'options':[] };
+            }
+            else if(tool) {
+                var r = {};
+                r['name'] = key;
+                r['value'] = value;
+                tool.options.push( r );
+            }
+        }
+    });
+    return toolOptions;
+}
+
 // Reads JSON document and creates an array of objects with tool information and options.
 // See tooList.json
 
@@ -39,64 +83,115 @@ function readToolFileList() {
     return jsonObj;
 }
 
-/** This function takes form data from the tool page and separates it. There is a large assumption that options
-    are obtained in a regular order. IE hidden input passes the progName and then all sequential options are related 
-    to that tool until the next tool hidden input.
-    Ex)  tool-hunspell 
-         input1 (options for hunspell)
-         input2 (option for hunspell)
-         tool-nextTool
+function createJobRequests( selectedOptions ) {
+    var toolList = readToolFileList();
 
-    Return: Basic job descriptions that still require processing but that contain the user's selected preferences for this run.
-    Tool DisplayName, program name (which is how you run from command line), and options.
+    var toolOptions = parseFormSelection( selectedOptions );
+    var res = tempInsertOptions(toolList.tools, toolOptions);
+    var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
+    
+    return jobReq;
 
-    Options must be of the form
-    'key': theOptionName in toolList,
-    'value' : the user selected value for that option.
-*/
+}
+// User options are already for the appropriate tool
+//
+function basicParse( toolListItem, userOptions ){
 
-function parseToolForm ( selectedOptions ) {
+    console.log("********************BASIC PARSE **************************");
 
-    var tools= [];
-    var obj = null;
-    var toolMarker = 'tool-';
-    var isDone = false;
-    _.forOwn( selectedOptions, function(value, key ){
-      
-        if(!isDone)
+    _.forEach( toolListItem.options, function(option) {
+
+        var userTargetTool = _.find( userOptions.options, function(o) {
+            return o.name ==  option.name;
+        });
+
+        if(userTargetTool)
         {
-            // Separate the tools form data here
-            if( _.startsWith(key, toolMarker) ) {
+            var value = "";
+            if(option.type == "checkbox") {
+                value = userTargetTool.value  == "on" ? option.arg : "";
+            }
+            else {
+                value = option.arg + " " + userTargetTool.value;
+            }
 
-                if(obj != null) {
-                    tools.push(obj);
-                }
-
-                var progName = key.substr( toolMarker.length );
-                var displayName = value;
-                obj = buildTool( displayName, progName );
-            }
-            else if( key == "submit") {
-                if(obj != null )
-                    tools.push(obj);
-                isDone = true;
-            }
-            else if(obj != null) {
-                // Assumption being that anything after a tool is part of it's options hierachy.
-                obj.options.push({key,value});
-            }
+            // Update Params for tool
+            var opt = { params: value }
+            _.extend(option, opt);
         }
     });
+
+    // add Files to to tool
+    _.extend(toolListItem, userOptions.files);
+    return toolListItem;
 }
 
-function buildJobRequests( selectedOptions ){
+function basicBad( toolListItem, userOptions ){
 
+    console.log("********************BASIC Bad2 **************************");
+
+    _.forEach( toolListItem.options, function(option) {
+
+        var userTargetTool = _.find( userOptions.options, function(o) {
+            return o.name ==  option.name;
+        });
+
+        if(userTargetTool)
+        {
+            var value = "";
+            if(option.type == "checkbox") {
+                value = userTargetTool.value  == "on" ? option.arg : "";
+            }
+            else {
+                value = option.arg + " " + userTargetTool.value;
+            }
+
+            // Update Params for tool
+            var opt = { params: value }
+            _.extend(option, opt);
+        }
+    });
+
+    // add Files to to tool
+    _.extend(toolListItem, userOptions.files);
+    return toolListItem;
+}
+
+function tempInsertOptions( toolList, toolOptions) {
+
+    _.forEach( toolList, function(t){
+        var targetToolOptions = getJsonTool( toolOptions.tools, t.progName );
+
+        if( targetToolOptions )
+        {
+            var cmd = t.parseCmd || "basicParse";
+            var result = _.attempt( eval(cmd)(t,targetToolOptions) );
+
+            if( _.isError(result)) {
+                console.log("CMD->", cmd, " has errored");
+                console.log("tool was: ", t );
+                console.log("TargetToolOption was ", targetToolOptions);
+            }
+        }
+
+    });
+    return toolList;
 }
 
 // This function is a wrapper for the full process of adding user selected options to create job requests for
 //   different tools
 
 function insertOptions( selectedOptions ){
+
+    return createJobRequests(selectedOptions);
+    console.log("H***********************************************************************");
+    console.log("E***********************************************************************");
+    console.log("L***********************************************************************");
+    console.log("P***********************************************************************");
+
+}
+
+function insertOptionsOld( selectedOptions ) {
     var toolList = readToolFileList();
     var userSelectedTools = insertOptionsJson( toolList.tools, selectedOptions );
     displayTools(userSelectedTools);
@@ -158,32 +253,32 @@ function insertOptionsJson ( toolsJson, selectedOptions ) {
 
 // This function takes the program name, the default parameters and user specified ones and creates 
 // A command line call.
-function createToolProgramCall ( toolListItem, files )
+function createToolProgramCall ( toolListItem, files, options )
 {
     var call = toolListItem.progName;
     var args = [ call, toolListItem.defaultArg ];
 
     _.forEach( toolListItem.options, function(o) {
-        args.push( o.arg );
+        if( options  && options.prefixArg ) {
+            console.log("PUSH ARG");
+            console.log("PUSH OPTIONS", options);
+            args.push( o.arg );
+        }
         args.push( o.params );
     });
-
     
-    console.log("Start");
+   
     var filenames = _.map(files, 'filename' );
-    console.log(filenames);
-    console.log( args );
     var fullPath = _.union(args, filenames );
     var result = _.join( fullPath, " ");
 
-    console.log("CreateToolProgramCall->", result);
     return result;
 }
 
 // Reduces the side of the object from the full job to a smaller version.
 // Also creates a run command for the job.
 
-function buildJobs( fullJobs, files ) {
+function buildJobs( fullJobs, files, options ) {
 
     // Create an array of jobs with just the above mentioned keys, most important for passing.
     // Create a new property of the job that is the complete run call
@@ -193,7 +288,7 @@ function buildJobs( fullJobs, files ) {
     var halfJobs = _.map( fullJobs, obj => _.pick(obj, keys) );
 
     var jobs = _.map( halfJobs, obj => {
-        obj['runCmd'] = createToolProgramCall(obj,files);
+        obj['runCmd'] = createToolProgramCall(obj,files,options);
         return obj;
     });
     return jobs;
@@ -201,19 +296,19 @@ function buildJobs( fullJobs, files ) {
 
 //Display key elements of a single tool object.
 // TODO: update this used logger.
-
 function displayTool( tool ) {
 
     var keys = [ 'displayName', 'progName', 'runType', 'defaultArg'];
     var t = _.pick(tool, keys);
-    //console.log("Display Small Tool information");
-    //console.log(t);
+
+    console.log("Start tool display");
+    console.log(t);
     _.forEach( tool.options, function(o){
-        //console.log("Next Option");
-        //console.log("\t",o.displayName);
-        //console.log("\t",o.name);
-        //console.log("\tARG:", o.arg);
-        //console.log("\tPARAM:", o.params);
+        console.log("Next Option");
+        console.log("\t",o.displayName);
+        console.log("\t",o.name);
+        console.log("\tARG:", o.arg);
+        console.log("\tPARAM:", o.params);
     });
 }
 
