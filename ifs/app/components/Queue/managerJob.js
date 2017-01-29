@@ -40,19 +40,12 @@ function makeManagerJob( toolOptions, jobOpts )
 function loadAllTools(job, done)
 {
     job.emit('start');
- 
-    //TODO: THis needs to grab these commands from job;
+
     var promises = [];
-    var options = job.data.tool;
-    for(var i = 0;i < options.length;i++)
-    {
-        var cmdObj = options[i];
-        var cmd = cmdObj['progName'] + ( cmdObj['options'] || '');
-        cmdObj["runCmd"] = cmd;
-
-        promises.push( cjob.makeJob( cmdObj ));
-    }
-
+    var jobsInfo = job.data.tool;
+    for(var i = 0;i < jobsInfo.length;i++)
+        promises.push( cjob.makeJob( jobsInfo[i] ));
+    
     runChildJob( cjob.jobType );
     
     // Wait for everything to finish before emitting that parent is done.    

@@ -42,8 +42,6 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                Logger.info("Trying to loggin")
-
                 connection.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
                     if(err)
                     {
@@ -103,5 +101,7 @@ module.exports = function (passport) {
             }
         )
     );
+
+
 
 };

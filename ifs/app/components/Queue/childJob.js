@@ -29,11 +29,12 @@ function makeToolJob( toolOpts, jobOpts )  {
     return job.buildJob( toolOpts, jobOpts );
 }
 
-
 // programOptions
 // programName and arguments
 function runSingleTool( job, done )
 { 
+    //console.log(" HERE AT RUN SINGLE TOOL", job.data.tool);
+    //console.log(" HERE AT RUN SINGLE TOOLCMD", job.data.tool.runCmd);
     var child = exec(job.data.tool.runCmd, function(error,stdout, stderr) {
         if(error) {
             job.emit('failed');

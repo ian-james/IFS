@@ -27,6 +27,15 @@ connection.query(" CREATE TABLE " + dbconfig.database + "." + dbconfig.raw_feedb
     PRIMARY KEY(id) \
 )");
 
+connection.query(" CREATE TABLE " + dbconfig.database + "." + dbconfig.survey_table + " ( \
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+    surveyName VARCHAR(40) NOT NULL, \
+    authorNames VARCHAR(30) NOT NULL, \
+    creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+    rawFeedback TEXT NOT NULL, \
+    PRIMARY KEY(id) \
+)");
+
 
 Logger.info("Success: Database created.");
 

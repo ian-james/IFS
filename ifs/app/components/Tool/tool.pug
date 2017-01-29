@@ -14,6 +14,8 @@ block content
                                p  {{ tool.displayName }}
                         div.panel-body
                             h5 Tool tester:
+                            fieldset(name="{{ tool.progName }}")
+                            input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
                             ul.list-group
                                 li(class="list-group-item" ng-repeat="option in tool.options" )
                                     include toolInput.pug

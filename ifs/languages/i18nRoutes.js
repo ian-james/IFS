@@ -4,7 +4,6 @@ module.exports = function (app) {
 
     app.get('/', function(req,res, next) {
         res.setLocale(req.cookie.i18n || 'en');
-        res.
         next();
     });
 

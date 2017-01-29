@@ -2,9 +2,12 @@ var router = require('express').Router();
 var path = require('path');
 var Q = require('q');
 var viewPath = path.join( __dirname + "/");
+var _ = require('lodash');
 
 var manager = require('../Queue/managerJob');
 var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
+
+var ToolManager = require('../Tool/buildTool');
 
 module.exports = function (app) {
 
@@ -61,23 +64,35 @@ module.exports = function (app) {
         fileFilter: fileFilter
     });
 
+    // This function gets the file names from Multer, appends the uploads directory
+    // and keeps only the "likely" required keys for future processing.
+    function getFileNames( files ) {
+        // Retrieve all files original name and new server name
+        var keys = [ 'originalname', 'filename'];
+        var uploadedFiles = _.map( files, obj => _.pick(obj, keys) );
+        
+        // Append uploads directory.
+        _.forEach( uploadedFiles, function(f ){ 
+            _.update(f, 'filename', obj => "./uploads/" +  f.filename)
+        })
+        
+        return uploadedFiles;
+    }
+
     app.post('/tool/file/upload', upload.any(), function(req,res,next) {
-        //console.log("********************");
+        Logger.info("********************");
         Logger.info(req.body);
-        //console.log("END *********************");
+        Logger.info("END *********************");
 
-        var temp = [{
-            displayName: "Display Hunspell ",
-            progName: 'ls',
-            options: ' -l | grep ad'
-        },
-        {
-            displayName: "Grammarly",
-            progName: "ls",
-            options:" -lh | grep ts"
-        }];
+        // Get files names to be inserted
+        var uploadedFiles = getFileNames( req.files );
 
-        manager.makeJob(temp).then( function(x) {
+        var userSelection = req.body;
+        userSelection['files'] = uploadedFiles;
+
+        var tools = ToolManager.insertOptions( userSelection );
+
+        manager.makeJob(tools).then( function(x) {
             var allResults = [];
             for(var i = 0;i < x['result'].length;i++) {
                var tempJob = x['result'][i].job;

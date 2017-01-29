@@ -2,45 +2,46 @@
     "tools": [
         { 
             "displayName": "Spell Checker", 
-            "progName":"Hunspell", 
+            "progName":"hunspell", 
+            "runType": "cli",
             "optionsFile": "./tools/hunSpell/options.json",
+            "defaultArg": "-a",
             "options" :  [ {
                     "displayName": "Dictionary",
                     "type": "select",
-                    "values": [ "en_US", "en_GB", "en_CA", "en_AU"],
-                    "name": "listThing"
-                },
-                {
-                    "displayName": "Print lines with misspelled words",
-                    "type": "checkbox",
-                    "name": "printLine"
-                },
-                {
-                    "displayName": "Check special characters or unicode",
-                    "type" : "checkbox",
-                    "name": "checkUnicode"
+                    "values": [ "en_US", "en_GB"],
+                    "name": "dictionary",
+                    "arg": "-d",
+                    "params":""
+
                 },
                 {
                     "displayName" : "Warning with rare or uncommon words",
                     "type" : "checkbox",
-                    "name" : "warningUncommonWords"
+                    "name" : "warningUncommonWords",
+                    "arg": "-r",
+                    "params":""
                 }
             ]
         },
         { 
             "displayName": "Grammar Checker",
-            "progName":"Grammarly",
+            "progName":"wc",
+            "runType": "cli",
             "optionsFile": "./tools/grammarly/options.json",
             "options": [{
-                    "displayName": "TESTER Dictionary",
-                    "type": "select",
-                    "values": [ "en_US", "en_GB", "en_CA", "en_AU"],
-                    "name": "listThing"
+                    "displayName": "Word Count",
+                    "type": "checkbox",
+                    "name": "wordCount",
+                    "arg": "-w",
+                    "params":""
                 },
                 {
-                    "displayName": "Different Great Feature",
+                    "displayName": "Count Lines",
                     "type": "checkbox",
-                    "name": "lastThing"
+                    "name": "countLines",
+                    "arg": "-l",
+                    "params":""
                 }
             ]
         }

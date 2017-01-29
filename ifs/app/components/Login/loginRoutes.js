@@ -1,4 +1,4 @@
-/* 
+/*
   Modified from Barrett Harber's work on node-express-passport-mysql GitHub.
 */
 
@@ -9,28 +9,47 @@ var maxCookieAge = 1000*60*5; //TODO: Moves this to sessionConfig
 
 var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
 
-//var _ = require('lodash');
+var _ = require('lodash');
 
 module.exports = function( app, passport ) {
 
-    /* Catch all for ensuring people are authenticated users. Includes a couple safe pages.
-        
+      /* Catch all for ensuring people are authenticated users. Includes a couple safe pages.
+       Comment this when we want to do testing without session authentication.
+       Right now mostly dev, so it's just annoying if testing.
+    */
+   /*
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/about'];
-        var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});        
-        if(result >= 0 || (req.user && req.user.authenticated)) {
+        var nonSecurePaths = ['/', '/login', '/register', '/about', '/user/data'];
+        var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
+        if(result >= 0 || (req.user && req.isAuthenticated()) ) {
             next();
         }
         else {
             res.redirect('/login');
-        }
+        }        
+    }
+    // This function ensure the user in or returns them to main navigation point.+
+    function isLoggedIn( req, res, next ) {
+        if( req.isAuthenticated())
+            return next();
+        res.redirect('/');
     }
 
-     //Uncomment this when we want session authentication to matter.
-     // Right now mostly dev, so it's just annoying if testing.
-    app.use( isAuthenticated )
+    // Call Authenticate before every function
+    app.use( isAuthenticated );
     */
-   
+
+
+
+    // Function to provide login Information to Angular
+    app.get("/user/data", function(req,res) {
+        if( req &&  req.user && req.isAuthenticated() )
+            return res.status(200).json( {user: req.user.username} );
+        return res.status(400);
+    });
+
+
+
     app.get("/", function(req,res) {
         res.render(viewPath + "login", { title: 'Login  TESTER Screen'});
     });
@@ -68,24 +87,19 @@ module.exports = function( app, passport ) {
             //failureFlash : true
     }));
 
-    app.get('/profile', isLoggedIn, function( req,res ) {
+    app.get('/profile', function( req,res ) {
         res.render(viewPath + "profile", { title: "Profile Screen", message:"ok"});
     });
 
     app.get('/logout', function (req, res ){
-        req.logout();
+        
+        req.logOut();
         res.redirect('/');
     });
 
 
 }; //Close Export module
 
-// This function ensure the user in or returns them to main navigation point.+
-function isLoggedIn( req, res, next ) {
-    if( req.isAuthenticated())
-        return next();
-    res.redirect('/');
-}
 
 
 

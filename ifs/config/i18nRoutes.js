@@ -10,7 +10,7 @@ var i18n = require("i18n");
 module.exports = function (app) {
 
     app.get('/', function(req,res, next) {
-        console.log( res.__("Test Me") );
+        //console.log( res.__("Test Me") );
         next();
     });
 

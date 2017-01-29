@@ -38,7 +38,7 @@ const logger = new (winston.Logger)({
             //timestamp: tsFormat(),
             handleExceptions: true,
             colorize:true,
-            json:false
+            json:true
         }),
         new (winston.transports.DailyRotateFile)({
             level:  env === 'dev' ? 'info' : 'debug',

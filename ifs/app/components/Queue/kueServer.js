@@ -6,9 +6,9 @@ var queue = kue.createQueue(kOptions.kueOpts);
 // Watch for stuck jobs, as PER REQUEST on GITHUB
 queue.watchStuckJobs(kOptions.options.watchStuckTime);
 
-/*
- Help removing large number of jobs for debugging only
- 
+
+ //Help removing large number of jobs for debugging only
+ /*
 kue.Job.rangeByState('complete',0, 5000, 'asc', function(err,jobs){
     jobs.forEach( function(job) {
         job.remove( function() {

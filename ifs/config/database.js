@@ -14,54 +14,50 @@ module.exports = {
     'preferences_table': 'preferences'
 };
 
-/*var mysql = require('mysql');
+var mysql = require('mysql');
 
-var connection  = mysql.createConnection( {
+/*
+var pool = mysql.createPool( {
     connectionLimit: 100,
     host: 'localhost',
     user: 'root',
     password: 'mysqlRootPassword',
-    database: 'users',
-    'users_table': 'users'
+    database: 'IFS',
+    debug: false
 });
-*/
 
+module.exports = function( app) {
 
-/*
-connection.connect( function(err) {
-    if( !err ) {
-        console.log("Database is connected ... \n\n");
-    }
-    else {
-        console.log("Error connecting to database. \n\n");   
-    }
-})
+    function handleDatabase( req, res ) {
 
-
-
-function handleDatabase( req, res ) {
-
-    pool.getConnection( function(err,connection ) {
-        if(err ) {
-            connection.release();
-            res.json({"code":100, "status": "Error in connection database"});
-            return;
-        }
-
-        console.log("connected as id " + connection.threadId);
-
-        connection.query("select * from user", function (err, rows) {
-            connection.release();
-            if(!err) {
-                res.json(rows);
+        pool.getConnection( function(err,connection ) {
+            if(err ) {
+                connection.release();
+                res.json({"code":100, "status": "Error in connection database"});
+                return;
             }
-        });
 
-        connection.on( 'error' , function (err ) {
-            res.json({"code":100, "status": "Error in connection database"});
-            return;
+            console.log("connected as id " + connection.threadId);
+
+            connection.query("select * from user", function (err, rows) {
+                connection.release();
+                if(!err) {
+                    res.json(rows);
+                }
+            });
+
+            connection.on( 'error' , function (err ) {
+                res.json({"code":100, "status": "Error in connection database"});
+                return;
+            });
         });
+    }
+
+    app.get('/',function(req,res){
+        handle_database(req,res);
     });
 
-}
+
+};
+
 */

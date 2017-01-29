@@ -1,3 +1,5 @@
 {
-    "Test Me":"Hello I'm in English"
+	"Test Me": "Hello I'm in English",
+	"Authentication Failed": "Authentication Failed",
+	"Authentication Success": "Authentication Success"
 }
