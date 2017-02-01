@@ -13,6 +13,7 @@ block content
                     input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd")
                 p.forgot
                     a(href="#") Forgot password?
+                p.errorMessage #{messages.errorMessage}
                 div.form-actions
                     button(type="submit" class="btn btn-primary") Login
                     a(href="/register" class="btn btn-link") Register

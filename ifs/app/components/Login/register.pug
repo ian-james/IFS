@@ -15,5 +15,6 @@ block content
             div.form-group
                 label( for="pwd") Password
                 input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd")
+            p.errorMessage #{messages.errorMessage}
             div.form-actions
                 button(type="submit" class="btn btn-primary") Register

@@ -2,22 +2,11 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
-var dbconfig = require('./database');
+var db = require('./database');
 
 var path = require('path');
-var connection = mysql.createConnection( dbconfig.connection );
 var Logger = require( path.join( __dirname, "/loggingConfig") );
 
-connection.connect( function(err) {
-    if(err) {
-        Logger.error('error connecting: ' + err.stack );
-    }
-    else {
-        Logger.info("Connected on id " + connection.threadId );
-        // Tell mysql to use the database
-        connection.query ('USE ' + dbconfig.database );
-    }
-});
 
 module.exports = function (passport) {
 
@@ -26,7 +15,7 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser( function(id,done) {
-        connection.query( "SELECT * FROM users where id = ? ", [id], function(err,rows) {
+        db.query( "SELECT * FROM users where id = ? ", [id], function(err,rows) {
             done( err, rows[0]);
         });
     });
@@ -42,16 +31,19 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                connection.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
+                db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
+                    req.flash('errorMessage', 'We tried');
                     if(err)
                     {
+                        req.flash('error', 'Unable to signup.');
                         Logger.error( err );
                         return done(err);
                     }
 
                     if(rows.length) {
                         Logger.info(" Didn't find authorization", rows[0]);
-                        return done( null, false );//, req.flash('signupMessage', 'That user is already taken'));                    
+                        req.flash('errorMessage', 'That user is already taken');
+                        return done( null, false );
                     }
                     else{
                         Logger.info("Adding new user");
@@ -61,17 +53,16 @@ module.exports = function (passport) {
                         };
 
                         var insertQuery = "INSERT INTO users (username, password) values (?,?)";
-
-                        connection.query( insertQuery,[newUser.username, newUser.password], function(err,rows) {
+                        db.query( insertQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
+                            req.flash('success', 'Successfully signedup.');
                             return done(null, newUser);
                         });
-                    }// Else
-                });// QUery
-            } // Function
+                    }
+                });
+            }
         )
     );
-
 
     // This is the initialized of the local-login strategy used by passport, it calls this callback upcon
     // an attempted login, basically a simple check to see if user exists.
@@ -84,24 +75,22 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                connection.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
+                db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
                     if(err) {
                         return done(err);
                     }
-
                     if(!rows.length) {
+                        req.flash('error', 'Incorrect username');
                         return done( null, false);
                     }
-
-                    if( !bcrypt.compareSync(password, rows[0].password))
+                    if( !bcrypt.compareSync(password, rows[0].password)){
+                        req.flash('error', 'Incorrect username or password');
                         return done( null, false);
+                    }
 
                     return done(null, rows[0]);
                 });
             }
         )
     );
-
-
-
 };

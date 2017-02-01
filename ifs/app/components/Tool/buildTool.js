@@ -97,39 +97,6 @@ function createJobRequests( selectedOptions ) {
 //
 function basicParse( toolListItem, userOptions ){
 
-    console.log("********************BASIC PARSE **************************");
-
-    _.forEach( toolListItem.options, function(option) {
-
-        var userTargetTool = _.find( userOptions.options, function(o) {
-            return o.name ==  option.name;
-        });
-
-        if(userTargetTool)
-        {
-            var value = "";
-            if(option.type == "checkbox") {
-                value = userTargetTool.value  == "on" ? option.arg : "";
-            }
-            else {
-                value = option.arg + " " + userTargetTool.value;
-            }
-
-            // Update Params for tool
-            var opt = { params: value }
-            _.extend(option, opt);
-        }
-    });
-
-    // add Files to to tool
-    _.extend(toolListItem, userOptions.files);
-    return toolListItem;
-}
-
-function basicBad( toolListItem, userOptions ){
-
-    console.log("********************BASIC Bad2 **************************");
-
     _.forEach( toolListItem.options, function(option) {
 
         var userTargetTool = _.find( userOptions.options, function(o) {
@@ -182,13 +149,7 @@ function tempInsertOptions( toolList, toolOptions) {
 //   different tools
 
 function insertOptions( selectedOptions ){
-
     return createJobRequests(selectedOptions);
-    console.log("H***********************************************************************");
-    console.log("E***********************************************************************");
-    console.log("L***********************************************************************");
-    console.log("P***********************************************************************");
-
 }
 
 function insertOptionsOld( selectedOptions ) {
@@ -260,8 +221,6 @@ function createToolProgramCall ( toolListItem, files, options )
 
     _.forEach( toolListItem.options, function(o) {
         if( options  && options.prefixArg ) {
-            console.log("PUSH ARG");
-            console.log("PUSH OPTIONS", options);
             args.push( o.arg );
         }
         args.push( o.params );

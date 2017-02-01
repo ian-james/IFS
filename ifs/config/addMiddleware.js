@@ -13,6 +13,10 @@ module.exports = function (app) {
     var logger = require('morgan')({"stream": myLogger.stream } );
     app.use( logger );
 
+    /* Note the odd separation of some of these middleware is a required
+        CookieParser, i18n, bodyParser and passport all interact the request message.
+     */
+
     var cookieParser = require('cookie-parser');
 
      //i18n
@@ -51,6 +55,10 @@ module.exports = function (app) {
     );
 
     app.use( i18n.init );
+
+    // Setup Flash messages
+    var flash = require('express-flash');
+    app.use(flash());
 
     //Require passport routes
     require( "./passport") (passport);

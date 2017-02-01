@@ -6,28 +6,26 @@
       <li><a href="/">Home</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
+   
         <li ng-show="!isLoggedIn">
             <a href="/register">
-                <span class="glyphicon glyphicon-user"></span>
-                Sign up
+                <span class="glyphicon glyphicon-user"> Sign-up </span>
+                
             </a>
         </li>
         <li ng-show="!isLoggedIn">
             <a href="/login">
-                <span class="glyphicon glyphicon-log-in"></span>
-                Login
+                <span class="glyphicon glyphicon-log-in"> Login </span>
             </a>
         </li>
-        <li ng-show="{{isLoggedIn}}">
+        <li ng-show="isLoggedIn">
             <a href="/preferences">
-                <span class="glyphicon glyphicon-user"></span>
-                Preferences
+                <span class="glyphicon glyphicon-user"> Preferences </span>
             </a>
         </li>
         <li ng-show="isLoggedIn">
             <a href="/logout">
-                <span class="glyphicon glyphicon-log-in"></span>
-                Logout
+                <span class="glyphicon glyphicon-log-in"> Logout </span>
             </a>
         </li>
     </ul>

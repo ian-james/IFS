@@ -9,6 +9,10 @@ var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig
 
 var ToolManager = require('../Tool/buildTool');
 
+var db = require('../../../config/database');
+var config = require('../../../config/databaseConfig');
+
+
 module.exports = function (app) {
 
     // Files upload Information
@@ -103,9 +107,27 @@ module.exports = function (app) {
             return allResults;
         })
         .then( function(result) {
-            res.render(viewPath + "../Feedback/feedbackWaiting", { title: 'Feedback', test:"Tester", result:result});
-            res.end();
-            console.log("ENDING");
+            if(req.user && req.user.username)
+            {                // Store the result in a database and move on
+                var insertReq = "INSERT INTO " + config.raw_feedback_table + " (username, tools, feedback) values (?, ?, ?)";
+
+                db.query(insertReq,[req.user.username, JSON.stringify(tools), JSON.stringify(result)], function(err,data){
+                    
+                    if( err ) {
+                        console.log("INSERT ERROR:", err );
+                    }
+                    console.log("INSERTED FEEDBACK");
+                    res.render(viewPath + "../Feedback/feedbackWaiting", { title: 'Feedback', test:"Tester", result:result});
+                    res.end();
+                    console.log("ENDING");
+                });
+            }
+            else
+            {
+                res.render(viewPath + "../Feedback/feedbackWaiting", { title: 'Feedback', test:"Tester", result:result});
+                res.end();
+                console.log("ENDING");
+            }
         })
         .catch( function(err){
             res.status(500, {

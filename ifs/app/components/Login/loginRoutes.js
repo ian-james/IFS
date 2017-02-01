@@ -83,8 +83,9 @@ module.exports = function( app, passport ) {
     app.post('/register', passport.authenticate('local-signup', {
             //TODO: Change /tool to a preference selection page.
             successRedirect : '/tool',
-            failureRedirect : '/login',
-            //failureFlash : true
+            failureRedirect : '/register',
+            failureFlash : true,
+            badRequestMessage: "Failed to login"
     }));
 
     app.get('/profile', function( req,res ) {

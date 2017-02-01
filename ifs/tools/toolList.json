@@ -31,7 +31,7 @@
             "runType": "cli",
             "optionsFile": "./tools/grammarly/options.json",
             "defaultArg": "",
-            "parseCmd": "basicBad",
+            "parseCmd": "",
             "options": [{
                     "displayName": "Word Count",
                     "type": "checkbox",
