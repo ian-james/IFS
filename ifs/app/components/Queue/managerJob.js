@@ -13,7 +13,18 @@ function getManagerConfig()
 {
     return job.getDefaults(jobType,'Manager');
 }
-   
+
+function combineResults( response )
+{
+    var allResults = [];
+    for(var i = 0;i < response['result'].length;i++) {
+       var tempJob = response['result'][i].job;
+       tempJob['result'] = response['result'][i].result;
+       Logger.info("J",i, ":",  tempJob );
+       allResults.push(tempJob);
+    }
+    return allResults;
+}
 
 /* This function creates a 'ManagerJob', which is a job that starts a bunch of other tools in a queue and waits for feedback.
    This version of the file provides options for the job.
@@ -80,3 +91,4 @@ module.exports.makeJob = makeManagerDefaultJob;
 module.exports.handleTool = loadAllTools;
 module.exports.runJob = runManagerJob;
 module.exports.runChildJob = runChildJob;
+module.exports.combineResults = combineResults;
