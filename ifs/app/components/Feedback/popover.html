@@ -1,0 +1,69 @@
+<div class="cardContainer">
+    <div class="row">
+        <div class="headerButtonsContainer btn-toolbar pull-right">
+            <button type="button"  class="doSomethingBtn btn btn-xs">
+                <span class="glyphicon glyphicon-heart"></span>
+            </button>
+            <button type="button"  class="closeBtn btn btn-xs"> 
+                <span class="glyphicon glyphicon-remove"></span>
+            </button>
+        </div>
+    </div>
+    <div class="row cardRow">
+        <div class="col-md-12">
+            <div class="row ">
+                <div class="errorType" align="center">
+                        <h3>  Error Type: {{ selectedFeedback.type }} </h3>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="btn-toolbar toolOptionsContainer pull-right">
+                    <button type="button"  class="addToDictionaryBtn btn btn-xs"> <span class="glyphicon glyphicon-plus"></span> </button>
+                    <button type="button"  class="removeBtn btn btn-xs"> <span class="glyphicon glyphicon-minus"></span> </button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="errorMsg col-md-6">
+                    <div class="errorWord">
+                            <p class="'selectedFeedback.type'">  {{ selectedFeedback.target }} </p>
+                     </div>
+                </div>
+                <div class="suggestionMsg col-md-6">
+                    <ul class="list-group">
+                        <!--
+                        <li class="list-group-item"> First Spelling </li>
+                        <li class="list-group-item"> Second Spelling </li>
+                        <li class="list-group-item"> Different Spelling </li>
+                        <li class="list-group-item">  More  <span class="glyphicon glyphicon-chevron-down"></span> </li>
+                        -->
+                        <li ng-repeat="suggestion in selectedFeedback.suggestion" class="list-group-item">  {{suggestion}} </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="feedbackButtonsContainer btn-toolbar">
+                    <div class="col-md-2 col-md-offset-3">
+                        <button type="button"  class="Btn btn btn-md"> 
+                            <span class="glyphicon glyphicon-thumbs-up"></span>
+                        </button>
+                    </div>
+                    <div class="col-md-2 col-md-offset-2">
+                        <button type="button"  class="Btn btn btn-md"> 
+                            <span class="glyphicon glyphicon-thumbs-down"></span>
+                        </button>
+                     </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="feedback">
+                    <p> Description: {{selectedFeedback.feedback}} 
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row footer">
+        <label class="footerToolLbl"> Powered by: {{ selectedFeedback.tool }} </label>
+    </div>
+</div>

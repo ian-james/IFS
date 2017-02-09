@@ -15,14 +15,16 @@ var pool = mysql.createPool( {
 function handleConnectionError( err,connection){
     if(err) {
         connection.release();
-        throw er
+        throw err;
     }
 }
 
-/* This is a generic query that get information from the database.
+/* This is a generic query that get information from the database.clear
+
    It uses a pool to create the connection and disconnects after.
 */
 function query( queryStr, args, callback) {
+   console.log("Database query in progress");
    pool.getConnection( function(err,connection) {
 
        handleConnectionError( err, connection );

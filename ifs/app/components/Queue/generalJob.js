@@ -46,7 +46,7 @@ function makeJob(  toolOptions, jobOpts )
     .on('complete', function(result) {
         //console.log("*****1COMPLETE JOB IS ", JSON.stringify(job.data));
         //console.log("*****2COMPLETE JOB IS ", JSON.stringify(job));
-        //console.log("*****3COMPLETE JOB IS ", JSON.stringify(result));
+        //console.log("*****3COMPLETE JOB IS ", job.name , "=>", JSON.stringify(result));
         deferred.resolve({
             done: true,
             job: job.data,
@@ -55,7 +55,7 @@ function makeJob(  toolOptions, jobOpts )
         });
     })
     .on('failed', function( errorMessage) {
-        //console.log("*****JOB IS ", job.data);
+        console.log("*****JOB  FAILED IS ", job.data);
         deferred.resolve({
             done: true,
             job: job.data,

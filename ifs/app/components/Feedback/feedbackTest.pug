@@ -1,0 +1,20 @@
+extends ../../shared/views/pageLayout.pug
+include ../../shared/UI_components/formSubmit.pug
+
+block content
+    link(rel="stylesheet" href="components/Feedback/feedbackTest.css")
+    div.row(ng-controller="feedbackCtrl")
+        div.row
+            div(class="col-md-offset-1")
+                uib-tabset( active="active")
+                    each file, findex in feedbackItems
+                        uib-tab( index=findex heading= file.filename  disable="{{tab.disabled}}")
+                            div.row
+                                div(class="col-md-8")
+                                    div(class="form-control markedTextArea" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true") !{file.markedUp}
+
+                                div(class="col-md-3" ng-hide)
+                                    div(class="longFeedbackContainer")
+                                        include popover.html
+    script(src="components/Feedback/feedbackController.js")
+

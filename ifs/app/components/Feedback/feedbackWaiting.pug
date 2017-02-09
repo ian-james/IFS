@@ -11,7 +11,7 @@ block content
         div
             ul
                 each val,index in result
-                    li= JSON.stringify(val)
+                    li= val.tool.displayName + "->" + val.result
                     hr
 
 
@@ -23,6 +23,7 @@ block content
                         th Feedback
                 tbody
                     each val,index in result
-                       tr
-                            td= val.tool.runCmd
+                        tr
+                            td= val.tool.displayName
                             td= val.result
+                        tr

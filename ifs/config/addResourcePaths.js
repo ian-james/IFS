@@ -14,6 +14,10 @@ module.exports = function (app) {
 
     // Angular
     app.use( "/angular", express.static( nodeModulesPath + "angular/") );
+
+      // Angular
+    app.use( "/angular-sanitize", express.static( nodeModulesPath + "angular-sanitize/") );
+
     // Boostrap-Angular
     app.use( "/bootstrap", express.static(  nodeModulesPath + "angular-ui-bootstrap/dist/") );
 

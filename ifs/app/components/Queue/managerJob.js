@@ -3,6 +3,8 @@ var Q = require('q');
 var queue = require('./kueServer').queue;
 var cjob = require('./childJob');
 var job = require('./generalJob');
+var path = require('path');
+var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
 
 // This is just a regular reference, it needed a name for managerJob.
 const jobType = 'mJob';
@@ -17,11 +19,22 @@ function getManagerConfig()
 function combineResults( response )
 {
     var allResults = [];
-    for(var i = 0;i < response['result'].length;i++) {
-       var tempJob = response['result'][i].job;
-       tempJob['result'] = response['result'][i].result;
-       Logger.info("J",i, ":",  tempJob );
-       allResults.push(tempJob);
+    try {        
+        for(var i = 0;i < response['result'].length;i++) {
+            var res = response.result[i];
+            var tempJob = res.job;
+           
+            if(res.success) {
+                tempJob['result'] = res.result;
+                allResults.push(tempJob);
+            }
+            else
+                Logger.error("Did not include failed Job:", tempJob.progName );
+           
+        }
+    }
+    catch (err){
+        Logger.error("Failed to combine tools");
     }
     return allResults;
 }
@@ -56,7 +69,7 @@ function loadAllTools(job, done)
     var jobsInfo = job.data.tool;
     for(var i = 0;i < jobsInfo.length;i++)
         promises.push( cjob.makeJob( jobsInfo[i] ));
-    
+   
     runChildJob( cjob.jobType );
     
     // Wait for everything to finish before emitting that parent is done.    

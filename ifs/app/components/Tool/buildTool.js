@@ -89,7 +89,7 @@ function createJobRequests( selectedOptions ) {
     var toolOptions = parseFormSelection( selectedOptions );
     var res = tempInsertOptions(toolList.tools, toolOptions);
     var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
-    
+
     return jobReq;
 
 }
@@ -132,12 +132,16 @@ function tempInsertOptions( toolList, toolOptions) {
         if( targetToolOptions )
         {
             var cmd = t.parseCmd || "basicParse";
-            var result = _.attempt( eval(cmd)(t,targetToolOptions) );
-
-            if( _.isError(result)) {
-                console.log("CMD->", cmd, " has errored");
+            var result;
+            try{
+                result = eval(cmd)(t,targetToolOptions);
+            }
+            catch(err){
+                console.log("CMD->", cmd, " has errored -> ");
                 console.log("tool was: ", t );
                 console.log("TargetToolOption was ", targetToolOptions);
+                console.log("Error-> ", err);
+                console.log("******************");
             }
         }
 
@@ -231,6 +235,8 @@ function createToolProgramCall ( toolListItem, files, options )
     var fullPath = _.union(args, filenames );
     var result = _.join( fullPath, " ");
 
+//    console.log("resulting call", result );
+
     return result;
 }
 
@@ -278,4 +284,4 @@ function displayTools( tools ) {
 
 
 // Exports below
-module.exports.insertOptions = insertOptions
+module.exports.createJobRequests = createJobRequests;

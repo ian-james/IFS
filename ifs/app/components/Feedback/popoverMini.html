@@ -1,0 +1,22 @@
+<div class="cardContainer container-fluid">
+        <div class="errorMsg col-md-3">
+            <div class="errorType">
+                <p> {{ selectedFeedback.type  }}  : <p>
+            </div>
+        </div>
+        <div class="errorMsg col-md-3">
+            <div class="errorWord">
+                    <p class="{{ selectedFeedback.type  }}">  {{ selectedFeedback.target}} </p>
+             </div>
+        </div>
+        <div class="suggestionMsg col-md-3">
+            <div class="bestSuggestion">
+                <p class="suggestion"> {{ selectedFeedback.suggestion[0]}} </p>
+            </div>
+        </div>
+        <div class="col-md-1">
+            <a class="btn btn-info btn-sm">
+                <span class="glyphicon glyphicon-expand"></span>
+            </a>
+        </div>
+</div>

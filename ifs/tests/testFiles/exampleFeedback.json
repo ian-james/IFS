@@ -1,0 +1,81 @@
+[ 
+    {
+        "filename": "test.txt",
+        "contentFile": "./tests/testFiles/test.txt",
+        "cFile": "./tests/test.html",
+        "content": "",
+        "tools": [
+            {
+                "DisplayName": "Spelling",
+                "feedback": [
+                    {
+                        "type" : "spelling",
+                        "lineNum": 2,
+                        "wordNum": 140,
+                        "target": "line",
+                        "suggestion": ["Some","thing","something"],
+                        "feedback": "This is a suggested edit because something is clearly wrong."
+                    },
+                    {
+                        "type" : "spelling",
+                        "lineNum": 5,
+                        "wordNum": 12,
+                        "target": "anoter",
+                        "suggestion": ["anote","note","another"],
+                        "feedback": "This is a suggestion for regular spelling given your location."
+                    }
+                ]
+            },
+            {
+                "DisplayName": "Grammar",
+                "feedback": [
+                    {
+                        "type" : "grammar",
+                        "lineNum": 2,
+                        "wordNum": 140,
+                        "target": "line",
+                        "suggestion": ["Some","thing","something"],
+                        "feedback": "This is a suggested edit because something is clearly wrong."
+                    },
+                    {
+                        "type" : "grammar",
+                        "lineNum": 5,
+                        "wordNum": 12,
+                        "target": "anoter",
+                        "suggestion": ["anote","note","another"],
+                        "feedback": "This is a suggestion for regular spelling given your location."
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "filename": "second.txt",
+        "contentFile": "./tests/testFiles/second.txt",
+        "cFile": "./tests/second.txt",
+        "content": "",
+        "tools": [
+            {
+                "DisplayName": "Spelling",
+                "feedback": [
+                    {
+                        "type" : "spelling",
+                        "lineNum": 3,
+                        "wordNum": 3,
+                        "target": "should",
+                        "suggestion": ["shoulder","could","bother"],
+                        "feedback": "So close this actually looks like a real word....wait a second."
+                    },
+                    {
+                        "type" : "spelling",
+                        "lineNum": 5,
+                        "wordNum": 3,
+                        "target": "hiv",
+                        "suggestion": ["hive","five","have"],
+                        "feedback": "Multiple suggestions available please have a look."
+                    }
+                ]
+            }
+        ]
+    }
+]
