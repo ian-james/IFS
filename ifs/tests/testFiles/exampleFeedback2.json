@@ -23,7 +23,7 @@
             "suggestion": ["Some","thing","something"],
             "feedback": "This is a suggested edit because something is clearly wrong.",
             "toolName":"Spelling",
-             "filename": "test.txt"
+            "filename": "test.txt"
         },
         {
             "type" : "spelling",
@@ -33,7 +33,27 @@
             "suggestion": ["anote","note","another"],
             "feedback": "This is a suggestion for regular spelling given your location.",
             "toolName":"Spelling",
-             "filename": "test.txt"
+            "filename": "test.txt"
+        },
+        {
+            "type" : "spelling",
+            "lineNum": 5,
+            "wordNum": 0,
+            "target": "This",
+            "suggestion": ["anote","note","another"],
+            "feedback": "This is a suggestion for regular spelling given your location.",
+            "toolName":"Spelling",
+            "filename": "test.txt"
+        },
+        {
+            "type" : "spelling",
+            "lineNum": 5,
+            "wordNum": 10,
+            "target": "This",
+            "suggestion": ["anote","note","another"],
+            "feedback": "This is a suggestion for regular spelling given your location.",
+            "toolName":"Spelling",
+            "filename": "test.txt"
         },
         {
             "type" : "grammar",
@@ -48,7 +68,7 @@
         {
             "type" : "grammar",
             "lineNum": 5,
-            "wordNum": 450,
+            "wordNum": 50,
             "target": "This",
             "suggestion": ["tis","not","another"],
             "feedback": "This is a suggestion for regular spelling given your location.",

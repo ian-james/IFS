@@ -7,7 +7,7 @@ block content
         div.row
             div(class="col-md-offset-1")
                 uib-tabset( active="active")
-                    each file, findex in feedbackItems
+                    each file, findex in files
                         uib-tab( index=findex heading= file.filename  disable="{{tab.disabled}}")
                             div.row
                                 div(class="col-md-8")

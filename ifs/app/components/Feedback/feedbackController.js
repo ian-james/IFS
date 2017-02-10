@@ -10,8 +10,10 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
         $scope.selectedFeedback = JSON.parse(event.target.getAttribute("data-feedback"));
     };
 
+    $scope.files = [];
     $scope.feedbackItems=[];
     $http.get("/feedbackTest/data").then( function(res) {
-        $scope.feedbackItems = res.data;
+        $scope.feedbackItems = res.data.feedbackItems;
+        $scope.files = res.data.files;
     });
 });
