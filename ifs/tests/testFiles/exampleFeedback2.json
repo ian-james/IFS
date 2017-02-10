@@ -1,0 +1,59 @@
+{
+    "files": [
+        {
+            "filename": "test.txt",
+            "contentFile": "./tests/testFiles/test.txt",
+            "cFile": "./tests/test.html",
+            "content": ""
+        },
+        {
+            "filename": "second.txt",
+            "contentFile": "./tests/testFiles/second.txt",
+            "cFile": "./tests/second.txt",
+            "content": ""
+        }
+        
+    ],
+    "feedback": [
+        {
+            "type" : "spelling",
+            "lineNum": 2,
+            "wordNum": 140,
+            "target": "line",
+            "suggestion": ["Some","thing","something"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Spelling",
+             "filename": "test.txt"
+        },
+        {
+            "type" : "spelling",
+            "lineNum": 5,
+            "wordNum": 50,
+            "target": "This",
+            "suggestion": ["anote","note","another"],
+            "feedback": "This is a suggestion for regular spelling given your location.",
+            "toolName":"Spelling",
+             "filename": "test.txt"
+        },
+        {
+            "type" : "grammar",
+            "lineNum": 2,
+            "wordNum": 140,
+            "target": "last",
+            "suggestion": ["laster","thing","onMyMind"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Grammar",
+            "filename": "second.txt"
+        },
+        {
+            "type" : "grammar",
+            "lineNum": 5,
+            "wordNum": 450,
+            "target": "This",
+            "suggestion": ["tis","not","another"],
+            "feedback": "This is a suggestion for regular spelling given your location.",
+            "toolName":"Grammar",
+            "filename": "second.txt"
+        }
+    ]
+}

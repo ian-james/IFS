@@ -64,7 +64,8 @@ function replaceText(str, targetOpt )
         var res = XRegExp.replace( str, regExp.regex, function(match,index) {
             if( index == targetOpt.targetPos ) {
                 return regExp.newText;
-            }            
+            }
+            return match;
         });
         return res;
     });

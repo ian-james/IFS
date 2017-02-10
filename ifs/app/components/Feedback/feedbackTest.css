@@ -10,6 +10,11 @@
     text-decoration: underline;  
 }
 
+.grammar 
+{
+    color: blue;
+}
+
 .suggestion
 {
     display:inline-block;

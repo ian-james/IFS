@@ -21,21 +21,26 @@ module.exports = function( app ) {
     function markupFile( file  ) {
       
         var tools = file.tools;
-        var feedback = tools[0].feedback;
+        
         var content = file.content;
 
-        // For each piece of feedback received add
-        for(var i = 0;i < feedback.length;i++)
+        for( var ti = 0; ti < tools.length; ti ++) 
         {
-            var feedbackItem = feedback[i];
-            feedbackItem['file'] = file.filename;
-            feedbackItem['tool'] = tools[0].DisplayName;
+            var feedback = tools[ti].feedback;
 
-            var newStr = buttonMaker.createTextButton(feedbackItem);
-            var closest = fbHighlighter.findClosestMatch(content, {'needle':feedbackItem.target, 'flags':"gm", 'targetPos': feedbackItem.wordNum } )
-            
-            var closestPos = closest ? closest.index : feedbackItem.wordNum ;
-            content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':newStr, 'flags':"gm", 'targetPos': closestPos } );
+            // For each piece of feedback received add
+            for(var i = 0;i < feedback.length;i++)
+            {
+                var feedbackItem = feedback[i];
+                feedbackItem['file'] = file.filename;
+                feedbackItem['tool'] = tools[0].DisplayName;
+
+                var newStr = buttonMaker.createTextButton(feedbackItem);
+                var closest = fbHighlighter.findClosestMatch(content, {'needle':feedbackItem.target, 'flags':"gm", 'targetPos': feedbackItem.wordNum } )
+                
+                var closestPos = closest ? closest.index : feedbackItem.wordNum ;
+                content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':newStr, 'flags':"gm", 'targetPos': closestPos } );
+            }
         }
 
         return content;

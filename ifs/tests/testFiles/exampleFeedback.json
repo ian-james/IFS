@@ -9,8 +9,8 @@
                 "DisplayName": "Spelling",
                 "feedback": [
                     {
-                        "type" : "spelling",
-                        "lineNum": 2,
+                        "type" : "spelling"
+,                        "lineNum": 2,
                         "wordNum": 140,
                         "target": "line",
                         "suggestion": ["Some","thing","something"],
@@ -19,8 +19,8 @@
                     {
                         "type" : "spelling",
                         "lineNum": 5,
-                        "wordNum": 12,
-                        "target": "anoter",
+                        "wordNum": 50,
+                        "target": "This",
                         "suggestion": ["anote","note","another"],
                         "feedback": "This is a suggestion for regular spelling given your location."
                     }
@@ -33,16 +33,16 @@
                         "type" : "grammar",
                         "lineNum": 2,
                         "wordNum": 140,
-                        "target": "line",
-                        "suggestion": ["Some","thing","something"],
+                        "target": "last",
+                        "suggestion": ["laster","thing","onMyMind"],
                         "feedback": "This is a suggested edit because something is clearly wrong."
                     },
                     {
                         "type" : "grammar",
                         "lineNum": 5,
-                        "wordNum": 12,
-                        "target": "anoter",
-                        "suggestion": ["anote","note","another"],
+                        "wordNum": 450,
+                        "target": "This",
+                        "suggestion": ["tis","not","another"],
                         "feedback": "This is a suggestion for regular spelling given your location."
                     }
                 ]
@@ -61,7 +61,7 @@
                     {
                         "type" : "spelling",
                         "lineNum": 3,
-                        "wordNum": 3,
+                        "wordNum": 200,
                         "target": "should",
                         "suggestion": ["shoulder","could","bother"],
                         "feedback": "So close this actually looks like a real word....wait a second."
