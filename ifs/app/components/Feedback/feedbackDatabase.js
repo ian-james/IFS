@@ -1,6 +1,6 @@
 var mysql = require('mysql');
-var db = require('../../../config/database');
-var config = require('../../../config/databaseConfig');
+var db = require( __configs + 'database');
+var config = require(__configs + 'databaseConfig');
 
 // Path and file management
 var path = require('path');

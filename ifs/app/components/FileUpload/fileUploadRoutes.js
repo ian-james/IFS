@@ -7,7 +7,7 @@ var path = require('path');
 // Managers
 var manager = require('../Queue/managerJob');
 var ToolManager = require('../Tool/buildTool');
-var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
+var Logger = require( __configs + "loggingConfig");
 
 // Database
 //var db = require('../../../config/database');

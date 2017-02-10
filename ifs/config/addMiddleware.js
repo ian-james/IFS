@@ -8,7 +8,7 @@ module.exports = function (app) {
     // A logging middleware 
     // Winston Middleware but customized
     var configPath = __dirname + "/";
-    var myLogger = require( configPath + "loggingConfig");
+    var myLogger = require( __configs + "loggingConfig");
 
     var logger = require('morgan')({"stream": myLogger.stream } );
     app.use( logger );

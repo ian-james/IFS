@@ -10,7 +10,8 @@ var _ = require('lodash');
 var multer = require('multer');
 var mkdirp = require('mkdirp');
 
-var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
+console.log("Somethign spelling", __configs );
+var Logger = require( __configs + "loggingConfig" );
 
 var limits = {
     fileSize: 1024*1024*5

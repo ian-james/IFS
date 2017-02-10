@@ -7,7 +7,7 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var maxCookieAge = 1000*60*5; //TODO: Moves this to sessionConfig
 
-var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
+var Logger = require( __configs + "loggingConfig");
 
 var _ = require('lodash');
 

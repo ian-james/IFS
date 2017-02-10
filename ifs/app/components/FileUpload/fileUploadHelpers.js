@@ -4,7 +4,7 @@ var fs = require('fs');
 var unzip = require('unzip');
 var _ = require('lodash');
 
-var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
+var Logger = require( __configs + "loggingConfig");
 
 module.exports =  {
 

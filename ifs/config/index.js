@@ -4,8 +4,14 @@ var app = express();
 
 // Set our paths for finding our code.
 var path = require('path');
-var appPath = path.join( __dirname + "/../app/");
-var componentsPath = path.join( appPath + "/components");
+//var appPath = path.join( __dirname + "/../app/");
+//var componentsPath = path.join( appPath + "/components");
+//
+global.__base =  path.join(__dirname, "../");
+global.__configs = path.join(__dirname, "/");
+    ;
+global.__tools = path.join( __dirname , "../tools/");
+global.__components = path.join( __dirname, "../app/components/");
 
 var port = process.env.PORT || 3000;
 // Set App variables.

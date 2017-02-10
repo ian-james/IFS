@@ -4,7 +4,7 @@ var queue = require('./kueServer').queue;
 var cjob = require('./childJob');
 var job = require('./generalJob');
 var path = require('path');
-var Logger = require( path.join( __dirname, "/../../../config/" + "loggingConfig") );
+var Logger = require( __configs  + "loggingConfig");
 
 // This is just a regular reference, it needed a name for managerJob.
 const jobType = 'mJob';
