@@ -4,9 +4,6 @@
 function createTextButton( feedbackItem, options )
 {
     options = options || {};
-
-    console.log("Creating a tool popover", feedbackItem );
-
     var buttonStr = "<a"
                         + " data-feedback=\'" +  JSON.stringify(feedbackItem)  + "'"
                         + " popover-trigger=\"'outsideClick'\""

@@ -6,6 +6,12 @@ block content
     div.row(ng-controller="feedbackCtrl")
         div.row
             div(class="col-md-offset-1")
+                form(id="toolSelectionFrm", action="/feedbackTest" method="post")
+                    label Please selected a tool: 
+                    select(id="toolSelectorId" onchange="this.form.submit()" name="toolSelector")
+                        each tool in toolsUsed
+                            option( selected= tool.toolName==selectedTool) #{ tool.toolName }
+
                 uib-tabset( active="active")
                     each file, findex in files
                         uib-tab( index=findex heading= file.filename  disable="{{tab.disabled}}")
@@ -16,5 +22,8 @@ block content
                                 div(class="col-md-3" ng-hide)
                                     div(class="longFeedbackContainer")
                                         include popover.html
+                div.summarySection.col-md-4
+                    p Total Feedback Messsages #{feedbackItems.length}
+
     script(src="components/Feedback/feedbackController.js")
 

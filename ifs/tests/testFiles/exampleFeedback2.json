@@ -25,6 +25,16 @@
             "toolName":"Spelling",
             "filename": "test.txt"
         },
+         {
+            "type" : "spelling",
+            "lineNum": 2,
+            "wordNum": 100,
+            "target": "anoter",
+            "suggestion": ["Some","thing","something"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Spelling",
+            "filename": "test.txt"
+        },
         {
             "type" : "spelling",
             "lineNum": 5,
@@ -32,27 +42,7 @@
             "target": "This",
             "suggestion": ["anote","note","another"],
             "feedback": "This is a suggestion for regular spelling given your location.",
-            "toolName":"Spelling",
-            "filename": "test.txt"
-        },
-        {
-            "type" : "spelling",
-            "lineNum": 5,
-            "wordNum": 0,
-            "target": "This",
-            "suggestion": ["anote","note","another"],
-            "feedback": "This is a suggestion for regular spelling given your location.",
-            "toolName":"Spelling",
-            "filename": "test.txt"
-        },
-        {
-            "type" : "spelling",
-            "lineNum": 5,
-            "wordNum": 10,
-            "target": "This",
-            "suggestion": ["anote","note","another"],
-            "feedback": "This is a suggestion for regular spelling given your location.",
-            "toolName":"Spelling",
+            "toolName":"Grammar",
             "filename": "test.txt"
         },
         {
@@ -62,7 +52,7 @@
             "target": "last",
             "suggestion": ["laster","thing","onMyMind"],
             "feedback": "This is a suggested edit because something is clearly wrong.",
-            "toolName":"Grammar",
+            "toolName":"Spelling",
             "filename": "second.txt"
         },
         {
