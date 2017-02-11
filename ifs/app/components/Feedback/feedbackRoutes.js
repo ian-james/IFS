@@ -12,20 +12,61 @@ module.exports = function( app ) {
         
     });
 */
-
     /* Markup a single file by plaing only feedback Items from a specific tool into the file */
     function markupFile( file, feedbackItems )
     {
         var content = file.content;
+        var offset = 0;
+        var nextItem = null;
+        var matchingFeedbackItems= 1;
 
         for( var i = 0; i < feedbackItems.length; i++ )
         {
             var feedbackItem = feedbackItems[i];
             var newStr = buttonMaker.createTextButton(feedbackItem);
-            var closest = fbHighlighter.findClosestMatch(content, {'needle':feedbackItem.target, 'flags':"gm", 'targetPos': feedbackItem.wordNum } )
+            console.log("CLosest*********************************************************,", offset);
+            console.log(content);
+            console.log("END CLosest*********************************************************", matchingFeedbackItems);
+            console.log("Location:", content.substr(offset));
+            console.log("END Location*********************************************************", matchingFeedbackItems);
+            console.log("Testing HEre:", feedbackItem.wordNum+offset );
+            console.log("FINDER:", content.substr(feedbackItem.wordNum+offset));
+            console.log("*********************************************************", matchingFeedbackItems);
+
+
+            var closest = fbHighlighter.findClosestMatch(content, {'needle':feedbackItem.target, 'flags':"gm", 'targetPos':  feedbackItem.wordNum+offset } );
+            console.log("Closest match", closest);
+            var closestPos = closest ? closest.index : feedbackItem.wordNum;
+
+            nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
+
+            if( nextItem && (nextItem.target == feedbackItem.target && nextItem.wordNum ==  feedbackItem.wordNum )) 
+            {
+                console.log("MATCHERRRRRRRRRRRRRRRRRRRRRRRRRRRr1");
+                // Next Item will be  match so we insert the start of the button and target work and push the offset.
+                matchingFeedbackItems++; // Keep track of how many matches so we can close these tags up.
+                var str = newStr.start + newStr.mid;
+                console.log("closestPos", closestPos);
+                content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': closestPos } );
+                offset += (newStr.start.length+1); // + 1 for the space
+            }
+            else if( matchingFeedbackItems > 1){
+                // We had a match but this is the last one, need to add the end tags.
+                console.log("MATCHERRRRRRRRRRRRRRRRRRRRRRRRRRRr2");
+                var str = newStr.mid + newStr.end.repeat(matchingFeedbackItems);
+                content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': closestPos } );
+                offset += (str.length - newStr.mid.length);
+                matchingFeedbackItems=1;
+            }
+            else
+            {
+                console.log("MATCHERRRRRRRRRRRRRRRRRRRRRRRRRRRr3");
+                // We don't have a location match, so we can just replace the string and move on.
+                var str = newStr.start + newStr.mid + newStr.end;
+                content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': closestPos } );
+                offset += (str.length);
+            }
             
-            var closestPos = closest ? closest.index : feedbackItem.wordNum ;
-            content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':newStr, 'flags':"gm", 'targetPos': closestPos } );
         }
         return content;
     }    
@@ -54,7 +95,7 @@ module.exports = function( app ) {
             // Ascending Order
             var sortedPerPage = _.orderBy(perPageFeedback,'wordNum');
 
-            file.markedUp = markupFile( file, perPageFeedback );
+            file.markedUp = markupFile( file, sortedPerPage );
         }
         return {'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
     }

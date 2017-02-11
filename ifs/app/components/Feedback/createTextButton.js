@@ -14,7 +14,10 @@ function createTextButton( feedbackItem, options )
                         + " class=\" btnText " + feedbackItem.type + ( options['classes'] ||  "")  +  "\""
                         + ">";
     var endButton = "</a>";
-    var result = buttonStr + " " + feedbackItem.target + " " + endButton;    
+    var result = { 'start': buttonStr,
+                    'mid': " " + feedbackItem.target,
+                    'end': " " + endButton
+                };
     return result;
 }
 
