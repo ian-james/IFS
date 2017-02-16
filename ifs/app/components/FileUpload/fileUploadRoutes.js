@@ -23,17 +23,11 @@ module.exports = function (app) {
 
     app.post('/tool/file/upload', upload.any(), function(req,res,next) {
 
-        console.log("Helpers", Helpers);
-        Logger.info("********************");
-        Logger.info(req.body);
-        Logger.info("Files *********************");
-        Logger.info(req.files);
-        Logger.info("END *********************");
-
         // Get files names to be inserted
         var uploadedFiles = Helpers.getFileNames( req.files );
 
         Helpers.handleZipFile( uploadedFiles[0].filename );
+        Helpers.handleDocxFile( uploadedFiles[0].filename );
 
         var userSelection = req.body;
         userSelection['files'] = uploadedFiles;

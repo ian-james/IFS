@@ -13,60 +13,59 @@ module.exports = function( app ) {
     });
 */
     /* Markup a single file by plaing only feedback Items from a specific tool into the file */
-    function markupFile( file, feedbackItems )
+    function markupFile( file, selectedTool, feedbackItems )
     {
         var content = file.content;
         var offset = 0;
         var nextItem = null;
         var matchingFeedbackItems= 1;
+        var idArr = [];
+        var matchClasses = "";
+        var errorType =  "", originalErrorType = "";
 
         for( var i = 0; i < feedbackItems.length; i++ )
         {
-            var feedbackItem = feedbackItems[i];
-            var newStr = buttonMaker.createTextButton(feedbackItem);
-            console.log("CLosest*********************************************************,", offset);
-            console.log(content);
-            console.log("END CLosest*********************************************************", matchingFeedbackItems);
-            console.log("Location:", content.substr(offset));
-            console.log("END Location*********************************************************", matchingFeedbackItems);
-            console.log("Testing HEre:", feedbackItem.wordNum+offset );
-            console.log("FINDER:", content.substr(feedbackItem.wordNum+offset));
-            console.log("*********************************************************", matchingFeedbackItems);
-
-
-            var closest = fbHighlighter.findClosestMatch(content, {'needle':feedbackItem.target, 'flags':"gm", 'targetPos':  feedbackItem.wordNum+offset } );
-            console.log("Closest match", closest);
-            var closestPos = closest ? closest.index : feedbackItem.wordNum;
-
-            nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
-
-            if( nextItem && (nextItem.target == feedbackItem.target && nextItem.wordNum ==  feedbackItem.wordNum )) 
+            // Check for a specific tool and specific filename or all
+            if(  file.filename == feedbackItems[i].filename  && ( selectedTool == "All" || selectedTool == feedbackItems[i].toolName ) )
             {
-                console.log("MATCHERRRRRRRRRRRRRRRRRRRRRRRRRRRr1");
-                // Next Item will be  match so we insert the start of the button and target work and push the offset.
-                matchingFeedbackItems++; // Keep track of how many matches so we can close these tags up.
-                var str = newStr.start + newStr.mid;
-                console.log("closestPos", closestPos);
-                content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': closestPos } );
-                offset += (newStr.start.length+1); // + 1 for the space
+                // Find the closest positional match for the error.
+                var feedbackItem = feedbackItems[i];
+                var closest = fbHighlighter.findClosestMatch(content, {'needle':feedbackItem.target, 'flags':"gm", 'targetPos':  feedbackItem.wordNum+offset } );
+                var closestPos = closest ? closest.index : feedbackItem.wordNum;
+
+                nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
+                var nextMatches =  nextItem && (nextItem.target == feedbackItem.target && nextItem.wordNum ==  feedbackItem.wordNum );
+
+                idArr.push(i);
+                if( nextItem && nextMatches ) {
+                    // We have multiple errors on this word.
+                    matchClasses = " multiError";
+                }
+
+                if(nextMatches) 
+                {
+                    // Next Item will be  a match in terms of target word and word Number 
+                    matchingFeedbackItems++; // Keep track of how many matches occurred.
+                }
+                else 
+                {
+                    // Assign either the multiError or the specific error type.
+                    // Also an array for the feedback Items array that match this error
+                    matchClasses =   matchClasses == "" ? feedbackItems[i].type : matchClasses;
+                    var options = { 'classes': matchClasses, 'data': idArr };
+
+                    // Create a popover button at position to highlight text and count the offset.
+                    var newStr = buttonMaker.createTextButton(feedbackItem, options);
+                    var str = newStr.start + newStr.mid + newStr.end;       
+                    content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': closestPos } );
+                    offset += str.length ;
+
+                    // Reset data
+                    matchingFeedbackItems=1;
+                    matchClasses = "";
+                    idArr = [];
+                }
             }
-            else if( matchingFeedbackItems > 1){
-                // We had a match but this is the last one, need to add the end tags.
-                console.log("MATCHERRRRRRRRRRRRRRRRRRRRRRRRRRRr2");
-                var str = newStr.mid + newStr.end.repeat(matchingFeedbackItems);
-                content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': closestPos } );
-                offset += (str.length - newStr.mid.length);
-                matchingFeedbackItems=1;
-            }
-            else
-            {
-                console.log("MATCHERRRRRRRRRRRRRRRRRRRRRRRRRRRr3");
-                // We don't have a location match, so we can just replace the string and move on.
-                var str = newStr.start + newStr.mid + newStr.end;
-                content = fbHighlighter.replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': closestPos } );
-                offset += (str.length);
-            }
-            
         }
         return content;
     }    
@@ -77,27 +76,24 @@ module.exports = function( app ) {
 
         var files = feedbackFormat.files; // Array of files
         var feedbackItems = feedbackFormat.feedback;
+
+        // A Unique list of tools used for UI
         var toolsUsed = _.uniqBy(feedbackItems,'toolName');
-        
 
+        // Sorter order here is important, we want the earliest words to come first
+        var sortedFeedbackItems = _.sortBy( feedbackItems, ['filename','wordNum','toolName']);
+
+        // Tool should always be selected unless it's defaulted too.
         var selectedTool = (options && options['tool'] || toolsUsed[0].toolName);
-        console.log("**********************************************************************************TOOOLS", selectedTool);
 
+        // For each file, read in the content and mark it up for display.
         for( var i = 0; i < files.length; i++ )
         {
             var file = files[i];
             file.content = fs.readFileSync( file.contentFile, 'utf-8');
-
-            // Find feedback items that match this page.
-            var perPageFeedback = _.filter(feedbackItems, p => p.filename == file.filename );
-            // Filter by toolName
-            perPageFeedback = _.filter( perPageFeedback, p => p.toolName == selectedTool );
-            // Ascending Order
-            var sortedPerPage = _.orderBy(perPageFeedback,'wordNum');
-
-            file.markedUp = markupFile( file, sortedPerPage );
+            file.markedUp = markupFile( file, selectedTool, sortedFeedbackItems );
         }
-        return {'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
+        return {'files':files, 'feedbackItems': sortedFeedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
     }
 
     function readFiles( filename , options) {

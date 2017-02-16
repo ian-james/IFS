@@ -15,6 +15,10 @@
     color: blue;
 }
 
+.multiError {
+    color:orange;
+}
+
 .suggestion
 {
     display:inline-block;
@@ -73,4 +77,10 @@
 
 .popover-content {
     padding:5px;
+}
+
+.horizontalListLine  li
+{
+    color:"purple";
+    display: inline;
 }

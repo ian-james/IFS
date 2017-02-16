@@ -18,41 +18,82 @@
         {
             "type" : "spelling",
             "lineNum": 2,
-            "wordNum": 140,
-            "target": "line",
-            "suggestion": ["Some","thing","something"],
-            "feedback": "This is a suggested edit because something is clearly wrong.",
-            "toolName":"Spelling",
-            "filename": "test.txt"
-        },
-         {
-            "type" : "spelling",
-            "lineNum": 2,
-            "wordNum": 100,
-            "target": "anoter",
-            "suggestion": ["Some","thing","something"],
+            "wordNum": 0,
+            "target": "This",
+            "suggestion": ["This1","thing","something"],
             "feedback": "This is a suggested edit because something is clearly wrong.",
             "toolName":"Spelling",
             "filename": "test.txt"
         },
         {
             "type" : "spelling",
-            "lineNum": 5,
-            "wordNum": 50,
+            "lineNum": 2,
+            "wordNum": 10,
             "target": "This",
-            "suggestion": ["anote","note","another"],
-            "feedback": "This is a suggestion for regular spelling given your location.",
-            "toolName":"Grammar",
+            "suggestion": ["This4","thing","something"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Spelling",
+            "filename": "test.txt"
+        },
+        {
+            "type" : "spelling",
+            "lineNum": 2,
+            "wordNum": 90,
+            "target": "anoter",
+            "suggestion": ["This6","thing","something"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Spelling",
+            "filename": "test.txt"
+        },
+    
+        {
+            "type" : "spelling",
+            "lineNum": 2,
+            "wordNum": 1,
+            "target": "is",
+            "suggestion": ["This2","thing","something"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Spelling",
+            "filename": "test.txt"
+        },
+        {
+            "type" : "spelling",
+            "lineNum": 2,
+            "wordNum": 5,
+            "target": "test",
+            "suggestion": ["This3","thing","something"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Spelling",
+            "filename": "test.txt"
+        },
+        {
+            "type" : "spelling",
+            "lineNum": 2,
+            "wordNum": 0,
+            "target": "This",
+            "suggestion": ["This15","thing","something"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Spelling",
             "filename": "test.txt"
         },
         {
             "type" : "grammar",
             "lineNum": 2,
-            "wordNum": 140,
+            "wordNum": 20,
+            "target": "really",
+            "suggestion": ["really1","thing","something"],
+            "feedback": "This is a suggested edit because something is clearly wrong.",
+            "toolName":"Hunspell",
+            "filename": "test.txt"
+        },
+        {
+            "type" : "grammar",
+            "lineNum": 2,
+            "wordNum": 10,
             "target": "last",
             "suggestion": ["laster","thing","onMyMind"],
             "feedback": "This is a suggested edit because something is clearly wrong.",
-            "toolName":"Spelling",
+            "toolName":"Grammar",
             "filename": "second.txt"
         },
         {

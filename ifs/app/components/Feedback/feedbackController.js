@@ -6,18 +6,52 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
 
     /* This refers to the user selected item. */
     $scope.selectedFeedback = {};
+    $scope.activeFeedback = {};
+
+    $scope.selectedArray = [];
+    $scope.sideSelectedArrId = 0;
+    $scope.sideSelectedId = 0;
+
+
     $scope.setSelectedItem = function( event ) {
-        $scope.selectedFeedback = JSON.parse(event.target.getAttribute("data-feedback"));
+        // Array of items matching this error are passed
+        $scope.selectedArray = event.target.getAttribute("data-feedback");
+        $scope.selectedArray = $scope.selectedArray.split(",");
+
+        $scope.sideSelectedArrId = 0;
+
+        // Set the first item for the mini popover
+        $scope.sideSelectedId = $scope.selectedArray[ $scope.sideSelectedArrId ];
+        $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
+    };
+    
+
+    $scope.getNextSelected = function() 
+    {        
+        $scope.sideSelectedArrId++;
+        $scope.sideSelectedArrId =  $scope.sideSelectedArrId  % $scope.selectedArray.length;
+
+        // Set the first item for the mini popover
+        $scope.sideSelectedId =  $scope.selectedArray[ $scope.sideSelectedArrId ];
+        $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
+        
     };
 
-    // This is for the further feedback in case multiple erorrs on a single word
-    $scope.selectedExpandItem = {};
+    $scope.getPrevSelected = function() 
+    {
+        if( $scope.sideSelectedArrId <= 0 )
+            $scope.sideSelectedArrId = $scope.selectedArray.length-1;
+        else
+            $scope.sideSelectedArrId--;
 
+    // Set the first item for the mini popover
+        $scope.sideSelectedId =  $scope.selectedArray[ $scope.sideSelectedArrId ];
+        $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
+    };
 
+    // Storing backend information into the front end.
     $scope.files = [];
     $scope.toolsUsed = [];
-    $scope.toolsUsedIdx = 0;
-
     $scope.feedbackItems=[];
     $http.get("/feedbackTest/data").then( function(res) {
         $scope.feedbackItems = res.data.feedbackItems;

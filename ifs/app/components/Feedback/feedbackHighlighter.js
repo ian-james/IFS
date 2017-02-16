@@ -23,8 +23,6 @@ function handleRegExp( str, targetOpt, func ) {
         return null;
 
     var res =   func(regExp);
-    console.log("rHandle", res );
-    console.log(">>>>>>>>>>>>>>>end");
     return res;
 }
 

@@ -11,6 +11,21 @@
     </div>
     <div class="row cardRow">
         <div class="col-md-12">
+            <div class="row">
+                <ul class="horizontalListLine">
+                    <div class="col-md-4" align="center">
+                        <li> <button href="#" ng-click="getPrevSelected()">&laquo;</button> </li>
+                    </div>
+                    <div class="col-md-4">
+                        <li>  {{ selectedFeedback.toolName }} </li>
+                    </div>
+                    <div class="col-md-4" align="center">
+                        <li> <button href="#" ng-click="getNextSelected()">&raquo;</button> </li>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-12">
             <div class="row ">
                 <div class="errorType" align="center">
                         <h3>  Error Type: {{ selectedFeedback.type }} </h3>
@@ -30,12 +45,6 @@
                 </div>
                 <div class="suggestionMsg col-md-6">
                     <ul class="list-group">
-                        <!--
-                        <li class="list-group-item"> First Spelling </li>
-                        <li class="list-group-item"> Second Spelling </li>
-                        <li class="list-group-item"> Different Spelling </li>
-                        <li class="list-group-item">  More  <span class="glyphicon glyphicon-chevron-down"></span> </li>
-                        -->
                         <li ng-repeat="suggestion in selectedFeedback.suggestion" class="list-group-item">  {{suggestion}} </li>
                     </ul>
                 </div>
@@ -64,6 +73,6 @@
     </div>
     <hr />
     <div class="row footer">
-        <label class="footerToolLbl"> Powered by: {{ selectedFeedback.tool }} </label>
+        <label class="footerToolLbl"> Powered by: {{ selectedFeedback.toolName }} </label>
     </div>
 </div>

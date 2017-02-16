@@ -9,8 +9,10 @@ block content
                 form(id="toolSelectionFrm", action="/feedbackTest" method="post")
                     label Please selected a tool: 
                     select(id="toolSelectorId" onchange="this.form.submit()" name="toolSelector")
+                        option( selected= "All"==selectedTool ) All
                         each tool in toolsUsed
                             option( selected= tool.toolName==selectedTool) #{ tool.toolName }
+
 
                 uib-tabset( active="active")
                     each file, findex in files
