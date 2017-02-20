@@ -1,5 +1,4 @@
 extends ../../shared/views/pageLayout.pug
-include ../../shared/UI_components/formSubmit.pug
 
 block content
     div(class="col-md-10 col-md-offset-1")
@@ -12,6 +11,7 @@ block content
             ul
                 each val,index in result
                     li= val.tool.displayName + "->" + val.result
+                    hr
                     hr
 
 
@@ -26,4 +26,3 @@ block content
                         tr
                             td= val.tool.displayName
                             td= val.result
-                        tr

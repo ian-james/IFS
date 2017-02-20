@@ -59,12 +59,12 @@ module.exports =  {
     {
         if( filename && this.isDoc(filename) )
         {
-            var spawn = require('child_process').spawn;
+            var childProcess = require('child_process');
             var outDir = path.dirname(filename);
-            var args =  [ "--headless", "--convert-to","txt:Text", inFile, '--outdir', outDir ];
+            var args =  [ "--headless", "--convert-to","txt:Text", filename, '--outdir', outDir ];
             
             // This call soffice (Libra to handle conversion)
-            var convertToTxt = spawnSync('soffice', args );
+            var convertToTxt = childProcess.spawnSync('soffice', args );
 
             if(convertToTxt.error) {
                 Logger.error("Unable to parse document file.");

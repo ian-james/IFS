@@ -10,7 +10,6 @@ var _ = require('lodash');
 var multer = require('multer');
 var mkdirp = require('mkdirp');
 
-console.log("Somethign spelling", __configs );
 var Logger = require( __configs + "loggingConfig" );
 
 var limits = {
@@ -64,9 +63,8 @@ var storage = multer.diskStorage({
             username = req.user.username;
             var at = username.indexOf('@');
             username = username.substr(0, at >= 0 ? at : username.length );
-        }
-        console.log("USER", username);
-        
+        }       
+
         var submissionFolder = path.join(dest,username, Helpers.getYearMonthDayStr(), "" + Date.now() );
 
         mkdirp(submissionFolder, function(err) {

@@ -2,17 +2,18 @@
     "tools": [
         { 
             "displayName": "Spell Checker", 
-            "progName":"hunspell", 
+            "progName":"./tools/lang_tools/spell_check.py",
+            "progfullName": "./tools/lang_tools/spell_check.py",
             "runType": "cli",
-            "optionsFile": "./tools/hunSpell/options.json",
             "parseCmd": "",
-            "defaultArg": "-a",
+            "defaultArg": "",
+            "fileArgs": "-i",
             "options" :  [ {
                     "displayName": "Dictionary",
                     "type": "select",
-                    "values": [ "en_US", "en_GB"],
+                    "values": [ "en_US", "en_CA"],
                     "name": "dictionary",
-                    "arg": "-d",
+                    "arg": "-l",
                     "params":""
 
                 },
@@ -21,29 +22,6 @@
                     "type" : "checkbox",
                     "name" : "warningUncommonWords",
                     "arg": "-r",
-                    "params":""
-                }
-            ]
-        },
-        { 
-            "displayName": "Grammar Checker",
-            "progName":"wc",
-            "runType": "cli",
-            "optionsFile": "./tools/grammarly/options.json",
-            "defaultArg": "",
-            "parseCmd": "",
-            "options": [{
-                    "displayName": "Word Count",
-                    "type": "checkbox",
-                    "name": "wordCount",
-                    "arg": "-w",
-                    "params":""
-                },
-                {
-                    "displayName": "Count Lines",
-                    "type": "checkbox",
-                    "name": "countLines",
-                    "arg": "-l",
                     "params":""
                 }
             ]

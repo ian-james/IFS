@@ -28,8 +28,8 @@ function getJsonTool( toolsJson, targetTool ){
     return tool;
 }
 
-// This function parses the form data into separate tool object
-// Note data remains in the received form but gets classified.
+// This function parses the form data from /tool into separate parameters for
+// tool object. ***Note data remains in the received form but gets classified.
 function parseFormSelection( formData ) {
 
     var isDone = false;
@@ -73,8 +73,7 @@ function parseFormSelection( formData ) {
 }
 
 // Reads JSON document and creates an array of objects with tool information and options.
-// See tooList.json
-
+// See tooList.json (these are tools avilable in the tool page)
 function readToolFileList() {
 
     var supportedToolsFile = './tools/toolList.json';
@@ -83,18 +82,24 @@ function readToolFileList() {
     return jsonObj;
 }
 
+// This is the external call that uses the form data,
+// user selected options to create jobs for the Queue
 function createJobRequests( selectedOptions ) {
-    var toolList = readToolFileList();
 
+    var toolList = readToolFileList();
     var toolOptions = parseFormSelection( selectedOptions );
+    
     var res = tempInsertOptions(toolList.tools, toolOptions);
     var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
 
     return jobReq;
 
 }
+
 // User options are already for the appropriate tool
-//
+// This handles converting checkbox and other input types
+// into appropriate command line parameters
+// ex) checkbox on means -option while off would be blank
 function basicParse( toolListItem, userOptions ){
 
     _.forEach( toolListItem.options, function(option) {
@@ -124,6 +129,11 @@ function basicParse( toolListItem, userOptions ){
     return toolListItem;
 }
 
+// This functions calls either basicParse or custom command defined in tooList
+// Custom commands are called in t.parseCmd in toolList
+// It lets you decide how to turn form data into command line parameter
+// for the program call.
+// Note: JS eval seems to play funny with nodemon.
 function tempInsertOptions( toolList, toolOptions) {
 
     _.forEach( toolList, function(t){
@@ -132,88 +142,22 @@ function tempInsertOptions( toolList, toolOptions) {
         if( targetToolOptions )
         {
             var cmd = t.parseCmd || "basicParse";
-            var result;
+            var result = "";
             try{
                 result = eval(cmd)(t,targetToolOptions);
             }
             catch(err){
-                console.log("CMD->", cmd, " has errored -> ");
-                console.log("tool was: ", t );
-                console.log("TargetToolOption was ", targetToolOptions);
-                console.log("Error-> ", err);
-                console.log("******************");
+                Logger.error("Failed to call basic parse");
+                Logger.error("CMD->", cmd, " has errored -> ");
+                Logger.error("tool was: ", t );
+                Logger.error("TargetToolOption was ", targetToolOptions);
+                Logger.error("Error-> ", err);
+                Logger.error("******************");
             }
         }
 
     });
     return toolList;
-}
-
-// This function is a wrapper for the full process of adding user selected options to create job requests for
-//   different tools
-
-function insertOptions( selectedOptions ){
-    return createJobRequests(selectedOptions);
-}
-
-function insertOptionsOld( selectedOptions ) {
-    var toolList = readToolFileList();
-    var userSelectedTools = insertOptionsJson( toolList.tools, selectedOptions );
-    displayTools(userSelectedTools);
-    return buildJobs( userSelectedTools, selectedOptions.files );
-}
-
-//  This function takes the json tools and modifies the options for the command line parameters.
-//  TODO: This function will need to be more dynamic in the future to handle more cases.
-//  
-function insertOptionsJson ( toolsJson, selectedOptions ) {
-
-    var tools= [];
-    var toolMarker = 'tool-';
-    var isDone = false;
-    var progName = "";
-    var displayName = "";
-    var targetTool= null;
-
-    _.forOwn( selectedOptions, function(value, key ){
-      
-        if(!isDone)
-        {
-            // Separate the tools form data here
-            if( key == "submit") {
-                isDone = true;
-            }
-            else if( _.startsWith(key, toolMarker) ) {
-                progName = key.substr( toolMarker.length );
-                displayName = value;
-
-                targetTool =  _.find( toolsJson, function(t) {
-                    return t.progName == progName;
-                });
-            }
-            else if(targetTool != null) {
-                
-                var targetOption = _.find( targetTool.options, function(o) {
-                    return o.name == key;
-                });
-
-                if(targetOption) {
-                    //TODO: This will need to transform form input variables into something more useful.
-                    // Perhaps we even do conversion at a higher level.
-                    // parameters for example -r on should be translated to -r and -r off should be blank
-                    if( !(value == "on" || value == 'off') ) {
-                        var opt = { params: value }
-                        _.extend(targetOption, opt);
-                    }
-
-                    var fileOpts = selectedOptions.files;
-                    _.extend(targetOption, fileOpts );
-                }
-            }
-        }
-    });
-
-    return toolsJson;
 }
 
 // This function takes the program name, the default parameters and user specified ones and creates 
@@ -229,14 +173,13 @@ function createToolProgramCall ( toolListItem, files, options )
         }
         args.push( o.params );
     });
+
+    args.push(toolListItem.fileArgs);
     
    
     var filenames = _.map(files, 'filename' );
     var fullPath = _.union(args, filenames );
     var result = _.join( fullPath, " ");
-
-//    console.log("resulting call", result );
-
     return result;
 }
 
@@ -248,7 +191,7 @@ function buildJobs( fullJobs, files, options ) {
     // Create an array of jobs with just the above mentioned keys, most important for passing.
     // Create a new property of the job that is the complete run call
     // TODO: Might eventually change this based on cmdType restType and cmdType
-    var keys = [ 'displayName', 'progName', 'runType', 'defaultArg', 'options'];
+    var keys = [ 'displayName', 'progName', 'runType', 'defaultArg', 'fileArgs', 'options'];
  
     var halfJobs = _.map( fullJobs, obj => _.pick(obj, keys) );
 

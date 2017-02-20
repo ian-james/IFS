@@ -1,5 +1,6 @@
 var queue = require('./kueServer');
 var cjob = require('./childJob');
+var Logger = require( __configs + "loggingConfig" );
 
 var Q = require('q');
 
@@ -54,8 +55,8 @@ function makeJob(  toolOptions, jobOpts )
             result: result
         });
     })
-    .on('failed', function( errorMessage) {
-        console.log("*****JOB  FAILED IS ", job.data);
+    .on('failed', function( errorMessage ) {
+        Logger.error("Error job failed", job.name);
         deferred.resolve({
             done: true,
             job: job.data,
@@ -63,7 +64,7 @@ function makeJob(  toolOptions, jobOpts )
         });
     })
     .removeOnComplete(jobOpts.removeIfDone).save(function(err) {
-        if(err) console.log(" Error jobID", job.id, " saving");
+        if(err) Logger.error("Error job to save failed", job.name);
     });
 
     return deferred.promise;

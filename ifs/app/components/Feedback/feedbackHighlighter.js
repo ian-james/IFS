@@ -49,13 +49,11 @@ function findClosestMatch( str, targetOpt)
                 var f = res.index - closest.index;
                 var s = res.index - regExp.targetPos;
 
-                console.log( "Match ", res );
-
                 if( s < f )
                     closest = res; 
             }
         }
-        console.log("Returning closest:", closest);
+        //console.log("Returning closest:", closest);
         return closest;
     });
 }

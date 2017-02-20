@@ -9,7 +9,6 @@ var Logger = require( __configs  + "loggingConfig");
 // This is just a regular reference, it needed a name for managerJob.
 const jobType = 'mJob';
 
-
 // Setup a basic config with manager process name
 function getManagerConfig()
 {

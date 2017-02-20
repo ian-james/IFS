@@ -2,6 +2,7 @@ var  kue =  require('kue');
 var kOptions = require("./kuaServerConfig.js").testKue;
 
 var queue = kue.createQueue(kOptions.kueOpts);
+var Logger = require( __configs + "loggingConfig" );
 
 // Watch for stuck jobs, as PER REQUEST on GITHUB
 queue.watchStuckJobs(kOptions.options.watchStuckTime);
@@ -45,20 +46,20 @@ kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
 */
 
 queue.on('ready', () => {
-    console.info("Queue is ready");
+    Logger.info("Kue is ready");
 });
 
 queue.on('error', (err) => {
-    console.error("There is an error in the main queue.");
-    console.error(err);
-    console.error(err.stack);
+    Logger.error("There is an error in the main queue.");
+    Logger.error(err);
+    Logger.error(err.stack);
 });
 
 // Handle crashes with graceful shutdown
 process.once('SIGTERM', function(sig) {
     var timeout=5000;
     queue.shutdown(timeout, function(sig){
-        console.err('Kue shutdown: ', err || '');
+        Logger.error('Kue shutdown: ', err || '');
         process.exit(0);
     });
 });

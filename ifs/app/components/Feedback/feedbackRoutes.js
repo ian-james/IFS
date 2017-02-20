@@ -1,17 +1,15 @@
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
+
 var fs = require('fs');
 var fbHighlighter = require('./feedbackHighlighter');
 var buttonMaker = require('./createTextButton');
+
+var Logger = require( __configs + "loggingConfig");
 var _ = require('lodash');
 
 module.exports = function( app ) {
 
-/*    app.get("/feedbackWaiting", function(req,res,next){
-        res.render( viewPath + "feedbackWaiting", { title: 'Feedback page', message:'ok'})
-        
-    });
-*/
     /* Markup a single file by plaing only feedback Items from a specific tool into the file */
     function markupFile( file, selectedTool, feedbackItems )
     {
@@ -25,7 +23,7 @@ module.exports = function( app ) {
 
         for( var i = 0; i < feedbackItems.length; i++ )
         {
-            // Check for a specific tool and specific filename or all
+            // Check for a specific tool and specific filename or all            
             if(  file.filename == feedbackItems[i].filename  && ( selectedTool == "All" || selectedTool == feedbackItems[i].toolName ) )
             {
                 // Find the closest positional match for the error.
@@ -97,19 +95,65 @@ module.exports = function( app ) {
     }
 
     function readFiles( filename , options) {
-        
-        var supportedToolsFile = filename;
-        var data = fs.readFileSync( supportedToolsFile, 'utf-8');
+
+        var data = fs.readFileSync( filename, 'utf-8');
         return readFeedbackFormat( data, options );
     }
 
+/**************************************************************  Values Controller *************************/
+    /* 
+        Read the feedback information file 
+        and process and highlight
+    */
+    app.get('/feedback', function(req,res, next ){
+
+        var page = { title: 'Feedback page' };
+        var feedback = readFiles(req.session.feedbackFiles);
+        var result = _.assign(page, feedback);
+        res.render( viewPath + "feedback", result );
+    });
+
+    app.post('/feedback', function(req,res,next){
+
+        // Would really like to reuse the previously send information.
+        // Get and Post are the essentially the same until ...I figure out resuse of feedbackObject
+        // As this could essecially just be a filter  with the new tool name.
+        
+        var opt = { 'tool': req.body.toolSelector };
+        var page = { title: 'Feedback Test page' };
+        var feedback = readFiles(req.session.feedbackFiles, opt);
+        var result = _.assign(page,feedback);
+        res.render( viewPath + "feedback", result );
+
+    });
+
+    app.get('/feedback/data', function( req,res, next ){
+        var supportedToolsFile = req.session.feedbackFiles;
+        fs.readFile( supportedToolsFile, 'utf-8'  , function( err, data ) {
+            if( err ) {
+                //Unable to get support tools file, larger problem here.
+                Logger.error("Error unable to load feedbackFiles");
+            }
+            else {
+                //Load JSON tool file and send back to UI to create inputs
+                var result = readFeedbackFormat( data );
+                res.json( result );
+            }
+        });
+    });
+
+
+
+
+
+/**************************************************************  Values for the test controller *************************/
     app.get('/feedbackTest/data', function( req,res, next ){
         
         var supportedToolsFile = './tests/testFiles/exampleFeedback2.json';
         fs.readFile( supportedToolsFile, 'utf-8'    , function( err, data ) {
             if( err ) {
                 //Unable to get support tools file, larger problem here.
-                console.log(err);
+                Logger.error("Error unable to load test feedbackFiles");
             }
             else {
                 //Load JSON tool file and send back to UI to create inputs
@@ -126,7 +170,7 @@ module.exports = function( app ) {
         // As this could essecially just be a filter  with the new tool name.
         
         var opt = { 'tool': req.body.toolSelector };
-        var page = { title: 'Feedback page' };
+        var page = { title: 'Feedback Test page' };
         var feedback = readFiles('./tests/testFiles/exampleFeedback2.json', opt);
         var result = _.assign(page,feedback);
         res.render( viewPath + "feedbackTest", result );
@@ -135,7 +179,7 @@ module.exports = function( app ) {
 
     app.get('/feedbackTest', function(req,res, next ){
 
-        var page = { title: 'Feedback page' };
+        var page = { title: 'Feedback Test  page' };
         var feedback = readFiles('./tests/testFiles/exampleFeedback2.json');
         var result = _.assign(page,feedback);
         res.render( viewPath + "feedbackTest", result );

@@ -4,6 +4,8 @@ var queue = require('./kueServer');
 var exec = require('child_process').exec;
 var job = require('./generalJob');
 
+var fs = require('fs');
+
 const jobType = 'cJob'
 
 /* Tool Options 
@@ -33,9 +35,9 @@ function makeToolJob( toolOpts, jobOpts )  {
 // programName and arguments
 function runSingleTool( job, done )
 { 
-    //console.log(" HERE AT RUN SINGLE TOOL", job.data.tool);
     //console.log(" HERE AT RUN SINGLE TOOLCMD", job.data.tool.runCmd);
     var child = exec(job.data.tool.runCmd, function(error,stdout, stderr) {
+
         if(error) {
             job.emit('failed');
             done( new Error('exec error'));

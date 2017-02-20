@@ -1,26 +1,23 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
+    link(rel="stylesheet" href="components/Tool/tool.css")
     div.row
         div.col-md-12.text-center
-            h1 Welcome to the tool test page
+            h1 Tool Selection
     div.row(ng-controller="toolCtrl")
         div(class="col-md-8 col-md-offset-2")
-            form(id="uploadForm", enctype="multipart/form-data", action="/tool/file/upload/" method="post")
-                div(class="toolsView" ng-repeat="tool in toolList")
-                    div.panel.panel-primary
-                        div.panel-heading
-                            h4.panel-title.text-center
-                               p  {{ tool.displayName }}
-                        div.panel-body
-                            h5 Tool tester:
+            form(id="uploadForm", enctype="multipart/form-data", action="/tool_upload" method="post")
+                uib-accordion
+                    div(class="toolsView" ng-repeat="tool in toolList")
+                        input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
+                        div(uib-accordion-group class="panel-primary")
+                            uib-accordion-heading {{tool.displayName}}
+                                include buttonBar.pug
                             fieldset(name="{{ tool.progName }}")
-                            input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
                             ul.list-group
                                 li(class="list-group-item" ng-repeat="option in tool.options" )
                                     include toolInput.pug
-                        div.panel-footer
-                            h5 This is the footer.
 
                 include ../FileUpload/fileUploadPanel.pug
 

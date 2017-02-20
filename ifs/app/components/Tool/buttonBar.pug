@@ -1,0 +1,11 @@
+//- This file contains a buttonbar that will display a couple buttons
+//- allowing the user to enable/disable or get more information on a tool
+
+span(name="toolBar-{{ tool.progName }}" class="buttonBar pull-right")
+    <div class="checkbox">
+            <input type="checkbox"  name="toolbar-{{tool.progName}}-enabled" ng-click="$event.preventDefault(); $event.stopPropagation();" value="on">
+    </div>
+    
+    <button type="button" class="btn btn-xs btn-primary"  name="toolbar-{{tool.progName}}-info" uib-tooltip="Info"  ng-click="$event.preventDefault(); $event.stopPropagation(); "  value="isOn">
+         <span class="glyphicon glyphicon-info-sign"></span> 
+    </button>

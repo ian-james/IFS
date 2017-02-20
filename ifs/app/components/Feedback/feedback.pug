@@ -1,0 +1,31 @@
+extends ../../shared/views/pageLayout.pug
+include ../../shared/UI_components/formSubmit.pug
+
+block content
+    link(rel="stylesheet" href="components/Feedback/feedbackTest.css")
+    div.row(ng-controller="feedbackCtrl")
+        div.row
+            div(class="col-md-offset-1")
+                form(id="toolSelectionFrm", action="/feedback" method="post")
+                    label Please selected a tool: 
+                    select(id="toolSelectorId" onchange="this.form.submit()" name="toolSelector")
+                        option( selected= "All"==selectedTool ) All
+                        each tool in toolsUsed
+                            option( selected= tool.toolName==selectedTool) #{ tool.toolName }
+
+
+                uib-tabset( active="active")
+                    each file, findex in files
+                        uib-tab( index=findex heading= file.filename  disable="{{tab.disabled}}")
+                            div.row
+                                div(class="col-md-8")
+                                    div(class="form-control markedTextArea" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true") !{file.markedUp}
+
+                                div(class="col-md-3" ng-hide)
+                                    div(class="longFeedbackContainer")
+                                        include popover.html
+                div.summarySection.col-md-4
+                    p Total Feedback Messsages #{feedbackItems.length}
+
+    script(src="components/Feedback/feedbackController.js")
+

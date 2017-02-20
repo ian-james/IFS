@@ -53,9 +53,18 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.files = [];
     $scope.toolsUsed = [];
     $scope.feedbackItems=[];
+
+    $http.get("/feedback/data").then( function(res) {
+        $scope.feedbackItems = res.data.feedbackItems;
+        $scope.files = res.data.files;
+        $scope.toolsUsed = res.data.toolsUsed;
+    });
+
+/*
     $http.get("/feedbackTest/data").then( function(res) {
         $scope.feedbackItems = res.data.feedbackItems;
         $scope.files = res.data.files;
         $scope.toolsUsed = res.data.toolsUsed;
     });
+*/
 });

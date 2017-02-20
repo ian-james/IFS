@@ -5,27 +5,33 @@ var _ = require('lodash');
 var path = require('path');
 
 // Managers
-var manager = require('../Queue/managerJob');
-var ToolManager = require('../Tool/buildTool');
+var manager = require( __components + 'Queue/managerJob');
+var ToolManager = require( __components + '/Tool/buildTool');
 var Logger = require( __configs + "loggingConfig");
 
 // Database
-//var db = require('../../../config/database');
-//var config = require('../../../config/databaseConfig');
-var rawFeedbackDB = require('../Feedback/feedbackDatabase.js');
+var rawFeedbackDB = require(__components  + 'Feedback/feedbackDatabase.js');
 
+// File Upload
 var Helpers = require("./fileUploadHelpers");
 var upload = require("./fileUploadConfig").upload;
 
+// Feedback
+var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFilterSystem');
 
 
 module.exports = function (app) {
 
-    app.post('/tool/file/upload', upload.any(), function(req,res,next) {
+    app.post('/tool_upload', upload.any(), function(req,res,next) {
 
         // Get files names to be inserted
         var uploadedFiles = Helpers.getFileNames( req.files );
 
+        console.log(req.files);
+        console.log('*break;');
+        console.log(uploadedFiles);
+
+        // Handle Zip files, text, docs and projects
         Helpers.handleZipFile( uploadedFiles[0].filename );
         Helpers.handleDocxFile( uploadedFiles[0].filename );
 
@@ -34,11 +40,14 @@ module.exports = function (app) {
         
         var tools = ToolManager.createJobRequests( userSelection );
 
+        console.log("Tools are ", tools);
+
         manager.makeJob(tools).then( function( r ) {
-            return manager.combineResults(r);
+            var res =  manager.combineResults(r );
+            return FeedbackFilterSystem.organizeResults( uploadedFiles, res );
         })
         .then( function(result) {
-           rawFeedbackDB.addRawFeedbackToDB(req,res,tools,result );
+           rawFeedbackDB.addRawFeedbackToDB(req,res,tools, result );
         })
         .catch( function(err){
             res.status(500, {
