@@ -6,13 +6,13 @@ var Logger = require( "./loggingConfig") ;
 var connection = mysql.createConnection( config.connection );
 
 // Tell mysql to use the database
-if( connection )    
+if( connection )
     Logger.info("Create the database now");
 connection.query ('CREATE DATABASE ' + config.database );
 
 
 
-console.log("Create the Table now");
+Logger.info("Create the Table:", config.users_table);
 connection.query(" CREATE TABLE " + config.database + "." + config.users_table + " ( \
     id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
     username VARCHAR(20) NOT NULL, \
@@ -21,7 +21,7 @@ connection.query(" CREATE TABLE " + config.database + "." + config.users_table +
 )");
 
 
-
+Logger.info("Create the Table:", config.raw_feedback_table);
 connection.query(" CREATE TABLE " + config.database + "." + config.raw_feedback_table + " ( \
     id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
     username VARCHAR(20) NOT NULL, \
@@ -31,6 +31,7 @@ connection.query(" CREATE TABLE " + config.database + "." + config.raw_feedback_
     PRIMARY KEY(id) \
 )");
 
+Logger.info("Create the Table:", config.survey_table);
 connection.query(" CREATE TABLE " + config.database + "." + config.survey_table + " ( \
     id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
     surveyName VARCHAR(40) NOT NULL, \

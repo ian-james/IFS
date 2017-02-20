@@ -6,15 +6,16 @@ block content
         form(id="registerFrm" name="register" method="post" action="/register")
             div.form-group
                 label( for="inputFirstName") First Name
-                input( id="inputFirstName"  type="text" class="form-control" placeholder="First Name" )
+                input( id="inputFirstName"  type="text" class="form-control" placeholder="First Name" required )
                 label( for="inputLastName") Last Name
-                input( id="inputLastName"  type="text" class="form-control" placeholder="Last Name" )
+                input( id="inputLastName"  type="text" class="form-control" placeholder="Last Name" required)
             div.form-group
                 label( for="inputEmail") Email Address
-                input( id="inputEmail"  type="email" name="username" class="form-control" placeholder="Enter Email" )
+                input( id="inputEmail"  type="email" name="username" class="form-control" placeholder="Enter Email" required)
             div.form-group
                 label( for="pwd") Password
-                input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd")
+                input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd" required)
+                    
             p.errorMessage #{messages.errorMessage}
             div.form-actions
                 button(type="submit" class="btn btn-primary") Register

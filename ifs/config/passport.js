@@ -35,7 +35,7 @@ module.exports = function (passport) {
                     req.flash('errorMessage', 'We tried');
                     if(err)
                     {
-                        req.flash('error', 'Unable to signup.');
+                        req.flash('errorMessage', 'Unable to signup.');
                         Logger.error( err );
                         return done(err);
                     }
@@ -55,7 +55,7 @@ module.exports = function (passport) {
                         var insertQuery = "INSERT INTO users (username, password) values (?,?)";
                         db.query( insertQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
-                            req.flash('success', 'Successfully signedup.');
+                            req.flash('success', 'Successfully signed up.');
                             return done(null, newUser);
                         });
                     }
@@ -77,14 +77,15 @@ module.exports = function (passport) {
 
                 db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
                     if(err) {
-                        return done(err);
+                        req.flash('errorMessage', 'Service currently unavailable');
+                        return done(err, false);
                     }
                     if(!rows.length) {
-                        req.flash('error', 'Incorrect username');
+                        req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
                     if( !bcrypt.compareSync(password, rows[0].password)){
-                        req.flash('error', 'Incorrect username or password');
+                        req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
 

@@ -1,5 +1,6 @@
 var mysql = require('mysql');
 var config = require('./databaseConfig');
+var Logger = require( __configs + "loggingConfig");
 
 var pool = mysql.createPool( {
     connectionLimit: config.connectionLimit,
@@ -14,6 +15,7 @@ var pool = mysql.createPool( {
 // throw error 
 function handleConnectionError( err,connection){
     if(err) {
+        Logger.error("Error: Handling database connection error");
         connection.release();
         throw err;
     }
@@ -24,16 +26,20 @@ function handleConnectionError( err,connection){
    It uses a pool to create the connection and disconnects after.
 */
 function query( queryStr, args, callback) {
-   console.log("Database query in progress");
+   Logger.info("Database query started");
    pool.getConnection( function(err,connection) {
 
        handleConnectionError( err, connection );
 
         if( connection ){
+            Logger.info("Db connection ok, make the call");
             connection.query( queryStr, args, function(err,data) {
                 callback(err, data);
                 connection.release();
             });
+        }
+        else {
+          Logger.error("Error getting DB connection");
         }
 
         connection.on('error', function(err) {

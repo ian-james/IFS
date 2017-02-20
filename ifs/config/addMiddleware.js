@@ -10,7 +10,7 @@ module.exports = function (app) {
     var configPath = __dirname + "/";
     var myLogger = require( __configs + "loggingConfig");
 
-    var logger = require('morgan')({"stream": myLogger.stream } );
+    var logger = require('morgan')("combined", {"stream": myLogger.stream } );
     app.use( logger );
 
     /* Note the odd separation of some of these middleware is a required
@@ -50,7 +50,7 @@ module.exports = function (app) {
         secret: 'ifsSecretSessionInfo',
         resave: true,
         saveUninitialized: true,
-        cookie: {maxAge:60000}
+        cookie: {maxAge:60*60*1000}
         })
     );
 

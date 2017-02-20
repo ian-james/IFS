@@ -7,10 +7,10 @@ block content
             form(id="loginFrm" name="login" method="post" action="/login")
                 div.form-group
                     label( for="inputEmail") Email Address
-                    input( id="inputEmail"  type="email" "name"="username" class="form-control" placeholder="Enter Email" )
+                    input( id="inputEmail"  type="email" "name"="username" class="form-control" placeholder="Enter Email" required )
                 div.form-group
                     label( for="pwd") Password
-                    input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd")
+                    input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd" required)
                 p.forgot
                     a(href="#") Forgot password?
                 p.errorMessage #{messages.errorMessage}
