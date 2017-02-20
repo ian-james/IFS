@@ -4,7 +4,7 @@
   "description": "Project to provide students formative feedback on C/C++ assignments or essays. Creates recommendations",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon --debug ./config/index.js",
+    "test": "nodemon --debug --config ./config/nodemon.json ./config/index.js",
     "start": "node ./config/index.js"
   },
   "repository": {

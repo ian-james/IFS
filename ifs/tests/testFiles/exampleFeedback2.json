@@ -20,7 +20,7 @@
             "lineNum": 2,
             "wordNum": 0,
             "target": "This",
-            "suggestion": ["This1","thing","something"],
+            "suggestions": ["This1","thing","something"],
             "feedback": "This is a suggested edit because something is clearly wrong.",
             "toolName":"Spelling",
             "filename": "test.txt"

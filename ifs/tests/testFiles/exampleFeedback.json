@@ -13,7 +13,7 @@
 ,                        "lineNum": 2,
                         "wordNum": 140,
                         "target": "line",
-                        "suggestion": ["Some","thing","something"],
+                        "suggestions": ["Some","thing","something"],
                         "feedback": "This is a suggested edit because something is clearly wrong."
                     },
                     {
@@ -21,7 +21,7 @@
                         "lineNum": 5,
                         "wordNum": 50,
                         "target": "This",
-                        "suggestion": ["anote","note","another"],
+                        "suggestions": ["anote","note","another"],
                         "feedback": "This is a suggestion for regular spelling given your location."
                     }
                 ]
@@ -34,7 +34,7 @@
                         "lineNum": 2,
                         "wordNum": 140,
                         "target": "last",
-                        "suggestion": ["laster","thing","onMyMind"],
+                        "suggestions": ["laster","thing","onMyMind"],
                         "feedback": "This is a suggested edit because something is clearly wrong."
                     },
                     {
@@ -42,7 +42,7 @@
                         "lineNum": 5,
                         "wordNum": 450,
                         "target": "This",
-                        "suggestion": ["tis","not","another"],
+                        "suggestions": ["tis","not","another"],
                         "feedback": "This is a suggestion for regular spelling given your location."
                     }
                 ]
@@ -63,7 +63,7 @@
                         "lineNum": 3,
                         "wordNum": 200,
                         "target": "should",
-                        "suggestion": ["shoulder","could","bother"],
+                        "suggestions": ["shoulder","could","bother"],
                         "feedback": "So close this actually looks like a real word....wait a second."
                     },
                     {
@@ -71,7 +71,7 @@
                         "lineNum": 5,
                         "wordNum": 3,
                         "target": "hiv",
-                        "suggestion": ["hive","five","have"],
+                        "suggestions": ["hive","five","have"],
                         "feedback": "Multiple suggestions available please have a look."
                     }
                 ]
