@@ -5,6 +5,7 @@
             "progName":"./tools/lang_tools/spell_check.py",
             "progfullName": "./tools/lang_tools/spell_check.py",
             "runType": "cli",
+            "filesAllowed": "singleFile",
             "parseCmd": "",
             "defaultArg": "",
             "fileArgs": "-i",
