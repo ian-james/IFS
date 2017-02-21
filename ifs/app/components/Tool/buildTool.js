@@ -1,7 +1,7 @@
 
-/* 
+/*
     Passing a JSON object that represents a tool with options
-    
+
     ***
     Required members are (please update as this changes)
     progName-> name of the command to run this program.
@@ -40,7 +40,7 @@ function parseFormSelection( formData ) {
     var tool = undefined;
 
     var toolOptions = { 'files': formData['files'], 'tools':[] };
-  
+
     _.forEach( formData, function(value, key ) {
 
         if( key == "submit") {
@@ -82,13 +82,25 @@ function readToolFileList() {
     return jsonObj;
 }
 
+function writeToolList( files, obj )
+{
+    // Get upload directory
+    var uploadDir = path.dirname( obj.files[0] );
+
+    var filename = "jobRequests.json";
+    var file = path.join(uploadDir,filename);
+    Logger.info("Writing job requests file:", file);
+    fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
+    return file;
+}
+
 // This is the external call that uses the form data,
 // user selected options to create jobs for the Queue
 function createJobRequests( selectedOptions ) {
 
     var toolList = readToolFileList();
     var toolOptions = parseFormSelection( selectedOptions );
-    
+
     var res = tempInsertOptions(toolList.tools, toolOptions);
     var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
 
@@ -160,7 +172,7 @@ function tempInsertOptions( toolList, toolOptions) {
     return toolList;
 }
 
-// This function takes the program name, the default parameters and user specified ones and creates 
+// This function takes the program name, the default parameters and user specified ones and creates
 // A command line call.
 function createToolProgramCall ( toolListItem, files, options )
 {
@@ -175,8 +187,8 @@ function createToolProgramCall ( toolListItem, files, options )
     });
 
     args.push(toolListItem.fileArgs);
-    
-   
+
+
     var filenames = _.map(files, 'filename' );
     var fullPath = _.union(args, filenames );
     var result = _.join( fullPath, " ");
@@ -192,7 +204,7 @@ function buildJobs( fullJobs, files, options ) {
     // Create a new property of the job that is the complete run call
     // TODO: Might eventually change this based on cmdType restType and cmdType
     var keys = [ 'displayName', 'progName', 'runType', 'defaultArg', 'fileArgs', 'options'];
- 
+
     var halfJobs = _.map( fullJobs, obj => _.pick(obj, keys) );
 
     var jobs = _.map( halfJobs, obj => {

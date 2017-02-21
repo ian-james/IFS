@@ -28,26 +28,33 @@ module.exports = function (app) {
         var uploadedFiles = Helpers.getFileNames( req.files );
 
         console.log(req.files);
-        console.log('*break;');
         console.log(uploadedFiles);
 
         // Handle Zip files, text, docs and projects
-        Helpers.handleZipFile( uploadedFiles[0].filename );
-        Helpers.handleDocxFile( uploadedFiles[0].filename );
+        uploadedFiles = Helpers.handleFileTypes( uploadedFiles );
+        if( 'err' in uploadedFiles )
+        {
+            req.flash('errorMessage', uploadedFiles.err.msg );
+            res.redirect('/tool');
+            return;
+        }
 
         var userSelection = req.body;
         userSelection['files'] = uploadedFiles;
         
+        // Create Job Requests
         var tools = ToolManager.createJobRequests( userSelection );
+        var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
+        req.session.jobRequestFile = requestFile;
 
-        console.log("Tools are ", tools);
-
+        // Add the jobs to the queue and
         manager.makeJob(tools).then( function( r ) {
             var res =  manager.combineResults(r );
             return FeedbackFilterSystem.organizeResults( uploadedFiles, res );
         })
         .then( function(result) {
-           rawFeedbackDB.addRawFeedbackToDB(req,res,tools, result );
+            req.session.feedbackFiles = result.feedbackFiles;
+            rawFeedbackDB.addRawFeedbackToDB(req,res,requestFile, result );
         })
         .catch( function(err){
             res.status(500, {

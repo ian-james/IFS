@@ -1,6 +1,10 @@
 var _ = require('lodash');
 var XRegExp = require('xregexp');
 
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
+
 function setupRegExp( targetOptions )
 {
     var def = { 
@@ -10,8 +14,7 @@ function setupRegExp( targetOptions )
         'regex':        targetOptions.regex || null,
         'newText':      targetOptions.newText || ""
     };
-
-    def.regex = new RegExp(def.target, def.flags );
+    def.regex = new RegExp(escapeRegExp(def.target), def.flags );
     return def;
 }
 
@@ -53,7 +56,6 @@ function findClosestMatch( str, targetOpt)
                     closest = res; 
             }
         }
-        //console.log("Returning closest:", closest);
         return closest;
     });
 }

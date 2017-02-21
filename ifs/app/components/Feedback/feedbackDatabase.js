@@ -8,24 +8,10 @@ var viewPath = path.join( __dirname + "/");
 
 var Logger = require( __configs + "loggingConfig");
 
-// Function for setting up testing of feedback page.
-function showTestFeedback( req,res,result )
-{
-    // Create  a session variable for the most recent name of the files
-    // A file is
-    req.session.feedbackFiles = result.feedbackFiles;
-    return res.redirect('/feedback');
-}
-
-/* 
-    Inserts information into the rawFeedback database
-    Currently inserts the filename of feedback
-*/
 
 function insertRawFeedback( req, res, tools, result ) {
-    var user  = (req.user && req.user.username) ? req.user.username : "tester";
-    if( user)
-    {                
+    if( req.user &&  req.user.username ) 
+    {
         // Store the result in a database and move on
         var insertReq = "INSERT INTO " + config.raw_feedback_table + " (username, tools, feedback) values (?, ?, ?)";
         try
@@ -35,7 +21,7 @@ function insertRawFeedback( req, res, tools, result ) {
                 if( err ) {
                     Logger.debug("Error inserting raw feedback");
                 }
-                showTestFeedback(req,res,result);
+                res.redirect('/feedback');
             });
         }
         catch (e) {
@@ -43,7 +29,7 @@ function insertRawFeedback( req, res, tools, result ) {
     }
     else
     {
-        showTestFeedback(req,res,result);
+        res.redirect('/feedback');
     }
 }
 
