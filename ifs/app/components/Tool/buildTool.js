@@ -174,7 +174,7 @@ function tempInsertOptions( toolList, toolOptions) {
 
 // This function takes the program name, the default parameters and user specified ones and creates
 // A command line call.
-function createToolProgramCall ( toolListItem, files, options )
+function createToolProgramCall ( toolListItem, options )
 {
     var call = toolListItem.progName;
     var args = [ call, toolListItem.defaultArg ];
@@ -187,11 +187,8 @@ function createToolProgramCall ( toolListItem, files, options )
     });
 
     args.push(toolListItem.fileArgs);
-
-
-    var filenames = _.map(files, 'filename' );
-    var fullPath = _.union(args, filenames );
-    var result = _.join( fullPath, " ");
+    
+    var result = _.join( args, " ");
     return result;
 }
 
@@ -207,11 +204,27 @@ function buildJobs( fullJobs, files, options ) {
 
     var halfJobs = _.map( fullJobs, obj => _.pick(obj, keys) );
 
+    // BUild all the jobs minus files at the end
     var jobs = _.map( halfJobs, obj => {
-        obj['runCmd'] = createToolProgramCall(obj,files,options);
+        obj['runCmd'] = createToolProgramCall(obj,options);
         return obj;
     });
-    return jobs;
+
+    //This assumes that each files should be applied to each job.
+    // If this becomes untrue, we will have to adjust.
+    var filenames = _.map(files, 'filename' );
+    var jobsPerFile = []
+    for( var i = 0; i < filenames.length;i++)
+    {
+            for(var y = 0; y < jobs.length;y++)
+            {   
+                var j = _.clone( jobs[y], true );
+                j['runCmd'] += (" " + filenames[i]);
+                jobsPerFile.push(j);
+            }
+    }
+
+    return jobsPerFile;
 }
 
 //Display key elements of a single tool object.

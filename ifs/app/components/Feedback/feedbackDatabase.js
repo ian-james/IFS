@@ -13,6 +13,7 @@ function insertRawFeedback( req, res, tools, result ) {
     if( req.user &&  req.user.username ) 
     {
         // Store the result in a database and move on
+        var user = req.user.username;
         var insertReq = "INSERT INTO " + config.raw_feedback_table + " (username, tools, feedback) values (?, ?, ?)";
         try
         {

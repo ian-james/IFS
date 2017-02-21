@@ -20,7 +20,7 @@ var Helpers = require('./fileUploadHelpers');
 
   /* Setup a file filter for upload*/
 var fileFilter = function(req,file,cb)
-{        
+{
    var originalName = file.originalname;
     var extension = originalName.lastIndexOf(".");
     if( extension >= 0 )
@@ -29,7 +29,7 @@ var fileFilter = function(req,file,cb)
     // CIS files
     // PSY files
         var filetype = originalName.substr(extension+1);
-        var acceptedTypes = [ 
+        var acceptedTypes = [
             'json', 'cpp', 'c','h','lib',
             'doc','txt', 'text', 'docx', 'zip','tar'
         ];
@@ -38,15 +38,15 @@ var fileFilter = function(req,file,cb)
             Logger.info("Successfully uploaded a file");
             return cb( null, true );
         }
-        
+
     }
 
     Logger.error("Invalid file type selection");
     return cb( null, false, new Error("In valid file type."));
-    
+
 }
 
-// Setup properties of storage of the file 
+// Setup properties of storage of the file
 var storage = multer.diskStorage({
     destination: function( req, file, callback ){
 
@@ -55,17 +55,19 @@ var storage = multer.diskStorage({
         // date will be year-month-date
         // submissionTime will need to include minutes and seconds.
         var dest = "./uploads";
-        var username = "tester";
-        
         if(req.user && req.user.username)
         {
             // Must be logged in
             username = req.user.username;
             var at = username.indexOf('@');
             username = username.substr(0, at >= 0 ? at : username.length );
-        }       
+        }
 
-        var submissionFolder = path.join(dest,username, Helpers.getYearMonthDayStr(), "" + Date.now() );
+        // LIttle Time Hack to keep all the submission files in the same output folder but also timebased.
+        var submissionTime = Date.now();
+        submissionTime = Math.floor( submissionTime / 100 );
+
+        var submissionFolder = path.join(dest,username, Helpers.getYearMonthDayStr(), "" + submissionTime);
 
         mkdirp(submissionFolder, function(err) {
             if(err) {
@@ -77,8 +79,8 @@ var storage = multer.diskStorage({
                 callback(null, submissionFolder);
             }
         });
-        
-        
+
+
     },
     filename: function( req, file, callback ) {
         var originalName = file.originalname;

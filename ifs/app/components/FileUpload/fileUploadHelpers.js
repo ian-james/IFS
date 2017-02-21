@@ -57,7 +57,6 @@ module.exports =  {
             else if( 'res' in res ) {
                 //  file was handled
                 fileInfo = res.res;
-                console.log("fileInfo",fileInfo);
             }
             res = this.handleDocxFile( fileInfo );
             if( 'err' in res ) {
@@ -67,7 +66,7 @@ module.exports =  {
             else if( res['res'] ){
                 //  file was handled
                 fileInfo = res.res;
-                console.log("fileInfo",fileInfo);
+
             }
         }
         return filesInfo;

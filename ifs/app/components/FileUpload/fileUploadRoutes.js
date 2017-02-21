@@ -27,9 +27,6 @@ module.exports = function (app) {
         // Get files names to be inserted
         var uploadedFiles = Helpers.getFileNames( req.files );
 
-        console.log(req.files);
-        console.log(uploadedFiles);
-
         // Handle Zip files, text, docs and projects
         uploadedFiles = Helpers.handleFileTypes( uploadedFiles );
         if( 'err' in uploadedFiles )
