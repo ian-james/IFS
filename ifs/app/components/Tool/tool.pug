@@ -12,8 +12,10 @@ block content
                 uib-accordion
                     div(class="toolsView" ng-repeat="tool in toolList")
                         input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
-                        div(uib-accordion-group class="panel-primary")
+                        div(uib-accordion-group class="panel-primary" is-open="status.open" )
                             uib-accordion-heading {{tool.displayName}}
+                                <i class="glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+
                                 include buttonBar.pug
                             fieldset(name="{{ tool.progName }}")
                             ul.list-group

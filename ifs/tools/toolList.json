@@ -26,6 +26,33 @@
                     "params":""
                 }
             ]
+        },
+          { 
+            "displayName": "Spell Checker2", 
+            "progName":"./tools/lang_tools/spell_check.py",
+            "progfullName": "./tools/lang_tools/spell_check.py",
+            "runType": "cli",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-i",
+            "options" :  [ {
+                    "displayName": "Dictionary",
+                    "type": "select",
+                    "values": [ "en_US", "en_CA"],
+                    "name": "dictionary2",
+                    "arg": "-l",
+                    "params":""
+
+                },
+                {
+                    "displayName" : "Warning with rare or uncommon words",
+                    "type" : "checkbox",
+                    "name" : "warningUncommonWords",
+                    "arg": "-r",
+                    "params":""
+                }
+            ]
         }
     ]
 }
