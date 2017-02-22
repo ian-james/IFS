@@ -1,0 +1,16 @@
+.miniCardContainer {
+    padding:3;
+}
+
+.miniBtn {
+    width:20px;
+    height:20px;
+    border:0;
+    padding:0;
+    margin-left:10px
+}
+
+.miniErrorType {
+    color:black;
+    margin:0px;
+}

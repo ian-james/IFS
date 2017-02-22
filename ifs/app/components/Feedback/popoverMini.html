@@ -1,21 +1,17 @@
-<div class="cardContainer container-fluid">
-        <div class="errorMsg col-md-3">
-            <div class="errorType">
-                <p> {{ selectedFeedback.type  }}  : <p>
-            </div>
-        </div>
-        <div class="errorMsg col-md-4">
-            <div class="errorWord">
-                    <p class="{{ selectedFeedback.type  }}">  {{ selectedFeedback.target}} </p>
-             </div>
-        </div>
-        <div class="suggestionMsg col-md-4">
-            <div class="bestSuggestion">
-                <p class="suggestion"> {{ selectedFeedback.suggestions[0]}} </p>
-            </div>
-        </div>
-        <a class="btn btn-info btn-xs">
-            <span class="glyphicon glyphicon-expand"></span>
-        </a>
+
+<div class="miniCardContainer  row container-fluid">
         
+        <p> {{ selectedFeedback.type  }} :
+            <span class="{{ selectedFeedback.type  }}">
+                {{ selectedFeedback.target}}
+            </span>
+            &#8594;
+            <span class="suggestion">
+                {{ selectedFeedback.suggestions[0]}}
+            </span>
+
+             <a class="btn miniBtn">
+                <span class="glyphicon glyphicon-expand"></span>
+            </a>
+        <p>
 </div>

@@ -1,0 +1,22 @@
+.spelling
+{
+    display:inline-block;
+    color:red;
+    text-decoration: underline;
+}
+
+.grammar 
+{
+    color: blue;
+    
+}
+
+.multiError {
+    color:orange;
+}
+
+.suggestion
+{
+    display:inline-block;
+    color:green;
+}

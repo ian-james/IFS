@@ -1,19 +1,22 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
+    link(rel="stylesheet" href="components/Login/login.css")
     div(class="row" ng-controller="loginCtrl")
-        div(class="col-md-6 col-md-offset-3" style="background-color:gray")
-            h2 Welcome Back!
-            form(id="loginFrm" name="login" method="post" action="/login")
+        div(class="col-md-3 col-md-offset-4" class="login-form")
+            h1.text-center  Welcome to IFS!
+            form(id="loginFrm" name="login" method="post"  action="/login")
                 div.form-group
-                    label( for="inputEmail") Email Address
-                    input( id="inputEmail"  type="email" "name"="username" class="form-control" placeholder="Enter Email" required )
+                    span(class="glyphicon glyphicon-user")
+                        input( id="inputEmail"  type="email" "name"="username" class="form-control" placeholder="Enter Email" required )
                 div.form-group
-                    label( for="pwd") Password
-                    input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd" required)
+                    span(class="glyphicon glyphicon-lock")
+                        input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd" required)
+                span
+                    input( id="rememberMe" type="checkbox" name="checkbox")
+                    label( for="checkbox") Remember me
                 p.forgot
                     a(href="#") Forgot password?
                 p.errorMessage #{messages.errorMessage}
                 div.form-actions
-                    button(type="submit" class="btn btn-primary") Login
-                    a(href="/register" class="btn btn-link") Register
+                    input(type="submit" value="Login")

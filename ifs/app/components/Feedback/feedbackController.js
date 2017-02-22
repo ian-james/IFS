@@ -14,6 +14,8 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.sideSelectedArrId = 0;
     $scope.sideSelectedId = 0;
 
+    $scope.showSideBar = false;
+
 
     $scope.setSelectedItem = function( event ) {
         // Array of items matching this error are passed
