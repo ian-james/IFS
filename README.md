@@ -1,53 +1,73 @@
 # IFS
-Immediate Feedback System for student programming assignments and essay writing
+_Immediate Feedback System_ for student programming assignments and essay
+writing
 
-This projects allows students to receive formative feedback for C/C++ assignments and written.
-The project provides a website for students to upload their assignments or work and select assessment tools, formative feedback will be generated based tools and the student's work.
+This projects allows studenots to receive formative feedback for C/C++
+assignments and written works.
 
-To Get started with the IFS projet,
+The project provides a website for students to upload their assignments or work
+and select assessment tools, formative feedback will be generated based on
+tools and the student's work.
 
+## Getting started
+
+IFS project management is hosted is on the University of Guelph Redmine:
 https://redmine.socs.uoguelph.ca/projects/ifs
 
-You'll need the following
-To get started you should install the following: ( development variables indicated in brackets )
-npm (4.0.3)
-Node (6.9.4)
-mysql (14.14 Distrib 5.7.17)
-Redis Server (v3.2.1)
-oracle-java8-installer
+### Basic dependencies
+To get started you should install the following:
+ * npm (4.0.3)
+ * Node (6.9.4)
+ * MySQL (14.14 Distrib 5.7.17)
+ * Redis Server (v3.2.1)
+ * Java 8
 
-The IFS is currently available at my GitHub (https://github.com/ian-james/IFS), clone or fork as needed.
+The IFS is currently available on [GitHub](https://github.com/ian-james/IFS),
+clone or fork as needed.
 
-Getting Started
+### Installation and setup
 
-Install or update NPM and Node 
-Install Redis-Server (sudo apt-get install redis-server)
+Install or update NPM and Node:
+```
+sudo apt install npm nodejs; sudo ln -s /usr/bin/nodejs /usr/bin/node
+```
 
-Ensure the following ports are unblocked:
-6379 for redis, 3000 localhost, 4000 Redis Job UI
+Install Redis Server:
+```
+sudo apt-get install redis-server)
+```
 
-start redis server
-In command line type: redis-server
+Ensure the following ports are allowed through your firewall:
+ * 6379 for Redis
+ * 3000 for Node
+ * 4000 for Redis Job UI
 
-Modify ifs/config/databaseConfig.js with your local mysql Parameters
+Start the Redis server by executing `redis-server`
 
-Install all required Node_modules (from /ifs folder)
-type: sudo npm install
+Modify `ifs/config/databaseConfig.js` with your local mySQL parameters
 
-To start your localServer
-type: npm test
+Install all required node\_modules (from `ifs/` folder) :
+```
+cd ifs/
+sudo npm install
+```
 
-In your browser go to localhost:3000/
+Start your localServer:
+```
+npm test
+```
 
-Tools included
+In your browser go to localhost:3000/ to see the web interface
 
-NLTK -> http://www.nltk.org/install.html
+### Dependencies for included tools
 
-cppCheck (from universe) -> (sudo apt install cppCHeck)
-
-valgrind -(sudo apt install valgrid)
-
-hunspell and libhunspell
-
+ * NLTK -> http://www.nltk.org/install.html
+ * cppCheck (from universe) -> `sudo apt install cppCHeck`
+ * valgrind -> `sudo apt install valgrid`
+ * Hunspell -> `sudo apt install hunspell`
+   + pyHunspell -> `sudo -H pip install hunspell`
+ * LanguageTool
+   + language-check -> `sudo -H pip install 3to2 && sudo -H pip install
+                        language-check`
 
 
