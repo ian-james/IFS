@@ -34,7 +34,7 @@ sudo apt install npm nodejs; sudo ln -s /usr/bin/nodejs /usr/bin/node
 
 Install Redis Server:
 ```
-sudo apt-get install redis-server)
+sudo apt-get install redis-server
 ```
 
 Ensure the following ports are allowed through your firewall:
