@@ -2,7 +2,7 @@
 _Immediate Feedback System_ for student programming assignments and essay
 writing
 
-This projects allows studenots to receive formative feedback for C/C++
+This projects allows students to receive formative feedback for C/C++
 assignments and written works.
 
 The project provides a website for students to upload their assignments or work
@@ -61,13 +61,13 @@ In your browser go to localhost:3000/ to see the web interface
 
 ### Dependencies for included tools
 
- * NLTK -> http://www.nltk.org/install.html
- * cppCheck (from universe) -> `sudo apt install cppCHeck`
- * valgrind -> `sudo apt install valgrid`
- * Hunspell -> `sudo apt install hunspell`
-   + pyHunspell -> `sudo -H pip install hunspell`
+ * NLTK &rarr; http://www.nltk.org/install.html
+ * cppCheck &rarr; `sudo apt install cppcheck`
+ * valgrind &rarr; `sudo apt install valgrid`
+ * Hunspell &rarr; `sudo apt install hunspell`
+   + pyHunspell &rarr; `sudo -H pip install hunspell`
  * LanguageTool
-   + language-check -> `sudo -H pip install 3to2 && sudo -H pip install
+   + language-check &rarr; `sudo -H pip install 3to2 && sudo -H pip install
                         language-check`
 
 
