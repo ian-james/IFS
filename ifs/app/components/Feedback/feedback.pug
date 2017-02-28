@@ -29,8 +29,9 @@ block content
             div(class="col-md-3 longFeedbackContainer ng-cloak" ng-show="showSideBar")
                     include popover.html
 
-        div.row.summarySection.col-md-4
-            p Feedback Messsages #{feedbackItems.length}
+        div.row.summarySection
+            div(ng-class="showSideBar ? 'col-md-7 col-md-offset-1' : 'col-md-10 col-md-offset-1' ")
+                p Feedback Messsages #{feedbackItems.length}
 
     script(src="components/Feedback/feedbackController.js")
 

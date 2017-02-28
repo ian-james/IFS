@@ -16,6 +16,11 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
 
     $scope.showSideBar = false;
 
+    $scope.test = function() {
+        $scope.showSideBar = !$scope.showSideBar;
+        console.log($scope.showSideBar);
+    }
+
 
     $scope.setSelectedItem = function( event ) {
         // Array of items matching this error are passed

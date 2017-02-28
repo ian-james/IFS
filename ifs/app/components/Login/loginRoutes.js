@@ -14,7 +14,7 @@ var _ = require('lodash');
 module.exports = function( app, passport ) {
 
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/about', '/user/data'];
+        var nonSecurePaths = ['/', '/login', '/register', '/about', '/user/data', '/cloud'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
 
 /*
@@ -50,8 +50,6 @@ module.exports = function( app, passport ) {
             return res.status(200).json( {user: req.user.username} );
         return res.status(400);
     });
-
-
 
     app.get("/", function(req,res) {
         if( req &&  req.user && req.isAuthenticated() )

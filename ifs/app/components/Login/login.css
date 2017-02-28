@@ -50,7 +50,7 @@
 .login-form input[type=password],
 .js .login-form span {
     color: #686868;
-    width: 400px;
+    width: 90%;
  
     -webkit-box-shadow: inset 1px 1px 1px 0px rgba(255,255,255, .6);
     -moz-box-shadow: inset 1px 1px 1px 0px rgba(255,255,255, .6);
