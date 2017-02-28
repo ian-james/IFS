@@ -2,9 +2,9 @@
 module.exports = function (app) {
 
     // Paths and requirements
-    var appPath = __dirname + "/../app/";
+    var appPath = __appPath;
     var path = require('path');
-    var componentsPath = path.join( appPath + "/components");
+    var componentsPath = __components
     var passport = require('passport');
 
     // i18n Translation Routes
@@ -27,4 +27,10 @@ module.exports = function (app) {
 
     //Feedback pages routes
     require(componentsPath + '/Feedback/feedbackRoutes')(app);
+
+    //Word Cloud
+    require(componentsPath + '/WordCloud/wordCloudRoutes')(app);
+
+    // Test features can be placed here.
+    require(componentsPath + "/Test/testRoutes")(app);
 }

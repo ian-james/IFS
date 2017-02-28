@@ -1,0 +1,10 @@
+extends ../../shared/views/pageLayout.pug
+
+block content    
+    script(src="/wordcloud/wordcloud2.js")
+    link(rel="stylesheet" href="components/Test/test.css")
+    
+    canvas(id="canvas" class="canvas col-md-10 col-md-offset-1")
+        script.
+            console.log(!{JSON.stringify(words)});
+            WordCloud(document.getElementById('canvas'), { 'list': !{JSON.stringify(words)},backgroundColor:"darkgray", shape:"pentagon", "shuffle":true, minSize:12,  maxRotation: 45, 'minRotation':"15" });

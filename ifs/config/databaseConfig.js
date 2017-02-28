@@ -13,5 +13,6 @@ module.exports = {
     'survey_results_table': 'surveyResult',
     'feedback_table':'feedback',
     'users_interation_table': 'usersInteraction',
+    'user_feedback_table' : 'userFeedback',
     'preferences_table': 'preferences'
 };

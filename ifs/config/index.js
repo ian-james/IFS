@@ -12,6 +12,7 @@ global.__configs = path.join(__dirname, "/");
     ;
 global.__tools = path.join( __dirname , "../tools/");
 global.__components = path.join( __dirname, "../app/components/");
+global.__appPath = path.join( __dirname, "../app/");
 
 var port = process.env.PORT || 3000;
 // Set App variables.

@@ -21,6 +21,8 @@ module.exports = function (app) {
     // Boostrap-Angular
     app.use( "/bootstrap", express.static(  nodeModulesPath + "angular-ui-bootstrap/dist/") );
 
+    app.use("/wordcloud", express.static( nodeModulesPath + "/wordcloud/src/") );
+
     // Static Files   
     app.use( express.static( path.join( __dirname, "/../app/") ) );
 }
