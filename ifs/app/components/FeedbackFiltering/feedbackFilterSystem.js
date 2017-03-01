@@ -107,4 +107,32 @@ function writeResults( obj )
     return file;
 }
 
+
+function combineResults( response )
+{
+    //console.log("Response", response );
+    var allResults = [];
+    try {        
+        for(var i = 0;i < response['result'].length;i++) {
+            var res = response.result[i].value;
+            var tempJob = res.job;
+            
+            if(res.success) {
+                tempJob['result'] = res.result;
+                allResults.push(tempJob);
+            }
+            else
+                Logger.error("Did not include failed Job:", tempJob.progName );
+           
+        }
+    }
+    catch (err){
+        Logger.error("Failed to combine tools");
+    }
+
+    //console.log("All Results",allResults);
+    return allResults;
+}
+
 module.exports.organizeResults = organizeResults;
+module.exports.combineResults = combineResults;

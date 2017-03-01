@@ -9,25 +9,22 @@ function jobConfig(jobType, jobName)
     // Default options, times are in milliseconds (1000)
     return{ 
         priority: 'normal',
-        attempts:3,
+        attempts:1,
         backoff: {delay:10*1000, type:'fixed'},
-        timeOfLife:60*1000,
+        timeOfLife:2*60*1000,
         removeIfDone: true,
         jobType:jobType,
         jobName: jobName,
     };
 }
 
-function makeDefaultJob( toolOptions ) {
-    return makeJob( toolOptions, jobConfig );
-}
-
 function makeJob(  toolOptions, jobOpts )
 {
     var deferred = Q.defer();
     
-    var job = queue.queue.createJob(jobOpts.jobType, {
+    var job = queue.queue.create(jobOpts.jobType, {
             name:jobOpts.jobName,
+            title:jobOpts.jobName,
             tool: toolOptions,
         })
         .priority(jobOpts.priority)
@@ -37,17 +34,20 @@ function makeJob(  toolOptions, jobOpts )
 
     job.on('enqueue', function() {
         //console.log( job.data.name + " has been enKued");
+        deferred.notify({ msg:"Task Received:" + job.data.name, progress: 0});
     })
     .on('start', function() {
-        ///console.log(job.data.name + " has been Started");
+        //console.log(job.data.name + " has been Started");
+        deferred.notify({ msg:"Starting:" + job.data.name, progress: 0});
     })
     .on('progress', function(progress, data) {
-        //console.log(job.data.name + "progressing");
+        deferred.notify( progress );
     })
     .on('complete', function(result) {
         //console.log("*****1COMPLETE JOB IS ", JSON.stringify(job.data));
         //console.log("*****2COMPLETE JOB IS ", JSON.stringify(job));
-        //console.log("*****3COMPLETE JOB IS ", job.name , "=>", JSON.stringify(result));
+        //console.log("*****3COMPLETE JOB IS ", "=>", JSON.stringify(result));
+        deferred.notify({ msg:"Completed:" + job.data.name, progress: 100});
         deferred.resolve({
             done: true,
             job: job.data,
@@ -56,9 +56,8 @@ function makeJob(  toolOptions, jobOpts )
         });
     })
     .on('failed', function( errorMessage ) {
-        console.log("Failed job");
         Logger.error("Error job failed", job.name);
-        deferred.resolve({
+        deferred.reject({
             done: true,
             job: job.data,
             success: false,
@@ -73,5 +72,4 @@ function makeJob(  toolOptions, jobOpts )
 
 // Exports 
 module.exports.buildJob = makeJob;
-module.exports.buildDefaultJob = makeDefaultJob;
 module.exports.getDefaults = jobConfig;

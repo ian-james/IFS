@@ -43,6 +43,7 @@ function findClosestMatch( str, targetOpt)
 
         while( (res= regExp.regex.exec(str)) !== null) {
 
+            //console.log("F and S ", res.index );
             if(closest == null )
             {
                 closest = res;

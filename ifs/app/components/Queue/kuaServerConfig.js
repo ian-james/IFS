@@ -6,7 +6,7 @@ module.exports.testKue = {
         }
     },
     options: {
-        watchStuckTime: 60*1000
+        watchStuckTime: 30*1000
     },
     ui: {
         title: "Tool Server UI",

@@ -18,7 +18,6 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
 
     $scope.test = function() {
         $scope.showSideBar = !$scope.showSideBar;
-        console.log($scope.showSideBar);
     }
 
 

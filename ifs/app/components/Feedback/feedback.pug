@@ -14,14 +14,13 @@ block content
                         option( selected= "All"==selectedTool ) All
                         each tool in toolsUsed
                             option( selected= tool.toolName==selectedTool) #{ tool.toolName }
-
         div.row
             div(ng-class="showSideBar ? 'col-md-7 col-md-offset-1' : 'col-md-10 col-md-offset-1' ")
                 uib-tabset( active="active")
                     each file, findex in files
-                        uib-tab( index=findex heading= file.filename  disable="{{tab.disabled}}")
+                        uib-tab( index=findex heading= file.filename disable="{{tab.disabled}}")
                             div.row
-                                div(id="ifsText" class="form-control markedTextArea" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true") !{file.markedUp}
+                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true") !{file.markedUp}
             div(ng-class="!showSideBar ? 'col-md-1' : 'col-md-3' ")
                 button(id="showLongFeedback" type="button" class="btnIcon" ng-show="!showSideBar" ng-click="showSideBar = !showSideBar")
                     span(class="glyphicon glyphicon-list")

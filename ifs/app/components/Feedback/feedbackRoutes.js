@@ -34,6 +34,8 @@ module.exports = function( app ) {
                 nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
                 var nextMatches =  nextItem && (nextItem.target == feedbackItem.target && nextItem.wordNum ==  feedbackItem.wordNum );
 
+                //console.log("nextItem>>>>>",nextItem.wordNum, ' === ', feedbackItem.wordNum );
+
                 idArr.push(i);
                 if( nextItem && nextMatches ) {
                     // We have multiple errors on this word.

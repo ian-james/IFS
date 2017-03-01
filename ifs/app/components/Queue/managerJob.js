@@ -5,53 +5,16 @@ var cjob = require('./childJob');
 var job = require('./generalJob');
 var path = require('path');
 var Logger = require( __configs  + "loggingConfig");
-
+var _ = require('lodash');
 // This is just a regular reference, it needed a name for managerJob.
 const jobType = 'mJob';
 
-// Setup a basic config with manager process name
-function getManagerConfig()
-{
-    return job.getDefaults(jobType,'Manager');
-}
-
-function combineResults( response )
-{
-    var allResults = [];
-    try {        
-        for(var i = 0;i < response['result'].length;i++) {
-            var res = response.result[i];
-            var tempJob = res.job;
-           
-            if(res.success) {
-                tempJob['result'] = res.result;
-                allResults.push(tempJob);
-            }
-            else
-                Logger.error("Did not include failed Job:", tempJob.progName );
-           
-        }
-    }
-    catch (err){
-        Logger.error("Failed to combine tools");
-    }
-    return allResults;
-}
 
 /* This function creates a 'ManagerJob', which is a job that starts a bunch of other tools in a queue and waits for feedback.
    This version of the file provides options for the job.
 */
-
-function makeManagerDefaultJob( toolOptions ){
-    var c = getManagerConfig();
-    return makeManagerJob( toolOptions, c );
-}
-
-// Manager job with more options and generalizations.
-function makeManagerJob( toolOptions, jobOpts )
-{
-    // Don't override jobName but make sure it at least had process
-    jobOpts['jobType'] =jobType;
+function makeManagerJob( toolOptions ){
+    var jobOpts  = job.getDefaults(jobType, 'Manager');
     return job.buildJob( toolOptions, jobOpts );
 }
 
@@ -66,17 +29,39 @@ function loadAllTools(job, done)
 
     var promises = [];
     var jobsInfo = job.data.tool;
-    for(var i = 0;i < jobsInfo.length;i++)
+    for(var i = 0;i < jobsInfo.length;i++) {
         promises.push( cjob.makeJob( jobsInfo[i] ));
+    }
    
-    runChildJob( cjob.jobType );
+    cjob.runJob();
     
     // Wait for everything to finish before emitting that parent is done.    
-    Q.all(promises)
+    Q.allSettled(promises)
         .then( function(res) {
-            job.emit('completed');
-            done(null,res);
-        });
+                // return everything that passed and was fulfilled
+                // Remove Failed states.
+                var passed = _.filter(res, r => { return r.state =='fulfilled' && r.value.success == true; });
+                var result = _.map( passed, obj => _.pick(obj, ['value'] ));
+                if( result.length > 0)
+                    done(null,result);
+                done(new Error('No jobs successfully completed.'));
+            }, function(reason) {
+                // This doesn't occurr because we don't reject child nodes.
+                Logger.info("Reason: Error promise all parent.", reason);
+            },
+            function( notice ){
+                // Currently none of the tools have progress reporting so this notifies
+                // when received, started, 10% (about to run), and finished.
+                if( typeof(notice.value)  == 'object' ) {
+                    Logger.info("Notice:", notice.value.msg);
+                    //console.log("Notice:", notice.value.msg );
+                }
+                else {
+                    Logger.info("Updating: Completed ", notice.value, " %");
+                    //console.log("Updating: Completed ", notice.value, " %" );
+                }
+            }
+        );
 }
 
 /* This function is mostly to simplify the calling interface 
@@ -90,17 +75,6 @@ function runManagerJob() {
     });
 }
 
-function runChildJob( jobName ){
-
-    queue.process(jobName, function(job,done) {
-        cjob.handleTool( job, done );
-    });
-}
-
-
 //Exports for the module.
-module.exports.makeJob = makeManagerDefaultJob;
-module.exports.handleTool = loadAllTools;
+module.exports.makeJob = makeManagerJob;
 module.exports.runJob = runManagerJob;
-module.exports.runChildJob = runChildJob;
-module.exports.combineResults = combineResults;

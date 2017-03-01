@@ -10,7 +10,6 @@ module.exports = function (app) {
 
         if( req.user && req.isAuthenticated())
         {
-            console.log("session", req.user );
             var pickReq = ['originalUrl','baseUrl','path','params.name','body'];
             var pickUser = ['username'];
             var date = Date.now();

@@ -1,12 +1,12 @@
-var Q = require('q');
-
-var queue = require('./kueServer');
+var queue = require('./kueServer').queue;
 var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var job = require('./generalJob');
+var Q = require('q');
 
 var fs = require('fs');
 
-const jobType = 'cJob'
+const jobType = 'cJob';
 
 /* Tool Options 
     Should present a number of values in the obj, should be validated in some way.
@@ -14,39 +14,40 @@ const jobType = 'cJob'
     progName -> callable from command line
     arguments -> an array of arguments or whatever the program expects.
 */
-
-// Setup a basic config with child process name
-function getChildConfig()
-{    
-    return job.getDefaults(jobType, 'WorkerTool');
+function makeJob( toolOptions ) {
+    var jobOpts = job.getDefaults(jobType,toolOptions.displayName );
+    return job.buildJob( toolOptions, jobOpts );
 }
 
-function makeToolDefaultJob( toolOptions ){
-    var c = getChildConfig();
-    return makeToolJob(toolOptions, c );
-}
-
-function makeToolJob( toolOpts, jobOpts )  {
-    jobOpts['jobType'] = jobType;
-    return job.buildJob( toolOpts, jobOpts );
-}
-
-// programOptions
-// programName and arguments
+/*
+ Potential that tools could report their progress if spawn was used instead of exec.
+ Not ready to make this change, since I don't think we have tools that report progress.
+ */
 function runSingleTool( job, done )
 { 
     //console.log(" HERE AT RUN SINGLE TOOLCMD", job.data.tool.runCmd);
+    job.progress(10, 100);
     var child = exec(job.data.tool.runCmd, function(error,stdout, stderr) {
 
-        if(error) {
+        job.progress(100,100);
+        if( error) {
             job.emit('failed');
-            done( new Error('exec error'));
+            done(new Error('exec error'));
+            return;
         }
         job.emit('completed');
         done(null, stdout);
-    }); 
+    });
 }
 
-module.exports.makeJob = makeToolDefaultJob;
+function runChildJob(){
+
+    queue.process(jobType, function(job,done) {
+        runSingleTool( job, done );
+    });
+}
+
+
+module.exports.makeJob = makeJob;
 module.exports.handleTool = runSingleTool;
-module.exports.jobType = jobType;
+module.exports.runJob = runChildJob;

@@ -46,8 +46,11 @@ module.exports = function (app) {
 
         // Add the jobs to the queue and
         manager.makeJob(tools).then( function( r ) {
-            var res =  manager.combineResults(r );
+            var res = FeedbackFilterSystem.combineResults(r );
             return FeedbackFilterSystem.organizeResults( uploadedFiles, res );
+        }, function(err){
+            //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
+            res.redirect('/tool');
         })
         .then( function(result) {
             req.session.feedbackFiles = result.feedbackFiles;
