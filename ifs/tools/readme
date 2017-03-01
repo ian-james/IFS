@@ -1,0 +1,15 @@
+# ReadMe
+
+External contains anything from other external sources of tools
+Most tools will have to installed on the system
+
+
+Hunspell
+libhunspell-dev
+WordCloud
+LanguageTools
+
+
+cppCheck
+gcc
+cppLint

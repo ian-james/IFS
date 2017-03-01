@@ -110,13 +110,15 @@ def main(argv):
             print 'spell_check.py [-p PATH] [-l LANG] [-j OUT.json] -i INPUTFILE'
 	    sys.exit()
 
-    # check dictionaries exist
-    hun_path=path+'/'+lang
-    if not (os.path.isfile(hun_path+'.dic')):
-        print 'Error. Could not find dictionary at', hun_path+r'.dic'
+    # check dictionaries exist    
+    hun_path = path + '/' + lang
+    if not (os.path.isfile(hun_path + '.dic')):
+        sys.stderr.write('Error. Could not find dictionary at '
+                         + hun_path + '.dic\n')
         sys.exit()
-    if not (os.path.isfile(hun_path+'.aff')):
-        print 'Error. Count not find aff file at', hun_path+'.aff'
+    if not (os.path.isfile(hun_path + '.aff')):
+        sys.stderr.write('Error. Count not find aff file at '
+                         + hun_path + '.aff\n')
         sys.exit()
 
     # init hunspell

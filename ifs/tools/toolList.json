@@ -2,8 +2,8 @@
     "tools": [
         { 
             "displayName": "Spell Checker", 
-            "progName":"./tools/lang_tools/spell_check.py",
-            "progfullName": "./tools/lang_tools/spell_check.py",
+            "progName":"./tools/languageTools/spell_check.py",
+            "progfullName": "./tools/languageTools/spell_check.py",
             "runType": "cli",
             "filesAllowed": "singleFile",
             "parseCmd": "",
@@ -29,8 +29,8 @@
         },
           { 
             "displayName": "Spell Checker2", 
-            "progName":"./tools/lang_tools/spell_check.py",
-            "progfullName": "./tools/lang_tools/spell_check.py",
+            "progName":"./tools/languageTools/spell_check.py",
+            "progfullName": "./tools/languageTools/spell_check.py",
             "runType": "cli",
             "filesAllowed": "singleFile",
             "parseCmd": "",
