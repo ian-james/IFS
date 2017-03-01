@@ -101,7 +101,7 @@ function writeResults( obj )
     
     var filename = "displayedFeedback.json";
     var file = path.join(uploadDir,filename);
-    Logger.info("Wriring FeedbackFile:", file);
+    Logger.info("Writing FeedbackFile:", file);
     fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
 
     return file;

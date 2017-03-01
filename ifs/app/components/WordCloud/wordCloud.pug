@@ -29,11 +29,12 @@ block content
                         </select>
         div.row
             p(id="NotSupported" class="col-md-offset-5")
+            p(class="col-md-offset-5")= msg
             canvas(id="canvas" class="canvas col-md-8 col-md-offset-2")
                 script.
                     if( WordCloud.isSupported ) {
                         console.log(!{JSON.stringify(words)});
-                        WordCloud(document.getElementById('canvas'), { 'list': !{JSON.stringify(words)},shuffle:"{{shuffle}}", minSize:12, weightFactor: 30, minRotation:'{{selectedRotationValue}}', shape:"diamond"});
+                        WordCloud(document.getElementById('canvas'), { 'list': !{JSON.stringify(words)},shuffle:"{{shuffle}}", 'minSize':8, 'weightFactor': 5, 'minRotation':'45', 'shape':"circle"});
                     }
                     else
                         document.getElementById('NotSupported').innerHTML = "Word Cloud is not supported";

@@ -27,6 +27,20 @@ from nltk.probability import FreqDist
 from nltk.corpus import stopwords
 from nltk.tokenize import wordpunct_tokenize
 
+def decorateData( result, options ):
+    json_string = ""
+    json_string += '{\n'
+    json_string += '"feedback": [\n'
+    json_string += '{\n'
+    json_string += '"type": "wordCloud",\n'
+    json_string += '"wordCount":' + str(options['termLimit']) + ',\n'
+    j_array = json.dumps( result );
+    json_string += '"wordFreq": ' + j_array + '\n'
+    json_string += '}\n'
+    json_string += ']\n'
+    json_string += '}\n'
+
+    return json_string
 
 # This function creates an array of array of [term freq] of words in text
 # Stop words and punctutation are removed.
@@ -48,10 +62,10 @@ def main(argv):
 
     ifile =''
     console = True
-    options = { 'termLimit': 50, 'file':'', 'language':'english' }
+    options = { 'termLimit': 50, 'file':'', 'language':'english','ifs': True }
 
     # define command line arguments and check if the script call is valid
-    opts, args = getopt.getopt(argv,'t:l:f:h',['terms=','language=','file=', 'help'])
+    opts, args = getopt.getopt(argv,'i:t:l:f:h',['ifsOff=', 'terms=','language=','file=', 'help'])
 
     for opt, arg in opts:
         if opt in ('--terms', '-t'):
@@ -63,9 +77,11 @@ def main(argv):
             if not (os.path.isfile(ifile)): 
                 sys.stderr.write( 'Error. File ' + ifile + ' does not exist.' )
                 sys.exit()
+        elif opt in ('--ifsOff', '-i'):
+            options['ifs'] = False
         else:
             print 'Usage: Displays the most frequently occurring terms from a file'
-            print 'termFreq.py [-t TERM_LIMIT] [-l LANGUAGE] -i INPUTFILE'
+            print 'termFreq.py [-i IFS MODE] [-t TERM_LIMIT] [-l LANGUAGE] -f InputFile'
             sys.exit()
 
     if ifile != '':
@@ -73,9 +89,12 @@ def main(argv):
         with open(ifile, 'r') as myfile:
             fileContents= myfile.read().replace('\n','')
 
-        print( termFreq(fileContents, options ) )
-    else
-        sys.stderr.write( 'Please provide a file to evaluate.')
+        result = termFreq(fileContents, options )
+        if( options['ifs'] ):
+            result = decorateData( result, options )
+        print( result )
+    else:
+        sys.stderr.write( 'Please provide a file to evaluate.\n')
         sys.exit()
 
 if __name__ == '__main__':

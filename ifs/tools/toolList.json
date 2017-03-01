@@ -1,6 +1,6 @@
 {
     "tools": [
-        { 
+         { 
             "displayName": "Spell Checker", 
             "progName":"./tools/languageTools/spell_check.py",
             "progfullName": "./tools/languageTools/spell_check.py",
@@ -27,30 +27,22 @@
                 }
             ]
         },
-          { 
-            "displayName": "Spell Checker2", 
-            "progName":"./tools/languageTools/spell_check.py",
-            "progfullName": "./tools/languageTools/spell_check.py",
-            "runType": "cli",
+        { 
+            "displayName": "Word Cloud", 
+            "progName":"./tools/languageTools/termFreq.py",
+            "progfullName": "./tools/languageTools/termFreq.py",
+            "runType": "visual",
             "filesAllowed": "singleFile",
             "parseCmd": "",
             "defaultArg": "",
-            "fileArgs": "-i",
+            "fileArgs": "-f",
             "options" :  [ {
-                    "displayName": "Dictionary",
-                    "type": "select",
-                    "values": [ "en_US", "en_CA"],
-                    "name": "dictionary2",
-                    "arg": "-l",
-                    "params":""
-
-                },
-                {
-                    "displayName" : "Warning with rare or uncommon words",
-                    "type" : "checkbox",
-                    "name" : "warningUncommonWords",
-                    "arg": "-r",
-                    "params":""
+                "displayName": "Number of Words",
+                "type": "select",
+                "values": [ 5,10,20,30],
+                "name": "termCount",
+                "arg": "-t",
+                "params":""
                 }
             ]
         }
