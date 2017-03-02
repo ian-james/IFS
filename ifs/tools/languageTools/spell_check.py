@@ -30,38 +30,49 @@ def spcheck(to_check, lang, hun, console, filename):
 
     # Just the filename is needed for the IFS.
     filename = os.path.basename(filename)
+    regex = re.compile(r'[^a-zA-z]*([a-zA-Z]+([-\'][a-zA-Z]+)*)')
 
+    gchar_num = 0
     line_num = 0
     for line in to_check:
         word_num = 0
         line_num += 1
+        char_num = 0
         for word in line.split(): # tokenize by whitespace delimeters?
             word_num += 1
             # simple regex to ensure that punctuation at the end of a word is
             # not passed to hunspell i.e. prevents false alarms
-            word = re.sub(r'([\w])([\-,.!?]+)$', r'\1', word)
+            res = regex.match(word )
+           
+            if( res ):
+                word = res.group(1)
+
+            char_num = line.find( word, char_num )
             # note that hunspell will think that cat!dog is not a word, but
             # hyphenated words such as cat-dog may pass, even though they
             # aren't in the English lexicon
             if not hun.spell(word):
-                suggestion = (line_num, word_num, (word, hun.suggest(word)))
+                suggestion = (line_num, word_num, char_num, gchar_num+char_num, (word, hun.suggest(word)))
                 misspelled.append(suggestion)
             else:
                 correct.append((line_num, word_num, word))
+        gchar_num += len(line)
     # print data from lists to the console if in console mode
    
     json_string += '{\n'
     json_string += '"feedback": [\n'
     for i in range(len(misspelled)):
         json_string += '{\n'
-        json_string += '"target":"' + str(misspelled[i][2][0]) + '",\n' 
+        json_string += '"target":"' + str(misspelled[i][4][0]) + '",\n' 
         json_string += '"wordNum": ' + str(misspelled[i][1]) + ',\n'
         json_string += '"lineNum": ' + str(misspelled[i][0]) + ',\n'
+        json_string += '"linePos": ' + str(misspelled[i][2]) + ',\n'
+        json_string += '"charPos": ' + str(misspelled[i][3]) + ',\n'
         json_string += '"type": "spelling",\n'
         json_string += '"toolName": "hunspell",\n'
         json_string += '"filename": "' + str(filename) + '",\n'
         json_string += '"feedback": "Selected word not found in dictionary",\n'
-        j_array = json.dumps(misspelled[i][2][1])
+        j_array = json.dumps(misspelled[i][4][1])
         json_string += '"suggestions": ' + j_array + '\n'
         json_string += '}'
         if i != (len(misspelled) - 1):

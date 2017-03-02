@@ -28,8 +28,8 @@ module.exports = function( app ) {
             {
                 // Find the closest positional match for the error.
                 var feedbackItem = feedbackItems[i];
-                var closest = fbHighlighter.findClosestMatch(content, {'needle':feedbackItem.target, 'flags':"gm", 'targetPos':  feedbackItem.wordNum+offset } );
-                var closestPos = closest ? closest.index : feedbackItem.wordNum;
+                var closest = fbHighlighter.findClosestMatch(content, {'needle':feedbackItem.target, 'flags':"gm", 'targetPos':  feedbackItem.charNum+offset } );
+                var closestPos = closest ? closest.index : feedbackItem.charNum;
 
                 nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
                 var nextMatches =  nextItem && (nextItem.target == feedbackItem.target && nextItem.wordNum ==  feedbackItem.wordNum );
@@ -68,8 +68,10 @@ module.exports = function( app ) {
             }
         }
         return content;
-    }    
+    }
 
+
+    /* This needs to be separated, so that feedback is handled by group */
     function readFeedbackFormat( data , options)
     {
         var feedbackFormat = JSON.parse(data);
@@ -80,6 +82,10 @@ module.exports = function( app ) {
         // A Unique list of tools used for UI
         var toolsUsed = _.uniqBy(feedbackItems,'toolName');
 
+        // TODO: temporary remove visual types
+        toolsUsed = _.remove(toolsUsed, t => t.type != "wordCloud");
+
+        // Only markup if feedback tools other than visualization tools exist.
         // Sorter order here is important, we want the earliest words to come first
         var sortedFeedbackItems = _.sortBy( feedbackItems, ['filename','wordNum','toolName']);
 

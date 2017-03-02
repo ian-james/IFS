@@ -53,12 +53,11 @@ function loadAllTools(job, done)
                 // Currently none of the tools have progress reporting so this notifies
                 // when received, started, 10% (about to run), and finished.
                 if( typeof(notice.value)  == 'object' ) {
-                    Logger.info("Notice:", notice.value.msg);
+                    Logger.info("Notice:", notice.value.msg, " at ", notice.value.progress, "%");
                     //console.log("Notice:", notice.value.msg );
                 }
                 else {
-                    Logger.info("Updating: Completed ", notice.value, " %");
-                    //console.log("Updating: Completed ", notice.value, " %" );
+                    Logger.info("Received:", notice );
                 }
             }
         );

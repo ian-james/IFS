@@ -41,7 +41,7 @@ function makeJob(  toolOptions, jobOpts )
         deferred.notify({ msg:"Starting:" + job.data.name, progress: 0});
     })
     .on('progress', function(progress, data) {
-        deferred.notify( progress );
+        deferred.notify( { msg:"Starting:" + job.data.name, progress: progress} );
     })
     .on('complete', function(result) {
         //console.log("*****1COMPLETE JOB IS ", JSON.stringify(job.data));

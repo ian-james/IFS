@@ -40,21 +40,28 @@ function findClosestMatch( str, targetOpt)
 
         var res, last = null;
         var closest = null;
+        var c = 0;
+        var fc = 0;
 
+        // This was more of a fallback, with charPos we can actually find the closest right away position now.
+        // Otherwise, we  can go back to doing more searching
         while( (res= regExp.regex.exec(str)) !== null) {
-
-            //console.log("F and S ", res.index );
+            c++;
             if(closest == null )
             {
                 closest = res;
+                fc = c;
+                break;
             }
             else
             {
                 var f = res.index - closest.index;
                 var s = res.index - regExp.targetPos;
 
-                if( s < f )
+                if( s < f ) {
                     closest = res; 
+                    fc = c;
+                }
             }
         }
         return closest;
