@@ -61,6 +61,7 @@ function makeJob(  toolOptions, jobOpts )
             done: true,
             job: job.data,
             success: false,
+            result: null
         });
     })
     .removeOnComplete(jobOpts.removeIfDone).save(function(err) {

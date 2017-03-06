@@ -9,7 +9,7 @@ queue.watchStuckJobs(kOptions.options.watchStuckTime);
 
 
  //Help removing large number of jobs for debugging only
-
+/*
 kue.Job.rangeByState('complete',0, 5000, 'asc', function(err,jobs){
     jobs.forEach( function(job) {
         job.remove( function() {
@@ -43,7 +43,7 @@ kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
         });
     });
 });
-
+*/
 
 queue.on('ready', () => {
     Logger.info("Kue is ready");

@@ -37,11 +37,11 @@ module.exports = function( app ) {
             ];
         var msg = "Unable to produce a file cloud for your submission."
 
-        if( req.session.feedbackFiles ) {
+        if( req.session.allFeedbackFile ) {
             // Could read feedback file here or read it directly
             // req.wordsTerm;
             try {
-                var file = req.session.feedbackFiles
+                var file = req.session.allFeedbackFile;
                 var data = fs.readFileSync( file , 'utf-8');
                 var jdata = JSON.parse( data );
 

@@ -31,12 +31,19 @@ function runSingleTool( job, done )
 
         job.progress(100,100);
         if( error) {
-            job.emit('failed');
+            
             done(new Error('exec error'));
             return;
         }
-        job.emit('completed');
-        done(null, stdout);
+        try {
+            var res = JSON.parse( stdout );
+            done(null, res);
+            job.emit('completed');
+        }
+        catch(e) {
+            job.emit('failed');
+            done(new Error('Can not parse result'));
+        }
     });
 }
 

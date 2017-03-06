@@ -39,15 +39,38 @@ function loadAllTools(job, done)
     Q.allSettled(promises)
         .then( function(res) {
                 // return everything that passed and was fulfilled
-                // Remove Failed states.
-                var passed = _.filter(res, r => { return r.state =='fulfilled' && r.value.success == true; });
-                var result = _.map( passed, obj => _.pick(obj, ['value'] ));
-                if( result.length > 0)
-                    done(null,result);
-                done(new Error('No jobs successfully completed.'));
+                var passed =[], failed = [];
+                
+                for( var i = 0; i < res.length; i++ ) {
+                
+                    if( res[i].state == 'fulfilled' ) {
+                        var val = res[i].value;
+
+                        // Attach these two fields from job tool to the result.
+                        var toolAdd = {"displayName": val.job.tool.displayName, "runType": val.job.tool.runType};
+                        _.forEach( val.result.feedback, function(f){
+                            return _.extend(f,toolAdd);
+                        });
+
+                        if( val.success ) {
+                            if( val.result.feedback )
+                                passed = passed.concat( val.result.feedback )
+                            else
+                                Logger.error("Successful tool", job.tool.toolName, " did not format output correctly");
+                        }
+                        else  {
+                            // If the job failed, just get the error.
+                            failed = failed.concat( val.result );
+                        }
+                    }
+                }
+                var Err = passed.length > 0 ? null : new Error('No jobs successfully completed.');
+                done( Err, { 'passed': passed, 'failed': failed } );
+
             }, function(reason) {
                 // This doesn't occurr because we don't reject child nodes.
                 Logger.info("Reason: Error promise all parent.", reason);
+                done( new Error("Unable to complete any jobs"), null );
             },
             function( notice ){
                 // Currently none of the tools have progress reporting so this notifies

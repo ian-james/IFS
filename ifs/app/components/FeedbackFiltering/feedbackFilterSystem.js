@@ -20,119 +20,71 @@
 var path = require("path");
 var fs = require("fs");
 var Logger = require( __configs + "loggingConfig");
-
-function createFileObject( fileItem ) 
-{
-    /* Create a file object of the form:
-        {
-            "filename": "test.txt",
-            "contentFile": "./tests/testFiles/test.txt",
-            //"cFile": "./tests/test.html",
-            "content": ""
-        }
-    */
-   
-    var obj = {};
-    obj["filename"] = fileItem.originalname;
-    obj["contentFile"] = fileItem.filename;
-    obj["content"] = "";
-    return obj;
-}
-
-function createFeedbackObject( fbItem ) 
-{
-    /*
-    var obj = {};
-    obj['target'] = filename.originalname; //path.basename(fileItem.filename)
-    obj['lineNum'] = fileItem.filename;
-    obj['wordNum'] = "";
-    obj['toolName'] = "";
-    obj['type'] = "";
-    obj['feedback'] = "";
-    obj['suggestions'] = "";
-    */
-   
-   // Currently these don't need to be parsed further.
-   return fbItem;
-}
-
-function createObjects( items, createFunc ) 
-{
-    var arr = [];
-    for( var i =0; i< items.length; i++ ) {
-        arr.push(createFunc( items[i]));
-    }
-    
-    return arr;
-}
-
-function createFeedbackObjects( items )
-{
-    var arr = [];
-    
-    for( var i =0; i< items.length; i++ ) {
-        var res = items[i].result;
-        var resObj = JSON.parse(res);
-
-        if(resObj && resObj["feedback"] ) { 
-            arr = arr.concat( createObjects(resObj.feedback, createFeedbackObject) );
-        }
-    }
-    return arr;
-}
+var _ = require('lodash');
 
 /* 
     This function creates the json object for the parsing and  highlightin system.
     Basically, it needs to create two fields file.   
+
+    Needs to take create file info, job info
+    Feedback needs to include the job type per request.
 */
 function organizeResults( fileInfo, fullData )
 {
     var obj = {};
-    obj['files'] = createObjects( fileInfo, createFileObject );
-    obj['feedback'] = createFeedbackObjects( fullData );
-    obj['feedbackFiles'] = writeResults(obj);
+
+    // Create File objects for each file
+    obj['files'] = fileInfo;
+   
+    // Sort by properties
+    var sortedFeedbackItems = _.sortBy( fullData, ['filename','lineNum', 'wordNum','toolName'] );
+    
+    // Separate the feedback items for writing to a file and passing back
+    var fdbTypes = _.groupBy(sortedFeedbackItems, 'runType');
+    
+    writeResults(obj, fdbTypes, fileInfo[0].destination );
+
+    obj['feedback'] = fdbTypes;
+
+    var allFeedbackFile = 'displayedFeedback.json';
+    obj['allFeedbackFile'] = path.join( fileInfo[0].destination , allFeedbackFile);
+    writeFeedbackToFile( fileInfo[0].destination , obj, allFeedbackFile );
+
     return obj;
 }
 
-function writeResults( obj )
+/* 
+    Write the different types of feedback files *
+*/
+function writeResults(obj, fdbTypes, uploadPath ){
+    // Stores the results in separated format too.
+    Logger.info("Write feedback Files");
+    obj['feedbackFiles'] = {};
+    _.forIn( fdbTypes, function(value,key) {
+        var filename = key + "FeedbackFile.json";
+        obj['feedbackFiles'][key] = filename;
+        writeFeedbackToFile(uploadPath, value, filename);
+    });
+}
+
+/* 
+    Write the feedback to a file.
+*/
+function writeFeedbackToFile(pathDir, obj, filename )
 {
     // Get upload directory    
-    var uploadDir = path.dirname( obj.files[0].contentFile );
-    
-    var filename = "displayedFeedback.json";
-    var file = path.join(uploadDir,filename);
+    var file = path.join(pathDir,filename);
     Logger.info("Writing FeedbackFile:", file);
-    fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
-
+    //fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
+    
+    fs.writeFile( file, JSON.stringify(obj), 'utf-8', function(err) {
+        if(err) {
+            Logger.error("Unable to save file: ", file);
+            return err;
+        }
+        Logger.info("Successfully saved file:", file);
+    });    
     return file;
 }
 
-
-function combineResults( response )
-{
-    //console.log("Response", response );
-    var allResults = [];
-    try {        
-        for(var i = 0;i < response['result'].length;i++) {
-            var res = response.result[i].value;
-            var tempJob = res.job;
-            
-            if(res.success) {
-                tempJob['result'] = res.result;
-                allResults.push(tempJob);
-            }
-            else
-                Logger.error("Did not include failed Job:", tempJob.progName );
-           
-        }
-    }
-    catch (err){
-        Logger.error("Failed to combine tools");
-    }
-
-    //console.log("All Results",allResults);
-    return allResults;
-}
-
 module.exports.organizeResults = organizeResults;
-module.exports.combineResults = combineResults;

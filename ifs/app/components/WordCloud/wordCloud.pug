@@ -33,7 +33,6 @@ block content
             canvas(id="canvas" class="canvas col-md-8 col-md-offset-2")
                 script.
                     if( WordCloud.isSupported ) {
-                        console.log(!{JSON.stringify(words)});
                         WordCloud(document.getElementById('canvas'), { 'list': !{JSON.stringify(words)},shuffle:"{{shuffle}}", 'minSize':8, 'weightFactor': 5, 'minRotation':'45', 'shape':"circle"});
                     }
                     else

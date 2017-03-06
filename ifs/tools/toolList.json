@@ -1,10 +1,10 @@
 {
     "tools": [
-         { 
+         {
             "displayName": "Spell Checker", 
             "progName":"./tools/languageTools/spell_check.py",
             "progfullName": "./tools/languageTools/spell_check.py",
-            "runType": "cli",
+            "runType": "writing",
             "filesAllowed": "singleFile",
             "parseCmd": "",
             "defaultArg": "",
@@ -27,7 +27,7 @@
                 }
             ]
         },
-        { 
+        {
             "displayName": "Word Cloud", 
             "progName":"./tools/languageTools/termFreq.py",
             "progfullName": "./tools/languageTools/termFreq.py",
@@ -37,14 +37,13 @@
             "defaultArg": "",
             "fileArgs": "-f",
             "options" :  [ {
-                "displayName": "Number of Words",
-                "type": "select",
-                "values": [ 5,10,20,30],
-                "name": "termCount",
-                "arg": "-t",
-                "params":""
-                }
-            ]
+                    "displayName": "Word In Cloud",
+                    "type": "select",
+                    "values": [5, 10,20,30,40],
+                    "name": "wordCloud",
+                    "arg": "-t",
+                    "params":""
+            }]
         }
     ]
 }

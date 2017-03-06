@@ -17,7 +17,7 @@ function insertRawFeedback( req, res, tools, result ) {
         var insertReq = "INSERT INTO " + config.raw_feedback_table + " (username, tools, feedback) values (?, ?, ?)";
         try
         {
-            db.query(insertReq,[user, JSON.stringify(tools), JSON.stringify(result.feedbackFiles)], function(err,data){
+            db.query(insertReq,[user, JSON.stringify(tools), JSON.stringify(result.allFeedbackFile)], function(err,data){
                 
                 if( err ) {
                     Logger.debug("Error inserting raw feedback");

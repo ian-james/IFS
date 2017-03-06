@@ -1,6 +1,10 @@
-This is the last line.
-This is a test on things could be.
+This is the last line. Here I'm adding more to my tests.
+This is a test on things could be.   Lines and    spaces.
 This word should be somethnig.
 
+
+
+
+
 Have another line.
-Here we hiv a really long line with another two one anoter
+Here we hap a really long line with another two one anoter

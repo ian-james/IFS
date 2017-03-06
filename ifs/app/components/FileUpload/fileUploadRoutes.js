@@ -44,17 +44,27 @@ module.exports = function (app) {
         var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
         req.session.jobRequestFile = requestFile;
 
-        // Add the jobs to the queue and
-        manager.makeJob(tools).then( function( r ) {
-            var res = FeedbackFilterSystem.combineResults(r );
-            return FeedbackFilterSystem.organizeResults( uploadedFiles, res );
+        // Add the jobs to the queue, results are return in object passed:[], failed:[]
+        manager.makeJob(tools).then( function( jobResults ) {
+            var organizedResults = FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed );
+            req.session.allFeedbackFile = organizedResults.allFeedbackFile;
+            
+            //TODO: Uncomment this when we actually organize database scheme.
+            //rawFeedbackDB.addRawFeedbackToDB(req,res,requestFile, result );
+            if( organizedResults.feedback.writing ) {
+                res.redirect('/feedback');
+            }
+            else if( organizedResults.feedback.visual ) {
+                // For now, we redirect directly to cloud.
+                res.redirect('/cloud');
+            }
+            else {
+                res.redirect('/tool');
+            }
         }, function(err){
             //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
+            Logger.error("Failed to make jobs:", err );
             res.redirect('/tool');
-        })
-        .then( function(result) {
-            req.session.feedbackFiles = result.feedbackFiles;
-            rawFeedbackDB.addRawFeedbackToDB(req,res,requestFile, result );
         })
         .catch( function(err){
             res.status(500, {
