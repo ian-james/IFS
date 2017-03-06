@@ -16,7 +16,8 @@ var pool = mysql.createPool( {
 function handleConnectionError( err,connection){
     if(err) {
         Logger.error("Error: Handling database connection error");
-        connection.release();
+		if( connection )
+        	connection.release();
         throw err;
     }
 }

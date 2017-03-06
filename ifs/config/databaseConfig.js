@@ -4,7 +4,7 @@ module.exports = {
         'host' : 'localhost',
         'user' : 'root',
         'password' : 'mysqlRootPassword',
-        'connetionLimit': 500
+        'connectionLimit': 500
     },
     'database' :  'IFS',
     'users_table' : 'users',
