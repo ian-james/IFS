@@ -1,3 +1,22 @@
+/* Note most functions have not been tested in depth.
+   Note: SentenceTokenizer() has a bug that skipps any lines without punctutation
+        Such as blank lines or if the last line doesn't have a punct.
+
+        I've used a simple regex that seems to match python for splitting up the file.
+
+        Regex requires char position as this seems to be the most / only accurate method
+        of replacing things and quickly.
+
+        if you tool doesn't have charNum, then it should have lineNum and charPos.
+
+        wordNum  or lineNum, wordPos could also be used to calculate charNum but
+        would need to be careful of duplicate words in the same area or sentence.
+
+    Note:
+       Position values with *Num are global counted from the start of the file.
+       Otherwise they're relative to the start of the sentence.
+*/
+
 const fs = require('fs');
 var natural = require('natural');
 var sentTok = new natural.SentenceTokenizer();
@@ -6,11 +25,11 @@ var wordTok = new natural.WordTokenizer();
 function Position()
 {
     this.charNum = 0; //Global
-    this.wordNum = 0; //Relative    
+    this.wordNum = 0; //Global
     this.lineNum = 0; //Global
     this.charPos = 0; //Relative Character position per line.
-    this.wordPos = 0;
-}
+    this.wordPos = 0; // Relative
+} 
 
 function FileInfo()
 {
@@ -58,34 +77,21 @@ function FileParser() {
             this.readFile();
 
         if( this.content ) {
-            this.sentences = this.content.match(/[^\.!\?\n]+/g);
+            /* Note that this tokenizer has to align wi the method of tokenization in the tool,
+               which is not ideal, but this seems to match what python does by default.
+            */
+            this.sentences = this.content.split(/\r?\n/);
 
-            console.log("******************** HERE ");
             this.fileInfo.numLines = this.sentences.length;
-
-            console.log("************************************************** SENT", this.sentences.length );
-
             var sum = 0;
             this.fileInfo.charCount.push( sum );
             for( var i = 0; i < this.sentences.length;i++ ) {
                 sum += (this.sentences[i].length+1); // This add one space, which might not be right.
-                console.log("s->", this.sentences[i]);
-                 console.log("**************************************************sum",i, " =", sum);
 
                 this.fileInfo.charCount.push( sum );
                 var w = this.wordTokenizer.tokenize( this.sentences[i] )
                 this.fileInfo.wordCount.push(  w.length );
                 this.fileInfo.totalWords += w.length ;
-/*
-                if( i+1 == this.sentences.length ){
-                    // PARSER BUG: Might not pick up last line of text if not properly punctutated.
-                    if( sum+this.sentences.length < this.content.length) {
-                        var lastSentence = this.content.substr( sum + this.sentences.length);
-                        this.sentences.push( lastSentence );
-                        this.fileInfo.numLines++;
-                    }
-                }
-*/
             }
         }
     };
@@ -99,10 +105,6 @@ function FileParser() {
     this.hasTarget= function(obj) { return obj.hasOwnProperty('target'); };
 
     this.atSameLineWord = function(a,b) {
-
-        console.log("A-B:", a.target, " :", b.target);
-        console.log("A-LW:", a.lineNum, " ", a.wordNum );
-        console.log("B-LW:", b.lineNum, " ", b.wordNum , "\n");
         return a.wordNum == b.wordNum && a.lineNum == b.lineNum;
     }
 
@@ -113,9 +115,7 @@ function FileParser() {
     };
 
     this.validLineNum = function (position) {
-        console.log("HL ->",  this.hasLine(position) );
         if( this.hasLine(position) ) {
-            //console.log("PLN", position.lineNum,  " < ", this.fileInfo.numLines );
             return  position.lineNum < this.fileInfo.numLines && position.lineNum >= 0;
         }
         return false;
@@ -123,26 +123,10 @@ function FileParser() {
 
     this.validWordNum = function (position) {
         console.log("WN ->",  this.hasWord(position) );
-        if( this.hasWord(position) ) {
-            if( this.validLineNum( position ) ) {
-                //console.log("PLW", position.wordNum,  " < ",  this.fileInfo.totalWords );
+        if( this.hasWord(position)  && this.validLineNum( position ) ) {
                 return position.wordNum >=0  && position.wordNum <= this.fileInfo.totalWords;
-            }
         }
         return false;
-    };
-
-    // Assumes line and word
-    this.calcCharPos = function( position ) {
-        //console.log( "HT", this.hasTarget(position) );
-        //console.log("VWN", this.validWordNum(position) );
-        if(  this.hasTarget( position ) && this.validWordNum(position) ) {
-            //console.log("Checking char pos ");
-            console.log("F1", this.fileInfo.charCount[ position.lineNum ] );
-            console.log("F2", this.sentences[ position.lineNum ].indexOf( position.target ) );
-            return this.fileInfo.charCount[ position.lineNum ] + this.sentences[ position.lineNum ].indexOf( position.target );
-        }
-        return -1;
     };
 
     // Straight forward Get
@@ -155,6 +139,8 @@ function FileParser() {
         console.log("I2",position.charPos);
         return this.fileInfo.charCount[ position.lineNum ] + position.charPos;
     }
+
+
 
 
 

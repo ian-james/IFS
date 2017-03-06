@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var XRegExp = require('xregexp');
 var buttonMaker = require('./createTextButton');
+var FileParser = require('./feedbackParser').FileParser;
 
 function escapeRegExp(str) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -62,6 +63,11 @@ function markupFile( file, selectedTool, feedbackItems )
     var idArr = [];
     var matchClasses = "";
 
+    var fileParser = new FileParser();
+    fileParser.setupContent( file.content );
+    fileParser.tokenize();
+
+
     for( var i = 0; i < feedbackItems.length; i++ )
     {  
          var feedbackItem = feedbackItems[i];
@@ -70,6 +76,11 @@ function markupFile( file, selectedTool, feedbackItems )
         // Check for a specific tool and specific filename or all
         if(  file.originalname == feedbackItems[i].filename  && ( selectedTool == "All" || selectedTool == feedbackItems[i].toolName ) )
         {
+            if( !fileParser.hasCh( feedbackItem) ) {
+                // Most have line number and character position.
+                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos( feedbackItem );
+            }
+            
             // Check whether next item will match, identify multiError on same word
             nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
             var nextMatches =  nextItem && nextItem.target == feedbackItem.target
