@@ -1,0 +1,10 @@
+.markedTextArea {
+    resize:none; width:100%; 
+    white-space: pre-line;
+    
+    font-size:2em;
+    font-family: "Times New Roman", Times, serif;
+    height:60%;
+    min-height:60%;
+    overflow-y: auto;
+}

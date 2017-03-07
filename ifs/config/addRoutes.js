@@ -31,6 +31,9 @@ module.exports = function (app) {
     //Word Cloud
     require(componentsPath + '/WordCloud/wordCloudRoutes')(app);
 
+    //Text Summarization
+    require(componentsPath + '/TextSummarization/textSummaryRoutes')(app);
+
     // Test features can be placed here.
     require(componentsPath + "/Test/testRoutes")(app);
 }

@@ -96,14 +96,13 @@ class FrequencySummarizer:
 
         # Tokenize sentences
         sents = sent_tokenize( text )
-        numSentences = max( 0, min( numSentences, len(sents) ) )
+        numSentences =  max( 0, min( int(numSentences), len(sents) ) )
 
         ranking = defaultdict(int)
         for i, sent in enumerate(sents):
             for w in sent.split():
                 if w in usefulWords:
                     ranking[i] += usefulWords[w]
-            ranking[i] /= len(sent)
 
         sentIdx = self.rank(ranking, numSentences)
         return [ sents[j] for j in sentIdx ]
@@ -115,17 +114,17 @@ def decorateData( result, options ):
     json_string += '{\n'
     json_string += '"feedback": [\n'
     json_string += '{\n'
-    json_string += '"tool": "textSumarization",\n'
-    json_string += '"type": "visual",\n'
+    json_string += '"tool": "textSummarization",\n'
+    json_string += '"filename": "' + str(options['file']) + '",\n'
+    json_string += '"originalname": "' + str( os.path.basename( options['file']) ) + '",\n'
     json_string += '"senCount":' + str(options['sentences']) + ',\n'
     j_array = json.dumps( result );
-    json_string += '"senteneces": ' + j_array + '\n'
+    json_string += '"sentences": ' + j_array + '\n'
     json_string += '}\n'
     json_string += ']\n'
     json_string += '}\n'
 
     return json_string
-
 
 
 # main program that takes arguments
@@ -152,6 +151,7 @@ def main(argv):
             sys.exit()
 
     if ifile != '':
+        options['file'] = ifile;
         with open(ifile, 'r') as myfile:
             fileContents= myfile.read()
 

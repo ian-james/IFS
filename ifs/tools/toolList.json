@@ -44,6 +44,23 @@
                     "arg": "-t",
                     "params":""
             }]
+        },
+        {
+            "displayName": "Text Summary", 
+            "progName":"./tools/languageTools/textSummarization.py",
+            "progfullName": "./tools/languageTools/textSummarization.py",
+            "runType": "visual",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" :  [ {
+                    "displayName": "Sentences",
+                    "type": "select",
+                    "values": [1,3,5,10,15,20],
+                    "name": "textSummary",
+                    "arg": "-s",
+                    "params":""
+            }]
         }
     ]
 }
