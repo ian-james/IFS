@@ -108,6 +108,7 @@ module.exports =  {
         var filename = fileInfo.filename;
         if( filename && this.isDoc(filename) )
         {
+            console.log("Handling docx file types", filename );
             var childProcess = require('child_process');
             var outDir = path.dirname(filename);
             var args =  [ "--headless", "--convert-to","txt:Text", filename, '--outdir', outDir ];
