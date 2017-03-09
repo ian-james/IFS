@@ -1,7 +1,7 @@
 {
     "tools": [
          {
-            "displayName": "Spell Checker", 
+            "displayName": "Spell Checker",
             "progName":"./tools/languageTools/spell_check.py",
             "progfullName": "./tools/languageTools/spell_check.py",
             "runType": "writing",
@@ -17,18 +17,29 @@
                     "arg": "-l",
                     "params":""
 
-                },
-                {
-                    "displayName" : "Warning with rare or uncommon words",
-                    "type" : "checkbox",
-                    "name" : "warningUncommonWords",
-                    "arg": "-r",
+                }
+            ]
+        },
+        {
+            "displayName": "Grammar Checker",
+            "progName": "./tools/languageTools/grammar.py",
+            "runType": "writing",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-i",
+            "options" :  [ {
+                    "displayName": "Language",
+                    "type": "select",
+                    "values": [ "en_US", "en_CA"],
+                    "name": "language",
+                    "arg": "-l",
                     "params":""
                 }
             ]
         },
         {
-            "displayName": "Word Cloud", 
+            "displayName": "Word Cloud",
             "progName":"./tools/languageTools/termFreq.py",
             "progfullName": "./tools/languageTools/termFreq.py",
             "runType": "visual",
@@ -46,7 +57,7 @@
             }]
         },
         {
-            "displayName": "Text Summary", 
+            "displayName": "Text Summary",
             "progName":"./tools/languageTools/textSummarization.py",
             "progfullName": "./tools/languageTools/textSummarization.py",
             "runType": "visual",
