@@ -18,30 +18,38 @@ var limits = {
 
 var Helpers = require('./fileUploadHelpers');
 
+
+function acceptableFileTypes() {
+    return ['json', 'cpp', 'c','h','txt', 'text', 'doc', 'docx', 'zip','tar', 'odt' ];
+}
+
+function acceptableMimeType() {
+    return [
+    'text/plain',
+    'text/markdown',
+    'application/json', 
+    'application/zip',
+    'application/x-compressed-zip',
+    'application/x-tar',
+    'application/msword',
+    'application/vnd.oasis.opendocument.text',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+}
+
+
   /* Setup a file filter for upload*/
 var fileFilter = function(req,file,cb)
 {
-   var originalName = file.originalname;
-    var extension = originalName.lastIndexOf(".");
-    if( extension >= 0 )
-    {
-    // Insert accepted file types here
-    // CIS files
-    // PSY files
-        var filetype = originalName.substr(extension+1);
-        var acceptedTypes = [
-            'json', 'cpp', 'c','h','lib',
-            'doc','txt', 'text', 'docx', 'zip','tar'
-        ];
+    var allowMimeTypes = acceptableMimeType();
+    var mimetype = file.mimetype;
 
-        if( _.indexOf(acceptedTypes,filetype >= 0 ) ) {
-            Logger.info("Successfully uploaded a file");
-            return cb( null, true );
-        }
-
+    if( _.includes(allowMimeTypes,mimetype) ) {
+        Logger.info("Allow upload of file", file.originalname);
+        return cb( null, true );
     }
 
-    Logger.error("Invalid file type selection");
+    Logger.error("Invalid file type selection", file.mimetype);
     return cb( null, false, new Error("In valid file type."));
 
 }
@@ -79,7 +87,6 @@ var storage = multer.diskStorage({
                 callback(null, submissionFolder);
             }
         });
-
 
     },
     filename: function( req, file, callback ) {

@@ -8,9 +8,12 @@ var _ = require('lodash');
 function readFeedbackFormat( feedback , options)
 {
     var feedbackFormat = JSON.parse(feedback);
+    console.log("ReadFeedbackFormat");
 
     var files = feedbackFormat.files; // Array of files
     var feedbackItems = feedbackFormat.feedback.writing;
+
+    console.log("ReadFeedbackFormat:", feedbackItems );
 
     // A Unique list of tools used for UI
     var toolsUsed = _.uniqBy(feedbackItems,'toolName');
@@ -27,10 +30,12 @@ function readFeedbackFormat( feedback , options)
         }
         return { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
     }
+    console.log("HERE123:", feedbackItems );
     return {'files':files, 'feedbackItems': feedbackItems, "msg":"Unable to display feedback."};
 }
 
 function readFiles( filename , options) {
+    console.log(filename);
     var feedback = fs.readFileSync( filename, 'utf-8');
     return readFeedbackFormat( feedback , options );
 }

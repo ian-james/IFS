@@ -20,7 +20,7 @@ kue.Job.rangeByState('complete',0, 5000, 'asc', function(err,jobs){
 
 
 kue.Job.rangeByState('active',0, 15000, 'asc', function(err,jobs){
-    jobs.forEach( function(job) {
+    jobs.forEach( function(job) {s
         job.remove( function() {
             console.log('removed', job.id);
         });
@@ -43,8 +43,8 @@ kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
         });
     });
 });
-*/
 
+*/
 queue.on('ready', () => {
     Logger.info("Kue is ready");
 });

@@ -18,6 +18,7 @@ module.exports = function( app ) {
     */
     app.get('/feedback', function(req,res, next ){
 
+        console.log("In Feeedback");
         var page = { title: 'Feedback page' };
         var feedback = Feedback.setupFeedback(req.session.allFeedbackFile);
         var result = _.assign(page, feedback);

@@ -1,7 +1,7 @@
 var path = require('path');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
-var unzip = require('unzip');
+var unzip = require('unzipper');
 var _ = require('lodash');
 
 var Logger = require( __configs + "loggingConfig");
@@ -21,6 +21,9 @@ module.exports =  {
     },
 
     getExt: function ( filename ) {
+        if(!filename)
+            return "";
+
         var extId = filename.lastIndexOf(".");
         return (extId >= 0 ? filename.substr(extId+1) : "");
     },
@@ -72,6 +75,50 @@ module.exports =  {
         return filesInfo;
     },
 
+    separateFiles: function( files, fileTypes) {
+        var res = {}
+        console.log("Seperate files");
+        for( var i = 0; i < files.length; i++ ) {
+            var ext = this.getExt( files[i] );
+            if( _.includes(fileTypes, ext) ){
+                console.log("here1");
+                if(_.includes(res, ext) ) {
+                    console.log("here");
+                    res[ext].push( files[i] )
+                }
+                else
+                    res[ext] = [ files[i] ] ;
+            }          
+        }
+        console.log("res:", res );
+        return res;
+    },
+
+
+
+    findFilesSync: function( startDir ) {
+
+        console.log("HERE FFS", startDir );
+        if( !fs.existsSync(startDir)) {
+            console.log("Does not exist Find files sync");
+            throw {error: "Directory: does not exists"};
+        }
+        console.log("FindFiles");
+
+        var arr = [];
+        var files = fs.readdirSync(startDir);
+        for( var i = 0; i < files.length; i++ ) {
+            var filename = path.join( startDir, files[i] );
+            var stat = fs.lstatSync(filename);
+            if( stat.isDirectory() ) {
+                arr = arr.concat( findFilesSync( filename ) );
+            }
+            else
+                arr.push( filename );
+        }
+        return arr;
+    },
+
     handleZipFile: function ( fileInfo )
     {
         var res = {};
@@ -79,25 +126,43 @@ module.exports =  {
         if( zipfile && this.isZip(zipfile) ){
 
             //TODO: This has only been tested with zip.
+            console.log("Here\n,ZipFiles:", zipfile );
+            var zipDir =path.join( path.dirname(zipfile), '/unzipped');
             try {
                 var stream = fs.createReadStream(zipfile);
                 stream.on('error', function(error) {
                     Logger.error("Error caught error reading", error);
                 });
-                stream.pipe(unzip.Extract( {path: path.dirname(zipfile)} ) );
 
-                //TODO, do we create jobs for each of these?
-                // For now just return the same object
+                stream.pipe(unzip.Extract( {path: zipDir } ) );
+                /*
+                var files = findFilesSync( zipDir );
+                console.log("Files", files );
+                var dirSetup = separateFiles( arr, ['.c', '.h'] );
+                console.log(dirSetup);
+                */
+
                 res = { res:fileInfo };
+                console.log("Unzipping ", res );
             }
             catch(err) {
                 var emsg =  "Unable to unzip: " + fileInfo.originalname;
                 Logger.error(emsg);
                 res.err = { msg:emsg };
+                return;
             }
+
+
+            var files = this.findFilesSync( zipDir );
+            console.log("AT files ", files );
+            var dirSetup = this.separateFiles( files , ['.c', '.h'] );
+            console.log(dirSetup);
         }
+
+
         return res;
     },
+
 
     // This function takes the isDoc type and creates a .txt file with the same name
     // and in the same folder.

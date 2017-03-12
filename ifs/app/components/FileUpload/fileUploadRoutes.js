@@ -24,6 +24,12 @@ module.exports = function (app) {
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
+        console.log("STARTING HERE");
+        console.log("Upload", upload);
+        console.log("********************************************************************** ");
+        console.log("Files ", req.files );
+        console.log("********************************************************************** ");
+
         // Get files names to be inserted
         var uploadedFiles = Helpers.getFileNames( req.files );
 
@@ -31,6 +37,7 @@ module.exports = function (app) {
         uploadedFiles = Helpers.handleFileTypes( uploadedFiles );
         if( 'err' in uploadedFiles )
         {
+            console.log("Found an error");
             req.flash('errorMessage', uploadedFiles.err.msg );
             res.redirect('/tool');
             return;
@@ -52,6 +59,7 @@ module.exports = function (app) {
             //TODO: Uncomment this when we actually organize database scheme.
             //rawFeedbackDB.addRawFeedbackToDB(req,res,requestFile, result );
             if( organizedResults.feedback.writing ) {
+                console.log("Try feedback");
                 res.redirect('/feedback');
             }
             else if( organizedResults.feedback.visual ) {
@@ -59,6 +67,7 @@ module.exports = function (app) {
                 res.redirect('/cloud');
             }
             else {
+                console.log("No feedback file writing or visual");
                 res.redirect('/tool');
             }
         }, function(err){

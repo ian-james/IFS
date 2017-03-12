@@ -59,12 +59,15 @@ function organizeResults( fileInfo, fullData )
 function writeResults(obj, fdbTypes, uploadPath ){
     // Stores the results in separated format too.
     Logger.info("Write feedback Files");
+    var c = 0;
     obj['feedbackFiles'] = {};
     _.forIn( fdbTypes, function(value,key) {
+        console.log("FC ", c++ );
         var filename = key + "FeedbackFile.json";
         obj['feedbackFiles'][key] = filename;
         writeFeedbackToFile(uploadPath, value, filename);
     });
+    Logger.info("Finish Write feedback Files");
 }
 
 /* 
@@ -75,15 +78,7 @@ function writeFeedbackToFile(pathDir, obj, filename )
     // Get upload directory    
     var file = path.join(pathDir,filename);
     Logger.info("Writing FeedbackFile:", file);
-    //fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
-    
-    fs.writeFile( file, JSON.stringify(obj), 'utf-8', function(err) {
-        if(err) {
-            Logger.error("Unable to save file: ", file);
-            return err;
-        }
-        Logger.info("Successfully saved file:", file);
-    });    
+    fs.writeFileSync( file, JSON.stringify(obj), 'utf-8');
     return file;
 }
 
