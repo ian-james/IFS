@@ -4,12 +4,22 @@ nav(uk-navbar).uk-background-secondary.uk-margin
     div.uk-navbar-right
         ul.uk-navbar-nav
             li
-                a(href="/") Home
+                a(href="/")
+                    span(uk-icon="icon: home").uk-margin-small-right
+                    span(class="uk-visible@m") Home
             li(ng-show="!isLoggedIn")
-                a(href="/register") Sign-up
+                a(href="/register")
+                    span(uk-icon="icon: plus-circle").uk-margin-small-right
+                    | Sign-up
             li(ng-show="!isLoggedIn")
-                a(href="/login") Login
+                a(href="/login")
+                    span(uk-icon="icon: sign-in").uk-margin-small-right
+                    | Login
             li(ng-show="isLoggedIn")
-                a(href="/preferences") Preferences
+                a(href="/preferences")
+                    span(uk-icon="icon: cog").uk-margin-small-right
+                    span(class="uk-visible@m") Preferences
             li(ng-show="isLoggedIn")
-                a(href-"/logout") Logout
+                a(href="/logout")
+                    span(uk-icon="icon: sign-out").uk-margin-small-right
+                    span(class="uk-visible@m") Logout
