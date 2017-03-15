@@ -32,7 +32,7 @@ module.exports = function (passport) {
             function (req, username, password, done ) {
 
                 db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
-                    req.flash('errorMessage', 'We tried');
+                    //req.flash('errorMessage', 'We tried');
                     if(err)
                     {
                         req.flash('errorMessage', 'Unable to signup.');
