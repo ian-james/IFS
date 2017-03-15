@@ -12,17 +12,22 @@ module.exports = function (app) {
     // File upload angular (might not be necessary anymore)
     app.use( "/fileUpload", express.static( nodeModulesPath +"angular-file-upload/dist"));
 
+    // jQuery
+    app.use( "/jquery", express.static( nodeModulesPath + "jquery/dist") );
+
     // Angular
     app.use( "/angular", express.static( nodeModulesPath + "angular/") );
-
-      // Angular
     app.use( "/angular-sanitize", express.static( nodeModulesPath + "angular-sanitize/") );
 
-    // Boostrap-Angular
+    // Bootstrap-Angular
     app.use( "/bootstrap", express.static(  nodeModulesPath + "angular-ui-bootstrap/dist/") );
 
-    app.use("/wordcloud", express.static( nodeModulesPath + "/wordcloud/src/") );
+    // UI-kit
+    app.use( "/uikit", express.static( nodeModulesPath + "uikit/dist/") );
 
-    // Static Files   
+    // wordcloud
+    app.use( "/wordcloud", express.static( nodeModulesPath + "/wordcloud/src/") );
+
+    // Static Files
     app.use( express.static( path.join( __dirname, "/../app/") ) );
 }
