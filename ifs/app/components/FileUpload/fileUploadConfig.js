@@ -88,8 +88,8 @@ var storage = multer.diskStorage({
             }
         });
 
-    },
-    filename: function( req, file, callback ) {
+    }
+,    filename: function( req, file, callback ) {
         var originalName = file.originalname;
         callback(null, originalName );
     }

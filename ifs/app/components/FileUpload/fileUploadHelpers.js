@@ -1,8 +1,8 @@
 var path = require('path');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
-var unzip = require('unzipper');
 var _ = require('lodash');
+const execSync = require('child_process').execSync;
 
 var Logger = require( __configs + "loggingConfig");
 
@@ -17,6 +17,7 @@ module.exports =  {
 
     replaceExt: function( filename, newExt ) {
       var ext = path.extname(filename);
+      console.log(ext);
       return filename.replace(ext, newExt);
     },
 
@@ -53,7 +54,7 @@ module.exports =  {
         {
             var fileInfo = filesInfo[i];
             var res = this.handleZipFile( fileInfo );
-            if( 'err' in res ) {
+            if( !res || 'err' in res ) {
                 // TODO: we need to stop
                 return res;
             }
@@ -95,11 +96,10 @@ module.exports =  {
     },
 
 
-
     findFilesSync: function( startDir ) {
 
         console.log("HERE FFS", startDir );
-        if( !fs.existsSync(startDir)) {
+        if( !fs.lstatSync(startDir).isDirectory() ) {
             console.log("Does not exist Find files sync");
             throw {error: "Directory: does not exists"};
         }
@@ -111,7 +111,7 @@ module.exports =  {
             var filename = path.join( startDir, files[i] );
             var stat = fs.lstatSync(filename);
             if( stat.isDirectory() ) {
-                arr = arr.concat( findFilesSync( filename ) );
+                arr = arr.concat( this.findFilesSync( filename ) );
             }
             else
                 arr.push( filename );
@@ -126,40 +126,41 @@ module.exports =  {
         if( zipfile && this.isZip(zipfile) ){
 
             //TODO: This has only been tested with zip.
-            console.log("Here\n,ZipFiles:", zipfile );
-            var zipDir =path.join( path.dirname(zipfile), '/unzipped');
+            console.log("Here\nZipFiles:", zipfile );
+            var zipDir = path.join( path.dirname(zipfile), '/unzipped');
             try {
-                var stream = fs.createReadStream(zipfile);
-                stream.on('error', function(error) {
-                    Logger.error("Error caught error reading", error);
-                });
+                console.log("Print the unarchieve");
+                console.log("Print the unarchieve2");
+                var unarc = this.unarchieve( zipfile, {'dir':zipDir} );
+                console.log("Print NEXT");
+                if( _.has(unarc,'err') ) {
+                    console.log("Error on unarchieving files");
+                    throw new Error(unarc.err);
+                }
+                else {
+                    console.log("Inside success");
+                    var files = this.findFilesSync(zipDir);
+                    console.log( files );
 
-                stream.pipe(unzip.Extract( {path: zipDir } ) );
-                /*
-                var files = findFilesSync( zipDir );
-                console.log("Files", files );
-                var dirSetup = separateFiles( arr, ['.c', '.h'] );
-                console.log(dirSetup);
-                */
+                    var fileGroups = _.groupBy(res, this.getExt);
 
-                res = { res:fileInfo };
-                console.log("Unzipping ", res );
+                    console.log( fileGroups );
+                    console.log("PLEASE VALIDATE YOUR WORK");
+
+                    if( fileGroups ){
+                        var isValidProject = this.validateProjectStructure(fileGroups)
+                        if(  _.has(isValidProject,'err') )
+                            throw new Error("Invalid project " + isValidProject.err);
+                        res = { res: zipDir };
+                    }
+                }
             }
             catch(err) {
-                var emsg =  "Unable to unzip: " + fileInfo.originalname;
-                Logger.error(emsg);
+                var emsg =  "Unable to extract : " + fileInfo.originalname;
+                Logger.error(err.name + ': ' + err.message);
                 res.err = { msg:emsg };
-                return;
             }
-
-
-            var files = this.findFilesSync( zipDir );
-            console.log("AT files ", files );
-            var dirSetup = this.separateFiles( files , ['.c', '.h'] );
-            console.log(dirSetup);
         }
-
-
         return res;
     },
 
@@ -194,6 +195,78 @@ module.exports =  {
             }
         }
         return res;
+    },
+
+    /* Function will un-archieve a zip or gz file 
+        By Default: will create a new folder unzipped and extract to it.
+    */
+    unarchieve: function ( file, options ) {
+        console.log("START");
+        options = options || {};
+        options.dir = options.dir || "./unzipped";
+        var res = {}
+        try {
+            console.log("Inside UNARC");
+            var call = "";
+            var folderCreated = false;
+            console.log( "FILE is :", file, ":");
+            var ext = this.getExt(file );
+            console.log("Check ext");
+            
+            if( ext == 'gz') {
+                folderCreated = mkdirp.sync( options.dir );
+                options.params = options.params || "-xzf";
+                call = "tar " + options.params + " " + file + " -C " + options.dir;
+            }
+            else if( ext == 'zip')  {
+                console.log("IS ZIP");
+                folderCreated = true;
+                options.params = options.params || " -q ";
+                call ="unzip " + options.params + file + " -d " + options.dir;
+                console.log("call would be:", call );
+            }
+            console.log(" About to make: ", call );
+            if( folderCreated ) {
+                execSync( call );
+            }
+            else 
+                throw "Can't create folder";
+        }
+        catch ( e ) {
+            var err = {err:"Unable to extract files: " + file}
+            console.log(err.err);
+            return err;
+        }
+
+        return {};
+    },
+
+    // Minor validation of the project, including checking for a makefile, *c and *.h files
+    validateProjectStructure: function ( zipDir, groupedFiles ) {
+
+        var res = {};
+        if( groupedFiles ) {
+            var noExts = _.get(groupedFiles, "");
+            var makeFile = path.join(zipDir,'Makefile');
+            var hasMakeFile = _.includes(noExts, makeFile) || _.includes(noExts, _.lowerCase(makeFile) );
+
+            if( !noExts || !hasMakeFile ) {
+                return {err:"Unable to identify project makefile, please ensure file you've included a makefile at the top level of your project."}
+            }
+
+            var cFiles = _.get(groupedFiles,"c");
+            var hFiles = _.get(groupedFiles,'h');
+
+            if( !cFiles ) {
+                return { err: "Unable to locate source (.c) files in project."}
+            }
+            
+            if( !hFiles )  {
+                return { err: "Unable to locate header (.h) files in project."}
+            }
+        }
+        //Everything looks ok.
+        return {};
     },
 
     // This function gets the file names from Multer, appends the uploads directory

@@ -35,7 +35,7 @@ module.exports = function (app) {
 
         // Handle Zip files, text, docs and projects
         uploadedFiles = Helpers.handleFileTypes( uploadedFiles );
-        if( 'err' in uploadedFiles )
+        if( !uploadedFiles || 'err' in uploadedFiles )
         {
             console.log("Found an error");
             req.flash('errorMessage', uploadedFiles.err.msg );

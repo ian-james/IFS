@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/ian-james/ifs#readme",
   "dependencies": {
+    "adm-zip": "^0.4.7",
     "angular": "^1.6.1",
     "angular-file-upload": "^2.4.1",
     "angular-sanitize": "^1.6.1",
@@ -57,7 +58,6 @@
     "passport-local": "^1.0.0",
     "pug": "^2.0.0-beta6",
     "q": "^1.4.1",
-    "unzipper": "^0.8.8",
     "winston": "^2.3.1",
     "winston-daily-rotate-file": "^1.4.3",
     "wordcloud": "^1.0.6",
