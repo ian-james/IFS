@@ -10,10 +10,11 @@ module.exports = function (app) {
     // Set directory locations for angular and bootstrap
     var nodeModulesPath =  path.join( __dirname + "/../node_modules/");
     // File upload angular (might not be necessary anymore)
-    app.use( "/fileUpload", express.static( nodeModulesPath +"angular-file-upload/dist"));
+    app.use( "/fileUpload", express.static( nodeModulesPath +"angular-file-upload/dist") );
 
     // jQuery
     app.use( "/jquery", express.static( nodeModulesPath + "jquery/dist") );
+    app.use( "/validate", express.static( nodeModulesPath + "jquery-validation/dist") );
 
     // Angular
     app.use( "/angular", express.static( nodeModulesPath + "angular/") );

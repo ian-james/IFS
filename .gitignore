@@ -5,3 +5,5 @@ ifs/uploads/
 ifs/errorFile.pop
 npm-debug.log
 ifs/logs/
+*.swp
+*.swo

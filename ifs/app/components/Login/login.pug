@@ -1,9 +1,14 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
-    h1.text-center  Welcome to IFS!
+    h1.uk-text-center  Welcome to IFS!
     div(class="uk-card uk-card-default uk-card-body uk-align-center uk-width-1-2@s")
         div(ng-controller="loginCtrl")
+            div(uk-alert).uk-alert-danger
+                p.errorMessage #{messages.errorMessage}
+
+            script(src="/validate/jquery.validate.min.js")
+            script(src="shared/views/js/form-rules.js")
             form(id="loginFrm" name="login" method="post" action="/login" uk-grid).uk-grid-small
                 div.uk-width-1-1
                     input(type="email" name="username" placeholder="Enter email" required).uk-input#inputEmail
@@ -19,7 +24,5 @@ block content
                 div.uk-width-1-2
                     input(type="submit" value="Login").uk-button.uk-button-default.uk-align-right
 
-            p.forgot
+            div.forgot
                 a(href="#") Forgot password?
-                p.errorMessage.uk-text-danger #{messages.errorMessage}
-
