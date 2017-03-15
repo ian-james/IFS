@@ -24,7 +24,7 @@ import io, json
 import re
 import string
 from subprocess import call
-from subprocess import Popen, PIPE, DEVNULL
+from subprocess import Popen, PIPE
 import shlex
 import glob
 
@@ -73,7 +73,7 @@ def parse( text, options ):
     for line in text.splitlines():
         sNum = 0
         feedback = {}
-        feedback['tool'] = options['tool']
+        feedback['toolName'] = options['tool']
         sections = line.split( options['splitSeq'])
         
         # Check that we can put each parsed section into an expect tag type.

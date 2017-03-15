@@ -5,6 +5,7 @@ var queue = kue.createQueue(kOptions.kueOpts);
 var Logger = require( __configs + "loggingConfig" );
 
 // Watch for stuck jobs, as PER REQUEST on GITHUB
+Logger.info("Watching for stuck jobs: timeout: " + kOptions.options.watchStuckTime)
 queue.watchStuckJobs(kOptions.options.watchStuckTime);
 
 

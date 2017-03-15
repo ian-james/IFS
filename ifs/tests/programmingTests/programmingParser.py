@@ -24,7 +24,7 @@ import io, json
 import re
 import string
 from subprocess import call
-from subprocess import Popen, PIPE, DEVNULL
+from subprocess import Popen, PIPE
 import shlex
 import glob
 

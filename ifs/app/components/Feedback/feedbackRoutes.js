@@ -20,6 +20,7 @@ module.exports = function( app ) {
 
         console.log("In Feeedback");
         var page = { title: 'Feedback page' };
+        console.log('all Feedback Files', req.session.allFeedbackFile);
         var feedback = Feedback.setupFeedback(req.session.allFeedbackFile);
         var result = _.assign(page, feedback);
         res.render( viewPath + "feedback", result );

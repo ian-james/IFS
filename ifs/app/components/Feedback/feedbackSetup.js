@@ -4,15 +4,51 @@ var buttonMaker = require('./createTextButton');
 var Logger = require( __configs + "loggingConfig");
 var _ = require('lodash');
 
+var Helpers = require( __components+ "FileUpload/fileUploadHelpers");
+
+/* This function is used when given a directory as the file path.
+   It assumes this is a programming project folder and will create File Objects
+
+*/
+function loadFiles( directory, options ) {
+
+    if( fs.lstatSync(directory).isDirectory() ) {
+
+        // TODO: How should this be handled
+        options = options || {'groups': ['c','h'] }
+
+        var files = Helpers.findFilesSync(directory);
+        var fileGroups = _.groupBy(files, Helpers.getExt);
+
+        console.log("FileGroups2", fileGroups);
+        var arr = [];
+        for( var i = 0; fileGroups &&  i < options.groups.length;i++ ) {
+            var files = _.get(fileGroups, options.groups[i]);
+            console.log(files);
+            for(var y = 0; y < files.length;y++)
+                arr.push( Helpers.createFileObject(files[y]));
+        }
+        return arr;
+    }
+    return [];
+}
+
+
 /* This function loads the selected tool, loads file content and requests highlight*/
 function readFeedbackFormat( feedback , options)
 {
     var feedbackFormat = JSON.parse(feedback);
     console.log("ReadFeedbackFormat");
 
-    var files = feedbackFormat.files; // Array of files
-    var feedbackItems = feedbackFormat.feedback.writing;
+    console.log("************************************************************* ");
 
+    var files = feedbackFormat.files; // Array of files
+    var feedbackItems = feedbackFormat.feedback.writing || feedbackFormat.feedback.programming;
+
+    if( files && fs.lstatSync(files[0].filename).isDirectory()) {
+        var r =  loadFiles(files[0].filename);
+        files = r.length > 0 ? r : files;
+    }
     console.log("ReadFeedbackFormat:", feedbackItems );
 
     // A Unique list of tools used for UI

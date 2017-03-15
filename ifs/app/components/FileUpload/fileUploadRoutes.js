@@ -54,11 +54,12 @@ module.exports = function (app) {
         // Add the jobs to the queue, results are return in object passed:[], failed:[]
         manager.makeJob(tools).then( function( jobResults ) {
             var organizedResults = FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed );
+            console.log(organizedResults.allFeedbackFile);
             req.session.allFeedbackFile = organizedResults.allFeedbackFile;
             
             //TODO: Uncomment this when we actually organize database scheme.
             //rawFeedbackDB.addRawFeedbackToDB(req,res,requestFile, result );
-            if( organizedResults.feedback.writing ) {
+            if( organizedResults.feedback.writing ||  organizedResults.feedback.programming ) {
                 console.log("Try feedback");
                 res.redirect('/feedback');
             }

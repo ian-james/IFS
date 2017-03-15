@@ -151,6 +151,10 @@ module.exports =  {
                         var isValidProject = this.validateProjectStructure(fileGroups)
                         if(  _.has(isValidProject,'err') )
                             throw new Error("Invalid project " + isValidProject.err);
+
+                        // These will not point to the proper directory.
+                        fileInfo.filename = zipDir;
+                        fileInfo.originalname = zipDir;
                         res = { res: zipDir };
                     }
                 }
@@ -290,5 +294,15 @@ module.exports =  {
         Logger.info("Writing", file, "now", file);
         fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
         return file;
+    },
+
+    // This function mimicks the file object provided by Multer
+    // If more fields are discovered to be useful just add them.
+    createFileObject: function( filename ) {
+        return {
+            'originalname': path.basename(filename),
+            'filename':filename,
+            'content': '',
+        };
     }
 };
