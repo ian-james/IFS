@@ -7,7 +7,18 @@ module.exports = function (app) {
     /* Solution #2 for connecting Express and Angular makes a 2nd route called data to http req*/
     app.get('/tool/data', function(req,res) {
         var supportedToolsFile = './tools/toolList.json';
-        fs.readFile( supportedToolsFile, 'utf-8'    , function( err, data ) {
+        if( req.session.toolSelect  == "Computer Science" ) {
+            supportedToolsFile = './tools/toolListProgramming.json';
+        }
+        else {
+            req.session.toolSelect = "Writing";
+            req.session.toolFile = './tools/toolList.json';
+        }
+
+        console.log("Supported tool is ", supportedToolsFile);
+
+        
+        fs.readFile( supportedToolsFile, 'utf-8', function( err, data ) {
             if( err ) {
                 //Unable to get support tools file, larger problem here.
                 console.log(err);

@@ -1,0 +1,32 @@
+{
+    "tools": [
+         {
+            "displayName": "Compiler Tool", 
+            "progName":"./tools/programmingTools/programmingParser.py",
+            "progfullName": "./tools/programmingTools/programmingParser.py",
+            "runType": "programming",
+            "filesAllowed": "zipFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-d",
+            "options" :  [ {
+                    "displayName": "Error Types",
+                    "type": "select",
+                    "values": [ "all", "warning"],
+                    "name": "dictionary",
+                    "arg": "-e",
+                    "params":""
+
+                },
+                {
+                    "displayName" : "Tool",
+                    "type" : "select",
+                    "name" : "toolSelection",
+                    "values": [ "cppcheck", "gcc", "clang"],
+                    "arg": "-t",
+                    "params":""
+                }
+            ]
+        }
+    ]
+}

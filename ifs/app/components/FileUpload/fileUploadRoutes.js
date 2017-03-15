@@ -47,7 +47,7 @@ module.exports = function (app) {
         userSelection['files'] = uploadedFiles;
         
         // Create Job Requests
-        var tools = ToolManager.createJobRequests( userSelection );
+        var tools = ToolManager.createJobRequests( req.session.toolFile, userSelection );
         var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
         req.session.jobRequestFile = requestFile;
 
