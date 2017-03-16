@@ -20,8 +20,9 @@ module.exports = function( app ) {
 
         console.log("In Feeedback");
         var page = { title: 'Feedback page' };
-        console.log('all Feedback Files', req.session.allFeedbackFile);
-        var feedback = Feedback.setupFeedback(req.session.allFeedbackFile);
+        var feedbackFile = req.session.allFeedbackFile;
+        console.log('all Feedback Files', feedbackFile);
+        var feedback = Feedback.setupFeedback(feedbackFile);
         var result = _.assign(page, feedback);
         res.render( viewPath + "feedback", result );
     });
@@ -34,7 +35,8 @@ module.exports = function( app ) {
         
         var opt = { 'tool': req.body.toolSelector };
         var page = { title: 'Feedback Test page' };
-        var feedback = Feedback.setupFeedback(req.session.allFeedbackFile, opt);
+        var feedbackFile = req.session.allFeedbackFile
+        var feedback = Feedback.setupFeedback(feedbackFile, opt);
         var result = _.assign(page,feedback);
         res.render( viewPath + "feedback", result );
 

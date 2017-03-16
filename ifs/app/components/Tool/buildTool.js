@@ -77,7 +77,7 @@ function parseFormSelection( formData ) {
 function readToolFileList( filename ) {
 
     console.log(filename);
-    var supportedToolsFile = './tools/toolList.json';
+    var supportedToolsFile = './tools/toolListProgramming.json';
     if( filename )
         supportedToolsFile = filename;
 
@@ -102,6 +102,7 @@ function writeToolList( files, obj )
 // user selected options to create jobs for the Queue
 function createJobRequests( toolFile, selectedOptions ) {
 
+    console.log("ToolFile is", toolFile );
     var toolList = readToolFileList(toolFile);
     var toolOptions = parseFormSelection( selectedOptions );
 

@@ -86,11 +86,48 @@ function replaceText(str, targetOpt )
     });
 }
 
+function setupFilePositionInformation(file, selectedTool, feedbackItems) {
+    var fileParser = new FileParser();
+    fileParser.setupContent( file.content );
+    fileParser.tokenize();
+
+    //console.log("TOkenize me");
+
+    // Setup positionsal information for all 
+    for( var i = 0; i < feedbackItems.length; i++ ) {
+
+        var feedbackItem = feedbackItems[i];
+        if(  file.originalname == feedbackItem.filename  && ( selectedTool == "All" || selectedTool == feedbackItem.toolName ) )
+        {
+
+            if( !feedbackItem.filename) 
+            {
+                // TODO: This should be handed a generic or global error system.
+                
+                console.log("Continueing:", feedbackItem.filename);
+                continue;
+            }
+
+            //console.log("INSIDE2");
+            if( !feedbackItem.target  && feedbackItem.lineNum ) {
+                feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                console.log("New target", feedbackItem.target);
+            }
+            //console.log("INSIDE3");
+            if( !feedbackItem.charNum ) {
+                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
+                console.log("Changed feedback char position to:", feedbackItem.charNum)
+            }
+        }
+    }
+}
+
 
 
 /* Markup a single file by plaing only feedback Items from a specific tool into the file */
 function markupFile( file, selectedTool, feedbackItems )
 {
+    //console.log("Start marking up");
     var content = file.content;
     var offset = 0;
 
@@ -98,27 +135,46 @@ function markupFile( file, selectedTool, feedbackItems )
     var idArr = [];
     var matchClasses = "";
 
-    var fileParser = new FileParser();
-    fileParser.setupContent( file.content );
-    fileParser.tokenize();
-
+    setupFilePositionInformation(file, selectedTool,feedbackItems);
 
     for( var i = 0; i < feedbackItems.length; i++ )
     {  
-         var feedbackItem = feedbackItems[i];
+        var feedbackItem = feedbackItems[i];
+        //console.log("File-OriginalName",file.originalname );
+        //console.log("feedbackItem", feedbackItem );
+        //console.log("feedbackItem File", feedbackItem.filename  );
+        //console.log("Selected Tool", selectedTool)
+        //console.log("Feedback toolName", feedbackItem.toolName, "\n\n" );
+        
 
         // Check for a specific tool and specific filename or all
-        if(  file.originalname == feedbackItems[i].filename  && ( selectedTool == "All" || selectedTool == feedbackItems[i].toolName ) )
+        if(  file.originalname == feedbackItem.filename  && ( selectedTool == "All" || selectedTool == feedbackItem.toolName ) )
         {
                 // Most have line number and character position.
                 // Interestingly, calculating this value can give different answers... 
                 // I think it depends on line-breaks.
                 // Momementarily setting this to always run.
-            //feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos( feedbackItem );
+                //
+            //console.log("INSIDE");
+            if( !feedbackItem.filename) {
+                // TODO: This should be handed a generic or global error system.
+                //console.log("Continueing");
+                continue;
+            }
+            else if( feedbackItem.lineNum == undefined || feedbackItem.charNum == undefined ){
+                console.log("Continueing because no search position:", feedbackItem);
+                continue;
+            }
+
+            //console.log("Printing info: ", feedbackItem.lineNum, " : ", feedbackItem.charNum );
+
+            //console.log("feedbackItemBefore Entry", feedbackItem );
             
             
             // Check whether next item will match, identify multiError on same word
             nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
+            //console.log("NextItem:", nextItem );
+
             var nextMatches =  nextItem && nextItem.target == feedbackItem.target
                              && nextItem.wordNum == feedbackItem.wordNum
                              && nextItem.lineNum == feedbackItem.lineNum;

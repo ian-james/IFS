@@ -20,11 +20,11 @@ function loadFiles( directory, options ) {
         var files = Helpers.findFilesSync(directory);
         var fileGroups = _.groupBy(files, Helpers.getExt);
 
-        console.log("FileGroups2", fileGroups);
+        //console.log("FileGroups2", fileGroups);
         var arr = [];
         for( var i = 0; fileGroups &&  i < options.groups.length;i++ ) {
             var files = _.get(fileGroups, options.groups[i]);
-            console.log(files);
+            //console.log(files);
             for(var y = 0; y < files.length;y++)
                 arr.push( Helpers.createFileObject(files[y]));
         }
@@ -38,40 +38,43 @@ function loadFiles( directory, options ) {
 function readFeedbackFormat( feedback , options)
 {
     var feedbackFormat = JSON.parse(feedback);
-    console.log("ReadFeedbackFormat");
+    //console.log("ReadFeedbackFormat");
 
-    console.log("************************************************************* ");
+    //console.log("************************************************************* ");
 
     var files = feedbackFormat.files; // Array of files
     var feedbackItems = feedbackFormat.feedback.writing || feedbackFormat.feedback.programming;
 
     if( files && fs.lstatSync(files[0].filename).isDirectory()) {
+        console.log("Loading Files:");
         var r =  loadFiles(files[0].filename);
         files = r.length > 0 ? r : files;
     }
-    console.log("ReadFeedbackFormat:", feedbackItems );
+    //console.log("ReadFeedbackFormat:", feedbackItems );
 
     // A Unique list of tools used for UI
     var toolsUsed = _.uniqBy(feedbackItems,'toolName');
-    console.log( toolsUsed );
+    
     // Tool should always be selected unless it's defaulted too.
     var selectedTool = (options && options['tool'] || toolsUsed.length >= 1 && toolsUsed[0].toolName);
+    //console.log( "SelectedTool is ", selectedTool);
     if( selectedTool ) {
         // For each file, read in the content and mark it up for display.
         for( var i = 0; i < files.length; i++ )
         {
+            //console.log("Preparing file", files[i]);
             var file = files[i];
             file.content = fs.readFileSync( file.filename, 'utf-8');
             file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
         return { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
     }
-    console.log("HERE123:", feedbackItems );
+    //console.log("HERE123:", feedbackItems );
     return {'files':files, 'feedbackItems': feedbackItems, "msg":"Unable to display feedback."};
 }
 
 function readFiles( filename , options) {
-    console.log(filename);
+    //console.log(filename);
     var feedback = fs.readFileSync( filename, 'utf-8');
     return readFeedbackFormat( feedback , options );
 }

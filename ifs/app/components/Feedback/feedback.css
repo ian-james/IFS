@@ -55,7 +55,7 @@
 .ftext
 {
     color: white;
-    font:12px;
+    font:3em;
 }
 
 .errorType {
@@ -71,4 +71,12 @@
 {
     color:"purple";
     display: inline;
+}
+
+.btnText {
+    border: none;
+    background: #fff;
+    background-color:transparent;
+    padding:0;
+    font-size:2em;
 }

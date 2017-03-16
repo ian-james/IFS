@@ -6,13 +6,14 @@ module.exports = function (app) {
 
     /* Solution #2 for connecting Express and Angular makes a 2nd route called data to http req*/
     app.get('/tool/data', function(req,res) {
-        var supportedToolsFile = './tools/toolList.json';
-        if( req.session.toolSelect  == "Computer Science" ) {
-            supportedToolsFile = './tools/toolListProgramming.json';
+        var supportedToolsFile = './tools/toolListProgramming.json';
+        if( req.session.toolSelect  == "Writing") {
+            supportedToolsFile  = './tools/toolList.json';
+            req.session.toolSelect = 'Writing';
+            req.session.toolFile = supportedToolsFile;
         }
         else {
-            req.session.toolSelect = "Writing";
-            req.session.toolFile = './tools/toolList.json';
+            req.session.toolSelect = 'Computer Science';
         }
 
         console.log("Supported tool is ", supportedToolsFile);

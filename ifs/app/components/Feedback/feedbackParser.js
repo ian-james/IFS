@@ -134,14 +134,30 @@ function FileParser() {
         return position.charNum;
     }
 
+    // External Tool: assumes -1 for lineNum
     this.getCharNumFromLineNumCharPos = function ( position ) {
-        console.log("I1-", position.lineNum,  " ",this.fileInfo.charCount[ position.lineNum ]);
+        if( position.lineNum-1 <0 )
+            return -1;
+
+        console.log("I1-", position.lineNum,  " ",this.fileInfo.charCount[ position.lineNum-1 ]);
         console.log("I2",position.charPos);
-        return this.fileInfo.charCount[ position.lineNum ] + position.charPos;
+        return this.fileInfo.charCount[ position.lineNum-1 ] + (position.charPos ? position.charPos : 0 );
     }
 
 
+    this.getLine = function( position, is0Based = true ) {
+        
+        if( this.validLineNum(position ) ) {
+                if(position.lineNum - 1 < 0)
+                    return "";
+                console.log("Print Line Before:", this.sentences[ position.lineNum -1 ] );
+                console.log("Print Line Before:", this.sentences[ position.lineNum ] );
+                console.log("Print Line Before:", this.sentences[ position.lineNum + 1 ] );
 
+                return this.sentences[ position.lineNum -1];
+        }
+        return "";
+    };
 
 
     /*
@@ -168,13 +184,7 @@ function FileParser() {
             return words.length < position.wordNum ? words[position.wordNum] : "";
         }
         return "";
-    };
-
-    this.getLine = function( position ) {
-        if( this.validLineNum(position ) )
-                return this.sentences[ position.lineNum ];
-        return "";
-    };
+    };    
 
     this.find = function( target ) {
         if( this.hasPos( target) && this.hasTarget(target) )

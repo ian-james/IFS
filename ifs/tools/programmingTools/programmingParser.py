@@ -80,7 +80,10 @@ def parse( text, options ):
         if( len(sections) == len(types) ):
             for section in sections:
                 if( sNum < len(types) ):
-                    feedback[ types[sNum] ] = section.strip()
+                    if( types[sNum] == 'filename'):
+                        feedback[ types[sNum] ] = os.path.basename(section)
+                    else:
+                        feedback[ types[sNum] ] = section.strip()
                 else:
                     sys.stderr.write("************ Error: Section types doesn't mtch split Sections ***** ")
                 sNum = sNum + 1
@@ -120,7 +123,7 @@ def createCmd( options ):
         options['initP'] = '-'
         options['splitSeq'] = ':'
         options['flags'] = ' -Wall -Wextra -fno-diagnostics-show-caret -fsyntax-only'
-        options['splitTypes'] = [ "file", "lineNum", "charPos", "type", "feedback"]
+        options['splitTypes'] = [ "filename", "lineNum", "charPos", "type", "feedback"]
         cmdStr = " ".join( [
                         options['tool'],
                         getKV(options,'std'),
@@ -132,7 +135,7 @@ def createCmd( options ):
         options['initP'] = '-'
         options['splitSeq'] = ':'
         options['flags'] = ' -Wall -Wextra -fno-caret-diagnostics -fsyntax-only'
-        options['splitTypes'] = [ "file", "lineNum", "charPos", "type", "feedback"]
+        options['splitTypes'] = [ "filename", "lineNum", "charPos", "type", "feedback"]
         cmdStr = " ".join( [
                         options['tool'],
                         getKV(options,'std'),
@@ -165,7 +168,7 @@ def main(argv):
                 'suppress':'',
                 'dir':'', 
                 'splitSeq': "##",
-                'splitTypes': [ "file", "lineNum", "type", "category", "feedback"],
+                'splitTypes': [ "filename", "lineNum", "type", "category", "feedback"],
                 'outFile':'stdout.txt', 
                 'outErrFile':'stderr.txt',
                 'initP': "--"

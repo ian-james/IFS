@@ -6,7 +6,7 @@
                 "displayName":"Preferred Assessment Tools",
                 "name": "toolSelect",
                 "type": "select",
-                "values": [  "Writing","Computer Science" ],
+                "values": [  "Computer Science","Writing" ],
                 "value": "Computer Science"
             }
         ]

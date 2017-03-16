@@ -64,7 +64,7 @@ function writeResults(obj, fdbTypes, uploadPath ){
     _.forIn( fdbTypes, function(value,key) {
         console.log("FC ", c++ );
         var filename = key + "FeedbackFile.json";
-        obj['feedbackFiles'][key] = filename;
+        obj['feedbackFiles'][key] = path.join(uploadPath,filename);
         writeFeedbackToFile(uploadPath, value, filename);
     });
     Logger.info("Finish Write feedback Files");

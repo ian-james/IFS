@@ -22,6 +22,21 @@ var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFil
 
 module.exports = function (app) {
 
+    function setupSessionFiles( req,  organizedResults)
+    {
+        console.log("********************* TRying to setup session files");
+        req.session.allFeedbackFile = organizedResults.allFeedbackFile;
+        if( organizedResults.hasOwnProperty('feedbackFiles')) {
+            console.log("organizedResults has feedbackFiles");
+            for( var k in organizedResults['feedbackFiles'] ) {
+                req.session[k] = organizedResults['feedbackFiles'][k];
+                console.log("Adding to session", organizedResults['feedbackFiles'][k]);
+            }
+
+            console.log(req.session);
+        }
+    }
+
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
         console.log("STARTING HERE");
@@ -54,8 +69,8 @@ module.exports = function (app) {
         // Add the jobs to the queue, results are return in object passed:[], failed:[]
         manager.makeJob(tools).then( function( jobResults ) {
             var organizedResults = FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed );
-            console.log(organizedResults.allFeedbackFile);
-            req.session.allFeedbackFile = organizedResults.allFeedbackFile;
+            setupSessionFiles(req, organizedResults);
+
             
             //TODO: Uncomment this when we actually organize database scheme.
             //rawFeedbackDB.addRawFeedbackToDB(req,res,requestFile, result );

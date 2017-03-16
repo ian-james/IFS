@@ -20,7 +20,7 @@ block content
                     each file, findex in files
                         uib-tab( index=findex heading= file.originalname disable="{{tab.disabled}}")
                             div.row
-                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true")
+                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true") 
                                     pre !{file.markedUp}
             div(ng-class="!showSideBar ? 'col-md-1' : 'col-md-3' ")
                 button(id="showLongFeedback" type="button" class="btnIcon" ng-show="!showSideBar" ng-click="showSideBar = !showSideBar")
