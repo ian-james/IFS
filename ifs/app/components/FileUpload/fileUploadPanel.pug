@@ -1,11 +1,22 @@
-div.panel.panel-primary
-    div.panel-heading
-        h4.panel-title.text-center
-            p File Upload
-    div.panel-body.text-center
-        h4 Please select files to upload
-        hr
-        input(type="file" name="file"  multiple required)
-        input(type="hidden" name="time"  id="time" value=Date.now())
-        hr
-        input(type="submit" value="Evaluate" name="submit")
+div
+    h4 File Upload
+    hr
+div
+    p.uk-text-muted Please select files to upload
+    div#upload-panel.upload-panel.uk-placeholder.uk-text-center
+        span(uk-icon="icon: push; ratio: 2").uk-align-center
+        span.uk-text-middle
+            | Drag and drop files here or 
+        div(uk-form-custom)
+            input(type="file" name="file" multiple)
+            span.uk-link
+                | select one 
+            | to upload
+    progress(value="0" max="100" hidden)#progressbar.uk-progress
+    script(src="components/FileUpload/upload-panel.js")
+
+    //div(uk-form-custom="target: true")
+    //    input(type="file" name="file"  multiple required)
+    //    input(type="text" placeholder="Select file").uk-input
+    //input(type="hidden" name="time"  id="time" value=Date.now())
+    //input(type="submit" value="Evaluate" name="submit").uk-button.uk-button-primary
