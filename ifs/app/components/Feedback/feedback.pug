@@ -20,8 +20,7 @@ block content
                     each file, findex in files
                         uib-tab( index=findex heading= file.originalname disable="{{tab.disabled}}")
                             div.row
-                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true") 
-                                    pre !{file.markedUp}
+                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true") !{file.markedUp}
             div(ng-class="!showSideBar ? 'col-md-1' : 'col-md-3' ")
                 button(id="showLongFeedback" type="button" class="btnIcon" ng-show="!showSideBar" ng-click="showSideBar = !showSideBar")
                     span(class="glyphicon glyphicon-list")
@@ -29,9 +28,13 @@ block content
             div(class="col-md-3 longFeedbackContainer ng-cloak" ng-show="showSideBar")
                     include popover.html
 
+        div.row.generalErrorsSection
+            include feedbackErrorTable.pug
+ 
+
         div.row.summarySection
             div(ng-class="showSideBar ? 'col-md-7 col-md-offset-1' : 'col-md-10 col-md-offset-1' ")
-                p Feedback Messsages #{feedbackItems.length}
+                h4 Feedback Messsages #{feedbackItems.length}
 
     script(src="components/Feedback/feedbackController.js")
 

@@ -9,15 +9,7 @@
             "parseCmd": "",
             "defaultArg": "",
             "fileArgs": "-d",
-            "options" :  [ {
-                    "displayName": "Error Types",
-                    "type": "select",
-                    "values": [ "all", "warning"],
-                    "name": "dictionary",
-                    "arg": "-e",
-                    "params":""
-
-                },
+            "options" :  [ 
                 {
                     "displayName" : "Tool",
                     "type" : "select",

@@ -29,7 +29,7 @@
 .summarySection
 {
     width:100%;
-    font-size 2em;
+    font-size em;
     font-family: "Times New Roman", Times, serif;
     text-align: center;
     padding:5;
@@ -55,7 +55,7 @@
 .ftext
 {
     color: white;
-    font:3em;
+    font:1em;
 }
 
 .errorType {
@@ -73,10 +73,11 @@
     display: inline;
 }
 
+
 .btnText {
     border: none;
     background: #fff;
     background-color:transparent;
     padding:0;
-    font-size:2em;
+    font-size:1.3em;
 }
