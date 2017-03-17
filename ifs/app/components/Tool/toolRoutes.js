@@ -13,7 +13,8 @@ module.exports = function (app) {
             req.session.toolFile = supportedToolsFile;
         }
         else {
-            req.session.toolSelect = 'Computer Science';
+            req.session.toolSelect = 'Programming';
+            req.session.toolFile = supportedToolsFile;
         }
 
         console.log("Supported tool is ", supportedToolsFile);

@@ -35,7 +35,7 @@ kue.Job.rangeByState('inactive',0, 15000, 'asc', function(err,jobs){
         });
     });
 });
-
+*/
 
 kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
     jobs.forEach( function(job) {
@@ -45,7 +45,7 @@ kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
     });
 });
 
-*/
+
 queue.on('ready', () => {
     Logger.info("Kue is ready");
 });

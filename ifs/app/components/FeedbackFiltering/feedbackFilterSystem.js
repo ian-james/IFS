@@ -59,11 +59,14 @@ function organizeResults( fileInfo, fullData )
 function writeResults(obj, fdbTypes, uploadPath ){
     // Stores the results in separated format too.
     Logger.info("Write feedback Files");
-    var c = 0;
+    console.log(fdbTypes);
     obj['feedbackFiles'] = {};
     _.forIn( fdbTypes, function(value,key) {
-        console.log("FC ", c++ );
+        console.log("WRITING KEY", key);
         var filename = key + "FeedbackFile.json";
+        console.log(uploadPath)
+        console.log(filename);
+        console.log("next");
         obj['feedbackFiles'][key] = path.join(uploadPath,filename);
         writeFeedbackToFile(uploadPath, value, filename);
     });

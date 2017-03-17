@@ -20,7 +20,7 @@ module.exports = function( app ) {
             // This will create a minor bug in that 
             if( req.session) {
                 req.session.toolSelect = req.body.toolSelect;
-                req.session.toolFile = req.body.toolSelect == "Computer Science" ? './tools/toolListProgramming.json'
+                req.session.toolFile = req.body.toolSelect == "Programming" ? './tools/toolListProgramming.json'
                                                                                 :  './tools/toolList.json';
             }
         }

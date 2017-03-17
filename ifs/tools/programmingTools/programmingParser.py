@@ -107,6 +107,19 @@ def getKV( dict, key ):
 
 
 def createCmd( options ):
+
+    iDir = os.path.normpath( os.path.join( options['dir'], options['includeDir']) )
+    srcDir = os.path.normpath( os.path.join(options['dir'], options['srcDir']) )
+    # Assumption here that we can still try directory for .h and .c files at the top level
+    # The intended is for non zip files where just a flat array of files exists.
+    if not os.path.isdir(iDir):
+        iDir = ""
+
+    if not os.path.isdir(srcDir):
+        srcDir = os.path.normpath( os.path.join(options['dir'], "*") )
+    else:
+        srcDir = os.path.join(srcDir,"*")
+
     cmdStr = ""
     if( options['tool'] == 'cppcheck'):
         cmdStr = " ".join( [ options['tool'], 
@@ -115,8 +128,7 @@ def createCmd( options ):
                         getKV(options,'std'), 
                         getKV(options,'suppress'), 
                         '--template="{file}##{line}##{severity}##{id}##{message}"',
-                        "-I " + os.path.normpath( os.path.join("./", options['dir'],"./include/") )
-                         + " " + os.path.normpath( os.path.join("./", options['dir'],"./src/") )
+                        " " + srcDir  if iDir == "" else "-I " + iDir + " " + srcDir
                     ])
 
     elif options['tool'] == 'gcc':
@@ -128,8 +140,7 @@ def createCmd( options ):
                         options['tool'],
                         getKV(options,'std'),
                         options['flags'],
-             "-iquote " + os.path.normpath( os.path.join("./", options['dir'],"./include/") )
-                         + " " + os.path.normpath( os.path.join("./", options['dir'],"./src/*") )
+                        " " + srcDir if iDir == "" else "-iquote " + iDir + " " + srcDir
                     ])
     elif options['tool'] == 'clang':
         options['initP'] = '-'
@@ -140,8 +151,7 @@ def createCmd( options ):
                         options['tool'],
                         getKV(options,'std'),
                         options['flags'],
-             "-iquote " + os.path.normpath( os.path.join("./", options['dir'],"./include/") )
-                         + " " + os.path.normpath( os.path.join("./", options['dir'],"./src/*") )
+                        " " + srcDir  if iDir == "" else "-iquote " + iDir + " " + srcDir
                     ])
     else:
         # Protect against random tool calls
@@ -171,7 +181,9 @@ def main(argv):
                 'splitTypes': [ "filename", "lineNum", "type", "category", "feedback"],
                 'outFile':'stdout.txt', 
                 'outErrFile':'stderr.txt',
-                'initP': "--"
+                'initP': "--",
+                'includeDir': "./include",
+                'srcDir': "./src"
                 }
 
     # define command line arguments and check if the script call is validq

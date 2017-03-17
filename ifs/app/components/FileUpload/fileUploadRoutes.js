@@ -48,9 +48,17 @@ module.exports = function (app) {
         // Get files names to be inserted
         var uploadedFiles = Helpers.getFileNames( req.files );
 
+        if( !uploadedFiles || uploadedFiles.length == 0 )
+        {            
+            req.flash("Unable to process uploaded files");
+            res.redirect('/tool');
+            return;
+        }
+
         // Handle Zip files, text, docs and projects
-        uploadedFiles = Helpers.handleFileTypes( uploadedFiles );
-        if( !uploadedFiles || 'err' in uploadedFiles )
+        uploadedFiles = Helpers.handleFileTypes( req.session.toolSelect, uploadedFiles );
+        
+        if( _.has(uploadedFiles,'err') )
         {
             console.log("Found an error");
             req.flash('errorMessage', uploadedFiles.err.msg );

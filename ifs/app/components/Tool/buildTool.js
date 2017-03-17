@@ -110,7 +110,6 @@ function createJobRequests( toolFile, selectedOptions ) {
     var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
 
     return jobReq;
-
 }
 
 // User options are already for the appropriate tool

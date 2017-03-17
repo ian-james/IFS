@@ -41,6 +41,78 @@ module.exports =  {
         return  ext == ".doc" || ext == ".docx" || ext == '.odt';
     },
 
+    isSrcExt: function( filename ) {
+        var ext = ['c', "cpp", "cc"];
+        return _.includes(ext, this.getExt( filename) );
+    },
+
+    validateProgrammingFiles: function( filesInfo ) {
+
+        // Check only one file for zip submission
+        var countZip = 0, countSrc = 0;
+        for( var i = 0; i < filesInfo.length; i++) {
+            if( this.isZip(filesInfo[i].filename) )
+                countZip++;
+            else if( this.isSrcExt(filesInfo[i].filename) )
+                countSrc++;
+        }
+
+        if( countZip > 1 || (countZip == 1 && filesInfo.length > 1) ) {
+            return {err: "Invalid submission, please submit one file for zip files."};
+        }
+
+        if( countZip == 0 && countSrc == 0 )
+            return { err: "Invalid submission, please submit one source file."};
+
+        return {};
+    },
+
+    validateWritingFiles: function( filesInfo ) {
+        //TODO Nothing for now
+        return {};
+    },
+
+    // This funciton mimicks what would happen if students submitted via a zip file.
+    // Place everything in another folder, could eventually even move certain files
+    // too appropriate directories ( if needed )
+    createProgrammingProject: function( filesInfo, options ) {
+
+        if(filesInfo.length >= 1) {
+
+            options = options || {'dir':'/unzipped'};
+            var directory = filesInfo[0].destination;
+            console.log(directory);
+            var zipDir = path.join( directory, options['dir']);
+            console.log("************************************", zipDir);
+            var folderCreated = mkdirp.sync( zipDir );
+
+            if( folderCreated ) {
+                try {
+                    for( var i = 0; i < filesInfo.length; i++ ) {
+                        var call ="mv " + filesInfo[i].filename + " " + zipDir
+                        execSync( call );
+                    }
+
+                    // These will point to the directory and be handled later.
+                    // Destroy the original array and replace with a single instance to directory.
+                    filesInfo = [ { 
+                        'filename': zipDir,
+                        'originalname': zipDir,
+                        'destination': directory,
+                        'path': 'directory',
+                    }];
+                    return filesInfo;
+                }
+                catch(e) {
+                    throw {'err': "Can copy source files provided"};
+                }
+            }
+            else {
+                throw {'err': "Can't create folder"};
+            }
+        }
+    },
+
     /* Wrapper for all file types handling
         Function should take files array (containing basic info for each file)
         Check that unzipping and conversions can function
@@ -48,31 +120,58 @@ module.exports =  {
         otherwise leave file information unchanged.
         Note: You can/should only handle the fileInfo once.
     */
-    handleFileTypes: function( filesInfo )
-    {
-        for( var i = 0; i < filesInfo.length; i++)
-        {
-            var fileInfo = filesInfo[i];
-            var res = this.handleZipFile( fileInfo );
-            if( !res || 'err' in res ) {
-                // TODO: we need to stop
-                return res;
-            }
-            else if( 'res' in res ) {
-                //  file was handled
-                fileInfo = res.res;
-            }
-            res = this.handleDocxFile( fileInfo );
-            if( 'err' in res ) {
-                // TODO: we need to stop
-                return res;
-            }
-            else if( res['res'] ){
-                //  file was handled
-                fileInfo = res.res;
+    handleFileTypes: function( toolType, filesInfo ) {
 
+        console.log("Handle files", toolType);
+        if( toolType == "Programming") {
+
+            console.log("Handle files validate");
+            var validate = this.validateProgrammingFiles( filesInfo );
+            if( _.has(validate,'err') ) {
+                console.log("Error validating programming");
+                return validate;
+            }
+
+            console.log("Handle files post validate");
+
+            var fileInfo = filesInfo[0];
+            var res = this.handleZipFile( fileInfo );
+            if( _.has(res,'err') ) {
+                // Could not handl zipped format.
+                console.log
+                return res;
+            }
+            else if( _.has(res,'res') ) {
+                // Get the directory information
+                console.log("Resolutino obtained.");
+                 fileInfo = res.res;
+            }
+            else {
+                console.log("creating a proggramm directory");
+                filesInfo = this.createProgrammingProject(filesInfo);
             }
         }
+        else if( toolType == "Writing") {
+            var validate = this.validateWritingFiles( filesInfo );
+            if( _.has(validate,'err') ) {
+                return validate;
+            }   
+            for( var i = 0; i < filesInfo.length;i++) {
+                var fileInfo = filesInfo[i];
+                res = this.handleDocxFile( fileInfo );
+                if( _.has(res,'err') ) {
+                    // TODO: we need to stop
+                    Logger.error("Unable to handle docx files");
+                    return res;
+                }
+                else if(_.has(res,'res')  ){
+                    //  file was handled
+                    fileInfo = res.res;
+                }
+            }
+        }
+
+        console.log("File information is ", filesInfo );
         return filesInfo;
     },
 
