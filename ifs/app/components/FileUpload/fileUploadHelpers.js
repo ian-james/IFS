@@ -5,6 +5,7 @@ var _ = require('lodash');
 const execSync = require('child_process').execSync;
 
 var Logger = require( __configs + "loggingConfig");
+var Errors = require(__components + "Errors/errors");
 
 module.exports =  {
 
@@ -58,12 +59,11 @@ module.exports =  {
         }
 
         if( countZip > 1 || (countZip == 1 && filesInfo.length > 1) ) {
-            return {err: "Invalid submission, please submit one file for zip files."};
+            return Errors.cLogErr("Invalid submission, please submit one file for zip files.");
         }
 
         if( countZip == 0 && countSrc == 0 )
-            return { err: "Invalid submission, please submit one source file."};
-
+            return Errors.cLogErr("Invalid submission, please submit one source file.");
         return {};
     },
 
@@ -85,6 +85,7 @@ module.exports =  {
             var zipDir = path.join( directory, options['dir']);
             console.log("************************************", zipDir);
             var folderCreated = mkdirp.sync( zipDir );
+            Errors.cl(folderCreated);
 
             if( folderCreated ) {
                 try {
@@ -104,11 +105,12 @@ module.exports =  {
                     return filesInfo;
                 }
                 catch(e) {
-                    throw {'err': "Can copy source files provided"};
+                    return Errors.cErr("Cannot copy source files provided");
                 }
             }
             else {
-                throw {'err': "Can't create folder"};
+                Errors.cl( zipDir );
+                return Errors.cErr("Can not create programming create folder");
             }
         }
     },
@@ -120,48 +122,58 @@ module.exports =  {
         otherwise leave file information unchanged.
         Note: You can/should only handle the fileInfo once.
     */
-    handleFileTypes: function( toolType, filesInfo ) {
+    handleFileTypes: function( req, res ) {
 
+          // Get files names to be inserted
+        var uploadedFiles = this.getFileNames( req.files );
+
+        if( !uploadedFiles || uploadedFiles.length == 0 )
+        {            
+            var e = Errors.cLogErr( "Unable to process uploaded files" );
+            return e;
+        }
+
+        var toolType = req.session.toolSelect;
         console.log("Handle files", toolType);
         if( toolType == "Programming") {
 
             console.log("Handle files validate");
-            var validate = this.validateProgrammingFiles( filesInfo );
-            if( _.has(validate,'err') ) {
-                console.log("Error validating programming");
+            var validate = this.validateProgrammingFiles( uploadedFiles );
+            if( Errors.hasErr(validate) ) {
+                Errors.logErr(validate);
                 return validate;
             }
 
             console.log("Handle files post validate");
 
-            var fileInfo = filesInfo[0];
+            var fileInfo = uploadedFiles[0];
             var res = this.handleZipFile( fileInfo );
-            if( _.has(res,'err') ) {
+            if( Errors.hasErr(res) ) {
                 // Could not handl zipped format.
-                console.log
+                Errors.logErr(res);
                 return res;
             }
             else if( _.has(res,'res') ) {
-                // Get the directory information
-                console.log("Resolutino obtained.");
+                // Get the directory information                
                  fileInfo = res.res;
             }
             else {
                 console.log("creating a proggramm directory");
-                filesInfo = this.createProgrammingProject(filesInfo);
+                uploadedFiles = this.createProgrammingProject(uploadedFiles);
             }
         }
         else if( toolType == "Writing") {
-            var validate = this.validateWritingFiles( filesInfo );
-            if( _.has(validate,'err') ) {
+            var validate = this.validateWritingFiles( uploadedFiles );
+            if( Errors.hasErr(validate) ) {
+                Errors.logErr(res);
                 return validate;
             }   
-            for( var i = 0; i < filesInfo.length;i++) {
-                var fileInfo = filesInfo[i];
+            for( var i = 0; i < uploadedFiles.length;i++) {
+                var fileInfo = uploadedFiles[i];
                 res = this.handleDocxFile( fileInfo );
-                if( _.has(res,'err') ) {
+                if( Errors.logErr(res)) {
                     // TODO: we need to stop
-                    Logger.error("Unable to handle docx files");
+                    Errors.logErr(res);
                     return res;
                 }
                 else if(_.has(res,'res')  ){
@@ -171,8 +183,8 @@ module.exports =  {
             }
         }
 
-        console.log("File information is ", filesInfo );
-        return filesInfo;
+        console.log("File information is ", uploadedFiles );
+        return uploadedFiles;
     },
 
     separateFiles: function( files, fileTypes) {
@@ -199,8 +211,8 @@ module.exports =  {
 
         console.log("HERE FFS", startDir );
         if( !fs.lstatSync(startDir).isDirectory() ) {
-            console.log("Does not exist Find files sync");
-            throw {error: "Directory: does not exists"};
+            return Errors.cLogErr("Directory:" + startDir + " does not exists");
+            
         }
         console.log("FindFiles");
 
@@ -232,9 +244,8 @@ module.exports =  {
                 console.log("Print the unarchieve2");
                 var unarc = this.unarchieve( zipfile, {'dir':zipDir} );
                 console.log("Print NEXT");
-                if( _.has(unarc,'err') ) {
-                    console.log("Error on unarchieving files");
-                    throw new Error(unarc.err);
+                if( Errors.ifErrLog(unarc) ) {
+                    return unarc;
                 }
                 else {
                     console.log("Inside success");
@@ -247,14 +258,16 @@ module.exports =  {
                     console.log("PLEASE VALIDATE YOUR WORK");
 
                     if( fileGroups ){
-                        var isValidProject = this.validateProjectStructure(fileGroups)
-                        if(  _.has(isValidProject,'err') )
-                            throw new Error("Invalid project " + isValidProject.err);
+                        var isValidProject = this.validateProjectStructure(fileGroups);
+                        if( Errors.ifErrLog(isValidProject) )
+                            return isValidProject
 
                         // These will not point to the proper directory.
                         fileInfo.filename = zipDir;
                         fileInfo.originalname = zipDir;
                         res = { res: zipDir };
+
+                        console.log("FINISHED VALIDATE");
                     }
                 }
             }
@@ -286,9 +299,8 @@ module.exports =  {
             var convertToTxt = childProcess.spawnSync('soffice', args );
 
             if(convertToTxt.error) {
-                var emsg =  "Unable to convert document file: " + fileInfo.originalname;
-                Logger.error(emsg);
-                res.err = { msg:emsg };
+                var e = Errors.cLogErr("Unable to convert document file: " + fileInfo.originalname);
+                return e;
             }
             else {
                 // Make the text file the reference file instead of .doc
@@ -332,13 +344,13 @@ module.exports =  {
             if( folderCreated ) {
                 execSync( call );
             }
-            else 
-                throw "Can't create folder";
+            else {
+                throw Errors.cLogErr("Unable to unzip project folder.");
+            }
         }
         catch ( e ) {
-            var err = {err:"Unable to extract files: " + file}
-            console.log(err.err);
-            return err;
+            var e = Errors.cErrLog("Unable to extract files: " + file);
+            return e;
         }
 
         return {};
@@ -354,18 +366,18 @@ module.exports =  {
             var hasMakeFile = _.includes(noExts, makeFile) || _.includes(noExts, _.lowerCase(makeFile) );
 
             if( !noExts || !hasMakeFile ) {
-                return {err:"Unable to identify project makefile, please ensure file you've included a makefile at the top level of your project."}
+                return Errors.cLogErr("Unable to identify project makefile, please ensure file you've included a makefile at the top level of your project.");
             }
 
             var cFiles = _.get(groupedFiles,"c");
             var hFiles = _.get(groupedFiles,'h');
 
             if( !cFiles ) {
-                return { err: "Unable to locate source (.c) files in project."}
+                return Errors.cLogErr("Unable to locate source (.c) files in project.");
             }
             
             if( !hFiles )  {
-                return { err: "Unable to locate header (.h) files in project."}
+                return Errors.cLogErr("Unable to locate header (.h) files in project.");
             }
         }
         //Everything looks ok.

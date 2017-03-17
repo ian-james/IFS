@@ -29,11 +29,16 @@ block content
                     include popover.html
 
         div.row.generalErrorsSection
-            include feedbackErrorTable.pug
+            div(class="col-md-10 col-md-offset-1")
+                uib-accordion
+                    div(uib-accordion-group class="panel-primary" is-open="status.closed" )
+                        uib-accordion-heading Feedback Table
+                            <i class="glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                        include feedbackErrorTable.pug
  
 
         div.row.summarySection
-            div(ng-class="showSideBar ? 'col-md-7 col-md-offset-1' : 'col-md-10 col-md-offset-1' ")
+            div(class="col-md-10 col-md-offset-1")
                 h4 Feedback Messsages #{feedbackItems.length}
 
     script(src="components/Feedback/feedbackController.js")

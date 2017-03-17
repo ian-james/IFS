@@ -19,6 +19,7 @@ var upload = require("./fileUploadConfig").upload;
 // Feedback
 var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFilterSystem');
 
+var Errors = require(__components + "Errors/errors");
 
 module.exports = function (app) {
 
@@ -45,23 +46,14 @@ module.exports = function (app) {
         console.log("Files ", req.files );
         console.log("********************************************************************** ");
 
-        // Get files names to be inserted
-        var uploadedFiles = Helpers.getFileNames( req.files );
-
-        if( !uploadedFiles || uploadedFiles.length == 0 )
-        {            
-            req.flash("Unable to process uploaded files");
-            res.redirect('/tool');
-            return;
-        }
-
-        // Handle Zip files, text, docs and projects
-        uploadedFiles = Helpers.handleFileTypes( req.session.toolSelect, uploadedFiles );
+         // Handle Zip files, text, docs and projects
+         
+        var uploadedFiles = Helpers.handleFileTypes( req, res );
         
-        if( _.has(uploadedFiles,'err') )
+        if( Errors.hasErr(uploadedFiles) )
         {
             console.log("Found an error");
-            req.flash('errorMessage', uploadedFiles.err.msg );
+            req.flash('errorMessage', Errors.getErrMsg(uploadedFiles) );
             res.redirect('/tool');
             return;
         }
@@ -78,7 +70,6 @@ module.exports = function (app) {
         manager.makeJob(tools).then( function( jobResults ) {
             var organizedResults = FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed );
             setupSessionFiles(req, organizedResults);
-
             
             //TODO: Uncomment this when we actually organize database scheme.
             //rawFeedbackDB.addRawFeedbackToDB(req,res,requestFile, result );
@@ -92,6 +83,7 @@ module.exports = function (app) {
             }
             else {
                 console.log("No feedback file writing or visual");
+                req.flash('errorMessage', "Unsure what results where provided." );
                 res.redirect('/tool');
             }
         }, function(err){
