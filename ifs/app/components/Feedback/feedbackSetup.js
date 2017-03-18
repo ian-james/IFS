@@ -43,12 +43,15 @@ function readFeedbackFormat( feedback , options)
     //console.log("************************************************************* ");
 
     var files = feedbackFormat.files; // Array of files
+    files = _.sortBy(files, ['filename']);
     var feedbackItems = feedbackFormat.feedback.writing || feedbackFormat.feedback.programming;
 
     if( files && fs.lstatSync(files[0].filename).isDirectory()) {
         console.log("Loading Files:");
         var r =  loadFiles(files[0].filename);
-        files = r.length > 0 ? r : files;
+        if( r.length > 0 ) {
+            files = _.sortBy(r, ['originalname']);
+        }
     }
     //console.log("ReadFeedbackFormat:", feedbackItems );
 
@@ -65,7 +68,7 @@ function readFeedbackFormat( feedback , options)
             //console.log("Preparing file", files[i]);
             var file = files[i];
             file.content = fs.readFileSync( file.filename, 'utf-8');
-            file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+            file.markedUp = file.content;//fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
         return { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
     }
