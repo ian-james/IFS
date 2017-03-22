@@ -11,12 +11,12 @@ function createTextButton( feedbackItem, options )
                         + " uib-popover-template=" + ( options['template-file'] || "\"'components/Feedback/popoverMini.html'\"" )
                         + " popover-animation=" + (options['animation'] || "\"true\"" )
                         + " popover-placement=" + (options['placement'] || "\"bottom\"" )
-                        + " class=\" btnText " + ( options['classes']  + " " ||  "")  +  "\""
+                        + " class=\" btnText nocode " + ( options['classes']  + " " ||  "")  +  "\""
                         + ">";
     var endButton = "</a>";
     var result = { 'start': buttonStr,
-                    'mid': " " + feedbackItem.target,
-                    'end': " " + endButton
+                    'mid': feedbackItem.target,
+                    'end': endButton
                 };
     return result;
 }

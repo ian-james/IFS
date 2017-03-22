@@ -17,11 +17,9 @@ module.exports = function( app ) {
         and process and highlight
     */
     app.get('/feedback', function(req,res, next ){
-
-        console.log("In Feeedback");
+      
         var page = { title: 'Feedback page' };
         var feedbackFile = req.session.allFeedbackFile;
-        console.log('all Feedback Files', feedbackFile);
         var feedback = Feedback.setupFeedback(feedbackFile);
         var result = _.assign(page, feedback);
         res.render( viewPath + "feedback", result );

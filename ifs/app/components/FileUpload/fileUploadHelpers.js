@@ -18,7 +18,6 @@ module.exports =  {
 
     replaceExt: function( filename, newExt ) {
       var ext = path.extname(filename);
-      console.log(ext);
       return filename.replace(ext, newExt);
     },
 
@@ -81,9 +80,7 @@ module.exports =  {
 
             options = options || {'dir':'/unzipped'};
             var directory = filesInfo[0].destination;
-            console.log(directory);
             var zipDir = path.join( directory, options['dir']);
-            console.log("************************************", zipDir);
             var folderCreated = mkdirp.sync( zipDir );
             Errors.cl(folderCreated);
 
@@ -96,7 +93,7 @@ module.exports =  {
 
                     // These will point to the directory and be handled later.
                     // Destroy the original array and replace with a single instance to directory.
-                    filesInfo = [ { 
+                    filesInfo = [ {
                         'filename': zipDir,
                         'originalname': zipDir,
                         'destination': directory,
@@ -128,23 +125,18 @@ module.exports =  {
         var uploadedFiles = this.getFileNames( req.files );
 
         if( !uploadedFiles || uploadedFiles.length == 0 )
-        {            
+        {
             var e = Errors.cLogErr( "Unable to process uploaded files" );
             return e;
         }
 
         var toolType = req.session.toolSelect;
-        console.log("Handle files", toolType);
         if( toolType == "Programming") {
-
-            console.log("Handle files validate");
             var validate = this.validateProgrammingFiles( uploadedFiles );
             if( Errors.hasErr(validate) ) {
                 Errors.logErr(validate);
                 return validate;
             }
-
-            console.log("Handle files post validate");
 
             var fileInfo = uploadedFiles[0];
             var res = this.handleZipFile( fileInfo );
@@ -154,11 +146,10 @@ module.exports =  {
                 return res;
             }
             else if( _.has(res,'res') ) {
-                // Get the directory information                
+                // Get the directory information
                  fileInfo = res.res;
             }
             else {
-                console.log("creating a proggramm directory");
                 uploadedFiles = this.createProgrammingProject(uploadedFiles);
             }
         }
@@ -167,7 +158,7 @@ module.exports =  {
             if( Errors.hasErr(validate) ) {
                 Errors.logErr(res);
                 return validate;
-            }   
+            }
             for( var i = 0; i < uploadedFiles.length;i++) {
                 var fileInfo = uploadedFiles[i];
                 res = this.handleDocxFile( fileInfo );
@@ -182,39 +173,30 @@ module.exports =  {
                 }
             }
         }
-
-        console.log("File information is ", uploadedFiles );
         return uploadedFiles;
     },
 
     separateFiles: function( files, fileTypes) {
         var res = {}
-        console.log("Seperate files");
         for( var i = 0; i < files.length; i++ ) {
             var ext = this.getExt( files[i] );
             if( _.includes(fileTypes, ext) ){
-                console.log("here1");
                 if(_.includes(res, ext) ) {
-                    console.log("here");
                     res[ext].push( files[i] )
                 }
                 else
                     res[ext] = [ files[i] ] ;
-            }          
+            }
         }
-        console.log("res:", res );
         return res;
     },
 
 
     findFilesSync: function( startDir ) {
 
-        console.log("HERE FFS", startDir );
         if( !fs.lstatSync(startDir).isDirectory() ) {
             return Errors.cLogErr("Directory:" + startDir + " does not exists");
-            
         }
-        console.log("FindFiles");
 
         var arr = [];
         var files = fs.readdirSync(startDir);
@@ -236,26 +218,15 @@ module.exports =  {
         var zipfile = fileInfo.filename;
         if( zipfile && this.isZip(zipfile) ){
 
-            //TODO: This has only been tested with zip.
-            console.log("Here\nZipFiles:", zipfile );
             var zipDir = path.join( path.dirname(zipfile), '/unzipped');
             try {
-                console.log("Print the unarchieve");
-                console.log("Print the unarchieve2");
                 var unarc = this.unarchieve( zipfile, {'dir':zipDir} );
-                console.log("Print NEXT");
                 if( Errors.ifErrLog(unarc) ) {
                     return unarc;
                 }
                 else {
-                    console.log("Inside success");
                     var files = this.findFilesSync(zipDir);
-                    console.log( files );
-
                     var fileGroups = _.groupBy(res, this.getExt);
-
-                    console.log( fileGroups );
-                    console.log("PLEASE VALIDATE YOUR WORK");
 
                     if( fileGroups ){
                         var isValidProject = this.validateProjectStructure(fileGroups);
@@ -266,8 +237,6 @@ module.exports =  {
                         fileInfo.filename = zipDir;
                         fileInfo.originalname = zipDir;
                         res = { res: zipDir };
-
-                        console.log("FINISHED VALIDATE");
                     }
                 }
             }
@@ -290,7 +259,6 @@ module.exports =  {
         var filename = fileInfo.filename;
         if( filename && this.isDoc(filename) )
         {
-            console.log("Handling docx file types", filename );
             var childProcess = require('child_process');
             var outDir = path.dirname(filename);
             var args =  [ "--headless", "--convert-to","txt:Text", filename, '--outdir', outDir ];
@@ -312,35 +280,28 @@ module.exports =  {
         return res;
     },
 
-    /* Function will un-archieve a zip or gz file 
+    /* Function will un-archieve a zip or gz file
         By Default: will create a new folder unzipped and extract to it.
     */
     unarchieve: function ( file, options ) {
-        console.log("START");
         options = options || {};
         options.dir = options.dir || "./unzipped";
         var res = {}
         try {
-            console.log("Inside UNARC");
             var call = "";
             var folderCreated = false;
-            console.log( "FILE is :", file, ":");
             var ext = this.getExt(file );
-            console.log("Check ext");
-            
+
             if( ext == 'gz') {
                 folderCreated = mkdirp.sync( options.dir );
                 options.params = options.params || "-xzf";
                 call = "tar " + options.params + " " + file + " -C " + options.dir;
             }
             else if( ext == 'zip')  {
-                console.log("IS ZIP");
                 folderCreated = true;
                 options.params = options.params || " -q ";
                 call ="unzip " + options.params + file + " -d " + options.dir;
-                console.log("call would be:", call );
             }
-            console.log(" About to make: ", call );
             if( folderCreated ) {
                 execSync( call );
             }
@@ -375,7 +336,7 @@ module.exports =  {
             if( !cFiles ) {
                 return Errors.cLogErr("Unable to locate source (.c) files in project.");
             }
-            
+
             if( !hFiles )  {
                 return Errors.cLogErr("Unable to locate header (.h) files in project.");
             }

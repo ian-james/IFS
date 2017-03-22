@@ -6,7 +6,15 @@
     font-family: "Times New Roman", Times, serif;
     height:100%;
     min-height:100%;
+}
+
+.markedTextArea2 {
+    resize:none;
+    font-size:1em;
+    font-family: "Times New Roman", Times, serif;
     overflow-y: auto;
+    margin:0;
+    height:95%;
 }
 
 .longFeedbackContainer
@@ -80,4 +88,9 @@
     background-color:transparent;
     padding:0;
     font-size:1.3em;
+}
+
+.panel-group .panel
+{
+   margin-top:10px;
 }

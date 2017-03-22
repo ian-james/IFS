@@ -16,9 +16,6 @@ module.exports = function (app) {
             req.session.toolSelect = 'Programming';
             req.session.toolFile = supportedToolsFile;
         }
-
-        console.log("Supported tool is ", supportedToolsFile);
-
         
         fs.readFile( supportedToolsFile, 'utf-8', function( err, data ) {
             if( err ) {

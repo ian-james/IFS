@@ -62,7 +62,6 @@ var Logger = require( "./loggingConfig") ;
     catch( e )
     {
         Logger.error("Error: Unable to load database.");
-        console.log("Error: Loading Databases.")
     }
 
 connection.end();

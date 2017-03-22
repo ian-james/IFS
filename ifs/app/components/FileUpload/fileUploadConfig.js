@@ -43,20 +43,18 @@ function acceptableMimeType() {
             'application/json', 
             'application/zip',
             'application/x-compressed-zip',
-            'application/x-tar'
+            'application/x-tar',
+            'application/gzip'
         ]
     };
 }
 
   /* Setup a file filter for upload*/
 var fileFilter = function(req,file,cb)
-{
-    console.log("File Filtering");
+{    
     if( req.session.toolSelect) {
         var allowMimeTypes = acceptableMimeType();
         var mimetype = file.mimetype;
-        console.log(mimetype);
-        console.log( req.session.toolSelect );
         if( _.includes(allowMimeTypes[req.session.toolSelect],mimetype) ) {
             Logger.info("Allow upload of file", file.originalname);
             return cb( null, true );

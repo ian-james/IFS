@@ -2,10 +2,14 @@ extends ../../shared/views/pageLayout.pug
 include ../../shared/UI_components/formSubmit.pug
 
 block content
+    //link(rel="stylesheet" href="/prettyifyTheme/doxy.css")
+    //link(rel="stylesheet" href="/prettyifyTheme/sons-of-obsidian.css")
+    link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
     link(rel="stylesheet" href="components/Feedback/feedback.css")
     link(rel="stylesheet" href="components/Feedback/errors.css")
     link(rel="stylesheet" href="components/Feedback/feedbackMini.css")
     script(src="/prettyify/run_prettify.js")
+
     div(ng-controller="feedbackCtrl")
         div.row
             div(class="col-md-11 col-md-offset-1")
@@ -21,9 +25,13 @@ block content
                     each file, findex in files
                         uib-tab( index=findex heading= file.originalname disable="{{tab.disabled}}")
                             div.row
-                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="true") 
-                                    pre(class="prettyprint")
-                                        code(class="language-c") !{file.markedUp}
+                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")
+                                    if toolType == 'writing'
+                                        pre(class="markedTextArea2") 
+                                            code !{file.markedUp}
+                                    else
+                                        pre(class="markedTextArea2 prettyprint") !{file.markedUp}
+
 
             div(ng-class="!showSideBar ? 'col-md-1' : 'col-md-3' ")
                 button(id="showLongFeedback" type="button" class="btnIcon" ng-show="!showSideBar" ng-click="showSideBar = !showSideBar")

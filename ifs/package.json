@@ -42,6 +42,7 @@
     "express-flash": "0.0.2",
     "express-session": "^1.14.2",
     "glyphicons": "^0.2.0",
+    "he": "^1.1.1",
     "i18n": "^0.8.3",
     "jshint": "^2.9.4",
     "kue": "^0.11.5",

@@ -1,22 +1,3 @@
-/*
-    Full Call and Feedback is available just before this step
-    but this stage should get the results
-
-    Should receive an array of objects
-        each object should have a field called 'feedback'
-            'feedback' is an array containing a number of fields
-                // 'see exampleFeedback for a similar list of fields'
-                // main fields include
-                // target
-                // lineNum
-                // wordNum
-                // suggestions = [ words ]
-                // type
-                // feedback
-                // toolName
-
- */
-
 var path = require("path");
 var fs = require("fs");
 var Logger = require( __configs + "loggingConfig");
@@ -59,17 +40,15 @@ function organizeResults( fileInfo, fullData )
 function writeResults(obj, fdbTypes, uploadPath ){
     // Stores the results in separated format too.
     Logger.info("Write feedback Files");
-    console.log(fdbTypes);
+
     obj['feedbackFiles'] = {};
     _.forIn( fdbTypes, function(value,key) {
-        console.log("WRITING KEY", key);
+
         var filename = key + "FeedbackFile.json";
-        console.log(uploadPath)
-        console.log(filename);
-        console.log("next");
         obj['feedbackFiles'][key] = path.join(uploadPath,filename);
         writeFeedbackToFile(uploadPath, value, filename);
     });
+
     Logger.info("Finish Write feedback Files");
 }
 

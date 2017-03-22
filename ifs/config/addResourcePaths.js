@@ -24,6 +24,7 @@ module.exports = function (app) {
     app.use("/wordcloud", express.static( nodeModulesPath + "/wordcloud/src/") );
 
     app.use("/prettyify", express.static(nodeModulesPath + "/code-prettify/src") );
+    app.use("/prettyifyTheme", express.static(nodeModulesPath + "/code-prettify/styles") );
 
     // Static Files   
     app.use( express.static( path.join( __dirname, "/../app/") ) );

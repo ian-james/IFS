@@ -122,7 +122,6 @@ function FileParser() {
     };
 
     this.validWordNum = function (position) {
-        console.log("WN ->",  this.hasWord(position) );
         if( this.hasWord(position)  && this.validLineNum( position ) ) {
                 return position.wordNum >=0  && position.wordNum <= this.fileInfo.totalWords;
         }
@@ -132,66 +131,25 @@ function FileParser() {
     // Straight forward Get
     this.getCharNum = function( position ) {
         return position.charNum;
-    }
+    };
 
     // External Tool: assumes -1 for lineNum
     this.getCharNumFromLineNumCharPos = function ( position ) {
         if( position.lineNum-1 <0 )
             return -1;
-
-        console.log("I1-", position.lineNum,  " ",this.fileInfo.charCount[ position.lineNum-1 ]);
-        console.log("I2",position.charPos);
         return this.fileInfo.charCount[ position.lineNum-1 ] + (position.charPos ? position.charPos : 0 );
-    }
-
+    };
 
     this.getLine = function( position, is0Based = true ) {
         
         if( this.validLineNum(position ) ) {
                 if(position.lineNum - 1 < 0)
                     return "";
-                console.log("Print Line Before:", this.sentences[ position.lineNum -1 ] );
-                console.log("Print Line Before:", this.sentences[ position.lineNum ] );
-                console.log("Print Line Before:", this.sentences[ position.lineNum + 1 ] );
 
                 return this.sentences[ position.lineNum -1];
         }
         return "";
-    };
-
-
-    /*
-    this.locationExists = function( position ) {
-        var res = false;
-        if( !position || !this.fileInfo.isSet() )
-            return res;
-
-        return this.validCharPos( position ) || this.validWordNum( position );
-    };
-
-    this.wordInLine = function( position )  {
-        if( this.validLineNum(position) ) {
-            var words = this.wordTokenizer.tokenizer( this.sentences[position.lineNum] ) ;
-            return words.indexOf(position.target);
-        }
-        return -1;
-    };
-
-
-    this.getWordAtPos = function( position ) {
-        if( this.validWordNum( position ) ){
-            var words = this.wordTokenizer.tokenizer( this.sentences[position.lineNum] );
-            return words.length < position.wordNum ? words[position.wordNum] : "";
-        }
-        return "";
-    };    
-
-    this.find = function( target ) {
-        if( this.hasPos( target) && this.hasTarget(target) )
-            return getWordAtPos(position) == target.target;
-        return false;
-    };
-    */
+    };  
 }
 
 module.exports.FileParser = FileParser;

@@ -12,8 +12,6 @@ module.exports = function( app ) {
     })
 
     .post(function(req,res,next) {
-        //Temporary 
-        console.log(req.body);
         if( req.body ) {
             // TODO: Preferences aren't save anywhere except this variable.
             // Partially because we don't have preferences yet

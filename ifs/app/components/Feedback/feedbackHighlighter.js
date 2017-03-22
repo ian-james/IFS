@@ -9,7 +9,7 @@ function escapeRegExp(str) {
 
 function setupRegExp( targetOptions )
 {
-    var def = { 
+    var def = {
         'target':       targetOptions.needle || "",
         'targetPos':    targetOptions.targetPos ||   0 ,
         'flags':        targetOptions.flags || "m",
@@ -21,7 +21,7 @@ function setupRegExp( targetOptions )
 }
 
 function handleRegExp( str, targetOpt, func ) {
-    
+
     var regExp = setupRegExp( targetOpt );
 
     if(_.isNil(regExp) || _.isNil(regExp.target) || regExp.target == "" )
@@ -61,7 +61,6 @@ function replaceText(str, targetOpt )
             */
             var res = XRegExp.replace( str, regExp.regex, function(match,index) {
 
-                //console.log("ReplaceTEx->", index, " ", targetOpt.targetPos);
                 if( index == targetOpt.targetPos ) {
                     matchFound = true;
                     return regExp.newText;
@@ -73,12 +72,12 @@ function replaceText(str, targetOpt )
                 return match;
             });
 
-            
+
             if( !matchFound && closestIdx >= 0 )
             {
                 if( XRegExp.test( str, regExp.regex, closestIdx, true ) ) {
                     str = str.substr(0, closestIdx) + regExp.newText + str.substr(closestIdx + targetOpt.needle.length );
-                    offset =  closestIdx - targetOpt.targetPos 
+                    offset =  closestIdx - targetOpt.targetPos
                 }
             }
         }
@@ -87,36 +86,30 @@ function replaceText(str, targetOpt )
 }
 
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
+
     var fileParser = new FileParser();
     fileParser.setupContent( file.content );
     fileParser.tokenize();
 
-    //console.log("TOkenize me");
-
-    // Setup positionsal information for all 
+    // Setup positionsal information for all
     for( var i = 0; i < feedbackItems.length; i++ ) {
 
         var feedbackItem = feedbackItems[i];
         if(  file.originalname == feedbackItem.filename  && ( selectedTool == "All" || selectedTool == feedbackItem.toolName ) )
         {
 
-            if( !feedbackItem.filename) 
+            if( !feedbackItem.filename)
             {
                 // TODO: This should be handed a generic or global error system.
-                
-                console.log("Continueing:", feedbackItem.filename);
                 continue;
             }
 
-            //console.log("INSIDE2");
             if( !feedbackItem.target  && feedbackItem.lineNum ) {
                 feedbackItem.target = fileParser.getLine(feedbackItem,false);
-                console.log("New target", feedbackItem.target);
             }
-            //console.log("INSIDE3");
+
             if( !feedbackItem.charNum ) {
                 feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
-                console.log("Changed feedback char position to:", feedbackItem.charNum)
             }
         }
     }
@@ -127,7 +120,6 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 /* Markup a single file by plaing only feedback Items from a specific tool into the file */
 function markupFile( file, selectedTool, feedbackItems )
 {
-    //console.log("Start marking up");
     var content = file.content;
     var offset = 0;
 
@@ -138,42 +130,27 @@ function markupFile( file, selectedTool, feedbackItems )
     setupFilePositionInformation(file, selectedTool,feedbackItems);
 
     for( var i = 0; i < feedbackItems.length; i++ )
-    {  
+    {
         var feedbackItem = feedbackItems[i];
-        //console.log("File-OriginalName",file.originalname );
-        //console.log("feedbackItem", feedbackItem );
-        //console.log("feedbackItem File", feedbackItem.filename  );
-        //console.log("Selected Tool", selectedTool)
-        //console.log("Feedback toolName", feedbackItem.toolName, "\n\n" );
-        
 
         // Check for a specific tool and specific filename or all
         if(  file.originalname == feedbackItem.filename  && ( selectedTool == "All" || selectedTool == feedbackItem.toolName ) )
         {
                 // Most have line number and character position.
-                // Interestingly, calculating this value can give different answers... 
+                // Interestingly, calculating this value can give different answers...
                 // I think it depends on line-breaks.
                 // Momementarily setting this to always run.
-                //
-            //console.log("INSIDE");
             if( !feedbackItem.filename) {
                 // TODO: This should be handed a generic or global error system.
-                //console.log("Continueing");
                 continue;
             }
             else if( feedbackItem.lineNum == undefined || feedbackItem.charNum == undefined ){
-                console.log("Continueing because no search position:", feedbackItem);
+                // Previously tried to setup positional information and failed.
                 continue;
             }
 
-            //console.log("Printing info: ", feedbackItem.lineNum, " : ", feedbackItem.charNum );
-
-            //console.log("feedbackItemBefore Entry", feedbackItem );
-            
-            
             // Check whether next item will match, identify multiError on same word
             nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
-            //console.log("NextItem:", nextItem );
 
             var nextMatches =  nextItem && nextItem.target == feedbackItem.target
                              && nextItem.wordNum == feedbackItem.wordNum
@@ -185,7 +162,7 @@ function markupFile( file, selectedTool, feedbackItems )
             }
 
             idArr.push(i);
-            if(!nextMatches) 
+            if(!nextMatches)
             {
                 // Assign either the multiError or the specific error type.
                 // Also an array for the feedback Items array that match this error

@@ -76,7 +76,6 @@ function parseFormSelection( formData ) {
 // See tooList.json (these are tools avilable in the tool page)
 function readToolFileList( filename ) {
 
-    console.log(filename);
     var supportedToolsFile = './tools/toolListProgramming.json';
     if( filename )
         supportedToolsFile = filename;
