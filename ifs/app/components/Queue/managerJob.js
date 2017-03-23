@@ -77,7 +77,6 @@ function loadAllTools(job, done)
                 // when received, started, 10% (about to run), and finished.
                 if( typeof(notice.value)  == 'object' ) {
                     Logger.info("Notice:", notice.value.msg, " at ", notice.value.progress, "%");
-                    //console.log("Notice:", notice.value.msg );
                 }
                 else {
                     Logger.info("Received:", notice );

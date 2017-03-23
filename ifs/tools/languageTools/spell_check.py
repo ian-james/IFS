@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.5
 
 # This script uses Hunspell to process arbitrary text strings and provide
 # suggestions for spelling correction.
@@ -57,7 +57,8 @@ def spcheck(to_check, lang, hun, console, filename):
             # hyphenated words such as cat-dog may pass, even though they
             # aren't in the English lexicon
             if not hun.spell(word):
-                suggestion = (line_num, word_num, char_num+char_pos, char_pos, word_pos, (word, hun.suggest(word)))
+                sug = [ x.decode('utf-8') for x in hun.suggest(word) ]
+                suggestion = (line_num, word_num, char_num+char_pos, char_pos, word_pos, (word, sug))
                 misspelled.append(suggestion)
             else:
                 correct.append((line_num, word_num, word))
@@ -83,7 +84,8 @@ def spcheck(to_check, lang, hun, console, filename):
         json_string += '"toolName": "hunspell",\n'
         json_string += '"filename": "' + str(filename) + '",\n'
         json_string += '"feedback": "Selected word not found in dictionary",\n'
-        j_array = json.dumps(misspelled[i][5][1])
+
+        j_array = json.dumps(misspelled[i][5][1]) 
         json_string += '"suggestions": ' + j_array + '\n'
         json_string += '}'
         if i != (len(misspelled) - 1):
@@ -111,26 +113,26 @@ def main(argv):
     opts, args = getopt.getopt(argv,'p:l:j:i:h',['path=','lang=', 'json=', 'ifile=', 'help'])
 
     for opt, arg in opts:
-	if opt in ('--path', '-p'):
-	    path = arg
+        if opt in ('--path', '-p'):
+            path = arg
             if not os.path.isdir(path):
-                print 'Error. Path', path, 'does not exist.'
+                print('Error. Path', path, 'does not exist.')
                 sys.exit()
-	elif opt in ('--lang', '-l'):
-            lang = arg
+        elif opt in ('--lang', '-l'):
+                lang = arg
         elif opt in ('--json', '-j'):
             json_path = arg
             console = False
         elif opt in ('--ifile', '-i'):
             ifile = arg
             if not (os.path.isfile(ifile)):
-                print 'Error. File', ifile, 'does not exist.'
+                print('Error. File', ifile, 'does not exist.')
                 sys.exit()
-	elif opt in ('--help', '-h') or opt not in ('--ifile', '-i'):
-            print 'Usage:'
-	    print 'spell_check.py [--path=PATH] [--lang=LANG] [--json=OUT.json] --ifile=INPUTFILE'
-            print 'spell_check.py [-p PATH] [-l LANG] [-j OUT.json] -i INPUTFILE'
-	    sys.exit()
+        elif opt in ('--help', '-h') or opt not in ('--ifile', '-i'):
+            print('Usage:')
+            print('spell_check.py [--path=PATH] [--lang=LANG] [--json=OUT.json] --ifile=INPUTFILE')
+            print('spell_check.py [-p PATH] [-l LANG] [-j OUT.json] -i INPUTFILE')
+            sys.exit()
 
     # check dictionaries exist    
     hun_path = path + '/' + lang
@@ -147,7 +149,7 @@ def main(argv):
     hun = hunspell.HunSpell(hun_path+'.dic', hun_path+'.aff')
 
     # open infile for reading
-    f_in = open(ifile, 'r')
+    f_in = open(ifile, 'r', encoding="utf-8")
 
     # perform analysis on file and return json_data for writing to file
     json_data = spcheck(f_in, lang, hun, console, ifile)

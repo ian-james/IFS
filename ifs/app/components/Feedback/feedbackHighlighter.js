@@ -26,7 +26,6 @@ function handleRegExp( str, targetOpt, func ) {
     var regExp = setupRegExp( targetOpt );
 
     if(_.isNil(regExp) || _.isNil(regExp.target) || regExp.target == "" ) {
-        console.log("ERRROR ERRROR HANDLING REG EXP");
         return null;
     }
 
@@ -110,44 +109,33 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
     // Setup positionsal information for all
     for( var i = 0; i < feedbackItems.length; i++ ) {
 
-        console.log("HERE IN SETUPFILE");
-
         var feedbackItem = feedbackItems[i];
-        console.log("feedbackItem", feedbackItem);
-        console.log("*****************************");
-        console.log(file.originalname);
         if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(selectedTool,feedbackItem.toolName ) )
         {
             if( !feedbackItem.filename || !feedbackItem.lineNum )
             {
                 // TODO: This should be handed a generic or global error system.
-                console.log("Continuing on :", feedbackItem);
                 continue;
+            }
+
+            // Try to fill out positional information first.
+            if( !feedbackItem.charNum ) {
+                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
             }
 
             // Without a target you have to use the line or a range
             if( !feedbackItem.target ) {
                 if( feedbackItem.hlBegin ) {
                     // Section to highlight
-                    console.log("NewSection Range");
                     feedbackItem.target = fileParser.getRange( feedbackItem );
                 }
-                else if( feedback.charPos ) {
+                else if( feedbackItem.charPos ) {
                     // You can get a target better than the line.
-                    console.log("NewSection GetLine");
                     feedbackItem.target = fileParser.getLineSection( feedbackItem );
                 }
-                else {
+                if(!feedbackItem.target) {
                     feedbackItem.target = fileParser.getLine(feedbackItem,false);
                 }
-            }
-            else {
-                console.log("Guess this items ok", feedbackItem);
-            }
-            console.log("HERE BEFORE CHARNUM");
-
-            if( !feedbackItem.charNum ) {
-                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
             }
         }
     }

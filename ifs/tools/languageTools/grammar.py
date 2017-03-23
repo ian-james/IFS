@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.5
 
 # This script uses LanguageTool to process arbitrary text strings and provide
 # suggestions for grammatical improvements.
@@ -30,20 +30,20 @@ import language_check
 # this function prints usage information, optionally provide a list of
 # supported languages as an argument
 def print_usage(supported_langs = []):
-    print 'Usage:'
-    print 'grammar.py [--lang=LANG] [--outfile=OUT.json] [--with-spelling]'
-    print '           [--english] [--quiet] --infile=INPUTFILE'
-    print
-    print 'grammar.py [-l LANG] [-j OUT.json] [-seq] -i INPUTFILE'
-    print
+    print('Usage:')
+    print('grammar.py [--lang=LANG] [--outfile=OUT.json] [--with-spelling]')
+    print('           [--english] [--quiet] --infile=INPUTFILE')
+    print("\n")
+    print('grammar.py [-l LANG] [-j OUT.json] [-seq] -i INPUTFILE')
+    print("\n")
     if supported_langs:
         supported_langs = list(supported_langs)  # sets are not iterable?
-        print 'Supported languages on this system:'
+        print('Supported languages on this system:')
         for i in range(len(supported_langs)):
-            print supported_langs[i],
+            print(supported_langs[i],)
             if i != len(supported_langs) - 1:
-                print ",",
-        print
+                print(",",)
+        print()
 
 # grcheck(string to_check, language_check.LanguageTool ltool,
 #         bool with_spelling=False)
@@ -113,26 +113,26 @@ def build_json(filename, lang, matches):
 # provided, then the json_data must be provided
 def print_data(json_data='', lang='', english=False, matches=[]):
     if english is True:
-        print 'lang: ', lang
-        print 'possible errors: ', len(matches)
-        print
+        print('lang: ', lang)
+        print('possible errors: ', len(matches))
+        print("")
         for i in range(len(matches)):
-            print "hl_start:", (matches[i].fromx + 1, matches[i].fromy + 1)
-            print "hl_end  :", (matches[i].tox, matches[i].toy)
-            print "rule violated:", matches[i].ruleId
-            print "Message:", matches[i].msg
-            print "Problem category:", matches[i].category
-            print "Issue type:", matches[i].locqualityissuetype
-            print "Possible replacements:",
+            print("hl_start:", (matches[i].fromx + 1, matches[i].fromy + 1))
+            print("hl_end  :", (matches[i].tox, matches[i].toy))
+            print("rule violated:", matches[i].ruleId)
+            print("Message:", matches[i].msg)
+            print("Problem category:", matches[i].category)
+            print("Issue type:", matches[i].locqualityissuetype)
+            print("Possible replacements:",)
             for j in range(len(matches[i].replacements)):
-                print matches[i].replacements[j],
-            print
-            print "Context:", matches[i].context
+                print(matches[i].replacements[j],)
+            print()
+            print("Context:", matches[i].context)
             if i != len(matches) - 1:
-                print
+                print()
     else:
         if json_data:
-            print json_data
+            print(json_data)
         else:
             sys.stderr.write('Error. Cannot print output.\n')
 
@@ -217,7 +217,7 @@ def main(argv):
     # init language check
     ltool = language_check.LanguageTool(lang)
     # perform the grammar check
-    f_in = open(infile, 'r')
+    f_in = open(infile, 'r', encoding='utf-8')
     text = f_in.read()
     matches = grcheck(text, ltool, with_spelling)
     f_in.close()
@@ -225,7 +225,7 @@ def main(argv):
     # build json string
     json_data = build_json(infile, lang, matches)
 
-    # print to console
+    # print(to console)
     if not quiet:
         if english is True:
             print_data(None, lang, english, matches)

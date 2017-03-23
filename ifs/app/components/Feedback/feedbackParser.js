@@ -15,6 +15,8 @@
     Note:
        Position values with *Num are global counted from the start of the file.
        Otherwise they're relative to the start of the sentence.
+
+    NOTE: THis file should be separted remove functionality from Position "Interface".
 */
 
 const fs = require('fs');
@@ -86,7 +88,6 @@ function FileParser() {
             var sum = 0;
             this.fileInfo.charCount.push( sum );
             for( var i = 0; i < this.sentences.length;i++ ) {
-                console.log("S:",i,": ", this.sentences[i]);
                 sum += (this.sentences[i].length+1); // This add one space, which might not be right.
 
                 this.fileInfo.charCount.push( sum );
@@ -94,8 +95,6 @@ function FileParser() {
                 this.fileInfo.wordCount.push(  w.length );
                 this.fileInfo.totalWords += w.length ;
             }
-
-            console.log("SENTANCES = ", this.sentences.length);
         }
     };
 
@@ -120,7 +119,6 @@ function FileParser() {
 
     this.validLineNum = function (position) {
         if( this.hasLine(position) ) {
-            console.log(position.lineNum, " ", this.fileInfo.numLines );
             return  position.lineNum <= this.fileInfo.numLines && position.lineNum >= 0;
         }
         return false;
@@ -148,7 +146,6 @@ function FileParser() {
     this.getLine = function( position, is0Based = true ) {
         
         if( this.validLineNum(position ) ) {
-                console.log("POSITION WAS ", position.lineNum)
                 if(position.lineNum - 1 < 0)
                     return "";
 
@@ -201,23 +198,22 @@ function FileParser() {
             var line = this.getLine(position);
             // If errors is on the same line, get the section of code
             if( bline == eline ) {
-                console.log("BCH", bch, " ECH", ech);
-                console.log("Line was:", line );
-                var r = this.getLineSectionEnd(line,bch,ech-bch);
-                console.log("Result was:",r);
-                return  r;
+                return this.getLineSectionEnd(line,bch,ech-bch);
             }
             else {
                 // Errors spans multiple lines.
+                
                 var target = this.getLineSectionEnd(line, bch);
-                for( var i = bline+1; i<=ech; i++) {
+                
+                for( var i = bline+1; i<=eline; i++) {
                     line = this.getLineI(i);
-                    if( i == ech)
+                    
+                    if( i == ech) {
                         target += this.getLineSectionEnd(line,0,ech);
+                    }
                     else
                         target += line;
                 }
-                console.log("Target", target);
                 return target;
             }
         }
