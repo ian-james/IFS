@@ -31,11 +31,12 @@ function runSingleTool( job, done )
 
         job.progress(100,100);
         if( error) {
-            
+            console.log("Got an error:", stderr );
             done(new Error('exec error'));
             return;
         }
         try {
+            console.log(stdout);
             var res = JSON.parse( stdout );
             done(null, res);
             job.emit('completed');

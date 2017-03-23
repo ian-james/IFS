@@ -86,6 +86,7 @@ function FileParser() {
             var sum = 0;
             this.fileInfo.charCount.push( sum );
             for( var i = 0; i < this.sentences.length;i++ ) {
+                console.log("S:",i,": ", this.sentences[i]);
                 sum += (this.sentences[i].length+1); // This add one space, which might not be right.
 
                 this.fileInfo.charCount.push( sum );
@@ -93,9 +94,12 @@ function FileParser() {
                 this.fileInfo.wordCount.push(  w.length );
                 this.fileInfo.totalWords += w.length ;
             }
+
+            console.log("SENTANCES = ", this.sentences.length);
         }
     };
 
+    // Interface
     this.hasCh = function(obj) { return obj.hasOwnProperty('charNum'); };
     this.hasWord = function(obj) { return obj.hasOwnProperty('wordNum'); };
     this.hasLine= function(obj) { return obj.hasOwnProperty('lineNum'); };
@@ -116,7 +120,8 @@ function FileParser() {
 
     this.validLineNum = function (position) {
         if( this.hasLine(position) ) {
-            return  position.lineNum < this.fileInfo.numLines && position.lineNum >= 0;
+            console.log(position.lineNum, " ", this.fileInfo.numLines );
+            return  position.lineNum <= this.fileInfo.numLines && position.lineNum >= 0;
         }
         return false;
     };
@@ -143,13 +148,81 @@ function FileParser() {
     this.getLine = function( position, is0Based = true ) {
         
         if( this.validLineNum(position ) ) {
+                console.log("POSITION WAS ", position.lineNum)
                 if(position.lineNum - 1 < 0)
                     return "";
 
                 return this.sentences[ position.lineNum -1];
         }
         return "";
-    };  
+    };
+
+    this.getLineI = function( i, is0Based = true ) {
+        
+        if( i < this.fileInfo.numLines && i >= 0 ) {
+            var ni = is0Based ? i-1 : i;
+            return this.sentences[ ni ];
+        }
+        return "";
+    };
+
+    /**
+     * This function gets from a postion till the end of the line.
+     * @param  {[Object]} position - contains the interface terms
+     * @return {[string]}          empty or a section of a line of text
+     */
+    this.getLineSection = function( position ) {
+
+        var line = this.getLine(position);
+        if( line != "" && this.hasCharPos(position) ) {
+            return this.getLineSectionEnd(line, position.charPos);
+        }
+        return line;
+    };
+
+    this.getLineSectionEnd = function( line, start, end = -1 ) {
+        var s = Math.min(start,line.length);
+        if( end >= 0 ) {
+            return line.substr( s, end  );
+        }
+        return line.substr( s );
+    }
+
+    this.getRange = function( position ) {
+
+        if( position.hasOwnProperty('hlBegin') && position.hasOwnProperty('hlEnd') ) {
+
+            // IF one same line, just return substr
+            // else add until finishe
+            
+            var [bch, bline] = position.hlBegin;
+            var [ech, eline] = position.hlEnd;
+
+            var line = this.getLine(position);
+            // If errors is on the same line, get the section of code
+            if( bline == eline ) {
+                console.log("BCH", bch, " ECH", ech);
+                console.log("Line was:", line );
+                var r = this.getLineSectionEnd(line,bch,ech-bch);
+                console.log("Result was:",r);
+                return  r;
+            }
+            else {
+                // Errors spans multiple lines.
+                var target = this.getLineSectionEnd(line, bch);
+                for( var i = bline+1; i<=ech; i++) {
+                    line = this.getLineI(i);
+                    if( i == ech)
+                        target += this.getLineSectionEnd(line,0,ech);
+                    else
+                        target += line;
+                }
+                console.log("Target", target);
+                return target;
+            }
+        }
+        return "";
+    }
 }
 
 module.exports.FileParser = FileParser;

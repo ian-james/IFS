@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var path = require('path');
 var XRegExp = require('xregexp');
 var buttonMaker = require('./createTextButton');
 var FileParser = require('./feedbackParser').FileParser;
@@ -24,10 +25,25 @@ function handleRegExp( str, targetOpt, func ) {
 
     var regExp = setupRegExp( targetOpt );
 
-    if(_.isNil(regExp) || _.isNil(regExp.target) || regExp.target == "" )
+    if(_.isNil(regExp) || _.isNil(regExp.target) || regExp.target == "" ) {
+        console.log("ERRROR ERRROR HANDLING REG EXP");
         return null;
+    }
 
     return func(regExp);
+}
+
+function filesMatch( filename, feedbackFilename, usePath = false) {
+
+    if( usePath )
+        return filename == feedbackFilename;
+
+    return path.basename(filename) == path.basename(feedbackFilename);
+
+}
+
+function toolsMatch( toolName, selectedToolName ) {
+    return ( selectedToolName == "All" || toolName == selectedToolName );
 }
 
 function replaceText(str, targetOpt )
@@ -94,19 +110,41 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
     // Setup positionsal information for all
     for( var i = 0; i < feedbackItems.length; i++ ) {
 
-        var feedbackItem = feedbackItems[i];
-        if(  file.originalname == feedbackItem.filename  && ( selectedTool == "All" || selectedTool == feedbackItem.toolName ) )
-        {
+        console.log("HERE IN SETUPFILE");
 
-            if( !feedbackItem.filename)
+        var feedbackItem = feedbackItems[i];
+        console.log("feedbackItem", feedbackItem);
+        console.log("*****************************");
+        console.log(file.originalname);
+        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(selectedTool,feedbackItem.toolName ) )
+        {
+            if( !feedbackItem.filename || !feedbackItem.lineNum )
             {
                 // TODO: This should be handed a generic or global error system.
+                console.log("Continuing on :", feedbackItem);
                 continue;
             }
 
-            if( !feedbackItem.target  && feedbackItem.lineNum ) {
-                feedbackItem.target = fileParser.getLine(feedbackItem,false);
+            // Without a target you have to use the line or a range
+            if( !feedbackItem.target ) {
+                if( feedbackItem.hlBegin ) {
+                    // Section to highlight
+                    console.log("NewSection Range");
+                    feedbackItem.target = fileParser.getRange( feedbackItem );
+                }
+                else if( feedback.charPos ) {
+                    // You can get a target better than the line.
+                    console.log("NewSection GetLine");
+                    feedbackItem.target = fileParser.getLineSection( feedbackItem );
+                }
+                else {
+                    feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                }
             }
+            else {
+                console.log("Guess this items ok", feedbackItem);
+            }
+            console.log("HERE BEFORE CHARNUM");
 
             if( !feedbackItem.charNum ) {
                 feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
@@ -134,13 +172,13 @@ function markupFile( file, selectedTool, feedbackItems )
         var feedbackItem = feedbackItems[i];
 
         // Check for a specific tool and specific filename or all
-        if(  file.originalname == feedbackItem.filename  && ( selectedTool == "All" || selectedTool == feedbackItem.toolName ) )
+        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(selectedTool,feedbackItem.toolName ) )
         {
                 // Most have line number and character position.
                 // Interestingly, calculating this value can give different answers...
                 // I think it depends on line-breaks.
                 // Momementarily setting this to always run.
-            if( !feedbackItem.filename) {
+            if( !feedbackItem.filename || !feedbackItem.target ) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
             }
