@@ -32,6 +32,8 @@ module.exports = function( app ) {
         // As this could essecially just be a filter  with the new tool name.
         
         var opt = { 'tool': req.body.toolSelector };
+        req.session.activeTool = req.body.toolSelector;
+
         var page = { title: 'Feedback Test page' };
         var feedbackFile = req.session.allFeedbackFile
         var feedback = Feedback.setupFeedback(feedbackFile, opt);
@@ -49,7 +51,11 @@ module.exports = function( app ) {
             }
             else {
                 //Load JSON tool file and send back to UI to create inputs
-                var result = Feedback.readFeedbackFormat( data );
+                var opt = {};
+                if( req.session.activeTool ) {
+                    opt['tool'] = req.session.activeTool;
+                }
+                var result = Feedback.readFeedbackFormat( data, opt );
                 res.json( result );
             }
         });

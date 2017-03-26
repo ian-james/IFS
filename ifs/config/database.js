@@ -27,13 +27,13 @@ function handleConnectionError( err,connection){
    It uses a pool to create the connection and disconnects after.
 */
 function query( queryStr, args, callback) {
-   Logger.info("Database query started");
+   //Logger.info("Database query started");
    pool.getConnection( function(err,connection) {
 
        handleConnectionError( err, connection );
 
         if( connection ){
-            Logger.info("Db connection ok, make the call");
+            //Logger.info("Db connection ok, make the call");
             connection.query( queryStr, args, function(err,data) {
                 callback(err, data);
                 connection.release();

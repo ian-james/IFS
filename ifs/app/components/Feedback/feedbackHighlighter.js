@@ -3,6 +3,8 @@ var path = require('path');
 var XRegExp = require('xregexp');
 var buttonMaker = require('./createTextButton');
 var FileParser = require('./feedbackParser').FileParser;
+var Logger = require( __configs + "loggingConfig");
+var he = require("he");
 
 function escapeRegExp(str) {
     return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
@@ -100,47 +102,31 @@ function replaceText(str, targetOpt )
     });
 }
 
-function setupFilePositionInformation(file, selectedTool, feedbackItems) {
-
-    var fileParser = new FileParser();
-    fileParser.setupContent( file.content );
-    fileParser.tokenize();
-
-    // Setup positionsal information for all
-    for( var i = 0; i < feedbackItems.length; i++ ) {
-
-        var feedbackItem = feedbackItems[i];
-        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(selectedTool,feedbackItem.toolName ) )
-        {
-            if( !feedbackItem.filename || !feedbackItem.lineNum )
-            {
-                // TODO: This should be handed a generic or global error system.
-                continue;
-            }
-
-            // Try to fill out positional information first.
-            if( !feedbackItem.charNum ) {
-                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
-            }
-
-            // Without a target you have to use the line or a range
-            if( !feedbackItem.target ) {
-                if( feedbackItem.hlBegin ) {
-                    // Section to highlight
-                    feedbackItem.target = fileParser.getRange( feedbackItem );
-                }
-                else if( feedbackItem.charPos ) {
-                    // You can get a target better than the line.
-                    feedbackItem.target = fileParser.getLineSection( feedbackItem );
-                }
-                if(!feedbackItem.target) {
-                    feedbackItem.target = fileParser.getLine(feedbackItem,false);
-                }
-            }
-        }
+/* Function to compare two feedback items positional information
+   Currently exact lineNUm and word  or charNum is required.
+*/
+function checkErrorPositionOverlap( cItem, nItem ) {
+    var r = false;
+    if( cItem && nItem ){
+        r = (cItem.wordNum && nItem.wordNum && cItem.wordNum == cItem.wordNum) && cItem.lineNum == nItem.lineNum;
+        r  = r || cItem.charNum == nItem.charNum;
     }
+    return false;
 }
 
+function checkErrorOverlap( feedbackItems, feedbackIndex ) {
+   // Check whether next item will match, identify multiError on same word
+    var nextItem = (feedbackIndex+1<feedbackItems.length) ? feedbackItems[feedbackIndex+1] : null;
+    var feedbackItem = feedbackItems[feedbackIndex];
+
+    var matches = false;
+    if(nextItem) {
+        matches = checkErrorPositionOverlap(feedbackItem, nextItem );
+        if( matches && feedbackItem.target != nextItem.target )
+            Logger.info("Targets don't match for feedback Items", feedbackItem.target, ":>", nextItem.target);
+    }
+    return matches;
+}
 
 
 /* Markup a single file by plaing only feedback Items from a specific tool into the file */
@@ -151,21 +137,19 @@ function markupFile( file, selectedTool, feedbackItems )
 
     var nextItem = null;
     var idArr = [];
-    var matchClasses = "";
-
-    setupFilePositionInformation(file, selectedTool,feedbackItems);
+    var matchClasses = "";  
 
     for( var i = 0; i < feedbackItems.length; i++ )
     {
         var feedbackItem = feedbackItems[i];
 
         // Check for a specific tool and specific filename or all
-        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(selectedTool,feedbackItem.toolName ) )
+        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool ) )
         {
                 // Most have line number and character position.
                 // Interestingly, calculating this value can give different answers...
                 // I think it depends on line-breaks.
-                // Momementarily setting this to always run.
+                // Momementarily setting this to always run.            
             if( !feedbackItem.filename || !feedbackItem.target ) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
@@ -173,14 +157,9 @@ function markupFile( file, selectedTool, feedbackItems )
             else if( feedbackItem.lineNum == undefined || feedbackItem.charNum == undefined ){
                 // Previously tried to setup positional information and failed.
                 continue;
-            }
-
-            // Check whether next item will match, identify multiError on same word
-            nextItem = (i+1<feedbackItems.length) ? feedbackItems[i+1] : null;
-
-            var nextMatches =  nextItem && nextItem.target == feedbackItem.target
-                             && nextItem.wordNum == feedbackItem.wordNum
-                             && nextItem.lineNum == feedbackItem.lineNum;
+            }           
+            // Assumption should probably change
+            var nextMatches =  checkErrorOverlap(feedbackItems, i );
 
             if( nextMatches ) {
                 // We have multiple errors on this word.
@@ -197,7 +176,7 @@ function markupFile( file, selectedTool, feedbackItems )
 
                 // Create a popover button at position to highlight text and count the offset.
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);
-                var str = newStr.start + newStr.mid + newStr.end;
+                var str = newStr.start + he.decode(newStr.mid) + newStr.end;
                 var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset } );
                 content = contentObj.content;
                 offset += ( (str.length  - newStr.mid.length + 1 ) + contentObj.offset);

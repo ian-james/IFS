@@ -64,4 +64,45 @@ function writeFeedbackToFile(pathDir, obj, filename )
     return file;
 }
 
+function setupFilePositionInformation(file, selectedTool, feedbackItems) {
+
+    var fileParser = new FileParser();
+    fileParser.setupContent( file.content );
+    fileParser.tokenize();
+
+    // Setup positionsal information for all
+    for( var i = 0; i < feedbackItems.length; i++ ) {
+
+        var feedbackItem = feedbackItems[i];
+        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool) )
+        {
+            if( !feedbackItem.filename || !feedbackItem.lineNum )
+            {
+                // TODO: This should be handed a generic or global error system.
+                continue;
+            }
+
+            // Try to fill out positional information first.
+            if( !feedbackItem.charNum ) {
+                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
+            }
+
+            // Without a target you have to use the line or a range
+            if( !feedbackItem.target ) {
+                if( feedbackItem.hlBegin ) {
+                    // Section to highlight
+                    feedbackItem.target = fileParser.getRange( feedbackItem );
+                }
+                else if( feedbackItem.charPos ) {
+                    // You can get a target better than the line.
+                    feedbackItem.target = fileParser.getLineSection( feedbackItem );
+                }
+                if(!feedbackItem.target) {
+                    feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                }
+            }
+        }
+    }
+}
+
 module.exports.organizeResults = organizeResults;
