@@ -1,0 +1,9 @@
+noDirProj/array.c##16##portability##AssignmentAddressToInteger##Assigning a pointer to an integer is not portable.
+noDirProj/array.c##16##style##unreadVariable##Variable 'n' is assigned a value that is never used.
+noDirProj/array.c##13##style##unusedFunction##The function 'createArray' is never used.
+noDirProj/array.c##75##style##unusedFunction##The function 'destroyArray' is never used.
+noDirProj/array.c##40##style##unusedFunction##The function 'getFirstValue' is never used.
+noDirProj/array.c##55##style##unusedFunction##The function 'getLength' is never used.
+noDirProj/array.c##49##style##unusedFunction##The function 'modifyValue' is never used.
+noDirProj/array.c##60##style##unusedFunction##The function 'printArray' is never used.
+####information##missingIncludeSystem##Cppcheck cannot find all the include files (use --check-config for details)

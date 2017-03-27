@@ -12,29 +12,30 @@
             "options" :  [ {
                     "displayName": "Dictionary",
                     "type": "select",
-                    "values": [ "en_US", "en_CA"],
-                    "name": "dictionary",
+                    "values": [ "en_US", "en_CA","en_GB"],
+                    "name": "spellDictionary",
                     "arg": "-l",
                     "params":""
-
                 }
             ]
         },
         {
-            "displayName": "Grammar Checker",
-            "progName": "./tools/languageTools/grammar.py",
+            "displayName": "Grammar Checker", 
+            "progName":"./tools/languageTools/grammar.py",
+            "progfullName": "./tools/languageTools/grammar.py",
             "runType": "writing",
             "filesAllowed": "singleFile",
             "parseCmd": "",
             "defaultArg": "",
             "fileArgs": "-i",
             "options" :  [ {
-                    "displayName": "Language",
+                    "displayName": "Dictionary",
                     "type": "select",
-                    "values": [ "en_US", "en_CA"],
-                    "name": "language",
+                    "values": [ "en-US", "en-CA","en-GB"],
+                    "name": "gramDictionary",
                     "arg": "-l",
                     "params":""
+
                 }
             ]
         },
@@ -50,11 +51,12 @@
             "options" :  [ {
                     "displayName": "Word In Cloud",
                     "type": "select",
-                    "values": [5, 10,20,30,40],
+                    "values": [5, 10,20],
                     "name": "wordCloud",
                     "arg": "-t",
                     "params":""
-            }]
+                 }
+            ]
         },
         {
             "displayName": "Text Summary",
@@ -65,13 +67,14 @@
             "defaultArg": "",
             "fileArgs": "-f",
             "options" :  [ {
-                    "displayName": "Sentences",
+                    "displayName": "Sentences in Summary",
                     "type": "select",
-                    "values": [1,3,5,10,15,20],
-                    "name": "textSummary",
+                    "values": [1,3,5,10],
+                    "name": "txtSummary",
                     "arg": "-s",
                     "params":""
-            }]
+                 }
+            ]
         }
     ]
 }

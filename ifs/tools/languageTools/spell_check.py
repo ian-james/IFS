@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.5
 
 # This script uses Hunspell to process arbitrary text strings and provide
 # suggestions for spelling correction.
@@ -29,13 +29,13 @@ import hunspell
 
 # this function prints usage information
 def print_usage():
-    print 'Usage:'
-    print 'spell_check.py [--path=PATH] [--lang=LANG] [--correct]'
-    print '               [--outfile=OUT.json] [--english OR --quiet]'
-    print '               --infile=INPUTFILE'
-    print
-    print 'spell_check.py [-p PATH] [-l LANG] [-c] [-o OUT.json] [-q]'
-    print '               -i INPUTFILE'
+    print( 'Usage:')
+    print( 'spell_check.py [--path=PATH] [--lang=LANG] [--correct]')
+    print( '               [--outfile=OUT.json] [--english OR --quiet]')
+    print( '               --infile=INPUTFILE')
+    print()
+    print( 'spell_check.py [-p PATH] [-l LANG] [-c] [-o OUT.json] [-q]')
+    print( '               -i INPUTFILE')
 
     return
 
@@ -59,19 +59,22 @@ def spcheck(to_check, lang, hun):
     correct_words = []  # each element is (line_num, word_num, word)
     json_string = ''
 
-    gchar_num = 0  # character count from beginning of file
-    line_num = 0
 
+    #
+    #    *_num is the global position ( line, word, char )
+    #    *_pos relative position on the line ( word, char )
+    #
+
+    char_num = 0
+    line_num = 0
+    word_num = 0
     # optimized regex provided by Jamey
     regex = re.compile(r'[^a-zA-z]*([a-zA-Z]+([-\'][a-zA-Z]+)*)')
 
     for line in to_check:
-        word_num = 0
-        line_num += 1
-        char_num = 0  # character count on the current line
-
-        for word in line.split():  # tokenize by whitespace delimeters?
-            word_num += 1
+        char_pos= 0
+        word_pos = 0
+        for word in line.split():  # tokenize by whitespace delimeters?            
             # simple regex to ensure that punctuation at the end of a word is
             # not passed to hunspell i.e. prevents false alarms
             res = regex.match(word)
@@ -80,24 +83,23 @@ def spcheck(to_check, lang, hun):
 
             # note that hunspell will think that cat!dog is not a word, but
             # hyphenated words such as cat-dog may pass, even though they
-            # aren't in the English lexicon
+            # aren't in the English lexicon        
 
-            # ignore any "words" that are just punctuation or number sequences
-            if re.match(r'^[_\W]+$', word):  # if only punctuation
-                continue
-            elif isnumber(word):  # check if the word is just a number
-                continue
-
-            char_num = line.find(word, char_num)
+            char_pos = line.find(word, char_pos)
 
             if not hun.spell(word):
-                suggestion = (line_num, word_num, char_num,
-                              gchar_num + char_num, (word, hun.suggest(word)))
+                sug = [ x.decode('utf-8') for x in hun.suggest(word) ]
+                suggestion = (line_num, word_num, char_num+char_pos, char_pos, word_pos, (word, sug))
+
                 misspelled.append(suggestion)
             else:
                 correct_words.append((line_num, word_num, word))
 
-        gchar_num += len(line)
+            word_num += 1
+            word_pos += 1
+
+        line_num +=1
+        char_num += len(line)
 
     return misspelled, correct_words
 
@@ -119,27 +121,29 @@ def build_json(misspelled, filename, lang, correct=[]):
                             + '"target": "' + str(correct[i][2]) + '", '
                             + '"wordNum": ' + str(correct[i][1]) + ', '
                             + '"lineNum": ' + str(correct[i][0]) + ', '
+                            + '"filename": "' + filename + ', '
                             + '"feedback": "Selected word is correct.", '
                             + '"lang": ' + '"' + lang + '"'
                             + ' },')
 
     # always add misspelled words to the json, along with other useful info
     for i in range(len(misspelled)):
-        json_string += ('{ '
-                        + '"target": "' + str(misspelled[i][4][0]) + '", '
-                        + '"wordNum": ' + str(misspelled[i][1]) + ', '
-                        + '"lineNum": ' + str(misspelled[i][0]) + ', '
-                        + '"linePos": ' + str(misspelled[i][2]) + ', '
-                        + '"charPos": ' + str(misspelled[i][3]) + ', '
-                        + '"type": "spelling", '
-                        + '"lang": ' + '"' + lang + '", '
-                        + '"toolName": "hunspell", '
-                        + '"filename": "' + filename + '", '
-                        + '"feedback": "Selected word not found in ' + lang
-                        + 'dictionary", ')
-        j_array = json.dumps(misspelled[i][4][1])
-        json_string += '"suggestions": ' + j_array
-        json_string += ' }'
+
+        j_array = json.dumps(misspelled[i][5][1]) 
+        json_string += '{\n'
+        json_string += '"target":"' + str(misspelled[i][5][0]) + '",\n' 
+        json_string += '"lineNum": ' + str(misspelled[i][0]) + ',\n'
+        json_string += '"wordNum": ' + str(misspelled[i][1]) + ',\n'
+        json_string += '"charNum": ' + str(misspelled[i][2]) + ',\n'
+        json_string += '"charPos": ' + str(misspelled[i][3]) + ',\n'
+        json_string += '"wordPos": ' + str(misspelled[i][4]) + ',\n'
+        json_string += '"type": "spelling",\n'
+        json_string += '"toolName": "hunspell",\n'
+        json_string += '"filename": "' + filename + '",\n'
+        json_string += '"feedback": "Selected word not found in ' + lang + ' dictionary", '
+        json_string += '"suggestions": ' + j_array + '\n'
+        json_string += '}'
+
         if i != (len(misspelled) - 1):
             json_string += ','
     json_string += ' ] }'
@@ -159,35 +163,35 @@ def build_json(misspelled, filename, lang, correct=[]):
 # provided, then json_data must be provided.
 def print_data(json_data='', lang='', english=False, misspelled=[],
                correct_words=[]):
-    # print data from lists in english if specified
+    # print(data from lists in english if specified)
     if english is True:
-        print 'lang: ', lang
-        # print correctly spelled words
+        print('lang: ', lang)
+        # print(correctly spelled words)
         if correct_words:
-            print 'correctly spelled words:'
+            print('correctly spelled words:')
             for i in range(len(correct_words)):
-                print 'at word:', correct_words[i][1],
-                print 'on line:', correct_words[i][0],
-                print '"' + correct_words[i][2] + '"'
-            print '\n'
-        # print suggestions for misspelled words
+                print('at word:', correct_words[i][1],)
+                print('on line:', correct_words[i][0],)
+                print('"' + correct_words[i][2] + '"')
+            print('\n')
+        # print(suggestions for misspelled words)
         if not misspelled:
             sys.stderr.write('Error. Misspelled list is required for plain ' +
                              'English console output.\n')
             return
         else:
             for i in range(len(misspelled)):
-                print 'misspelled word:'
-                print 'at word:', misspelled[i][1],
-                print 'on line:', misspelled[i][0],
-                print '"' + misspelled[i][4][0] + '"'
-                print 'suggestions:',
+                print('misspelled word:')
+                print('at word:', misspelled[i][1],)
+                print('on line:', misspelled[i][0],)
+                print('"' + misspelled[i][4][0] + '"')
+                print('suggestions:',)
                 for j in range(len(misspelled[i][4][1])):
-                    print misspelled[i][4][1][j],
-                print '\n'
+                    print(misspelled[i][4][1][j],)
+                print('\n')
     else:
         if json_data:
-            print json_data
+            print(json_data)
         else:
             sys.stderr.write('Error. Cannot print output.\n')
 
@@ -282,7 +286,7 @@ def main(argv):
     hun = hunspell.HunSpell(hun_path + '.dic', hun_path + '.aff')
 
     # perform the spell check
-    f_in = open(infile, 'r')
+    f_in = open(infile, 'r', encoding="utf-8")
     misspelled, correct_words = spcheck(f_in, lang, hun)
     f_in.close()
 
@@ -292,7 +296,7 @@ def main(argv):
     else:
         json_data = build_json(misspelled, infile, lang)
 
-    # print to console
+    # print(to console)
     if not quiet:
         if english and with_correct:
             print_data(None, lang, english, misspelled, correct_words)
@@ -306,7 +310,6 @@ def main(argv):
         json_out = open(json_path, 'w')
         json_out.write(json_data)
         json_out.close()
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])

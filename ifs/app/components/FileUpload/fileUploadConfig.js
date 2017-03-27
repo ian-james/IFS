@@ -18,30 +18,50 @@ var limits = {
 
 var Helpers = require('./fileUploadHelpers');
 
+function acceptableFileTypes() {
+    return { 'Programming':['json', 'cpp', 'c','h','zip','tar'],
+           'Writing': ['txt', 'text', 'doc', 'docx', 'odt' ]
+    };
+}
+
+
+function acceptableMimeType() {
+    return { 
+        'Writing':[
+            'text/plain',
+            'text/markdown',
+            'application/json',
+            'application/msword',
+            'application/vnd.oasis.opendocument.text',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        ],
+        "Programming": [
+            'text/plain',
+            'text/markdown',
+            'text/x-csrc',
+            'text/x-chdr',
+            'application/json', 
+            'application/zip',
+            'application/x-compressed-zip',
+            'application/x-tar',
+            'application/gzip'
+        ]
+    };
+}
+
   /* Setup a file filter for upload*/
 var fileFilter = function(req,file,cb)
-{
-   var originalName = file.originalname;
-    var extension = originalName.lastIndexOf(".");
-    if( extension >= 0 )
-    {
-    // Insert accepted file types here
-    // CIS files
-    // PSY files
-        var filetype = originalName.substr(extension+1);
-        var acceptedTypes = [
-            'json', 'cpp', 'c','h','lib',
-            'doc','txt', 'text', 'docx', 'zip','tar'
-        ];
-
-        if( _.indexOf(acceptedTypes,filetype >= 0 ) ) {
-            Logger.info("Successfully uploaded a file");
+{    
+    if( req.session.toolSelect) {
+        var allowMimeTypes = acceptableMimeType();
+        var mimetype = file.mimetype;
+        if( _.includes(allowMimeTypes[req.session.toolSelect],mimetype) ) {
+            Logger.info("Allow upload of file", file.originalname);
             return cb( null, true );
         }
-
     }
 
-    Logger.error("Invalid file type selection");
+    Logger.error("Invalid file type selection", file.mimetype);
     return cb( null, false, new Error("In valid file type."));
 
 }
@@ -79,7 +99,6 @@ var storage = multer.diskStorage({
                 callback(null, submissionFolder);
             }
         });
-
 
     },
     filename: function( req, file, callback ) {

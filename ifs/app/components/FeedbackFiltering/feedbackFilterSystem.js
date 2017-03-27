@@ -1,22 +1,3 @@
-/*
-    Full Call and Feedback is available just before this step
-    but this stage should get the results
-
-    Should receive an array of objects
-        each object should have a field called 'feedback'
-            'feedback' is an array containing a number of fields
-                // 'see exampleFeedback for a similar list of fields'
-                // main fields include
-                // target
-                // lineNum
-                // wordNum
-                // suggestions = [ words ]
-                // type
-                // feedback
-                // toolName
-
- */
-
 var path = require("path");
 var fs = require("fs");
 var Logger = require( __configs + "loggingConfig");
@@ -59,12 +40,16 @@ function organizeResults( fileInfo, fullData )
 function writeResults(obj, fdbTypes, uploadPath ){
     // Stores the results in separated format too.
     Logger.info("Write feedback Files");
+
     obj['feedbackFiles'] = {};
     _.forIn( fdbTypes, function(value,key) {
+
         var filename = key + "FeedbackFile.json";
-        obj['feedbackFiles'][key] = filename;
+        obj['feedbackFiles'][key] = path.join(uploadPath,filename);
         writeFeedbackToFile(uploadPath, value, filename);
     });
+
+    Logger.info("Finish Write feedback Files");
 }
 
 /* 
@@ -75,16 +60,49 @@ function writeFeedbackToFile(pathDir, obj, filename )
     // Get upload directory    
     var file = path.join(pathDir,filename);
     Logger.info("Writing FeedbackFile:", file);
-    //fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
-    
-    fs.writeFile( file, JSON.stringify(obj), 'utf-8', function(err) {
-        if(err) {
-            Logger.error("Unable to save file: ", file);
-            return err;
-        }
-        Logger.info("Successfully saved file:", file);
-    });    
+    fs.writeFileSync( file, JSON.stringify(obj), 'utf-8');
     return file;
+}
+
+function setupFilePositionInformation(file, selectedTool, feedbackItems) {
+
+    var fileParser = new FileParser();
+    fileParser.setupContent( file.content );
+    fileParser.tokenize();
+
+    // Setup positionsal information for all
+    for( var i = 0; i < feedbackItems.length; i++ ) {
+
+        var feedbackItem = feedbackItems[i];
+        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool) )
+        {
+            if( !feedbackItem.filename || !feedbackItem.lineNum )
+            {
+                // TODO: This should be handed a generic or global error system.
+                continue;
+            }
+
+            // Try to fill out positional information first.
+            if( !feedbackItem.charNum ) {
+                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
+            }
+
+            // Without a target you have to use the line or a range
+            if( !feedbackItem.target ) {
+                if( feedbackItem.hlBegin ) {
+                    // Section to highlight
+                    feedbackItem.target = fileParser.getRange( feedbackItem );
+                }
+                else if( feedbackItem.charPos ) {
+                    // You can get a target better than the line.
+                    feedbackItem.target = fileParser.getLineSection( feedbackItem );
+                }
+                if(!feedbackItem.target) {
+                    feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                }
+            }
+        }
+    }
 }
 
 module.exports.organizeResults = organizeResults;

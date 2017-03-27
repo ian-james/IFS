@@ -62,7 +62,7 @@ def main(argv):
 
     ifile =''
     console = True
-    options = { 'termLimit': 50, 'file':'', 'language':'english','ifs': True }
+    options = { 'termLimit': 20, 'file':'', 'language':'english','ifs': True }
 
     # define command line arguments and check if the script call is valid
     opts, args = getopt.getopt(argv,'i:t:l:f:h',['ifsOff=', 'terms=','language=','file=', 'help'])
