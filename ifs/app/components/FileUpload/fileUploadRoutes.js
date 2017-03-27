@@ -74,6 +74,8 @@ module.exports = function (app) {
             //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
             Logger.error("Failed to make jobs:", err );
             res.redirect('/tool');
+        }, function(prog) {
+            console.log("Manager's progress is ", prog.progress, "%");
         })
         .catch( function(err){
             res.status(500, {
