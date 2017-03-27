@@ -69,7 +69,7 @@ def build_json(filename, lang, matches):
     json_string += '"feedback": ['
     for i in range(num_matches):
         json_string += ('{ '
-                        + '"context": "' + str(matches[i].context) + '", ')
+                    + '"context": "' + str(matches[i].context) + '", ')
         # a grammatical issue may span multiple words and lines, so it's best
         # to represent the position of the issue as a span of char coordinates;
         # the hl_begin and hl_end attributes consist of the following structure:
@@ -101,7 +101,7 @@ def build_json(filename, lang, matches):
     json_string += ' ] }'
     # make formatting prettier
     json_obj = json.loads(json_string)
-    json_string = json.dumps(json_obj, indent=4, sort_keys=False)
+    json_string = json.dumps(json_obj, indent=4, sort_keys=True)
     json_string += '\n'
 
     return json_string

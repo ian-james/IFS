@@ -1,7 +1,7 @@
 {
     "tools": [
          {
-            "displayName": "Spell Checker", 
+            "displayName": "Spell Checker",
             "progName":"./tools/languageTools/spell_check.py",
             "progfullName": "./tools/languageTools/spell_check.py",
             "runType": "writing",
@@ -16,7 +16,6 @@
                     "name": "spellDictionary",
                     "arg": "-l",
                     "params":""
-
                 }
             ]
         },
@@ -38,6 +37,43 @@
                     "params":""
 
                 }
+            ]
+        },
+        {
+            "displayName": "Word Cloud",
+            "progName":"./tools/languageTools/termFreq.py",
+            "progfullName": "./tools/languageTools/termFreq.py",
+            "runType": "visual",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" :  [ {
+                    "displayName": "Word In Cloud",
+                    "type": "select",
+                    "values": [5, 10,20],
+                    "name": "wordCloud",
+                    "arg": "-t",
+                    "params":""
+                 }
+            ]
+        },
+        {
+            "displayName": "Text Summary",
+            "progName":"./tools/languageTools/textSummarization.py",
+            "progfullName": "./tools/languageTools/textSummarization.py",
+            "runType": "visual",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" :  [ {
+                    "displayName": "Sentences in Summary",
+                    "type": "select",
+                    "values": [1,3,5,10],
+                    "name": "txtSummary",
+                    "arg": "-s",
+                    "params":""
+                 }
             ]
         }
     ]

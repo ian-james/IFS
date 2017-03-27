@@ -56,7 +56,7 @@ function readFeedbackFormat( feedback , options)
 
     // A Unique list of tools used for UI
     var toolsUsed = _.uniqBy(feedbackItems,'toolName');
-    
+
     // Tool should always be selected unless it's defaulted too.
     var selectedTool = (options && options['tool'] || toolsUsed.length >= 1 && toolsUsed[0].toolName);
 
@@ -74,7 +74,7 @@ function readFeedbackFormat( feedback , options)
 
             var sortedOrder = [ 'charNum', 'filename', 'toolName'];
             feedbackItems = _.sortBy( feedbackItems, sortedOrder );
-        
+
             file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
         return { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool, 'toolType': toolsUsed[0].runType };
