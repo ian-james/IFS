@@ -18,6 +18,7 @@ module.exports = function( app ) {
     */
     app.get('/feedback', function(req,res, next ){
       
+        req.session.activeTool = undefined;
         var page = { title: 'Feedback page' };
         var feedbackFile = req.session.allFeedbackFile;
         var feedback = Feedback.setupFeedback(feedbackFile);
