@@ -9,7 +9,7 @@ var path = require('path');
 //
 global.__base =  path.join(__dirname, "../");
 global.__configs = path.join(__dirname, "/");
-    ;
+
 global.__tools = path.join( __dirname , "../tools/");
 global.__components = path.join( __dirname, "../app/components/");
 global.__appPath = path.join( __dirname, "../app/");

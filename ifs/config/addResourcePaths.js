@@ -21,10 +21,15 @@ module.exports = function (app) {
     // Boostrap-Angular
     app.use( "/bootstrap", express.static(  nodeModulesPath + "angular-ui-bootstrap/dist/") );
 
+    // WordCloud library
     app.use("/wordcloud", express.static( nodeModulesPath + "/wordcloud/src/") );
 
+    // Code Prettification
     app.use("/prettyify", express.static(nodeModulesPath + "/code-prettify/src") );
     app.use("/prettyifyTheme", express.static(nodeModulesPath + "/code-prettify/styles") );
+
+    // Survey JS information
+    app.use("/surveyjs",express.static(nodeModulesPath + "/survey-jquery/") );
 
     // Static Files   
     app.use( express.static( path.join( __dirname, "/../app/") ) );
