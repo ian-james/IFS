@@ -15,6 +15,22 @@ var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 module.exports = function (app) {
 
     /**
+     * Information is stored to quickly create survey information
+     * This information shouldn't change unless a new survey is added.
+     * @return {[type]} [description]
+     */
+    function getStaticSurveyData(){
+        var surveyNames = ["CPSEPS","GSE","SEWS", "AGQ"];
+        var surveyAuthors = ["Unknown", "Unknown","Unknown","Unknown"];
+        var surveyTitle = ["Computer Programming Self-Efficacy Survey", "General Self-Efficacy",
+                            "Self-Efficacy Writing Scale", "Achievement Goal Questionnaire"];
+        var surveyFiles = [ "data/surveys/surveyCPSEPS.json", "data/surveys/surveyGSE.json",
+                            "data/surveys/surveySEWS.json", "data/surveys/surveyAGQ.json" ];
+        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles);
+        return allData();
+    }
+
+    /**
      * Create  basic Survey information and store it in database.
      *     Creation of Survey Information needs to occur before buildSurvey
      * @param  {[type]} req  [description]
@@ -22,13 +38,7 @@ module.exports = function (app) {
      * @return {[type]}      [description]
      */
     app.get( '/createSurveys', function(req,res) {
-
-        var surveyNames = ["CPSEPS","GSE"];
-        var surveyAuthors = ["Unknown", "Unknown"];
-        var surveyTitle = ["Computer Programming Self-Efficacy Survey", "General Self-Efficacy"];
-        var surveyFiles = [ "data/surveys/surveyCPSEPS.json", "data/surveys/surveyGSE.json" ];
-        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles);
-
+        var allData = getStaticSurveyData();
         async.map(allData,
             Survey.insertSurvey,
             function(err){
@@ -50,15 +60,13 @@ module.exports = function (app) {
      * @return {[type]}      [description]
      */
     app.get( '/buildDefaultSurvey:n', function(req,res) {
-        var surveyNames = ["CPSEPS","GSE"];
-        var surveyAuthors = ["Unknown","Unknown"];
-        var surveyFiles = [ "data/surveys/CPSEPS.json", 
-                            "data/surveys/GSE.json" 
-                            /*, "data/survey/SCEQ/sceq.json",
-                            "data/survey/SEWS/sews.json" */];
-        var i = req.params.n;
 
-        Survey.getSurvey(surveyNames[i], function(err,data) {
+        var allSurveys = getStaticSurveyData();
+        var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
+
+        var [ surveyName, surveyAuthors,surveyTitle, surveyFile] = allSurveys[i];
+
+        Survey.getSurvey(surveyName, function(err,data) {
              if( err )
                 Logger.error(err);
             else {
@@ -66,11 +74,11 @@ module.exports = function (app) {
                     var survey = data[0];
                     console.log("DATA SurveyName ", data[0].surveyName);
                 
-                    var surveyFile = surveyFiles[i];
+                    var surveyFile = surveyFile;
                     console.log("SurveyFile to load is ", surveyFile);
-                    fs.readFile(surveyFiles[i], "utf-8", function(err,fileData){
+                    fs.readFile(surveyFile, "utf-8", function(err,fileData){
                         if(err)
-                            console.log("Can't read file:",surveyFiles[i]);
+                            console.log("Can't read file:",surveyFile);
                         else {
                             var jsonData = JSON.parse(fileData);
                             // For each question insert
@@ -88,7 +96,7 @@ module.exports = function (app) {
                                     ]
                                     dde.push( defaultData );
                                 }
-                                console.log("RUN ASYNC");
+                                
                                 async.map( dde,  
                                     Question.insertQuestion,
                                     function(err){
@@ -108,6 +116,8 @@ module.exports = function (app) {
         });
     });
 
+    /*
+    /// Needs to be tested, in more depth.
     app.get( '/deleteSurvey', function(req,res) {
         Survey.deleteSurvey( ['TEST_SURVEY'], function(err, data ){
             if(err)
@@ -117,9 +127,14 @@ module.exports = function (app) {
             res.end();
         });
     });
+    */
 
-    //TODO: Immediately, need a public folder for paths but not changing the directory structure
-    // On this branch, for the momement. I'm testing that we can load full surveys using this function.
+    /**
+     * Method gets the full survey and displays it.
+     * @param  {[type]} req  [description]
+     * @param  {[type]} res) {                   var surveyName [description]
+     * @return {[type]}      [description]
+     */
     app.get('/survey:surveyName', function(req,res) {
         var surveyName = req.params.surveyName;
 
@@ -142,67 +157,33 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/sec/:surveyName/:low/:high', function(req,res) {
+    /**
+     * This route get a survey by name and specific section of questions.
+     * Also allows options parameters to be set.
+     * @param  {[type]} req  [description]
+     * @param  {[type]} res) {                   var surveyName [description]
+     * @return {[type]}      [description]
+     */
+    app.get('/surveySec/:surveyName/:low/:high/:questionsPerPage?/:splitQuestionTypes?', function(req,res) {
         var surveyName = req.params.surveyName;
         var range = [Math.max(0,Math.min(req.params.low, req.params.high)),Math.max(req.params.low, req.params.high) ];
 
+        var questionsPerPage  = req.params.questionsPerPage || 4;
+        var splitQuestionTypes =  req.params.splitQuestionTypes || true;
+
         Survey.getSurvey(surveyName, function(err,surveyData) {
             if( err ) {
-                console.log("Error getting Survey");
                 Logger.error(err);
             }
             else if(surveyData.length >= 1 && surveyData[0].surveyName == surveyName)
             {
-                var options = { "range": range, "questionsPerPage":4, "splitQuestionTypes": true };
+                var options = { "range": range, "questionsPerPage":questionsPerPage, "splitQuestionTypes": splitQuestionTypes };
                 SurveyBuilder.getSurveySection(surveyData, options,  function(err,data){
                     var sqs = JSON.stringify(data);
+                    res.redirect('/surveySec');
                     res.render(viewPath + "questionsLayout", { "title": 'Survey', "surveyQuestions": sqs} );
-                });
-            }
-            else {
-                res.end();
-            }
-        });
-    });
-
-     app.get('/GSE:low', function(req,res) {
-        var surveyName = "GSE";
-        var range = [Math.max(0,Math.min(req.params.low, 8)),Math.max(req.params.low, 8) ];
-
-        Survey.getSurvey(surveyName, function(err,surveyData) {
-            if( err ) {
-                console.log("Error getting Survey");
-                Logger.error(err);
-            }
-            else if(surveyData.length >= 1 && surveyData[0].surveyName == surveyName)
-            {
-                var options = { "range": range, "questionsPerPage":5, "splitQuestionTypes": true };
-                SurveyBuilder.getSurveySection(surveyData, options,  function(err,data){
-                    var sqs = JSON.stringify(data);
-                    res.render(viewPath + "questionsLayout", { "title": 'Survey', "surveyQuestions": sqs} );
-                });
-            }
-            else {
-                res.end();
-            }
-        });
-    });
-
-      app.get('/CPSEPS:high', function(req,res) {
-        var surveyName = "CPSEPS";
-        var range = [Math.max(0,Math.min(2, req.params.high)),Math.max(0, req.params.high) ];
-
-        Survey.getSurvey(surveyName, function(err,surveyData) {
-            if( err ) {
-                console.log("Error getting Survey");
-                Logger.error(err);
-            }
-            else if(surveyData.length >= 1 && surveyData[0].surveyName == surveyName)
-            {
-                var options = { "range": range, "questionsPerPage":2, "splitQuestionTypes": true };
-                SurveyBuilder.getSurveySection(surveyData, options,  function(err,data){
-                    var sqs = JSON.stringify(data);
-                    res.render(viewPath + "questionsLayout", { "title": 'Survey', "surveyQuestions": sqs} );
+                    //res.send(sqs);
+                    //res.end();
                 });
             }
             else {
