@@ -7,15 +7,14 @@ var config = require('./databaseConfig');
 
 var Logger = require( "./loggingConfig") ;
 
-    try  {
-        var connection = mysql.createConnection( config.connection );
+try  {
+    var connection = mysql.createConnection( config.connection );
 
-        // Tell mysql to use the database
-        if( connection )
-            Logger.info("Create the database now");
+    // Tell mysql to use the database
+    if( connection ) {
+        Logger.info("Create the database now");
+
         connection.query ('CREATE DATABASE IF NOT EXISTS ' + config.database );
-
-
 
         Logger.info("Create the Table:", config.users_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.users_table + " ( \
@@ -24,7 +23,6 @@ var Logger = require( "./loggingConfig") ;
             password CHAR(60) NOT NULL, \
             PRIMARY KEY(id) \
         )");
-
 
         Logger.info("Create the Table:", config.raw_feedback_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.raw_feedback_table + " ( \
@@ -39,29 +37,35 @@ var Logger = require( "./loggingConfig") ;
         Logger.info("Create the Table:", config.survey_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-            surveyName VARCHAR(40) NOT NULL, \
-            authorNames VARCHAR(30) NOT NULL, \
-            creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
-            rawFeedback TEXT NOT NULL, \
+            surveyName VARCHAR(60) UNIQUE NOT NULL, \
+            authorNames VARCHAR(60) NOT NULL, \
+            title VARCHAR(60), \
+            fullSurveyFile VARCHAR(80) NOT NULL, \
             PRIMARY KEY(id) \
         )");
 
-        Logger.info("Create the Table:", config.survey_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.user_feedback_table + " ( \
+        Logger.info("Create the Table:", config.question_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.question_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-            feedbackTarget VARCHAR(40) NOT NULL, \
-            feedbackDescription VARCHAR(60) NOT NULL, \
-            feedbackTool VARCHAR(40) NOT NULL, \
-            rating INT NOT NULL, \
-            creationDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
-            rawFeedback TEXT, \
-            PRIMARY KEY(id) \
+            surveyId Int UNSIGNED NOT NULL, \
+            language CHAR(10) NOT NULL, \
+            origOrder INT UNSIGNED NOT NULL, \
+            text TEXT NOT NULL, \
+            visualFile Text, \
+            type ENUM ('matrix','rating','text','radiogroup') NOT NULL, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (surveyId) REFERENCES " + config.database + "." +config.survey_table + "(id) \
         )");
-            Logger.info("Success: Database created.");
+        Logger.info("Success: Database created.");
+
     }
-    catch( e )
-    {
-        Logger.error("Error: Unable to load database.");
-    }
+    else
+        Logger.error("Error, Unable to make connection to database")
+}
+catch( e )
+{
+    Logger.error("Error: Unable to load database.");
+}
+
 
 connection.end();

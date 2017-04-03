@@ -10,8 +10,11 @@ module.exports = function (app) {
     var configPath = __dirname + "/";
     var myLogger = require( __configs + "loggingConfig");
 
-    var logger = require('morgan')("combined", {"stream": myLogger.stream } );
-    app.use( logger );
+    console.log("ENV VAR - ", app.get('env') )
+    if( app.get('env') != "test" ) {
+        var logger = require('morgan')("combined", {"stream": myLogger.stream } );
+        app.use( logger );
+    }
 
     /* Note the odd separation of some of these middleware is a required
         CookieParser, i18n, bodyParser and passport all interact the request message.

@@ -2,7 +2,7 @@ div.panel.panel-primary
     div.panel-heading
         h4.panel-title.text-center
             p File Upload
-    div(class="panel-body text-center" uploader="uploader" ng-controller="fileUploadCtrl" filters="queueLimit, customFilter")
+    div(class="panel-body text-center")
         h4 Please select files to upload
         hr
         input(type="file" name="file" multiple required)
@@ -11,6 +11,13 @@ div.panel.panel-primary
         //include fileUploadFileDisplay.pug
         hr
         div
-        input(type="submit" value="Evaluate" name="submit")
+        input(type="submit" value="Evaluate" name="submit" )
 
-    script(src="components/FileUpload/fileUploadController.js")
+    div(id="processingModal" uk-modal="center: true")
+        div.uk-modal-dialog
+            div.uk-modal-header 
+                h2(uk-modal.title) Processing Files please wait...
+            div(class="uk-modal-body")
+            div.uk-modal-footer
+                p Footer
+    script(src="components/FileUpload/upload-panel.js")
