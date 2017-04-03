@@ -26,8 +26,10 @@ module.exports = function (app) {
                             "Self-Efficacy Writing Scale", "Achievement Goal Questionnaire"];
         var surveyFiles = [ "data/surveys/surveyCPSEPS.json", "data/surveys/surveyGSE.json",
                             "data/surveys/surveySEWS.json", "data/surveys/surveyAGQ.json" ];
-        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles);
-        return allData();
+        var surveyQuestions = ["data/surveys/CPSEPS.json", "data/surveys/GSE.json",
+                            "data/surveys/SEWS.json", "data/surveys/AGQ.json" ];
+        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles, surveyQuestions);
+        return allData;
     }
 
     /**
@@ -39,15 +41,68 @@ module.exports = function (app) {
      */
     app.get( '/createSurveys', function(req,res) {
         var allData = getStaticSurveyData();
+        allData.pop();
         async.map(allData,
             Survey.insertSurvey,
             function(err){
                 if(err)
                     console.log("Insert failed with error", err);
-                console.log("FINISHED");
                 res.end();
             }
         );
+    });
+
+    /**
+     * Generate an all matrix survey for a set of questions, read from **surveyQuestions**.json
+     * Puts a single page with all likert/matrix type questions in.
+     * Use other functions to format. This function doesn't overwrite for safety.
+     * @param  {[type]} req  [description]
+     * @param  {[type]} res) {                   var allData [description]
+     * @return {[type]}      [description]
+     */
+    app.get( '/generateMatrixSurvey:n', function(req,res) {
+        var allData = getStaticSurveyData();
+
+        var allSurveys = getStaticSurveyData();
+        var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
+
+        // Survey N becomes the default
+        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, surveyQuestionFile] = allSurveys[i];
+
+        if(fs.existsSync(surveyFiles) ){
+            console.log("SURVEY FILE EXISTS, will not overwrite, please remove the local file.");
+            res.end();
+            return;
+        }
+
+        Survey.getSurvey(surveyName, function(err,data) {
+             if( err )
+                Logger.error(err);
+            else {
+                if( data.length >= 1){
+                    var survey = data[0];
+                    var surveyFile = surveyQuestionFile;
+                    
+                    fs.readFile(surveyFile, "utf-8", function(err,fileData){
+                        if(err)
+                            console.log("Can't read file:",surveyFile);
+                        else {
+                            var jsonData = JSON.parse(fileData);
+                            // For each question insert
+                            if(jsonData['QuestionText']){
+                                
+                                // Build default Survey and write to file, specified in DB.
+                                var s = SurveyBuilder.buildDefaultMatrixSurvey(data[0], jsonData['QuestionText']);
+                                s = JSON.stringify(s);
+                                fs.writeFileSync(String("./" + data[0].fullSurveyFile), s, 'utf-8');
+                                res.end();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
     });
 
     /**
@@ -64,7 +119,7 @@ module.exports = function (app) {
         var allSurveys = getStaticSurveyData();
         var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
 
-        var [ surveyName, surveyAuthors,surveyTitle, surveyFile] = allSurveys[i];
+        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, surveyQuestionFile] = allSurveys[i];
 
         Survey.getSurvey(surveyName, function(err,data) {
              if( err )
@@ -72,10 +127,8 @@ module.exports = function (app) {
             else {
                 if( data.length >= 1){
                     var survey = data[0];
-                    console.log("DATA SurveyName ", data[0].surveyName);
-                
-                    var surveyFile = surveyFile;
-                    console.log("SurveyFile to load is ", surveyFile);
+                    var surveyFile = surveyQuestionFile;
+                    
                     fs.readFile(surveyFile, "utf-8", function(err,fileData){
                         if(err)
                             console.log("Can't read file:",surveyFile);
@@ -85,7 +138,6 @@ module.exports = function (app) {
                             if(jsonData['QuestionText']){
                                 var dde = [];
                                 for( var j = 0; j < jsonData['QuestionText'].length;j++ ) {
-                                    console.log("JSON j =", jsonData['QuestionText'][j]);
                                     var defaultData = [
                                         survey.id, 
                                         'English',
@@ -102,7 +154,6 @@ module.exports = function (app) {
                                     function(err){
                                         if(err)
                                             console.log("Insert failed with error", err);
-                                        console.log("FINISHED");
                                         res.end();
                                     }
                                 );
@@ -141,7 +192,6 @@ module.exports = function (app) {
         Survey.getSurvey(surveyName, function(err,surveyData) {
             if( err ) {
                 Logger.error(err);
-                console.log("FIRST ERROR");
             }
             else if(surveyData.length >= 1 && surveyData[0].surveyName == surveyName)
             {
@@ -180,10 +230,8 @@ module.exports = function (app) {
                 var options = { "range": range, "questionsPerPage":questionsPerPage, "splitQuestionTypes": splitQuestionTypes };
                 SurveyBuilder.getSurveySection(surveyData, options,  function(err,data){
                     var sqs = JSON.stringify(data);
-                    res.redirect('/surveySec');
-                    res.render(viewPath + "questionsLayout", { "title": 'Survey', "surveyQuestions": sqs} );
-                    //res.send(sqs);
-                    //res.end();
+                    res.send(sqs);
+                    res.end();
                 });
             }
             else {

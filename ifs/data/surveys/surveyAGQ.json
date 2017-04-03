@@ -1,0 +1,155 @@
+{
+    "goNextPageAutomatic": false,
+    "pages": [
+        {
+            "questions": [
+                {
+                    "columns": [
+                        {
+                            "text": "Strongly Disagree",
+                            "value": 1
+                        },
+                        {
+                            "text": "Disagree",
+                            "value": 2
+                        },
+                        {
+                            "text": "Neutral",
+                            "value": 3
+                        },
+                        {
+                            "text": "Agree",
+                            "value": 4
+                        },
+                        {
+                            "text": "Strongly Agree",
+                            "value": 5
+                        }
+                    ],
+                    "name": "NAME-ME",
+                    "rows": [
+                        {
+                            "text": "My aim is to completely master the material presented in this class",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I am striving to do well compared to other students",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "My goal is to learn as much as possible",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "My aim is to perform well relative to other students",
+                            "value": "FIX:ME"
+                        }
+                    ],
+                    "title": "Achievement Goal Questionnaire",
+                    "type": "matrix"
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "columns": [
+                        {
+                            "text": "Strongly Disagree",
+                            "value": 1
+                        },
+                        {
+                            "text": "Disagree",
+                            "value": 2
+                        },
+                        {
+                            "text": "Neutral",
+                            "value": 3
+                        },
+                        {
+                            "text": "Agree",
+                            "value": 4
+                        },
+                        {
+                            "text": "Strongly Agree",
+                            "value": 5
+                        }
+                    ],
+                    "name": "NAME-ME",
+                    "rows": [
+                        {
+                            "text": "My aim is to avoid learning less than I possibly could",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "My goal is to avoid performing poorly compared to others",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I am striving to understand the content of this course as thoroughly as possible",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "My goal is to perform better than the other students",
+                            "value": "FIX:ME"
+                        }
+                    ],
+                    "title": "Achievement Goal Questionnaire",
+                    "type": "matrix"
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "columns": [
+                        {
+                            "text": "Strongly Disagree",
+                            "value": 1
+                        },
+                        {
+                            "text": "Disagree",
+                            "value": 2
+                        },
+                        {
+                            "text": "Neutral",
+                            "value": 3
+                        },
+                        {
+                            "text": "Agree",
+                            "value": 4
+                        },
+                        {
+                            "text": "Strongly Agree",
+                            "value": 5
+                        }
+                    ],
+                    "name": "NAME-ME",
+                    "rows": [
+                        {
+                            "text": "My goal is to avoid learning less than it is possible to learn",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I am striving to avoid performing worse than others",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I am striving to avoid an incomplete understanding of the course material",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "My aim is to avoid doing worse than other students",
+                            "value": "FIX:ME"
+                        }
+                    ],
+                    "title": "Achievement Goal Questionnaire",
+                    "type": "matrix"
+                }
+            ]
+        }
+    ],
+    "showNavigationButtons": true,
+    "showProgressBar": "bottom",
+    "title": "Achievement Goal Questionnaire"
+}

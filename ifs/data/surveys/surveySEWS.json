@@ -1,0 +1,204 @@
+{
+    "goNextPageAutomatic": false,
+    "pages": [
+        {
+            "questions": [
+                {
+                    "columns": [
+                        {
+                            "text": "Strongly Disagree",
+                            "value": 1
+                        },
+                        {
+                            "text": "Disagree",
+                            "value": 2
+                        },
+                        {
+                            "text": "Neutral",
+                            "value": 3
+                        },
+                        {
+                            "text": "Agree",
+                            "value": 4
+                        },
+                        {
+                            "text": "Strongly Agree",
+                            "value": 5
+                        }
+                    ],
+                    "name": "NAME-ME",
+                    "rows": [
+                        {
+                            "text": "I can think of many ideas for my writing.",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can put my ideas into writing",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can think of many words to describe my ideas",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can think of a lot of original ideas",
+                            "value": "FIX:ME"
+                        }
+                    ],
+                    "title": "Self-Efficacy Writing Scale",
+                    "type": "matrix"
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "columns": [
+                        {
+                            "text": "Strongly Disagree",
+                            "value": 1
+                        },
+                        {
+                            "text": "Disagree",
+                            "value": 2
+                        },
+                        {
+                            "text": "Neutral",
+                            "value": 3
+                        },
+                        {
+                            "text": "Agree",
+                            "value": 4
+                        },
+                        {
+                            "text": "Strongly Agree",
+                            "value": 5
+                        }
+                    ],
+                    "name": "NAME-ME",
+                    "rows": [
+                        {
+                            "text": "I know exactly where to place my ideas in my writing",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can spell my words correctly.",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can write complete sentences",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can punctuate my sentences correctly",
+                            "value": "FIX:ME"
+                        }
+                    ],
+                    "title": "Self-Efficacy Writing Scale",
+                    "type": "matrix"
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "columns": [
+                        {
+                            "text": "Strongly Disagree",
+                            "value": 1
+                        },
+                        {
+                            "text": "Disagree",
+                            "value": 2
+                        },
+                        {
+                            "text": "Neutral",
+                            "value": 3
+                        },
+                        {
+                            "text": "Agree",
+                            "value": 4
+                        },
+                        {
+                            "text": "Strongly Agree",
+                            "value": 5
+                        }
+                    ],
+                    "name": "NAME-ME",
+                    "rows": [
+                        {
+                            "text": "I can write grammatically correct sentences",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can begin my paragraphs in the right spots",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can focus on my writing for at least one hour",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can avoid distractions while I write",
+                            "value": "FIX:ME"
+                        }
+                    ],
+                    "title": "Self-Efficacy Writing Scale",
+                    "type": "matrix"
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "columns": [
+                        {
+                            "text": "Strongly Disagree",
+                            "value": 1
+                        },
+                        {
+                            "text": "Disagree",
+                            "value": 2
+                        },
+                        {
+                            "text": "Neutral",
+                            "value": 3
+                        },
+                        {
+                            "text": "Agree",
+                            "value": 4
+                        },
+                        {
+                            "text": "Strongly Agree",
+                            "value": 5
+                        }
+                    ],
+                    "name": "NAME-ME",
+                    "rows": [
+                        {
+                            "text": "I can start writing assignments quickly",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can control my frustration when I write",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can think of my writing goals before I write",
+                            "value": "FIX:ME"
+                        },
+                        {
+                            "text": "I can keep writing even when it’s difficult.",
+                            "value": "FIX:ME"
+                        }
+                    ],
+                    "title": "Self-Efficacy Writing Scale",
+                    "type": "matrix"
+                }
+            ]
+        }
+    ],
+    "showNavigationButtons": true,
+    "showProgressBar": "bottom",
+    "title": "Self-Efficacy Writing Scale"
+}

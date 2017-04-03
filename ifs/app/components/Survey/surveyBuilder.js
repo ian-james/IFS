@@ -12,13 +12,54 @@ var Logger = require( __configs + "loggingConfig");
  * @return {[type]}            [description]
  */
 function buildDefaultSurveyData( surveyData ) {
-    return { 
+    return {
         "title": surveyData.title,
         "showProgressBar": "bottom",
         "goNextPageAutomatic": false,
         "showNavigationButtons": true,
         "pages":[]
     };
+}
+
+function buildDefaultMatrixRow( qText, qValue ) {
+    var v = qValue || "FIX:ME";
+     return { "value": v, "text": qText };
+}
+
+function buildDefaultMatrixPage( surveyData ) {
+    return {
+        "questions": [
+            {
+                "type": "matrix",
+                "name": surveyData.name || "NAME-ME",
+                "title": surveyData.title || "Title-Me",
+                "columns": [
+                    { "value": 1, "text": "Strongly Disagree" },
+                    { "value": 2, "text": "Disagree" },
+                    { "value": 3, "text": "Neutral" },
+                    { "value": 4, "text": "Agree" },
+                    { "value": 5, "text": "Strongly Agree" }
+                ],
+                "rows": []
+            }
+        ]
+    };
+}
+
+
+/** Builds a survey with every question as a matrix format.
+ *  You can use buildSection to organize the survey once saved.
+ */
+function defaultMatrixSurvey( surveyData, surveyQuestions) {
+    var survey = buildDefaultSurveyData(surveyData);
+
+    var mpage = buildDefaultMatrixPage(surveyData);
+
+    for(var i = 0; i < surveyQuestions.length;i++ )
+        mpage.questions[0].rows.push( buildDefaultMatrixRow(surveyQuestions[i]));
+
+    survey.pages.push(mpage);
+    return survey;
 }
 
 /**
@@ -76,7 +117,7 @@ function separateMatrixType( matrixQuestion ){
  * @param  {[type]} questions [description]
  * @return {[type]}           [description]
  */
-function mergeMatrixType( questions ) {    
+function mergeMatrixType( questions ) {
     if( questions && questions.length >= 1 && isMatrix(questions[0]) ){
         var sectionName = questions[0].name;
         var template = questions[0];
@@ -121,7 +162,7 @@ function pullSurveyQuestions( survey ) {
 function buildSurveySection( survey , options) {
     var surveyOut = buildDefaultSurveyData(survey);
     if(survey && survey.pages) {
-        // Get Questions from Survey Format        
+        // Get Questions from Survey Format
         var questions = pullSurveyQuestions(survey);
 
         // Setup short form survey Properties.
@@ -129,7 +170,7 @@ function buildSurveySection( survey , options) {
         var range = options['range'] || [0,questions.length];
         var questionsPerPage = options['questionsPerPage'] || questions.length;
         var splitQuestionTypes = options['splitQuestionTypes'] || true;
-        
+
         var pages = [];
         var page= []
         var buildingType =undefined;
@@ -152,7 +193,7 @@ function buildSurveySection( survey , options) {
 
         // Go through all the question and put them into pages.
         for( var i = 0; i < questionsInRange.length;i++ ){
-            
+
             if( !buildingType )
                 buildingType = questionsInRange[i].type;
 
@@ -193,3 +234,4 @@ function getSurveySection( surveyData, options, callback ) {
 
 module.exports.getSurveySection = getSurveySection;
 module.exports.loadSurveyFile = loadSurveyFile;
+module.exports.buildDefaultMatrixSurvey =  defaultMatrixSurvey;
