@@ -40,9 +40,40 @@ try  {
             surveyName VARCHAR(60) UNIQUE NOT NULL, \
             authorNames VARCHAR(60) NOT NULL, \
             title VARCHAR(60), \
+            totalQuestions INT, \
             fullSurveyFile VARCHAR(80) NOT NULL, \
             PRIMARY KEY(id) \
         )");
+
+         Logger.info("Create the Table:", config.survey_results_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_results_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            surveyId Int UNSIGNED NOT NULL, \
+            userId INT UNSIGNED NOT NULL, \
+            dateComplete TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (surveyId) REFERENCES " + config.database + "." +config.survey_table + "(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." +config.users_table + "(id) \
+        )");
+    
+        Logger.info("Create the Table:", config.survey_preferences_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_preferences_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            surveyId Int UNSIGNED NOT NULL, \
+            userId INT UNSIGNED NOT NULL, \
+            surveyStartDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
+            lastRevision TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            pauseAsking BOOL DEFAULT FALSE, \
+            pauseTime TIME, \
+            allowedToAsk BOOL DEFAULT TRUE, \
+            currentIndex INT DEFAULT 0, \
+            lastIndex INT DEFAULT 10, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (surveyId) REFERENCES " + config.database + "." + config.survey_table + "(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            UNIQUE KEY 'survey_userIds' (surveyId,userId) \
+        )");
+
 
         Logger.info("Create the Table:", config.question_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.question_table + " ( \

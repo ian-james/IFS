@@ -30,19 +30,19 @@
                     "rows": [
                         {
                             "text": "I can think of many ideas for my writing.",
-                            "value": "FIX:ME"
+                            "value": "sews1"
                         },
                         {
                             "text": "I can put my ideas into writing",
-                            "value": "FIX:ME"
+                            "value": "sews2"
                         },
                         {
                             "text": "I can think of many words to describe my ideas",
-                            "value": "FIX:ME"
+                            "value": "sews3"
                         },
                         {
                             "text": "I can think of a lot of original ideas",
-                            "value": "FIX:ME"
+                            "value": "sews4"
                         }
                     ],
                     "title": "Self-Efficacy Writing Scale",
@@ -79,19 +79,19 @@
                     "rows": [
                         {
                             "text": "I know exactly where to place my ideas in my writing",
-                            "value": "FIX:ME"
+                            "value": "sews5"
                         },
                         {
                             "text": "I can spell my words correctly.",
-                            "value": "FIX:ME"
+                            "value": "sews6"
                         },
                         {
                             "text": "I can write complete sentences",
-                            "value": "FIX:ME"
+                            "value": "sews7"
                         },
                         {
                             "text": "I can punctuate my sentences correctly",
-                            "value": "FIX:ME"
+                            "value": "sews8"
                         }
                     ],
                     "title": "Self-Efficacy Writing Scale",
@@ -128,19 +128,19 @@
                     "rows": [
                         {
                             "text": "I can write grammatically correct sentences",
-                            "value": "FIX:ME"
+                            "value": "sews9"
                         },
                         {
                             "text": "I can begin my paragraphs in the right spots",
-                            "value": "FIX:ME"
+                            "value": "sews10"
                         },
                         {
                             "text": "I can focus on my writing for at least one hour",
-                            "value": "FIX:ME"
+                            "value": "sews11"
                         },
                         {
                             "text": "I can avoid distractions while I write",
-                            "value": "FIX:ME"
+                            "value": "sews12"
                         }
                     ],
                     "title": "Self-Efficacy Writing Scale",
@@ -177,19 +177,19 @@
                     "rows": [
                         {
                             "text": "I can start writing assignments quickly",
-                            "value": "FIX:ME"
+                            "value": "sews13"
                         },
                         {
                             "text": "I can control my frustration when I write",
-                            "value": "FIX:ME"
+                            "value": "sews14"
                         },
                         {
                             "text": "I can think of my writing goals before I write",
-                            "value": "FIX:ME"
+                            "value": "sews15"
                         },
                         {
                             "text": "I can keep writing even when it’s difficult.",
-                            "value": "FIX:ME"
+                            "value": "sews16"
                         }
                     ],
                     "title": "Self-Efficacy Writing Scale",

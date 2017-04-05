@@ -2,6 +2,10 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var fs = require("fs");
 
+var SurveyManager = require( __components + "Survey/surveyManager");
+var SurveyBuilder = require(__components + "Survey/surveyBuilder");
+var Survey = require( __components + "Survey/survey");
+
 module.exports = function (app) {
 
     /* Solution #2 for connecting Express and Angular makes a 2nd route called data to http req*/
@@ -30,7 +34,42 @@ module.exports = function (app) {
         });
     });
 
+    /**
+     * This loads all the survey data required for loading time.
+     * @param  {[type]} req  [description]
+     * @param  {[type]} res  [description]
+     * @param  {[type]} next )             {                var userId [description]
+     * @return {[type]}      [description]
+     */
     app.get('/tool', function( req, res , next ) {
-        res.render( viewPath + "tool", { title: 'Tool Screen' } );
+
+        var userId = req.user.id || req.passport.user;
+        SurveyManager.getUserSurveyProfile(userId, function(err,surveyPrefData) {
+            //Array of preferences per survey.
+            SurveyManager.setupSurvey( surveyPrefData, function(err, selectedSurveyData) {
+
+                if(err || !selectedSurveyData) {
+                    res.render( viewPath + "tool", { "title": 'Tool Screen', "surveyQuestions":[] } );
+                }
+                else {
+                    var surveyId = selectedSurveyData.data.id;
+                    var options = selectedSurveyData.options;
+
+                    Survey.getSurveyId(surveyId, function(err,surveyData) {
+                        if( surveyData && surveyData.length >= 1)
+                        {
+                            SurveyBuilder.getSurveySection(surveyData[0], options, function( err, data ) {
+                                data = JSON.stringify(data);
+                                res.render( viewPath + "tool", { "title": 'Tool Screen', "surveyQuestions":data } );
+                            });
+                        }
+                        else {
+                            res.render( viewPath + "tool", { "title": 'Tool Screen', "surveyQuestions":[] } );
+                            res.end();
+                        }
+                    });
+                }
+            });
+        });
     });
 }

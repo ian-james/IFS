@@ -49,6 +49,7 @@ $(document).ready( function() {
 
 
 function sendDataToServer(data){
+    console.log("********************** SEND DATA TO THE SERVER FROM QUESTIONNAIRE");
     console.log("Here,", data);
 }
 

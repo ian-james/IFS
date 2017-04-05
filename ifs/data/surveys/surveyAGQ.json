@@ -30,19 +30,19 @@
                     "rows": [
                         {
                             "text": "My aim is to completely master the material presented in this class",
-                            "value": "FIX:ME"
+                            "value": "agq1"
                         },
                         {
                             "text": "I am striving to do well compared to other students",
-                            "value": "FIX:ME"
+                            "value": "agq2"
                         },
                         {
                             "text": "My goal is to learn as much as possible",
-                            "value": "FIX:ME"
+                            "value": "agq3"
                         },
                         {
                             "text": "My aim is to perform well relative to other students",
-                            "value": "FIX:ME"
+                            "value": "agq4"
                         }
                     ],
                     "title": "Achievement Goal Questionnaire",
@@ -79,19 +79,19 @@
                     "rows": [
                         {
                             "text": "My aim is to avoid learning less than I possibly could",
-                            "value": "FIX:ME"
+                            "value": "agq5"
                         },
                         {
                             "text": "My goal is to avoid performing poorly compared to others",
-                            "value": "FIX:ME"
+                            "value": "agq6"
                         },
                         {
                             "text": "I am striving to understand the content of this course as thoroughly as possible",
-                            "value": "FIX:ME"
+                            "value": "agq7"
                         },
                         {
                             "text": "My goal is to perform better than the other students",
-                            "value": "FIX:ME"
+                            "value": "agq8"
                         }
                     ],
                     "title": "Achievement Goal Questionnaire",
@@ -128,19 +128,19 @@
                     "rows": [
                         {
                             "text": "My goal is to avoid learning less than it is possible to learn",
-                            "value": "FIX:ME"
+                            "value": "agq9"
                         },
                         {
                             "text": "I am striving to avoid performing worse than others",
-                            "value": "FIX:ME"
+                            "value": "agq10"
                         },
                         {
                             "text": "I am striving to avoid an incomplete understanding of the course material",
-                            "value": "FIX:ME"
+                            "value": "agq11"
                         },
                         {
                             "text": "My aim is to avoid doing worse than other students",
-                            "value": "FIX:ME"
+                            "value": "agq12"
                         }
                     ],
                     "title": "Achievement Goal Questionnaire",

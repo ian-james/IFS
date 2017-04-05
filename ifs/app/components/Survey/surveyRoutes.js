@@ -9,8 +9,8 @@ var Survey = require( __components + "/Survey/survey");
 var Question = require( __components + "Survey/question")
 var Errors = require(__components + "Errors/errors");
 
+var SurveyManager = require( __components + "Survey/surveyManager");
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
-
 
 module.exports = function (app) {
 
@@ -20,6 +20,8 @@ module.exports = function (app) {
      * @return {[type]} [description]
      */
     function getStaticSurveyData(){
+        //Note Survey Questions is not part of the survey database, its parts of question databasde
+        // Thus it's last in the allData variable, so it can be easily extracted.
         var surveyNames = ["CPSEPS","GSE","SEWS", "AGQ"];
         var surveyAuthors = ["Unknown", "Unknown","Unknown","Unknown"];
         var surveyTitle = ["Computer Programming Self-Efficacy Survey", "General Self-Efficacy",
@@ -28,7 +30,8 @@ module.exports = function (app) {
                             "data/surveys/surveySEWS.json", "data/surveys/surveyAGQ.json" ];
         var surveyQuestions = ["data/surveys/CPSEPS.json", "data/surveys/GSE.json",
                             "data/surveys/SEWS.json", "data/surveys/AGQ.json" ];
-        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles, surveyQuestions);
+        var numQs = [28,10,16,12];
+        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles,numQs, surveyQuestions);
         return allData;
     }
 
@@ -41,7 +44,6 @@ module.exports = function (app) {
      */
     app.get( '/createSurveys', function(req,res) {
         var allData = getStaticSurveyData();
-        allData.pop();
         async.map(allData,
             Survey.insertSurvey,
             function(err){
@@ -67,7 +69,7 @@ module.exports = function (app) {
         var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
 
         // Survey N becomes the default
-        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, surveyQuestionFile] = allSurveys[i];
+        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, numQuestions, surveyQuestionFile] = allSurveys[i];
 
         if(fs.existsSync(surveyFiles) ){
             console.log("SURVEY FILE EXISTS, will not overwrite, please remove the local file.");
@@ -119,7 +121,7 @@ module.exports = function (app) {
         var allSurveys = getStaticSurveyData();
         var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
 
-        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, surveyQuestionFile] = allSurveys[i];
+        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, numQs, surveyQuestionFile] = allSurveys[i];
 
         Survey.getSurvey(surveyName, function(err,data) {
              if( err )
@@ -195,7 +197,7 @@ module.exports = function (app) {
             }
             else if(surveyData.length >= 1 && surveyData[0].surveyName == surveyName)
             {
-                SurveyBuilder.loadSurveyFile( surveyData, function(err,data){
+                SurveyBuilder.loadSurveyFile( surveyData[0], function(err,data){
                     var sqs = JSON.stringify(data);
                     res.render(viewPath + "questionsLayout", { "title": 'Survey', "surveyQuestions": sqs} );
                 });
@@ -218,16 +220,14 @@ module.exports = function (app) {
         var surveyName = req.params.surveyName;
         var range = [Math.max(0,Math.min(req.params.low, req.params.high)),Math.max(req.params.low, req.params.high) ];
 
-        var questionsPerPage  = req.params.questionsPerPage || 4;
-        var splitQuestionTypes =  req.params.splitQuestionTypes || true;
+        var options = SurveyBuilder.setDisplaySurveyOptions(req.params.questionsPerPage, req.params.splitQuestionTypes,range);
 
         Survey.getSurvey(surveyName, function(err,surveyData) {
             if( err ) {
                 Logger.error(err);
             }
             else if(surveyData.length >= 1 && surveyData[0].surveyName == surveyName)
-            {
-                var options = { "range": range, "questionsPerPage":questionsPerPage, "splitQuestionTypes": splitQuestionTypes };
+            {   
                 SurveyBuilder.getSurveySection(surveyData, options,  function(err,data){
                     var sqs = JSON.stringify(data);
                     res.send(sqs);
@@ -239,4 +239,15 @@ module.exports = function (app) {
             }
         });
     });
+
+
+/*
+    Helpful little route to create survey prefernces, not sure this will live on.
+    app.get('/ips', function(req,res) {
+        var userId = req.user.id || req.passport.user;
+        SurveyBuilder.setSignupSurveyPreferences( userId, function(err,data) {
+            res.end();
+        });
+    });
+*/
 }

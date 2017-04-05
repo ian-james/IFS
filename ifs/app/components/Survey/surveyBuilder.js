@@ -1,10 +1,15 @@
 var _ = require('lodash');
 var fs = require('fs');
+var async = require('async');
 
 var db = require( __configs + 'database');
 var config = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var Logger = require( __configs + "loggingConfig");
+
+var SurveyPreferences = require( __components + "Survey/surveyPreferences");
+var Constants = require( __components + "Constants/programConstants");
+var Survey = require( __components + "/Survey/survey");
 
 /**
  * Default parameters for our surveys, add more as necessary.
@@ -21,11 +26,41 @@ function buildDefaultSurveyData( surveyData ) {
     };
 }
 
+function setDefaultDisplaySurveyOptions( questionsPerPage = 4, splitQuestionTypes = true, range = [0,100]) {
+    var opts = Constants.surveyDisplayDefaultOptions();
+
+    range[0] = range[0] || opts.range[0];
+    range[1] = range[1] || opts.range[1];
+
+    opts['range'] = range || opts.range;
+    opts['questionsPerPage'] = questionsPerPage || opts['questionsPerPage'];
+    opts['splitQuestionTypes'] = splitQuestionTypes || opts['splitQuestionTypes'];
+
+    
+
+
+    return opts;
+}
+
+/**
+ * Builds a single row for a matrix type question
+ * which is just text and value
+ * @param  {[type]} qText  [description]
+ * @param  {[type]} qValue [description]
+ * @return {[type]}        [description]
+ */
 function buildDefaultMatrixRow( qText, qValue ) {
     var v = qValue || "FIX:ME";
      return { "value": v, "text": qText };
 }
 
+/**
+ * Builds a single page, with a single question type (Matrix)
+ * It loads everything but the rows(ie questions)
+ * but the scoring system is setup.
+ * @param  {[type]} surveyData [description]
+ * @return {[type]}            [description]
+ */
 function buildDefaultMatrixPage( surveyData ) {
     return {
         "questions": [
@@ -47,8 +82,12 @@ function buildDefaultMatrixPage( surveyData ) {
 }
 
 
-/** Builds a survey with every question as a matrix format.
+/**
+ * Builds a survey with every question as a matrix format.
  *  You can use buildSection to organize the survey once saved.
+ * @param  {[type]} surveyData      [description]
+ * @param  {[type]} surveyQuestions [description]
+ * @return {[type]}                 [description]
  */
 function defaultMatrixSurvey( surveyData, surveyQuestions) {
     var survey = buildDefaultSurveyData(surveyData);
@@ -78,14 +117,13 @@ function isMatrix(obj) {
  * @return {[type]}              [description]
  */
 function loadSurveyFile( surveyData, callback ) {
-    fs.readFile(surveyData[0].fullSurveyFile,'utf-8',function(err,data){
+    fs.readFile(surveyData.fullSurveyFile,'utf-8',function(err,data){
         if( err ) {
             Logger.error(err);
-            res.end();
         }
         else{
-            var sq  = JSON.parse(data);
-            callback(null,sq);
+            data = JSON.parse(data);
+            callback(null,data);
         }
     });
 }
@@ -232,6 +270,37 @@ function getSurveySection( surveyData, options, callback ) {
     });
 }
 
+/**
+ * Setup Survey Preferences to Default values when user signs up.
+ * Callback is pretty much loggin, nothing is required on fail.
+ * @param {[type]}   userId   [description]
+ * @param {Function} callback [description]
+ */
+function setSignupSurveyPreferences(userId,callback ) {
+    Survey.getSurveys( function(err,surveyData ){
+        if(!err) {
+            var surveyPrefsData = [];
+            //SurveyId, userId, NULL, SurveyQuestion
+            for(var i = 0; i < surveyData.length;i++){
+                surveyPrefsData.push([surveyData[i].id, userId, null, surveyData[i].totalQuestions]);
+            }
+
+            async.map(surveyPrefsData,
+                SurveyPreferences.insertSurveyPrefs,
+                function(err,data){
+                    callback(err,data);
+                }
+            );
+        }
+        else{
+            callback(err,null);
+        }
+    });
+}
+
+// Exported functions.
 module.exports.getSurveySection = getSurveySection;
 module.exports.loadSurveyFile = loadSurveyFile;
 module.exports.buildDefaultMatrixSurvey =  defaultMatrixSurvey;
+module.exports.setDisplaySurveyOptions = setDefaultDisplaySurveyOptions;
+module.exports.setSignupSurveyPreferences = setSignupSurveyPreferences;

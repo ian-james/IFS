@@ -10,6 +10,7 @@
                     "type": "matrix",
                     "name": "Quality", 
                     "title": "Please indicate if you agree or disagree with the following statements",
+                    "isRequired":true,
                     "columns": [
                         { "value": 1, "text": "Strongly Disagree" },
                         { "value": 2, "text": "Disagree" },
@@ -18,9 +19,9 @@
                         { "value": 5, "text": "Strongly Agree" }
                     ],
                     "rows": [
-                        { "value": "affordable", "text": "I can always manage to solve difficult problems if I try hard enough" },
-                        { "value": "does what it claims", "text": "If someone opposes me, I can find the means and ways to get what I want." },
-                        { "value": "better then others", "text": "It is easy for me to stick to my aims and accomplish my goals." }
+                        { "value": "gse1", "text": "I can always manage to solve difficult problems if I try hard enough" },
+                        { "value": "gse2", "text": "If someone opposes me, I can find the means and ways to get what I want." },
+                        { "value": "gse3", "text": "It is easy for me to stick to my aims and accomplish my goals." }
                     ]
                 }
             ]
@@ -39,9 +40,9 @@
                         { "value": 5, "text": "Strongly Agree" }
                     ],
                     "rows": [
-                        { "value": "easy to use", "text": "I am confident that I could deal efficiently with unexpected events." },
-                        { "value": "affordable", "text": "Thanks to my resourcefulness, I know how to handle unforeseen situations" },
-                        { "value": "affordable", "text": "I can solve most problems if I invest the necessary effort." }
+                        { "value": "gse4", "text": "I am confident that I could deal efficiently with unexpected events." },
+                        { "value": "gse5", "text": "Thanks to my resourcefulness, I know how to handle unforeseen situations" },
+                        { "value": "gse6", "text": "I can solve most problems if I invest the necessary effort." }
                     ]
                 }
             ]
@@ -60,10 +61,10 @@
                         { "value": 5, "text": "Strongly Agree" }
                     ],
                     "rows": [
-                        { "value": "does what it claims", "text": "I can remain calm when facing difficulties because I can rely on my coping abilities." },
-                        { "value": "better then others", "text": "When I am confronted with a problem, I can usually find several solutions." },
-                        { "value": "easy to use", "text": "If I am in trouble, I can usually think of a solution." },
-                        { "value": "affordable", "text": "I can usually handle whatever comes my way." }
+                        { "value": "gse7", "text": "I can remain calm when facing difficulties because I can rely on my coping abilities." },
+                        { "value": "gse8", "text": "When I am confronted with a problem, I can usually find several solutions." },
+                        { "value": "gse9", "text": "If I am in trouble, I can usually think of a solution." },
+                        { "value": "gse10", "text": "I can usually handle whatever comes my way." }
                     ]
                 }
             ]

@@ -11,13 +11,29 @@ div.panel.panel-primary
         //include fileUploadFileDisplay.pug
         hr
         div
-        input(type="submit" value="Evaluate" name="submit" )
+        input(type="submit" value="Evaluate" name="submit" uk-toggle="target: #processingModal")
 
     div(id="processingModal" uk-modal="center: true")
-        div.uk-modal-dialog
+        div.uk-modal-dialog.uk-width-1-2
             div.uk-modal-header 
                 h2(uk-modal.title) Processing Files please wait...
             div(class="uk-modal-body")
-            div.uk-modal-footer
-                p Footer
+                script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
+                script(src="surveyjs/survey.jquery.js")
+                script(src="components/Survey/surveyReady.js")
+                script.
+                    // Due to the uglyinesses of multiple front-end languages (pugly and jquery)
+                    $(document).ready( function() {
+                        Survey.defaultBootstrapCss.navigationButton = "btn btn-primary";
+                        Survey.Survey.cssType = "bootstrap";
+                        var squestions =!{surveyQuestions};
+                        var model = new Survey.Model(squestions);
+                        $("#surveyElement").Survey({
+                            model:model,
+                            onComplete: sendDataToServer
+                        });
+                    });
+
+                div(class="col-md-12")
+                    div(id="surveyElement")
     script(src="components/FileUpload/upload-panel.js")
