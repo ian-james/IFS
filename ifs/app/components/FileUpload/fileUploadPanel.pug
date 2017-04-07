@@ -1,5 +1,5 @@
 div
-    h4 File Upload
+    h2 File Upload
     hr
 div
     p.uk-text-muted Please select files to upload
@@ -8,10 +8,11 @@ div
         span.uk-text-middle
             | Drag and drop files here or 
         div(uk-form-custom)
-            input(type="file" name="file" multiple)
+            input(type="file" name="file" multiple required)
             span.uk-link
-                | select one 
+                | select one or more 
             | to upload
+        input(type="hidden" name="time"  id="time" value=Date.now())
     progress(value="0" max="100" hidden)#progressbar.uk-progress
     script(src="components/FileUpload/upload-panel.js")
 

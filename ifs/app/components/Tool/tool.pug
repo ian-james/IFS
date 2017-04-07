@@ -1,27 +1,34 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
-    link(rel="stylesheet" href="components/Tool/tool.css")
-    div.uk-container
-        p.text-center.errorMessage #{messages.errorMessage}
-        div.col-md-12.text-center
-            h1 Tool Selection
-    div.row(ng-controller="toolCtrl")
-        div(class="col-md-8 col-md-offset-2")
-            form(id="uploadForm", enctype="multipart/form-data", action="/tool_upload" method="post")
-                uib-accordion
-                    div(class="toolsView" ng-repeat="tool in toolList")
-                        input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
-                        div(uib-accordion-group class="panel-primary" is-open="status.open" )
-                            uib-accordion-heading {{tool.displayName}}
-                                <i class="glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+    //link(rel="stylesheet" href="components/Tool/tool.css")
+    div.uk-container.uk-container-expand
+        div(uk-alert).uk-alert-danger
+            p.uk-align-center.errorMessage #{messages.errorMessage}
+        div.row(ng-controller="toolCtrl")
+            div(class="col-md-8 col-md-offset-2")
+                div.uk-clearfix
+                    h2.uk-float-left Tool Settings
+                    span(uk-toggle="target: #toolSelection; animation: uk-animation-fade" uk-icon="icon: settings")#settingsToggle.uk-icon-button.uk-float-right
+            
+                div(hidden)#toolSelection
+                    ul(uk-accordion)
+                        li(ng-repeat="tool in toolList").toolsView
+                            h3.uk-accordion-title {{tool.displayName}}
+                            div.uk-accordion-content.uk-background-muted
+                                ul.uk-list.uk-list-divider
+                                    li.uk-padding-small.uk-padding-remove-bottom
+                                        span.uk-float-left Enable {{ tool.displayName }}
+                                        label.switch-wrapper.uk-float-right
+                                            input(type="checkbox")
+                                            div.switch.switch-round
+                                    li(ng-repeat="option in tool.options").uk-padding-small
+                                        include toolInput.pug
+                            
 
-                                include buttonBar.pug
-                            fieldset(name="{{ tool.progName }}")
-                            ul.list-group
-                                li(class="list-group-item" ng-repeat="option in tool.options" )
-                                    include toolInput.pug
 
-                include ../FileUpload/fileUploadPanel.pug
+                form(id="uploadForm", enctype="multipart/form-data", action="/tool_upload" method="post")
+                    include ../FileUpload/fileUploadPanel.pug
 
-    script(src="components/Tool/toolController.js")
+            script(src="components/Tool/toolController.js")
+            script(src="components/Tool/tool-settings-panel.js")
