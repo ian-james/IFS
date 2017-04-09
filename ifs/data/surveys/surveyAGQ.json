@@ -46,6 +46,7 @@
                         }
                     ],
                     "title": "Achievement Goal Questionnaire",
+                    "isAllRowRequired":true,
                     "type": "matrix"
                 }
             ]
@@ -95,6 +96,7 @@
                         }
                     ],
                     "title": "Achievement Goal Questionnaire",
+                    "isAllRowRequired":true,
                     "type": "matrix"
                 }
             ]
@@ -144,6 +146,7 @@
                         }
                     ],
                     "title": "Achievement Goal Questionnaire",
+                    "isAllRowRequired":true,
                     "type": "matrix"
                 }
             ]

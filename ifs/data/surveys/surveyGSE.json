@@ -10,7 +10,7 @@
                     "type": "matrix",
                     "name": "Quality", 
                     "title": "Please indicate if you agree or disagree with the following statements",
-                    "isRequired":true,
+                    "isAllRowRequired":true,
                     "columns": [
                         { "value": 1, "text": "Strongly Disagree" },
                         { "value": 2, "text": "Disagree" },
@@ -32,6 +32,7 @@
                     "type": "matrix",
                     "name": "Quality", 
                     "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
                     "columns": [
                         { "value": 1, "text": "Strongly Disagree" },
                         { "value": 2, "text": "Disagree" },
@@ -53,6 +54,7 @@
                     "type": "matrix",
                     "name": "Quality", 
                     "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
                     "columns": [
                         { "value": 1, "text": "Strongly Disagree" },
                         { "value": 2, "text": "Disagree" },
