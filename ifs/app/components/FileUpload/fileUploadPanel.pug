@@ -13,10 +13,13 @@ div.panel.panel-primary
         div
         input(type="submit" value="Evaluate" name="submit" uk-toggle="target: #processingModal")
 
-    div(id="processingModal" uk-modal="center: true")
+    div(id="processingModal" uk-modal="center: true; bg-close: false; esc-close: false;")
         div.uk-modal-dialog.uk-width-1-2
-            div.uk-modal-header 
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            div.uk-modal-header
                 h2(uk-modal.title) Processing Files please wait...
+                div(class="uk-progress uk-progress-success")
+                    div(class="uk-progress-bar" style="width:40%")
             div(class="uk-modal-body")
                 script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
                 script(src="surveyjs/survey.jquery.js")

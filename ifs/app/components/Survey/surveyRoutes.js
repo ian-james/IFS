@@ -16,8 +16,6 @@ var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var SurveyResponse = require(__components + "Survey/surveyResponse");
 
 module.exports = function (app) {
-
-   
     /**
      * Method gets the full survey and displays it.
      * @param  {[type]} req  [description]
@@ -26,7 +24,6 @@ module.exports = function (app) {
      */
     app.get('/survey:surveyName', function(req,res) {
         var surveyName = req.params.surveyName;
-
         Survey.getSurvey(surveyName, function(err,surveyData) {
             if( err ) {
                 Logger.error(err);
@@ -45,8 +42,13 @@ module.exports = function (app) {
         });
     });
 
-
-
+    /**
+     * This function receives the survey data from SurveyJS and parses it and
+     * updates the databases with relevenat information.
+     * @param  {[type]} req  [description]
+     * @param  {[type]} res) {                   try {            var title [description]
+     * @return {[type]}      [description]
+     */
     app.post( '/survey/sentData', function(req,res) {
         try {
             var title = req.body['title'];
@@ -54,19 +56,18 @@ module.exports = function (app) {
 
             Survey.getSurveyByTitle(title, function(err,data){
                 if(err) {
-                    console.log("ERRR< GETTING TITLE", err);
+                    Logger.error("ERRR< GETTING TITLE", err);
                 }
                 if(data && data.length > 0) {
                     var surveyId = data[0].id;
                     var userId = req.user.id || req.passport.user;
 
                     SurveyPreferences.getSurveyPreferences(surveyId,userId, function(err,surveyPrefData) {
-                        
+
                         if(err) {
                             Logger.error("Unable to get Survey Preferences");
                             return;
                         }
-
 
                         var surveyIndex = surveyPrefData[0].currentSurveyIndex;
                         var surveyLastIndex = surveyPrefData[0].lastIndex;
@@ -111,7 +112,7 @@ module.exports = function (app) {
                             }
                         );
 
-                        // Set the Preferences qestion Index                        
+                        // Set the Preferences qestion Index
                         SurveyPreferences.setQuestionCounter(surveyId,userId,lastId, function(err,qData) {
                             if(err)
                                 Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId );
@@ -132,6 +133,4 @@ module.exports = function (app) {
             Logger.error("Could not save data from survey");
         }
     });
-
-
 }

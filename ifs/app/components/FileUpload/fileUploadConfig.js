@@ -24,7 +24,6 @@ function acceptableFileTypes() {
     };
 }
 
-
 function acceptableMimeType() {
     return { 
         'Writing':[

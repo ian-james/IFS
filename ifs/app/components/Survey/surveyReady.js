@@ -1,7 +1,10 @@
-function sendDataToServer(data){
-    console.log("********************** SEND DATA TO THE SERVER FROM QUESTIONNAIRE");
-    console.log("Here,", data);
 
+/**
+ * Create an ajax request for sending survey data to server.
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+function sendDataToServer(data){
     var result = {'title': data.title, result:data.data };
 
     // Check if we got results, otherwise return.
@@ -16,4 +19,3 @@ function sendDataToServer(data){
         contentType: "application/json; charset=UTF-8"
     });
 }
-
