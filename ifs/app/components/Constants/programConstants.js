@@ -77,7 +77,8 @@ function surveyDisplayDefaultOptions() {
     return {
         "range":[0,100],
         "questionsPerPage":4,
-        "splitQuestionTypes": true
+        "splitQuestionTypes": true,
+        "pulseQuestions": 2,
     };
 }
 

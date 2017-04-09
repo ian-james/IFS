@@ -12,7 +12,6 @@ var config = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
-var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var Survey = require( __components + "/Survey/survey");
 
 module.exports = {
@@ -31,6 +30,11 @@ module.exports = {
         }
     },
 
+    /**
+     * Considers if quesiton should be asked based on most recent asking time.
+     * @param  {[type]} surveyPrefData [description]
+     * @return {[type]}                [description]
+     */
     shouldAskQuestion: function( surveyPrefData ) {
         // Check the information to evaluate if this should take place
         // TODO: FIX THIS FROM ALWAYS TRUE.
@@ -42,6 +46,11 @@ module.exports = {
         
     },
 
+    /**
+     * Select A survey from all available options.
+     * @param  {[type]} surveyPrefData [description]
+     * @return {[type]}                [description]
+     */
     selectSurvey: function( surveyPrefData ) {
 
         if(surveyPrefData.length == 0 )
@@ -64,7 +73,7 @@ module.exports = {
         return active;
     },
 
-    startNewSurvey: function(surveyPrefData ) {
+    qstartNewSurvey: function(surveyPrefData ) {
        var completed = getCompletedSurveys(surveyPrefData);
 
         completed = _.sortBy(completed,['surveyStartData']);
@@ -122,13 +131,12 @@ module.exports = {
         }
 
         if( survey ) {
+            console.log("Starting at survey.currentIndex", survey.currentIndex);
             var opts = SurveyBuilder.setDisplaySurveyOptions(null,null,[survey.currentIndex, survey.lastIndex]);
             callback(null,{"data":survey, options:opts});
         }
         else {
             callback( Errors.cErr( "Unable to select a survey at this time." ) , null);
         }
-    },
-
- 
+    }
 }

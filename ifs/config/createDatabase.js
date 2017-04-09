@@ -50,10 +50,13 @@ try  {
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             surveyId Int UNSIGNED NOT NULL, \
             userId INT UNSIGNED NOT NULL, \
-            dateComplete TIMESTAMP, \
+            questionId VARCHAR(20) NOT NULL, \
+            questionAnswer VARCHAR(80) NOT NULL, \
+            surveyResponseId INT NOT NULL DEFAULT 0, \
+            answeredOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
             PRIMARY KEY(id), \
             FOREIGN Key (surveyId) REFERENCES " + config.database + "." +config.survey_table + "(id), \
-            FOREIGN Key (userId) REFERENCES " + config.database + "." +config.users_table + "(id) \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
     
         Logger.info("Create the Table:", config.survey_preferences_table);
@@ -68,10 +71,11 @@ try  {
             allowedToAsk BOOL DEFAULT TRUE, \
             currentIndex INT DEFAULT 0, \
             lastIndex INT DEFAULT 10, \
+            currentSurveyIndex INT NOT NULL DEFAULT 0, \
             PRIMARY KEY(id), \
             FOREIGN Key (surveyId) REFERENCES " + config.database + "." + config.survey_table + "(id), \
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
-            UNIQUE KEY 'survey_userIds' (surveyId,userId) \
+            UNIQUE Key survey_userIds (surveyId,userId) \
         )");
 
 

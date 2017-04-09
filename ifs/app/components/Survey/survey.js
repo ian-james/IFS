@@ -26,10 +26,15 @@ function getSurvey( surveyName, callback ) {
 function getSurveyId( surveyId, callback ) {
 
     var req = "SELECT * FROM " + config.survey_table + " WHERE id = ?";
-     db.query(req,surveyId, function(err,data){
+    db.query(req,surveyId, function(err,data){
         console.log(err,data);
         callback(err,data);
     });
+}
+
+function getSurveyByTitle( surveyTitle, callback ) {
+    var query = "SELECT * FROM " + config.survey_table + " WHERE title = ?";
+    db.query(query, surveyTitle, callback);
 }
 
 function insertSurvey( surveyData, callback ) {
@@ -60,3 +65,4 @@ module.exports.deleteSurvey = deleteSurvey;
 module.exports.getSurvey = getSurvey;
 module.exports.getSurveyId = getSurveyId;
 module.exports.getSurveys = getSurveys;
+module.exports.getSurveyByTitle = getSurveyByTitle;

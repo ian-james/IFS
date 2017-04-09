@@ -2,6 +2,7 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var fs = require("fs");
 
+var Constants = require( __components + "Constants/programConstants");
 var SurveyManager = require( __components + "Survey/surveyManager");
 var SurveyBuilder = require(__components + "Survey/surveyBuilder");
 var Survey = require( __components + "Survey/survey");
@@ -45,15 +46,18 @@ module.exports = function (app) {
 
         var userId = req.user.id || req.passport.user;
         SurveyManager.getUserSurveyProfile(userId, function(err,surveyPrefData) {
-            //Array of preferences per survey.
+            //Array of preferences per survey.            
             SurveyManager.setupSurvey( surveyPrefData, function(err, selectedSurveyData) {
-
                 if(err || !selectedSurveyData) {
                     res.render( viewPath + "tool", { "title": 'Tool Screen', "surveyQuestions":[] } );
                 }
                 else {
-                    var surveyId = selectedSurveyData.data.id;
+                    var opts = Constants.surveyDisplayDefaultOptions();
+                    var surveyId = selectedSurveyData.data.surveyId;
                     var options = selectedSurveyData.options;
+
+                    // Set pulse survey size
+                    options.range[1] = Math.min( options.range[0] + opts.pulseQuestions, options.range[1]);
 
                     Survey.getSurveyId(surveyId, function(err,surveyData) {
                         if( surveyData && surveyData.length >= 1)
