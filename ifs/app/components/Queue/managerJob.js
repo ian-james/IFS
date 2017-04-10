@@ -18,7 +18,7 @@ function makeManagerJob( toolOptions ){
     return job.buildJob( toolOptions, jobOpts );
 }
 
-/* This function creates a promise for each tool, that requires the tool to finish running or error 
+/* This function creates a promise for each tool, that requires the tool to finish running or error
    and return a result. Essentially, this starts all the assessment tools  on a second cJob queue
    and waits for the feedback.
 */
@@ -32,17 +32,18 @@ function loadAllTools(job, done)
     for(var i = 0;i < jobsInfo.length;i++) {
         promises.push( cjob.makeJob( jobsInfo[i] ));
     }
-   
+
     cjob.runJob();
-    
-    // Wait for everything to finish before emitting that parent is done.    
+
+    var count = 0;
+    // Wait for everything to finish before emitting that parent is done.
     Q.allSettled(promises)
         .then( function(res) {
                 // return everything that passed and was fulfilled
                 var passed =[], failed = [];
-                
+
                 for( var i = 0; i < res.length; i++ ) {
-                
+
                     if( res[i].state == 'fulfilled' ) {
                         var val = res[i].value;
 
@@ -75,9 +76,14 @@ function loadAllTools(job, done)
             function( notice ){
                 // Currently none of the tools have progress reporting so this notifies
                 // when received, started, 10% (about to run), and finished.
+                // Manager varies done based on jobs that need to run and those that finished.
                 if( typeof(notice.value)  == 'object' ) {
-                    Logger.info("Notice:", notice.value.msg, " at ", notice.value.progress, "%");
-                    //console.log("Notice:", notice.value.msg );
+
+                    if( notice.value.msg == "Completed") {
+                        count++;
+                        job.progress(count,jobsInfo.length);
+                    }
+                    Logger.info("Notice:", notice.value.msg," Tool" , notice.value.tool, " at ", notice.value.progress, "%");
                 }
                 else {
                     Logger.info("Received:", notice );
@@ -86,7 +92,7 @@ function loadAllTools(job, done)
         );
 }
 
-/* This function is mostly to simplify the calling interface 
+/* This function is mostly to simplify the calling interface
    This will start running any created jobs (ie jobs that have been saved )
 */
 

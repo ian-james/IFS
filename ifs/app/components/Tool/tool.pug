@@ -2,13 +2,13 @@ extends ../../shared/views/pageLayout.pug
 
 block content
     link(rel="stylesheet" href="components/Tool/tool.css")
-    div.row
+    div.uk-container
         p.text-center.errorMessage #{messages.errorMessage}
         div.col-md-12.text-center
             h1 Tool Selection
     div.row(ng-controller="toolCtrl")
         div(class="col-md-8 col-md-offset-2")
-            form(id="uploadForm", enctype="multipart/form-data", action="/tool_upload" method="post")
+            form(id="uploadForm", class='uk-form', enctype="multipart/form-data", action="/tool_upload" method="post")
                 uib-accordion
                     div(class="toolsView" ng-repeat="tool in toolList")
                         input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
@@ -25,3 +25,4 @@ block content
                 include ../FileUpload/fileUploadPanel.pug
 
     script(src="components/Tool/toolController.js")
+    script(src="components/FileUpload/progressModal.js")

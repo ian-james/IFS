@@ -74,9 +74,12 @@ function parseFormSelection( formData ) {
 
 // Reads JSON document and creates an array of objects with tool information and options.
 // See tooList.json (these are tools avilable in the tool page)
-function readToolFileList() {
+function readToolFileList( filename ) {
 
-    var supportedToolsFile = './tools/toolList.json';
+    var supportedToolsFile = './tools/toolListProgramming.json';
+    if( filename )
+        supportedToolsFile = filename;
+
     var result = fs.readFileSync( supportedToolsFile, 'utf-8');
     var jsonObj = JSON.parse(result);
     return jsonObj;
@@ -96,16 +99,15 @@ function writeToolList( files, obj )
 
 // This is the external call that uses the form data,
 // user selected options to create jobs for the Queue
-function createJobRequests( selectedOptions ) {
+function createJobRequests( toolFile, selectedOptions ) {
 
-    var toolList = readToolFileList();
+    var toolList = readToolFileList(toolFile);
     var toolOptions = parseFormSelection( selectedOptions );
 
     var res = tempInsertOptions(toolList.tools, toolOptions);
     var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
 
     return jobReq;
-
 }
 
 // User options are already for the appropriate tool

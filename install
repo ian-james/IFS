@@ -1,0 +1,222 @@
+#!/bin/bash
+
+# Copyright (c) 2017 Keefer Rourke <krourke@mail.uoguelph.ca>
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the
+# rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+format_string() {
+    string=$(awk '{print tolower($0)}' <<< $1)
+    string=$(sed 's/\s+//g;s/[^a-z]//g' <<< $string)
+    echo $string
+}
+
+set -e # exit script on any error
+
+if [[ $EUID -ne 0 ]]; then
+    echo "Error. IFS installation must be run as root!" 1>&2;
+    exit
+fi
+
+echo 'Warning: This script will make modifications to your system.'
+echo 'Read this script in its entirety before running it. In cases where this script'
+echo 'is not suited to your system, you should install IFS manually.'
+read -p 'Continue? [y/N]: ' yn
+yn=$(format_string "$yn")
+if [ "$yn" != 'y' ] && [ "$yn" != "yes" ]; then
+    echo 'Cancelled installation.'
+    exit
+fi
+echo ""
+
+# determine distribution
+DISTRO=$(format_string "$(lsb_release -si 2>/dev/null)")
+VERSION=$(lsb_release -sr 2>/dev/null)
+
+if [ "$DISTRO" != "ubuntu" ] && [ "$DISTRO" != "debian" ]; then
+    echo 'This installation script only supports Ubuntu/Debian.'
+    exit
+fi
+
+# install dependencies
+echo 'Installing core dependencies...'
+apt-get -y update
+apt-get -y install npm nodejs mysql-server redis-server nginx git libreoffice
+if [ ! -f /usr/bin/node ]; then
+    ln -s /usr/bin/nodejs /usr/bin/node
+fi
+echo ""
+
+# configure mySQL
+echo 'Configuring mySQL...'
+echo 'In a moment we will need to create a user and set up SQL tables for the IFS.'
+echo 'Please enter the username, passwd, and database IFS should use.'
+echo 'These should all be values that do not exist yet.'
+
+ifs_sql_user_def='ifs-admin'
+read -p "IFS mySQL user [$ifs_sql_user_def]: " ifs_sql_user
+ifs_sql_user=${ifs_sql_user:-$ifs_sql_user_def}
+
+ifs_sql_passwd_def=$(cat /dev/urandom | tr -dc "a-zA-Z0-9" | fold -w 12 | sed 1q)
+echo -n "Passwd for $ifs_sql_user [$ifs_sql_passwd_def]: "
+stty -echo
+read ifs_sql_passwd
+stty echo
+ifs_sql_passwd=${ifs_sql_passwd:-$ifs_sql_passwd_def}
+echo
+
+ifs_sql_db_def='IFS'
+read -p "IFS mySQL database [$ifs_sql_db_def]: " ifs_sql_db
+ifs_sql_db=${ifs_sql_db:-$ifs_sql_db_def}
+
+echo "To create the user $ifs_sql_user and database $ifs_sql_db, authenticate as mySQL root."
+read -p 'Enter the mySQL root username, this is usually "root": ' sql_root
+
+mysql -ve "CREATE USER '$ifs_sql_user'@'localhost' IDENTIFIED BY '$ifs_sql_passwd';
+           CREATE DATABASE IF NOT EXISTS $ifs_sql_db;
+           GRANT ALL ON $ifs_sql_db.* TO '$ifs_sql_user'@'localhost';
+           FLUSH PRIVILEGES;" \
+      -u root -p
+echo ""
+
+# configure nginx
+echo 'Configuring Nginx with LetsEncrypt...'
+mkdir -p /etc/nginx/ssl
+chmod -R 600 /etc/nginx/ssl
+
+echo "Please enter the domain where you will be hosting IFS."
+domain_def='ifs.example.com'
+read -p "Domain [$domain_def]: " domain
+domain=${domain:-$domain_def}
+
+# generate strong Diffie-Hellman parameters for secure SSL
+openssl dhparam -out /etc/nginx/ssl/dhparams-$domain.pem 4096
+
+cat <<EOF >/etc/nginx/sites-available/$domain
+server {
+    server_name $domain www.$domain;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443;
+
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/$domain/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$domain/privkey.pem;
+
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+
+    add_header Strict-Transport-Security "max-age=31536000";
+
+    ssl_ciphers 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA';
+    ssl_dhparam /etc/nginx/ssl/dhparams-$domain.pem;
+
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    server_name $domain www.$domain;
+
+    proxy_set_header X-Real-IP \$remote_addr;
+
+    location / {
+        proxy_pass http://localhost:3000;
+    }
+
+    location = /404.html {
+        root /usr/share/nginx/html;
+        internal;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+EOF
+
+ln -s /etc/nginx/sites-available/$domain /etc/nginx/sites-enabled/$domain
+echo ""
+
+# install certbot, following guidelines for distro support as stated at
+# https://certbot.eff.org
+echo 'Installing SSL certificate...'
+
+if [ "$DISTRO" == "ubuntu" ] && (($(awk "BEGIN{if($VERSION >= 14.04) print 1}"))); then
+    add-apt-repository ppa:certbot/certbot
+    apt-get update
+    apt-get install certbot
+elif [ "$DISTRO" == "debian" ] && (($(awk "BEGIN{if(print $VERSION >= 8.0) print 1}"))); then
+    echo "deb http://ftp.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/backports.list
+    apt-get update
+    apt-get install certbot -t jessie-backports
+else
+    mkdir -p /opt/certbot
+
+    cd /opt/certbot
+    if [ ! -f certbot-auto ] ; then
+        wget https://dl.eff.org/certbot-auto
+        chmod 755 certbot-auto
+        ln -s /opt/certbot/certbot-auto /usr/sbin/certbot
+    fi
+    apt-get install certbot
+fi
+
+service nginx stop
+certbot certonly --standalone -d $domain -d www.$domain
+chmod 600 /etc/letsencrypt/live/$domain/*
+service nginx start
+echo ""
+
+# install Immediate Feedback System
+echo 'Installing IFS...'
+mkdir -p /var/www/$domain
+git clone https://github.com/ian-james/IFS.git /var/www/$domain
+echo ""
+
+# automatically configure the site settings
+sed -i "s/'root'/'$ifs_sql_user'/;
+        s/'mysqlRootPassword'/'$ifs_sql_passwd'/;
+        s/'IFS'/'$ifs_sql_db'/;" /var/www/$domain/ifs/config/databaseConfig.js
+
+(crontab -l 2>/dev/null; echo '0 0 1 */2 * certbot-auto renew --quiet --no-self-upgrade') | crontab -
+
+# install IFS Node dependencies
+cd /var/www/$domain/ifs
+npm install
+echo ""
+
+# install IFS Tool dependencies
+echo 'Installing IFS Tool dependencies...'
+apt-get install hunspell libhunspell-dev python-pip
+pip install hunspell 3to2 language-check nltk
+python -m nltk.downloader --dir=/usr/share/nltk_data stopwords #all
+# python import nltk; nltk.download()
+echo ""
+echo 'Done installing IFS.'
+
+# run IFS (install a system startup service file?)
+if ! pgrep -x 'redis-server' > /dev/null; then
+    redis-server &
+fi
+npm test
+
+
+

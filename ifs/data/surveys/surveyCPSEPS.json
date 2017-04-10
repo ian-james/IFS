@@ -1,0 +1,359 @@
+{
+    "title": "Computer Programming Self-Efficacy Survey",
+    "showProgressBar": "bottom",
+    "goNextPageAutomatic": false,
+    "showNavigationButtons": true,
+    "pages": [
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "Quality",
+                    "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "Strongly Disagree"
+                        },
+                        {
+                            "value": 2,
+                            "text": "Disagree"
+                        },
+                        {
+                            "value": 3,
+                            "text": "Neutral"
+                        },
+                        {
+                            "value": 4,
+                            "text": "Agree"
+                        },
+                        {
+                            "value": 5,
+                            "text": "Strongly Agree"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "cpseps1",
+                            "text": "I can write syntactically correct C/C++ statements."
+                        },
+                        {
+                            "value": "cpseps2",
+                            "text": "I understand the language structure of C/C++ and the usage of the reserved words."
+                        },
+                        {
+                            "value": "cpseps3",
+                            "text": "I can write logically correct blocks of code using C/C++"
+                        },
+                        {
+                            "value": "cpseps4",
+                            "text": "I can write a C/C++ program that computes the average of any given number of values."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "Quality",
+                    "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "Strongly Disagree"
+                        },
+                        {
+                            "value": 2,
+                            "text": "Disagree"
+                        },
+                        {
+                            "value": 3,
+                            "text": "Neutral"
+                        },
+                        {
+                            "value": 4,
+                            "text": "Agree"
+                        },
+                        {
+                            "value": 5,
+                            "text": "Strongly Agree"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "cpseps5",
+                            "text": "I can use built-in functions that are available in the various C/C++ libraries."
+                        },
+                        {
+                            "value": "cpseps6",
+                            "text": "I can write a small C/C++ program given a small problem that is familiar to me."
+                        },
+                        {
+                            "value": "cpseps7",
+                            "text": "I can write a reasonably sized C/C++ program that can solve a problem that is only vaguely familiar to me"
+                        },
+                        {
+                            "value": "cpseps8",
+                            "text": "I can write a long and complex C/C++ program to solve any given problem as long as the specifications are clearly defined"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "Quality",
+                    "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "Strongly Disagree"
+                        },
+                        {
+                            "value": 2,
+                            "text": "Disagree"
+                        },
+                        {
+                            "value": 3,
+                            "text": "Neutral"
+                        },
+                        {
+                            "value": 4,
+                            "text": "Agree"
+                        },
+                        {
+                            "value": 5,
+                            "text": "Strongly Agree"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "cpseps9",
+                            "text": "I can organize and design my program in a modular manner"
+                        },
+                        {
+                            "value": "cpseps10",
+                            "text": "I understand the object-oriented paradigm"
+                        },
+                        {
+                            "value": "cpseps11",
+                            "text": "I can identify the objects in the problem domain and declare, define, and use them"
+                        },
+                        {
+                            "value": "cpseps12",
+                            "text": "I can make use of a pre-written function, given a clearly labeled declaration of the function"
+                        }
+                    ]
+                }
+            ]
+        },
+        
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "Quality",
+                    "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "Strongly Disagree"
+                        },
+                        {
+                            "value": 2,
+                            "text": "Disagree"
+                        },
+                        {
+                            "value": 3,
+                            "text": "Neutral"
+                        },
+                        {
+                            "value": 4,
+                            "text": "Agree"
+                        },
+                        {
+                            "value": 5,
+                            "text": "Strongly Agree"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "cpseps13",
+                            "text": "I can debug (correct all the errors) a long and complex program that I had written and make it work."
+                        },
+                        {
+                            "value": "cpseps14",
+                            "text": "I can comprehend a long, complex multi-file program."
+                        },
+                        {
+                            "value": "cpseps15",
+                            "text": "I could complete a programming project if someone showed me how to solve the problem first."
+                        },
+                        {
+                            "value": "cpseps16",
+                            "text": "I could complete a programming project if I had only the language reference manual for help"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "Quality",
+                    "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "Strongly Disagree"
+                        },
+                        {
+                            "value": 2,
+                            "text": "Disagree"
+                        },
+                        {
+                            "value": 3,
+                            "text": "Neutral"
+                        },
+                        {
+                            "value": 4,
+                            "text": "Agree"
+                        },
+                        {
+                            "value": 5,
+                            "text": "Strongly Agree"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "cpseps17",
+                            "text": "I could complete a programming project if I could call someone for help if I got stuck"
+                        },
+                        {
+                            "value": "cpseps18",
+                            "text": "I can comprehend a long, complex multi-file program."
+                        },
+                        {
+                            "value": "cpseps19",
+                            "text": "I could complete a programming project if someone showed me how to solve the problem first."
+                        },
+                        {
+                            "value": "cpseps20",
+                            "text": "I could complete a programming project if I had only the language reference manual for help"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "Quality",
+                    "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "Strongly Disagree"
+                        },
+                        {
+                            "value": 2,
+                            "text": "Disagree"
+                        },
+                        {
+                            "value": 3,
+                            "text": "Neutral"
+                        },
+                        {
+                            "value": 4,
+                            "text": "Agree"
+                        },
+                        {
+                            "value": 5,
+                            "text": "Strongly Agree"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "cpseps21",
+                            "text": "I could find ways of overcoming the problem if I got stuck at a point while working on a programming project."
+                        },
+                        {
+                            "value": "cpseps22",
+                            "text": "I could come up with a suitable strategy for a given programming project in a short time."
+                        },
+                        {
+                            "value": "cpseps23",
+                            "text": "I could manage my time efficiently if I had a pressing deadline on a programming project."
+                        },
+                        {
+                            "value": "cpseps24",
+                            "text": "I could mentally trace through the execution of a long, complex, multi-file program given to me"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "Quality",
+                    "title": "Please indicate if you agree or disagree with the following statements",
+                    "isAllRowRequired":true,
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "Strongly Disagree"
+                        },
+                        {
+                            "value": 2,
+                            "text": "Disagree"
+                        },
+                        {
+                            "value": 3,
+                            "text": "Neutral"
+                        },
+                        {
+                            "value": 4,
+                            "text": "Agree"
+                        },
+                        {
+                            "value": 5,
+                            "text": "Strongly Agree"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "cpseps25",
+                            "text": "I could rewrite lengthy confusing portions of code to be more readable and clear."
+                        },
+                        {
+                            "value": "cpseps26",
+                            "text": "I can find a way to concentrate on my program, even when there were many distractions around me"
+                        },
+                        {
+                            "value": "cpseps27",
+                            "text": "I can find ways of motivating myself to program, even if the problem area was of no interest to me."
+                        },
+                        {
+                            "value": "cpseps28",
+                            "text": "I could write a program that someone else could comprehend and add features to at a later date"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

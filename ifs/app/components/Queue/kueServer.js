@@ -5,6 +5,7 @@ var queue = kue.createQueue(kOptions.kueOpts);
 var Logger = require( __configs + "loggingConfig" );
 
 // Watch for stuck jobs, as PER REQUEST on GITHUB
+Logger.info("Watching for stuck jobs: timeout: " + kOptions.options.watchStuckTime)
 queue.watchStuckJobs(kOptions.options.watchStuckTime);
 
 
@@ -20,7 +21,7 @@ kue.Job.rangeByState('complete',0, 5000, 'asc', function(err,jobs){
 
 
 kue.Job.rangeByState('active',0, 15000, 'asc', function(err,jobs){
-    jobs.forEach( function(job) {
+    jobs.forEach( function(job) {s
         job.remove( function() {
             console.log('removed', job.id);
         });
@@ -34,7 +35,7 @@ kue.Job.rangeByState('inactive',0, 15000, 'asc', function(err,jobs){
         });
     });
 });
-
+*/
 
 kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
     jobs.forEach( function(job) {
@@ -43,7 +44,7 @@ kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
         });
     });
 });
-*/
+
 
 queue.on('ready', () => {
     Logger.info("Kue is ready");

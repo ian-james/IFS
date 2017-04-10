@@ -31,7 +31,7 @@ function runSingleTool( job, done )
 
         job.progress(100,100);
         if( error) {
-            
+            console.log("STD error:", stderr );
             done(new Error('exec error'));
             return;
         }

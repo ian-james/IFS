@@ -7,6 +7,7 @@ var db = require('./database');
 var path = require('path');
 var Logger = require( path.join( __dirname, "/loggingConfig") );
 
+var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 
 module.exports = function (passport) {
 
@@ -32,7 +33,7 @@ module.exports = function (passport) {
             function (req, username, password, done ) {
 
                 db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
-                    req.flash('errorMessage', 'We tried');
+                    //req.flash('errorMessage', 'We tried');
                     if(err)
                     {
                         req.flash('errorMessage', 'Unable to signup.');
@@ -56,7 +57,9 @@ module.exports = function (passport) {
                         db.query( insertQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
                             req.flash('success', 'Successfully signed up.');
-                            return done(null, newUser);
+                            SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
+                                return done(null, newUser);
+                            });
                         });
                     }
                 });

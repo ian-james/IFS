@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.5
 
 # This script uses LanguageTool to process arbitrary text strings and provide
 # suggestions for grammatical improvements.
@@ -17,116 +17,227 @@
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
 
-import sys, getopt, os
-import io, json
+import sys
+import getopt
+import os
+import io
+import json
 import re
 import language_check
 
-# grcheck(string to_check, string lang, language_check.LanguageTool ltool, bool console)
-def grcheck(to_check, lang, ltool, console):
-    json_string = ''
+
+# print_usage(list supported_langs = [])
+# this function prints usage information, optionally provide a list of
+# supported languages as an argument
+def print_usage(supported_langs = []):
+    print('Usage:')
+    print('grammar.py [--lang=LANG] [--outfile=OUT.json] [--with-spelling]')
+    print('           [--english] [--quiet] --infile=INPUTFILE')
+    print("\n")
+    print('grammar.py [-l LANG] [-j OUT.json] [-seq] -i INPUTFILE')
+    print("\n")
+    if supported_langs:
+        supported_langs = list(supported_langs)  # sets are not iterable?
+        print('Supported languages on this system:')
+        for i in range(len(supported_langs)):
+            print(supported_langs[i],)
+            if i != len(supported_langs) - 1:
+                print(",",)
+        print()
+
+# grcheck(string to_check, language_check.LanguageTool ltool,
+#         bool with_spelling=False)
+# this function performs a grammar check over a string of text, optionally with
+# spell checking enabled
+def grcheck(to_check, ltool, with_spelling=False):
     matches = ltool.check(to_check)
-    num_matches = len(matches)
 
-    if console == True:
-        print 'lang: ', lang
-        print 'matches: ', num_matches
-        for i in range(num_matches):
-            print "On line:", matches[i].fromy, "at char:", matches[i].fromx,
-            print "rule violated:", matches[i].ruleId
-            print "Message:", matches[i].msg
-            print "Problem category:", matches[i].category
-            print "Issue type:", matches[i].locqualityissuetype
-            print "Possible replacements:",
-            for j in range(len(matches[i].replacements)):
-                print matches[i].replacements[j],
-            print
-            print "Context:", matches[i].context
-            print
-    # LanguageTool.check.Match type is not JSON serializeable
-    # build a JSON string from the array of Match objects
+    if with_spelling is True:
+        return matches
     else:
-        json_string += '{\n'
-        json_string += '"lang": ' + '"' + lang + '",\n'
-        json_string += '"num_matches": ' + str(num_matches) +',\n'
-        json_string += '"matches": {\n'
-        for i in range(num_matches):
-            json_string += '"' + str(i) + '": {\n'
-            json_string += '"fromy": ' + str(matches[i].fromy) + ',\n'
-            json_string += '"fromx": ' + str(matches[i].fromx) + ',\n'
-            json_string += '"ruleId": ' + '"' + str(matches[i].ruleId) + '",\n'
-            json_string += '"msg": ' + '"' + str(matches[i].msg) + '",\n'
-            json_string += '"category": ' + '"' + str(matches[i].category) + '",\n'
-            json_string += '"issuetype": ' + '"' + str(matches[i].locqualityissuetype) + '",\n'
-            j_array = json.dumps(matches[i].replacements)
-            json_string += '"replacements": ' + j_array + ',\n'
-            json_string += '"context": ' + '"' + str(matches[i].context) + '"\n'
-            json_string += '}'
-            if i != (num_matches -1):
-                json_string += ','
-            json_string += '\n'
-        json_string += '}\n}\n'
+        matches[:] = [x for x in matches
+                      if (x.locqualityissuetype != "misspelling")]
+        return matches
 
-        # make formatting prettier
-        json_obj = json.loads(json_string)
-        json_string = json.dumps(json_obj, indent=2, sort_keys=True)
+# LanguageTool.check.Match type is not JSON serializeable, so this function
+# builds a JSON string from the array of Match objects
+# build_json(string filename, string lang, list matches)
+def build_json(filename, lang, matches):
+    num_matches = len(matches)
+    json_string = ''
+    json_string += '{ '
+    json_string += '"feedback": ['
+    for i in range(num_matches):
+        json_string += ('{ '
+                    + '"context": "' + str(matches[i].context) + '", ')
+        # a grammatical issue may span multiple words and lines, so it's best
+        # to represent the position of the issue as a span of char coordinates;
+        # the hl_begin and hl_end attributes consist of the following structure:
+        # [char pos relative to start of line, line relative to start of file]
+        # 
+        # fromx = line position, line number
+        # 
+        hl_begin = [matches[i].fromx, matches[i].fromy + 1]
+        hl_begin = json.dumps(hl_begin)
+        hl_end = [matches[i].tox, matches[i].toy + 1]
+        hl_end = json.dumps(hl_end)
 
-        return json_string
+        # Meeting IFS Minimum interface
+        json_string += '"charPos": ' + str(matches[i].fromx + 1) + ',\n'
+        json_string += '"lineNum": ' + str(matches[i].fromy + 1) + ',\n'
+
+        json_string += ( '"hlBegin": ' + hl_begin + ', '
+                        + '"hlEnd": ' + hl_end + ', '
+                        + '"lang": ' + '"' + lang + '", '
+                        + '"type": "' + matches[i].locqualityissuetype + '", '
+                        + '"toolName": "Language Tool", '
+                        + '"filename": "' + filename + '", '
+                        + '"feedback": ' + '"' + str(matches[i].msg) + '", ')
+        j_array = json.dumps(matches[i].replacements)
+        json_string += ('"suggestions": ' + j_array
+                        + ' }')
+        if i != (num_matches - 1):
+            json_string += ','
+    json_string += ' ] }'
+    # make formatting prettier
+    json_obj = json.loads(json_string)
+    json_string = json.dumps(json_obj, indent=4, sort_keys=True)
+    json_string += '\n'
+
+    return json_string
+
+
+# print_data(string json_data, lang, bool english=False, list matches=[]
+# note that all arguments are optional, but if the english flag is true, then
+# the language and matches list must be provides. If no english flag is
+# provided, then the json_data must be provided
+def print_data(json_data='', lang='', english=False, matches=[]):
+    if english is True:
+        print('lang: ', lang)
+        print('possible errors: ', len(matches))
+        print("")
+        for i in range(len(matches)):
+            print("hl_start:", (matches[i].fromx + 1, matches[i].fromy + 1))
+            print("hl_end  :", (matches[i].tox, matches[i].toy))
+            print("rule violated:", matches[i].ruleId)
+            print("Message:", matches[i].msg)
+            print("Problem category:", matches[i].category)
+            print("Issue type:", matches[i].locqualityissuetype)
+            print("Possible replacements:",)
+            for j in range(len(matches[i].replacements)):
+                print(matches[i].replacements[j],)
+            print()
+            print("Context:", matches[i].context)
+            if i != len(matches) - 1:
+                print()
+    else:
+        if json_data:
+            print(json_data)
+        else:
+            sys.stderr.write('Error. Cannot print output.\n')
+
+    return
+
 
 # main program that takes arguments
 def main(argv):
     supported_langs = language_check.get_languages()
 
     # options
-    lang = 'en_CA' #default language
+    lang = 'en_CA'  # default language
     json_path = ''
-    ifile = ''
-    console = True
+    infile = ''
+    english = False # prints plain English instead of json
+    quiet = False
+    with_spelling = False
 
-    #define command line arguments and check if the script call is valid
-    opts, args = getopt.getopt(argv, 'l:j:i:h',['lang=', 'json=', 'ifile=', 'help'])
+    # define command line arguments and check if the script call is valid
+    try:
+        opts, args = getopt.getopt(argv, 'l:o:i:sqh', ['lang=', 'outfile=',
+                                                      'infile=',
+                                                      'with-spelling', 'quiet',
+                                                      'english', 'help'])
+    except getopt.GetoptError as err:
+        sys.stderr.write('Error. ' + str(err) + '\n')
+        print_usage();
+        sys.exit(2) # code 2 means misuse of shell cmd according to Bash docs
+
+    # set options
+    if not opts:
+        sys.stderr.write('Error. No arguments provided.\n')
+        print_usage()
+        sys.exit(2)
 
     for opt, arg in opts:
         if opt in ('--lang', '-l'):
             lang = arg
             if lang not in supported_langs:
-                print 'Error. Language', lang, 'not supported.'
-                print 'Available languages:'
+                sys.stderr.write('Error. Language ' + lang
+                                 + ' not supported.\n')
+                sys.stderr.write('Available languages:\n')
                 for i in range(len(supported_langs)):
-                    print supported_langs[i],
-                print
+                    sys.stderr.write(supported_langs[i])
+                    sys.stderr.write(' ')
+                sys.stderr.write('\n')
                 sys.exit()
-        elif opt in ('--json', '-j'):
+        elif opt in ('--outfile', '-o'):
             json_path = arg
-            console = False
-        elif opt in ('--ifile', '-i'):
-            ifile = arg
-            if not (os.path.isfile(ifile)):
-                print 'Error. File', ifile, 'does not exist.'
-                sys.exit()
-        elif opt in ('--help', '-h') or opt not in ('--ifile', '-i'):
-            print 'Usage:'
-            print 'grammar.py [--lang=LANG] [--json=OUT.json] --ifile=INPUTFILE'
-            print 'grammar.py [-l LANG] [-j OUT.json] -i INPUTFILE'
-            print
-            print 'Supported languages:'
-            for i in range(len(supported_langs)):
-                print supported_langs[i],
-            print
-            sys.exit()
+        elif opt in ('--infile', '-i'):
+            infile = arg
+            if not (os.path.isfile(infile)):
+                sys.stderr.write('Error. File ' + infile
+                                 + ' does not exist.\n')
+                sys.exit(1)
+        elif opt in ('-s', '--with-spelling'):
+            with_spelling = True
+        elif opt == '--english':
+            english = True
+        elif opt == '--quiet':
+            quiet = True
+        elif opt in ('--help', '-h'):
+            print_usage(supported_langs);
+            sys.exit(0)
+        else:
+            assert False, 'unhandled option'
+
+    # check that infile was actually provided
+    if not infile:
+        sys.stderr.write('Error. Input file is required.\n')
+        print_usage()
+        sys.exit(2)
+
+    if not json_path and quiet:
+        sys.stderr.write('Error. The quiet option cannot be used without '
+                         + 'specifying an output file.\n')
+        sys.exit(2)
+    elif english and quiet:
+        sys.stderr.write('Warning: Suppressing specified plain English '
+                         + 'output. Did you mean to do this?\n')
+
     # init language check
     ltool = language_check.LanguageTool(lang)
-
-    # open infile for reading
-    f_in = open(ifile, 'r')
+    # perform the grammar check
+    f_in = open(infile, 'r', encoding='utf-8')
     text = f_in.read()
-
-    # perform analysis on file and return json_data for writing to file
-    json_data = grcheck(text, lang, ltool, console)
-    print(json_data)
-  
-
+    matches = grcheck(text, ltool, with_spelling)
     f_in.close()
+    
+    # build json string
+    json_data = build_json(infile, lang, matches)
+
+    # print(to console)
+    if not quiet:
+        if english is True:
+            print_data(None, lang, english, matches)
+        else:
+            print_data(json_data)
+
+
+    # write to file if there is an output file specified
+    if json_path and json_data != '':
+        json_out = open(json_path, 'w')
+        json_out.write(json_data)
+        json_out.close()
 
 if __name__ == '__main__':
     main(sys.argv[1:])

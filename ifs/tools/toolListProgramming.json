@@ -1,0 +1,24 @@
+{
+    "tools": [
+         {
+            "displayName": "Compiler Tool", 
+            "progName":"./tools/programmingTools/programmingParser.py",
+            "progfullName": "./tools/programmingTools/programmingParser.py",
+            "runType": "programming",
+            "filesAllowed": "zipFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-d",
+            "options" :  [ 
+                {
+                    "displayName" : "Tool",
+                    "type" : "select",
+                    "name" : "toolSelection",
+                    "values": [ "cppcheck", "gcc", "clang"],
+                    "arg": "-t",
+                    "params":""
+                }
+            ]
+        }
+    ]
+}

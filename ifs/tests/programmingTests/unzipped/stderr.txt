@@ -1,0 +1,4 @@
+unzipped/src/testMain.c##74##warning##nullPointerRedundantCheck##Either the condition 'arr!=0' is redundant or there is possible null pointer dereference: arr.
+unzipped/src/testMain.c##100##style##unreadVariable##Variable 'testsPassed' is assigned a value that is never used.
+unzipped/src/array.c##53##style##unusedFunction##The function 'getLength' is never used.
+####information##missingIncludeSystem##Cppcheck cannot find all the include files (use --check-config for details)
