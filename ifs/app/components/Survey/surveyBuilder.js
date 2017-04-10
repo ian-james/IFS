@@ -36,9 +36,6 @@ function setDefaultDisplaySurveyOptions( questionsPerPage = 4, splitQuestionType
     opts['questionsPerPage'] = questionsPerPage || opts['questionsPerPage'];
     opts['splitQuestionTypes'] = splitQuestionTypes || opts['splitQuestionTypes'];
 
-    
-
-
     return opts;
 }
 
