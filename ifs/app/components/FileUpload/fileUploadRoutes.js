@@ -40,9 +40,10 @@ module.exports = function (app) {
         var uploadedFiles = Helpers.handleFileTypes( req, res );
 
         if( Errors.hasErr(uploadedFiles) )
-        {
-            req.flash('errorMessage', Errors.getErrMsg(uploadedFiles) );
-            res.redirect('/tool');
+        {            
+            var err = Errors.getErrMsg(uploadedFiles);
+            //req.flash('errorMessage', err );
+            res.status(500).send(JSON.stringify({"msg":err}));
             return;
         }
 
@@ -53,32 +54,26 @@ module.exports = function (app) {
         var tools = ToolManager.createJobRequests( req.session.toolFile, userSelection );
         var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
         req.session.jobRequestFile = requestFile;
-
+        
+        res.writeHead(202, { 'Content-Type': 'application/json' });
+        
         // Add the jobs to the queue, results are return in object passed:[], failed:[]
         manager.makeJob(tools).then( function( jobResults ) {
             var organizedResults = FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed );
             setupSessionFiles(req, organizedResults);
-
-            if( organizedResults.feedback.writing ||  organizedResults.feedback.programming ) {
-                res.redirect('/feedback');
-            }
-            else if( organizedResults.feedback.visual ) {
-                // For now, we redirect directly to cloud.
-                res.redirect('/cloud');
-            }
-            else {
-                req.flash('errorMessage', "Unsure what results where provided." );
-                res.redirect('/tool');
-            }
+            var data = { "msg":"Awesome"};
+            res.write(JSON.stringify(data));
+            res.end();
         }, function(err){
             //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
             Logger.error("Failed to make jobs:", err );
-            res.redirect('/tool');
+            //req.flash('errorMessage', "There was an error processing your files." );
+            res.status(400).send(JSON.stringify({"msg":err}));
         }, function(prog) {
-            console.log("Manager's progress is ", prog.progress, "%");
+            Logger.log("Manager's progress is ", prog.progress, "%");
         })
         .catch( function(err){
-            res.status(500, {
+            res.status(500).send({
                 error: e
             });
         });

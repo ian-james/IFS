@@ -1,4 +1,4 @@
-$(function() {
+ $(function() {
     var bar = $('#progressbar')[0];
     UIkit.upload('.upload-panel', {
         url: '/tool_upload',

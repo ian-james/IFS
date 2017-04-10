@@ -37,8 +37,7 @@ function query( queryStr, args, callback) {
                 if(err)
                   console.log("ERROR ", err);
                 Errors.ifErrLog(err);
-                if( data ) 
-                  console.log("Got data", data);
+                
                 callback(err, data);
                 connection.release();
             });

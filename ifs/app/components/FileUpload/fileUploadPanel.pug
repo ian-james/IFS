@@ -15,11 +15,15 @@ div.panel.panel-primary
 
     div(id="processingModal" uk-modal="center: true; bg-close: false; esc-close: false;")
         div.uk-modal-dialog.uk-width-1-2
-            <button class="uk-modal-close-default" type="button" uk-close></button>
+            
             div.uk-modal-header
                 h2(uk-modal.title) Processing Files please wait...
                 div(id="appProgress" class="app-progress-bar uk-progress uk-progress-success")
                     div(class="uk-progress-bar" style="width:40%")
+                <button class="uk-modal-close-default" type="button" uk-close></button>
+                <button id="proceedBtn" class="uk-button uk.align-center uk-button-default uk-invisible " type="button"> View Feedback </button>
+                 div(id="modalAlert" class="uk-alert uk-alert-danger uk-invisible")
+                    p Unable to load files
             div(class="uk-modal-body")
                 script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
                 script(src="surveyjs/survey.jquery.js")
