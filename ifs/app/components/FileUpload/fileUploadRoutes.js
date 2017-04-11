@@ -36,6 +36,10 @@ module.exports = function (app) {
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
+
+        console.log("***************************************");
+        console.log(req.body);
+        console.log(req.files);
          // Handle Zip files, text, docs and projects
         var uploadedFiles = Helpers.handleFileTypes( req, res );
 

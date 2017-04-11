@@ -13,7 +13,7 @@ block content
     div(ng-controller="feedbackCtrl")
         div.row
             div(class="col-md-11 col-md-offset-1")
-                form(id="toolSelectionFrm", action="/feedback" method="post")
+                form(id="toolSelectionFrm" action="/feedback" method="post")
                     label(class="text-center") Please selected a tool: 
                     select(id="toolSelectorId" onchange="this.form.submit()" name="toolSelector")
                         option( selected= "All"==selectedTool ) All
