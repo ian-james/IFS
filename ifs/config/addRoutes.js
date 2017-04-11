@@ -25,6 +25,9 @@ module.exports = function (app) {
     // Survey page routes
     require(componentsPath + '/Survey/surveyRoutes')(app);
 
+    // Testing Routes, leave commented out in commits
+    //require(componentsPath + '/Survey/surveyBuildRoutes')(app);
+
     //Feedback pages routes
     require(componentsPath + '/Feedback/feedbackRoutes')(app);
 
