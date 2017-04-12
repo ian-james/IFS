@@ -26,6 +26,10 @@ format_string() {
     string=$(sed 's/\s+//g;s/[^a-z]//g' <<< $string)
     echo $string
 }
+format_num() {
+    num=$(sed 's/\s+//g;s/[a-zA-Z]//g' <<< $1)
+    echo $num
+}
 
 set -e # exit script on any error
 
@@ -48,13 +52,17 @@ echo ""
 # determine distribution
 DISTRO=$(format_string "$(lsb_release -si 2>/dev/null)")
 VERSION=$(lsb_release -sr 2>/dev/null)
+CODENAME=$(lsb_release -sc 2>/dev/null)
+
+# set min nodejs version
+NODEVERSION="6.9.4"
 
 if [ "$DISTRO" != "ubuntu" ] && [ "$DISTRO" != "debian" ]; then
     echo 'This installation script only supports Ubuntu/Debian.'
     exit
 fi
 
-# install dependencies
+# install dependencies and prefer distro packaged node/npm if possible
 echo 'Installing core dependencies...'
 apt-get -y update
 apt-get -y install npm nodejs mysql-server redis-server nginx git libreoffice
@@ -62,6 +70,52 @@ if [ ! -f /usr/bin/node ]; then
     ln -s /usr/bin/nodejs /usr/bin/node
 fi
 echo ""
+
+# now check the packaged version of node, if it is too low, upgrade from
+# NodeSource repository
+node_v="$(nodejs -v)"
+node_v=$(format_num "$node_v")
+dpkg --compare-versions "$node_v" "lt" "$NODEVERSION"
+v_is_low=$?
+
+if [ $v_is_low -eq 0 ]; then
+    echo 'Warning: IFS requires a newer version of nodejs.'
+    echo 'Reinstalling a newer package version from NodeSource repositories.'
+    read -p "Adding NodeSource signing key to keyring. Continue? [y/N] " yn
+
+    yn=$(format_string "$yn")
+    if [ "$yn" != 'y' ] && [ "$yn" != 'yes' ]; then
+        echo 'Cancelled installation.'
+        exit
+    fi
+    echo ""
+
+    case "$CODENAME" in
+        precise) echo 'Using NodeSource repository for Precise Pangolin.';;
+        trusty) echo 'Using NodeSource repository for Trust Tahr.';;
+        xenial) echo 'Using NodeSource repository for Xenial Xerus.';;
+        yakkety) echo 'Using NodeSource repository for Yakkety Yak.';;
+        jessie) echo 'Using NodeSource repository for Debian Jessie.';;
+        *) echo "Distro version is not supported. See wiki for details."
+           exit
+        ;;
+    esac
+    echo "Removing old version..."
+    apt remove nodejs npm
+
+    echo "Installing NodeJS from NodeSource repository..."
+
+    wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+    echo "deb https://deb.nodesource.com/node_7.x $CODENAME main" > \
+         /etc/apt/sources.list.d/nodesource.list
+    echo "deb-src https://deb.nodesource.com/node_7.x $CODENAME main" >> \
+        /etc/apt/sources.list.d/nodesource.list
+
+    apt update
+    # installs both nodejs and npm from the same package
+    apt install nodejs
+fi
+
 
 # configure mySQL
 echo 'Configuring mySQL...'
@@ -205,7 +259,8 @@ echo ""
 
 # install IFS Tool dependencies
 echo 'Installing IFS Tool dependencies...'
-apt-get install hunspell libhunspell-dev python-pip
+apt-get install hunspell libhunspell-dev python-pip cppcheck valgrind
+pip install --upgrade pip
 pip install hunspell 3to2 language-check nltk
 python -m nltk.downloader --dir=/usr/share/nltk_data stopwords #all
 # python import nltk; nltk.download()
@@ -216,7 +271,7 @@ echo 'Done installing IFS.'
 if ! pgrep -x 'redis-server' > /dev/null; then
     redis-server &
 fi
-npm test
+npm start
 
 
 
