@@ -14,18 +14,10 @@ var _ = require('lodash');
 module.exports = function( app, passport ) {
 
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/about', '/user/data', '/cloud'];
+        var nonSecurePaths = ['/', '/login', '/register', '/about', '/user/data'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
 
-/*
-        console.log("*************************** USER SESSION");
-        console.log("*************************** User");
-        console.log(req.user);
-        console.log("*****************\n\n**************");
-        console.log(req.session);
-        console.log("*************************** END USER SESSION");
-*/
-        if(result >= 0 || (req.user && req.isAuthenticated()) ) {
+        if(result >= 0 || (req.user) ) {
             next();
         }
         else {
@@ -35,7 +27,7 @@ module.exports = function( app, passport ) {
 
     // This function ensure the user in or returns them to main navigation point.+
     function isLoggedIn( req, res, next ) {
-        if( req.isAuthenticated())
+        if( req.user )
             return next();
         res.redirect('/');
     }
@@ -46,13 +38,13 @@ module.exports = function( app, passport ) {
 
     // Function to provide login Information to Angular
     app.get("/user/data", function(req,res) {
-        if( req &&  req.user && req.isAuthenticated() )
+        if( req &&  req.user  )
             return res.status(200).json( {user: req.user.username} );
         return res.status(400);
     });
 
     app.get("/", function(req,res) {
-        if( req &&  req.user && req.isAuthenticated() )
+        if( req &&  req.user  )
             res.redirect('/tool');
         else
             res.render(viewPath + "login", { title: 'Login  TESTER Screen'});
@@ -60,7 +52,7 @@ module.exports = function( app, passport ) {
 
     // Load the login page
     app.get( "/login", function(req,res){
-        if( req &&  req.user && req.isAuthenticated() )
+        if( req &&  req.user  )
             res.redirect('/tool');
         res.render( viewPath + "login", { title: 'Login Screen'});
     });

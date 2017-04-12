@@ -2,68 +2,71 @@ var path = require("path");
 var fs = require("fs");
 var Logger = require( __configs + "loggingConfig");
 var _ = require('lodash');
+var async = require('async');
 
-/* 
-    This function creates the json object for the parsing and  highlightin system.
-    Basically, it needs to create two fields file.   
-
-    Needs to take create file info, job info
-    Feedback needs to include the job type per request.
-*/
-function organizeResults( fileInfo, fullData )
+/**
+ * Sorts feedback items, by file, type, and organizes them
+ * Writes all feedback to individual files and an all file.
+ * @param  {[type]}   fileInfo [description]
+ * @param  {[type]}   fullData [description]
+ * @param  {Function} callback [description]
+ * @return {[type]}            [description]
+ */
+function organizeResults( fileInfo, fullData, callback )
 {
     var obj = {};
 
     // Create File objects for each file
     obj['files'] = fileInfo;
-   
+
     // Sort by properties
     var sortedFeedbackItems = _.sortBy( fullData, ['filename','lineNum', 'wordNum','toolName'] );
-    
+
     // Separate the feedback items for writing to a file and passing back
     var fdbTypes = _.groupBy(sortedFeedbackItems, 'runType');
-    
-    writeResults(obj, fdbTypes, fileInfo[0].destination );
+
+    console.log(fdbTypes);
+    var dest = fileInfo[0].destination;
 
     obj['feedback'] = fdbTypes;
-
-    var allFeedbackFile = 'displayedFeedback.json';
-    obj['allFeedbackFile'] = path.join( fileInfo[0].destination , allFeedbackFile);
-    writeFeedbackToFile( fileInfo[0].destination , obj, allFeedbackFile );
-
-    return obj;
-}
-
-/* 
-    Write the different types of feedback files *
-*/
-function writeResults(obj, fdbTypes, uploadPath ){
-    // Stores the results in separated format too.
-    Logger.info("Write feedback Files");
-
     obj['feedbackFiles'] = {};
-    _.forIn( fdbTypes, function(value,key) {
 
+    Logger.info("Write feedback Files");
+    async.eachOf( fdbTypes, function(value, key, acallback) {
+        
         var filename = key + "FeedbackFile.json";
-        obj['feedbackFiles'][key] = path.join(uploadPath,filename);
-        writeFeedbackToFile(uploadPath, value, filename);
+        var file = path.join(dest,filename);
+        obj['feedbackFiles'][key] = file;
+        Logger.info("Writing FeedbackFile:", file);
+        fs.writeFile( file, JSON.stringify(obj), (err) => {
+            if(err) {
+                Logger.error( "Failed to write ", file );
+                return acallback(err);
+            }
+            acallback();
+        });
+    }, function(err){
+        if(err)
+            Logger.error("Failed to write feedback files");
+        
+        var allFeedbackFile =  path.join( dest , "allFeedbackFile.json");
+        obj['allFeedbackFile'] = allFeedbackFile;
+        fs.writeFile( allFeedbackFile, JSON.stringify(obj), (err) => {
+            callback(obj);
+            Logger.info("Finish Write feedback Files");
+        });        
     });
 
-    Logger.info("Finish Write feedback Files");
 }
 
-/* 
-    Write the feedback to a file.
-*/
-function writeFeedbackToFile(pathDir, obj, filename )
-{
-    // Get upload directory    
-    var file = path.join(pathDir,filename);
-    Logger.info("Writing FeedbackFile:", file);
-    fs.writeFileSync( file, JSON.stringify(obj), 'utf-8');
-    return file;
-}
-
+/**
+ * Sets up position information for feedback items.
+ * Uses regular expressions, the tool and feedback positional info.
+ * @param  {[type]} file          [description]
+ * @param  {[type]} selectedTool  [description]
+ * @param  {[type]} feedbackItems [description]
+ * @return {[type]}               [description]
+ */
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 
     var fileParser = new FileParser();
