@@ -12,34 +12,31 @@ module.exports = function( app ) {
 
 
 /**************************************************************  Values Controller *************************/
-    /* 
-        Read the feedback information file 
-        and process and highlight
-    */
-    app.get('/feedback', function(req,res, next ){
-      
-        var page = { title: 'Feedback page' };
-        var feedbackFile = req.session.allFeedbackFile;
-        var feedback = Feedback.setupFeedback(feedbackFile);
-        var result = _.assign(page, feedback);
-        res.render( viewPath + "feedback", result );
-    });
-
-    app.post('/feedback', function(req,res,next){
-
-        // Would really like to reuse the previously send information.
-        // Get and Post are the essentially the same until ...I figure out resuse of feedbackObject
-        // As this could essecially just be a filter  with the new tool name.
-        
-        var opt = { 'tool': req.body.toolSelector };
-        req.session.activeTool = req.body.toolSelector;
+    /**
+     * Read the feedback information file 
+     *  and process and highlight
+     * @param  {[type]} req [description]
+     * @param  {[type]} res [description]
+     * @param  {[type]} opt [description]
+     * @return {[type]}     [description]
+     */
+    function  showFeedback( req,res, opt ) {
 
         var page = { title: 'Feedback Test page' };
         var feedbackFile = req.session.allFeedbackFile
         var feedback = Feedback.setupFeedback(feedbackFile, opt);
         var result = _.assign(page,feedback);
         res.render( viewPath + "feedback", result );
+    }
+  
+    app.get('/feedback', function(req,res ){
+       showFeedback(req,res);
+    });
 
+    app.post('/feedback', function(req,res,next){
+        var opt = { 'tool': req.body.toolSelector };
+        req.session.activeTool = req.body.toolSelector;
+        showFeedback(req,res,opt);
     });
 
     app.get('/feedback/data', function( req,res, next ){

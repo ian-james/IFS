@@ -23,7 +23,7 @@ var Errors = require(__components + "Errors/errors");
 
 module.exports = function (app) {
 
-    function setupSessionFiles( req,  organizedResults)
+    function setupSessionFiles( req, organizedResults)
     {
         req.session.allFeedbackFile = organizedResults.allFeedbackFile;
         if( organizedResults.hasOwnProperty('feedbackFiles')) {
@@ -35,11 +35,6 @@ module.exports = function (app) {
     }
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
-
-
-        console.log("***************************************");
-        console.log(req.body);
-        console.log(req.files);
          // Handle Zip files, text, docs and projects
         var uploadedFiles = Helpers.handleFileTypes( req, res );
 
@@ -56,18 +51,19 @@ module.exports = function (app) {
 
         // Create Job Requests
         var tools = ToolManager.createJobRequests( req.session.toolFile, userSelection );
-        var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
+        var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});        
         req.session.jobRequestFile = requestFile;
         
         res.writeHead(202, { 'Content-Type': 'application/json' });
         
         // Add the jobs to the queue, results are return in object passed:[], failed:[]
         manager.makeJob(tools).then( function( jobResults ) {
-            var organizedResults = FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed );
-            setupSessionFiles(req, organizedResults);
-            var data = { "msg":"Awesome"};
-            res.write(JSON.stringify(data));
-            res.end();
+            FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {
+                setupSessionFiles(req, organized);
+                var data = { "msg":"Awesome"};
+                res.write(JSON.stringify(data));
+                res.end();
+            });
         }, function(err){
             //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
             Logger.error("Failed to make jobs:", err );

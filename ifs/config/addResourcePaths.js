@@ -36,6 +36,8 @@ module.exports = function (app) {
     // wordcloud
     app.use( "/wordcloud", express.static( nodeModulesPath + "/wordcloud/src/") );
 
+    app.use("/socketIO", express.static( nodeModulesPath + "/wordcloud/src/") );
+
     // Static Files
     app.use( express.static( path.join( __dirname, "/../app/") ) );
 }
