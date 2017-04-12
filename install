@@ -101,7 +101,7 @@ if [ $v_is_low -eq 0 ]; then
         ;;
     esac
     echo "Removing old version..."
-    apt remove nodejs npm
+    apt-get remove nodejs npm
 
     echo "Installing NodeJS from NodeSource repository..."
 
@@ -111,9 +111,9 @@ if [ $v_is_low -eq 0 ]; then
     echo "deb-src https://deb.nodesource.com/node_7.x $CODENAME main" >> \
         /etc/apt/sources.list.d/nodesource.list
 
-    apt update
+    apt-get update
     # installs both nodejs and npm from the same package
-    apt install nodejs
+    apt-get install nodejs
 fi
 
 
