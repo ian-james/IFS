@@ -261,8 +261,8 @@ echo ""
 echo 'Installing IFS Tool dependencies...'
 apt-get install hunspell libhunspell-dev python-pip cppcheck valgrind
 pip install --upgrade pip
-pip install hunspell 3to2 language-check nltk
-python -m nltk.downloader --dir=/usr/share/nltk_data stopwords #all
+pip install hunspell 3to2 language-check nltk numpy
+python -m nltk.downloader --dir=/usr/share/nltk_data all # stopwords only?
 echo ""
 
 echo 'Done installing IFS.'
