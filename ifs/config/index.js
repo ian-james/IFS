@@ -38,5 +38,7 @@ const server = app.listen( app.get('port') , function() {
     console.log( "Listening on port " + app.get('port'));
 });
 
+/*
 const socket_io = require('socket.io')(server);
 require("./socketIoServer")(socket_io);
+*/

@@ -1,4 +1,5 @@
 // Middleware Sections ( Standard inclusion with Node/Express server)
+var redisOpts = require( __components  + "/Queue/kuaServerConfig").testKue;
 
 module.exports = function (app) {
 
@@ -25,7 +26,7 @@ module.exports = function (app) {
      //i18n
     var i18n = require("i18n");
     i18n.configure({
-        locales:['en','fr'],
+        locales:['en'],
         defaultLocale: 'en',
         cookie: 'i18n',
         queryParameter: 'lang',
@@ -47,11 +48,24 @@ module.exports = function (app) {
     // Passport included
     var passport = require('passport');
 
+
+
     // Express-sessional information
     var session = require('express-session');
+
+    var redis = require('redis');
+    var redisStore = require('connect-redis')(session);
+    var client = redis.createClient();
+
     app.use( session({
         secret: 'ifsSecretSessionInfo',
         resave: true,
+        store: new redisStore( {
+                                host:'localhost',
+                                port: redisOpts.kueOpts.redis.port,
+                                client: client,
+                                ttl: redisOpts.ttl
+                            }),
         saveUninitialized: true,
         cookie: {maxAge:60*60*1000}
         })

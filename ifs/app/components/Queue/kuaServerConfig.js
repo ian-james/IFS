@@ -11,5 +11,6 @@ module.exports.testKue = {
     ui: {
         title: "Tool Server UI",
         port: 4000
-    }
+    },
+    ttl: 260    
 };
