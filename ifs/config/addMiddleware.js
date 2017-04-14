@@ -1,7 +1,5 @@
 // Middleware Sections ( Standard inclusion with Node/Express server)
-var redisOpts = require( __components  + "/Queue/kuaServerConfig").testKue;
-
-module.exports = function (app) {
+module.exports = function (app, mySession ) {
 
     // Add middleware for view Engine (Jade/Pug)
     app.set( 'view engine', 'pug');
@@ -48,30 +46,13 @@ module.exports = function (app) {
     // Passport included
     var passport = require('passport');
 
-
-
     // Express-sessional information
-    var session = require('express-session');
+   
 
-    var redis = require('redis');
-    var redisStore = require('connect-redis')(session);
-    var client = redis.createClient();
 
-    app.use( session({
-        secret: 'ifsSecretSessionInfo',
-        resave: true,
-        store: new redisStore( {
-                                host:'localhost',
-                                port: redisOpts.kueOpts.redis.port,
-                                client: client,
-                                ttl: redisOpts.ttl
-                            }),
-        saveUninitialized: true,
-        cookie: {maxAge:60*60*1000}
-        })
-    );
+    app.use(mySession);
 
-    app.use( i18n.init );
+    //app.use( i18n.init );
 
     // Setup Flash messages
     var flash = require('express-flash');

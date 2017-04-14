@@ -21,24 +21,68 @@ app.set( 'port', port );
 // Add path information
 require( "./addResourcePaths.js")(app);
 
+// This section creates our session store data, it is outside the other add* requires because it is shared.
+var redisOpts = require( __components  + "/Queue/kuaServerConfig").testKue;
+var session = require('express-session');
+var redis = require('redis');
+var redisStore = require('connect-redis')(session);
+var client = redis.createClient();
+
+var mySession =  session({
+    secret: 'ifsSecretSessionInfo',
+    resave: true,
+    store: new redisStore( {
+                            host:'localhost',
+                            port: redisOpts.kueOpts.redis.port,
+                            client: client,
+                            ttl: redisOpts.ttl
+                        }),
+    saveUninitialized: true,
+    cookie: {maxAge:60*60*1000}
+});
+
+
 // Add middleware 
-require( "./addMiddleware.js") (app);
-
-// Add Developer Routes
-require("./addRoutes.js")(app);
-
-// Error handling in common format (err,req,res,next)
-var errorHandler = require('errorhandler');
-if( app.get('env') === 'development' ){
-    app.use( errorHandler() );
-}
+require( "./addMiddleware.js") (app,mySession);
 
 // Start the app listening
 const server = app.listen( app.get('port') , function() {
     console.log( "Listening on port " + app.get('port'));
 });
 
-/*
-const socket_io = require('socket.io')(server);
-require("./socketIoServer")(socket_io);
-*/
+const socket_io = require('socket.io')(server).
+                use(function(socket,next) {
+                    mySession(socket.request, {}, next);
+                }).
+                on('connection', (socket) => {
+                    // This is temporary to evaluate
+                    socket.on('disconnect',() =>{
+                        console.log("user disconnected");
+                    });
+
+                    socket.on('howdy', function(data) {
+                        console.log("Data:", data);
+                    });
+
+                    socket.on('disconnect',() =>{
+                        console.log("user disconnected");
+                    });
+
+                    socket.on('authorized',() =>{
+                        var id = socket.request.session.passport.user;
+                        console.log("YOUR ID IS ", id);
+                    });
+
+                    socket.emit('greet', {my:'something'});
+                });
+
+//require("./socketIoServer")(socket_io);
+
+// Add Developer Routes
+require("./addRoutes.js")(app, socket_io);
+
+// Error handling in common format (err,req,res,next)
+var errorHandler = require('errorhandler');
+if( app.get('env') === 'development' ){
+    app.use( errorHandler() );
+}
