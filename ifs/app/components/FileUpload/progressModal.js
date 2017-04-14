@@ -12,8 +12,9 @@ $(function() {
         var button = $("#proceedBtn");
             button.toggleClass("uk-hidden", true);
 
-        var title = $("modalTitle");
-        title.text("Processing Files please wait...");
+        var title = $("#modalTitle");
+        console.log(title);
+        title.text("Uploading Files please wait...");
 
         // Make the processing modal visible
         var modal = UIkit.modal("#processingModal");
@@ -51,7 +52,7 @@ $(function() {
                         uploadProgressBar.value =  e.loaded;
                     }
                 };
-                xhr.upload.onloadend = function(e) {
+                xhr.upload.onload = function(e) {
                     uploadProgressBar.max =  e.total;
                     uploadProgressBar.value =  e.loaded;
                 };
@@ -60,17 +61,14 @@ $(function() {
         }).done( function(data) {
             button.toggleClass("uk-hidden");
             document.getElementById("submissionInput").value = "";
-            
             title.text("Files successfully assessed");
-            
         }).fail(function(xhr,error) {
             div.toggleClass("uk-hidden",false);
             div.first().text(JSON.parse(xhr.responseText).msg);
             document.getElementById("submissionInput").value = "";
-            
             title.text("Files failed to upload");
         }).always( function() {
-             setTimeout(function () {
+            setTimeout(function () {
                 uploadProgressBar.setAttribute('hidden', 'hidden');
             }, 1000);
         });

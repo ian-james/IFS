@@ -32,7 +32,7 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
+                db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     //req.flash('errorMessage', 'We tried');
                     if(err)
                     {
@@ -78,7 +78,7 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
+                db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     if(err) {
                         req.flash('errorMessage', 'Service currently unavailable');
                         return done(err, false);
