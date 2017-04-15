@@ -25,7 +25,6 @@ function organizeResults( fileInfo, fullData, callback )
     // Separate the feedback items for writing to a file and passing back
     var fdbTypes = _.groupBy(sortedFeedbackItems, 'runType');
 
-    console.log(fdbTypes);
     var dest = fileInfo[0].destination;
 
     obj['feedback'] = fdbTypes;

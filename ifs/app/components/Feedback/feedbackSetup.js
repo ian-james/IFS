@@ -56,20 +56,22 @@ function readFeedbackFormat( feedback , options)
 
     // A Unique list of tools used for UI
     var toolsUsed = _.uniqBy(feedbackItems,'toolName');
+    console.log("Tools used", toolsUsed);
 
     // Tool should always be selected unless it's defaulted too.
     var selectedTool = (options && options['tool'] || toolsUsed.length >= 1 && toolsUsed[0].toolName);
+    console.log("Selected Tools used", selectedTool);
 
-    if( selectedTool ) {
-        // For each file, read in the content and mark it up for display.
-        for( var i = 0; i < files.length; i++ )
-        {
-            var file = files[i];
-            file.content = he.encode( fs.readFileSync( file.filename, 'utf-8') );
+    // For each file, read in the content and mark it up for display.
+    for( var i = 0; i < files.length; i++ )
+    {
+        var file = files[i];
+        file.content = he.encode( fs.readFileSync( file.filename, 'utf-8') );
 
-            //TODO: Positional setup information should be moved to the feedback filtering and organization
-            // This decopules the task of highlights and positioning.
+        //TODO: Positional setup information should be moved to the feedback filtering and organization
+        // This decopules the task of highlights and positioning.
 
+        if( selectedTool ) {
             setupFilePositionInformation(file, selectedTool,feedbackItems);
 
             var sortedOrder = [ 'charNum', 'filename', 'toolName'];
@@ -77,9 +79,14 @@ function readFeedbackFormat( feedback , options)
 
             file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
-        return { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool, 'toolType': toolsUsed[0].runType };
+        else 
+            file.markedUp = file.content;
     }
-    return {'files':files, 'feedbackItems': feedbackItems, "msg":"Unable to display feedback."};
+
+    var result =  { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
+    if(selectedTool)
+        result['toolType'] = toolsUsed[0].runType;
+    return result;
 }
 
 function readFiles( filename , options) {

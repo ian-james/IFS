@@ -28,6 +28,38 @@ function getJsonTool( toolsJson, targetTool ){
     return tool;
 }
 
+// This is the external call that uses the form data,
+// user selected options to create jobs for the Queue
+function createJobRequests( toolFile, selectedOptions ) {
+
+    var toolList = readToolFileList(toolFile);
+    toolList.tools = removeInactiveTools(toolList.tools,selectedOptions);
+
+    selectedOptions = removeEnabledFormData( selectedOptions );
+
+    var toolOptions = parseFormSelection( selectedOptions );
+
+    var res = insertOptions(toolList.tools, toolOptions);
+    var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
+
+    return jobReq;
+}
+
+
+// Reads JSON document and creates an array of objects with tool information and options.
+// See tooList.json (these are tools avilable in the tool page)
+function readToolFileList( filename ) {
+
+    var supportedToolsFile = './tools/toolListProgramming.json';
+    if( filename )
+        supportedToolsFile = filename;
+
+    var result = fs.readFileSync( supportedToolsFile, 'utf-8');
+    var jsonObj = JSON.parse(result);
+    return jsonObj;
+}
+
+
 // This function parses the form data from /tool into separate parameters for
 // tool object. ***Note data remains in the received form but gets classified.
 function parseFormSelection( formData ) {
@@ -43,7 +75,7 @@ function parseFormSelection( formData ) {
 
     _.forEach( formData, function(value, key ) {
 
-        if( key == "submit") {
+        if( key == "submit" || key == "time") {
             if(tool) {
                 toolOptions.tools.push( tool );
             }
@@ -72,83 +104,13 @@ function parseFormSelection( formData ) {
     return toolOptions;
 }
 
-// Reads JSON document and creates an array of objects with tool information and options.
-// See tooList.json (these are tools avilable in the tool page)
-function readToolFileList( filename ) {
-
-    var supportedToolsFile = './tools/toolListProgramming.json';
-    if( filename )
-        supportedToolsFile = filename;
-
-    var result = fs.readFileSync( supportedToolsFile, 'utf-8');
-    var jsonObj = JSON.parse(result);
-    return jsonObj;
-}
-
-function writeToolList( files, obj )
-{
-    // Get upload directory
-    var uploadDir = path.dirname( obj.files[0] );
-
-    var filename = "jobRequests.json";
-    var file = path.join(uploadDir,filename);
-    Logger.info("Writing job requests file:", file);
-    fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
-    return file;
-}
-
-// This is the external call that uses the form data,
-// user selected options to create jobs for the Queue
-function createJobRequests( toolFile, selectedOptions ) {
-
-    var toolList = readToolFileList(toolFile);
-    var toolOptions = parseFormSelection( selectedOptions );
-
-    var res = tempInsertOptions(toolList.tools, toolOptions);
-    var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
-
-    return jobReq;
-}
-
-// User options are already for the appropriate tool
-// This handles converting checkbox and other input types
-// into appropriate command line parameters
-// ex) checkbox on means -option while off would be blank
-function basicParse( toolListItem, userOptions ){
-
-    _.forEach( toolListItem.options, function(option) {
-
-        var userTargetTool = _.find( userOptions.options, function(o) {
-            return o.name ==  option.name;
-        });
-
-        if(userTargetTool)
-        {
-            var value = "";
-            if(option.type == "checkbox") {
-                value = userTargetTool.value  == "on" ? option.arg : "";
-            }
-            else {
-                value = option.arg + " " + userTargetTool.value;
-            }
-
-            // Update Params for tool
-            var opt = { params: value }
-            _.extend(option, opt);
-        }
-    });
-
-    // add Files to to tool
-    _.extend(toolListItem, userOptions.files);
-    return toolListItem;
-}
 
 // This functions calls either basicParse or custom command defined in tooList
 // Custom commands are called in t.parseCmd in toolList
 // It lets you decide how to turn form data into command line parameter
 // for the program call.
 // Note: JS eval seems to play funny with nodemon.
-function tempInsertOptions( toolList, toolOptions) {
+function insertOptions( toolList, toolOptions) {
 
     _.forEach( toolList, function(t){
         var targetToolOptions = getJsonTool( toolOptions.tools, t.progName );
@@ -161,12 +123,7 @@ function tempInsertOptions( toolList, toolOptions) {
                 result = eval(cmd)(t,targetToolOptions);
             }
             catch(err){
-                Logger.error("Failed to call basic parse");
-                Logger.error("CMD->", cmd, " has errored -> ");
-                Logger.error("tool was: ", t );
-                Logger.error("TargetToolOption was ", targetToolOptions);
-                Logger.error("Error-> ", err);
-                Logger.error("******************");
+                Logger.error("Failed to parse form options  with function ", cmd );
             }
         }
 
@@ -174,25 +131,37 @@ function tempInsertOptions( toolList, toolOptions) {
     return toolList;
 }
 
-// This function takes the program name, the default parameters and user specified ones and creates
-// A command line call.
-function createToolProgramCall ( toolListItem, options )
-{
-    var call = toolListItem.progName;
-    var args = [ call, toolListItem.defaultArg ];
+/**
+ * Takes form data and the tool list and remove tool information for disabled tools.
+ */
+function removeInactiveTools(toolList, formOptions) {
 
-    _.forEach( toolListItem.options, function(o) {
-        if( options  && options.prefixArg ) {
-            args.push( o.arg );
-        }
-        args.push( o.params );
+    var enables = _.pickBy(formOptions, function(value,key) {
+        return _.startsWith(key,"enabled-");
     });
 
-    args.push(toolListItem.fileArgs);
-    
-    var result = _.join( args, " ");
-    return result;
+    var activeTools = _.filter(toolList, function(tool) {
+        var str = "enabled-" + tool.displayName;
+        return _.hasIn(enables,str);
+    });
+
+    return activeTools;
 }
+
+/**
+ * Removes enabled checkbox information from form data 
+ * @param  {[type]} formOptions [description]
+ * @return {[type]}             [description]
+ */
+function removeEnabledFormData( formOptions ) {
+
+    var enables = _.pickBy(formOptions, function(key,value) {
+        return _.startsWith(key,"enabled-") == false;
+    });
+
+    return enables;
+}
+
 
 // Reduces the side of the object from the full job to a smaller version.
 // Also creates a run command for the job.
@@ -229,27 +198,71 @@ function buildJobs( fullJobs, files, options ) {
     return jobsPerFile;
 }
 
-//Display key elements of a single tool object.
-// TODO: update this used logger.
-function displayTool( tool ) {
 
-    var keys = [ 'displayName', 'progName', 'runType', 'defaultArg'];
-    var t = _.pick(tool, keys);
+// This function takes the program name, the default parameters and user specified ones and creates
+// A command line call.
+function createToolProgramCall ( toolListItem, options )
+{
+    var call = toolListItem.progName;
+    var args = [ call, toolListItem.defaultArg ];
 
-    console.log("Start tool display");
-    console.log(t);
-    _.forEach( tool.options, function(o){
-        console.log("Next Option");
-        console.log("\t",o.displayName);
-        console.log("\t",o.name);
-        console.log("\tARG:", o.arg);
-        console.log("\tPARAM:", o.params);
+    _.forEach( toolListItem.options, function(o) {
+        if( options  && options.prefixArg ) {
+            args.push( o.arg );
+        }
+        args.push( o.params );
     });
+
+    args.push(toolListItem.fileArgs);
+    
+    var result = _.join( args, " ");
+    return result;
 }
 
-// Generic all for all tools to be displayed.
-function displayTools( tools ) {
-    _.forEach( tools, displayTool );
+// User options are already for the appropriate tool
+// This handles converting checkbox and other input types
+// into appropriate command line parameters
+// ex) checkbox on means -option while off would be blank
+function basicParse( toolListItem, userOptions ){
+
+    _.forEach( toolListItem.options, function(option) {
+
+        var userTargetTool = _.find( userOptions.options, function(o) {
+            return o.name ==  option.name;
+        });
+
+        if(userTargetTool)
+        {
+            var value = "";
+            if(option.type == "checkbox") {
+                value = userTargetTool.value  == "on" ? option.arg : "";
+            }
+            else {
+                value = option.arg + " " + userTargetTool.value;
+            }
+
+            // Update Params for tool
+            var opt = { params: value }
+            _.extend(option, opt);
+        }
+    });
+
+    // add Files to to tool
+    _.extend(toolListItem, userOptions.files);
+    return toolListItem;
+}
+
+
+function writeToolList( files, obj )
+{
+    // Get upload directory
+    var uploadDir = path.dirname( obj.files[0] );
+
+    var filename = "jobRequests.json";
+    var file = path.join(uploadDir,filename);
+    Logger.info("Writing job requests file:", file);
+    fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
+    return file;
 }
 
 
