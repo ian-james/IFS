@@ -36,9 +36,9 @@ module.exports = function (app, iosocket) {
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
-        console.log("***************************************");
-        console.log(req.body);
-        console.log(req.files);
+        //console.log("***************************************");
+        //console.log(req.body);
+        //console.log(req.files);
          // Handle Zip files, text, docs and projects
         var uploadedFiles = Helpers.handleFileTypes( req, res );
 
@@ -55,6 +55,12 @@ module.exports = function (app, iosocket) {
 
         // Create Job Requests
         var tools = ToolManager.createJobRequests( req.session.toolFile, userSelection );
+        if(!tools || tools.length == 0)
+        {
+            var err = Errors.cErr();
+            res.status(500).send(JSON.stringify({"msg":"Please select a tool to evaluate your work."}));
+            return;
+        }
         var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
         req.session.jobRequestFile = requestFile;
 
