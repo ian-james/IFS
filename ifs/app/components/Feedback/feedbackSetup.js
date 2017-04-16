@@ -56,12 +56,9 @@ function readFeedbackFormat( feedback , options)
 
     // A Unique list of tools used for UI
     var toolsUsed = _.uniqBy(feedbackItems,'toolName');
-    console.log("Tools used", toolsUsed);
 
     // Tool should always be selected unless it's defaulted too.
     var selectedTool = (options && options['tool'] || toolsUsed.length >= 1 && toolsUsed[0].toolName);
-    console.log("Selected Tools used", selectedTool);
-
     // For each file, read in the content and mark it up for display.
     for( var i = 0; i < files.length; i++ )
     {

@@ -83,13 +83,21 @@ $(function() {
         // Counts the num of tools checked to be used.
         var enabledCheckboxes = $('[id^="enabled-"]:checked').length;
 
-        //TODO JF: Leaving this for now, it needs an alert message to indicate no files selected.
-        // If this did run, it woould be caught by the server and a flash is presented but
-        // an alert could happen here too before even submitting. Not sure how UIKit would do that.        
-
+      
         if(enabledCheckboxes)
             $("#uploadForm").submit();
-        else
+        else {
+            // Don't submit and setup an error message
+              //TODO JF: Leaving this for now, it needs an alert message to indicate no files selected.
+              // If this did run, it woould be caught by the server and a flash is presented but
+              // an alert could happen here too before even submitting. Not sure how UIKit would do that.        
+
+            var errMessage = $(".errorMessage");
+            console.log(errMessage);
+            errMessage.text("Please select at least one tool");
+            errMessage.parent().show();
+
             document.getElementById("submissionInput").value = "";
+        }
     });
 });

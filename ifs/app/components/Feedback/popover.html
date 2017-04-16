@@ -1,67 +1,38 @@
-<div class="cardContainer container-fluid">
-    <div class="row headerButtonsContainer ">
-        <button type="button"  class="btnSideNav pull-right" ng-click="showSideBar = !showSideBar "> 
-            <span class="glyphicon glyphicon-remove"></span>
-        </button>
-        <h3 class="ftext inlineHeader" > Additional information </h3>
-    </div>
-    <div class="row cardRow">
-        <div class="col-md-12">
-            <hr />
-            <div class="row ">
-                <h3 class="errorType">  Error Type: {{ selectedFeedback.type }} </h3>
-                <ul class="horizontalListLine">
-                    <div class="col-md-2 col-md-offset-2">
-                        <li> <button href="#" ng-click="getPrevSelected()">&laquo;</button> </li>
-                    </div>
-                    <div class="col-md-4">
-                        <li class="ftext">  {{ selectedFeedback.toolName }} </li>
-                    </div>
-                    <div class="col-md-2">
-                        <li> <button href="#" ng-click="getNextSelected()">&raquo;</button> </li>
-                    </div>
+<div id="popOver" uk-offcanvas="flip: true; overlay: true">
+
+    <div class="uk-offcanvas-bar uk-section uk-section-default uk-text-left">
+
+        <div class="uk-container">
+            <button class="uk-offcanvas-close" type="button" uk-close></button>
+
+            <h3 class="" > Additional information </h3>
+
+            <dl class="uk-description-list">
+                <dl class="uk-description-list-line">
+                <dt class="descriptionTitle"> Error Type</dt>
+                <dd> {{ selectedFeedback.type }} </dd>
+
+                <dl class="uk-description-list-line">
+
+                <dt class="descriptionTitle">  Tool </dt>
+                <dd> {{ selectedFeedback.toolName }} </dd>
+
+                <dl class="uk-description-list-line">
+
+                <dt class="descriptionTitle"> Description </dt>
+                <dd> {{selectedFeedback.feedback}} </dd>
+
+                <dl class="uk-description-list-line">
+
+                <dt class="descriptionTitle"> Suggestions for: {{ selectedFeedback.target }} </dt>
+                <dd> </dd>
+            </dl>
+
+            <div>
+                <ul class="list-group">
+                    <li ng-repeat="suggestion in selectedFeedback.suggestions | limitTo: 5" class="list-group-item suggestionListItem"> {{suggestion}} </li>
                 </ul>
             </div>
-            <hr />
-
-            <div class="row">
-                <div class="errorMsg col-md-4 col-md-offset-2">
-                    <p class="ftext 'selectedFeedback.type'">  {{ selectedFeedback.target }} </p>
-                </div>
-                <div class="suggestionMsg col-md-4">
-                    <ul class="list-group">
-                        <li ng-repeat="suggestion in selectedFeedback.suggestions" class="list-group-item">  {{suggestion}} </li>
-                    </ul>
-                </div>
-            </div>
-            <hr />
-
-            <div class="row">
-                <div class="feedbackButtonsContainer  btn-toolbar">
-                    <div class="col-md-2 col-md-offset-3">
-                        <button type="button"  class="btnSideNav"> 
-                            <span class="glyphicon glyphicon-thumbs-up"></span>
-                        </button>
-                    </div>
-                    <label class="ftext col-md-1" > Rating </label>
-                    <div class="col-md-2 col-md-offset-2">
-                        <button type="button"  class="btnSideNav"> 
-                            <span class="glyphicon glyphicon-thumbs-down"></span>
-                        </button>
-                     </div>
-                </div>
-            </div>
-            <hr />
-
-            <div class="row">
-                <div class="feedback">
-                    <label  class="ftext"> Description: {{selectedFeedback.feedback}} </label>
-                </div>
-            </div>
         </div>
-    </div>
-    <hr />
-    <div class="row footer">
-        <label class="footerToolLbl ftext"> Powered by: {{ selectedFeedback.toolName }} </label>
     </div>
 </div>
