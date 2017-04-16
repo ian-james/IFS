@@ -231,7 +231,9 @@ def main(argv):
                     errors = errFile.read()
                     result = parse( errors, options )
 
-                    if( result and options['ifs'] ):
+                    print(result)
+
+                    if( options['ifs'] ):
                         result = decorateData( result, options )
                     print( result )
             except:
