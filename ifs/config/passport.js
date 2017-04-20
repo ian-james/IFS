@@ -16,7 +16,7 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser( function(id,done) {
-        db.query( "SELECT * FROM users where id = ? ", [id], function(err,rows) {
+        db.query( "SELECT id,username FROM users where id = ? ", id, function(err,rows) {
             done( err, rows[0]);
         });
     });
@@ -32,7 +32,7 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
+                db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     //req.flash('errorMessage', 'We tried');
                     if(err)
                     {
@@ -78,7 +78,7 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
-                db.query("SELECT * FROM users WHERE username = ?", [username], function(err,rows) {
+                db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     if(err) {
                         req.flash('errorMessage', 'Service currently unavailable');
                         return done(err, false);

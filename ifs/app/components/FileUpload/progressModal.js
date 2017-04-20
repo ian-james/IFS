@@ -12,8 +12,8 @@ $(function() {
         var button = $("#proceedBtn");
             button.toggleClass("uk-hidden", true);
 
-        var title = $("modalTitle");
-        title.text("Processing Files please wait...");
+        var title = $("#modalTitle");
+        title.text("Uploading Files please wait...");
 
         // Make the processing modal visible
         var modal = UIkit.modal("#processingModal");
@@ -36,7 +36,6 @@ $(function() {
                 var xhr = $.ajaxSettings.xhr();
                 xhr.onprogress = function (e) {
                     if(e.lengthComputable) {
-                        console.log(e.loaded/ e.total);
                     }
                 };
                 xhr.upload.onloadstart = function(e) {
@@ -46,12 +45,11 @@ $(function() {
                 };
                 xhr.upload.onprogress = function(e) {
                     if(e.lengthComputable) {
-                        console.log(e.loaded / e.total );
                         uploadProgressBar.max =  e.total;
                         uploadProgressBar.value =  e.loaded;
                     }
                 };
-                xhr.upload.onloadend = function(e) {
+                xhr.upload.onload = function(e) {
                     uploadProgressBar.max =  e.total;
                     uploadProgressBar.value =  e.loaded;
                 };
@@ -59,18 +57,18 @@ $(function() {
             }
         }).done( function(data) {
             button.toggleClass("uk-hidden");
-            document.getElementById("submissionInput").value = "";
             
             title.text("Files successfully assessed");
-            
         }).fail(function(xhr,error) {
             div.toggleClass("uk-hidden",false);
             div.first().text(JSON.parse(xhr.responseText).msg);
-            document.getElementById("submissionInput").value = "";
             
             title.text("Files failed to upload");
         }).always( function() {
-             setTimeout(function () {
+
+            document.getElementById("submissionInput").value = "";
+
+            setTimeout(function () {
                 uploadProgressBar.setAttribute('hidden', 'hidden');
             }, 1000);
         });
@@ -82,6 +80,24 @@ $(function() {
     });
 
     $("#submissionInput").change( function() {
-        $("#uploadForm").submit();
+        // Counts the num of tools checked to be used.
+        var enabledCheckboxes = $('[id^="enabled-"]:checked').length;
+
+      
+        if(enabledCheckboxes)
+            $("#uploadForm").submit();
+        else {
+            // Don't submit and setup an error message
+              //TODO JF: Leaving this for now, it needs an alert message to indicate no files selected.
+              // If this did run, it woould be caught by the server and a flash is presented but
+              // an alert could happen here too before even submitting. Not sure how UIKit would do that.        
+
+            var errMessage = $(".errorMessage");
+            console.log(errMessage);
+            errMessage.text("Please select at least one tool");
+            errMessage.parent().show();
+
+            document.getElementById("submissionInput").value = "";
+        }
     });
 });

@@ -9,8 +9,11 @@ module.exports = function (app) {
 
     // Set directory locations for angular and bootstrap
     var nodeModulesPath =  path.join( __dirname + "/../node_modules/");
+    // Static Files
+    app.use( express.static( path.join( __dirname, "/../app/") ) );
+    
     // File upload angular (might not be necessary anymore)
-    app.use( "/fileUpload", express.static( nodeModulesPath +"angular-file-upload/dist") );
+    //app.use( "/fileUpload", express.static( nodeModulesPath +"angular-file-upload/dist") );
 
     // jQuery
     app.use( "/jquery", express.static( nodeModulesPath + "jquery/dist") );
@@ -36,6 +39,7 @@ module.exports = function (app) {
     // wordcloud
     app.use( "/wordcloud", express.static( nodeModulesPath + "/wordcloud/src/") );
 
-    // Static Files
-    app.use( express.static( path.join( __dirname, "/../app/") ) );
+    app.use("/socketIO", express.static( nodeModulesPath + "/wordcloud/src/") );
+
+    
 }

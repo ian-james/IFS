@@ -1,5 +1,5 @@
 
-module.exports = function (app) {
+module.exports = function (app, iosocket) {
 
     // Paths and requirements
     var appPath = __appPath;
@@ -17,7 +17,7 @@ module.exports = function (app) {
     require(componentsPath + "/Tool/toolRoutes") (app);
 
     //File Upload routes
-    require(componentsPath + "/FileUpload/fileUploadRoutes")(app);
+    require(componentsPath + "/FileUpload/fileUploadRoutes")(app,iosocket);
 
     // Preferences page Routes
     require(componentsPath + "/Preferences/preferencesRoutes")(app);
