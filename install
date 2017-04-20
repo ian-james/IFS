@@ -26,23 +26,25 @@
 
 format_string() {
     local string=$(awk '{print tolower($0)}' <<< $1)
-    string=$(sed 's/\s+//g;s/[^a-z]//g' <<< $string)
+    string=$(sed 's/\s+//g;s/[^a-z]//g;' <<< $string)
     echo "$string"
 }
 format_num() {
-    local num=$(sed 's/[^0-9\.]//g' <<< $1)
+    local num=$(sed 's/\s+//g;s/[^0-9\.]//g;' <<< $1)
     echo "$num"
+}
+compare_num() { # $1: first, $2: operator, $3: second
+    awk 'BEGIN{ if('"$1"' '"$2"' '"$3"') print 1; else print 0; }'
 }
 
 set_repo() { # $1: repo description, $2: pkg name
-    echo "Warning: IFS requires a newer version of $2."
-    echo "Reinstalling a newer package version from $1 repositories."
+    echo "Warning: IFS requires a newer version of $2." >&2
+    echo "Reinstalling a newer package version from $1 repositories." >&2
     read -p "Adding $1 signing key to keyring. Continue? [y/N] " yn
 
-    local yn=$(format_string "$yn")
+    yn=$(format_string "$yn")
     if [ "$yn" != 'y' ] && [ "$yn" != 'yes' ]; then
-        echo 'Cancelled installation.'
-        exit
+        exit 1
     fi
     echo ""
 
@@ -53,14 +55,23 @@ set_repo() { # $1: repo description, $2: pkg name
     read -p "Using $1 repository for $codename. Is this correct? [y/N] " yn
     yn=$(format_string "$yn")
     if [ "$yn" != 'y' ] && [ "$yn" != 'yes' ]; then
-        read -p "Enter different codename (e.g. jessie): " codename
+        read -p "Enter different codenamsuch ase.g. jessie): " codename
     fi
 
     echo "$codename"
 }
 
+#check_repo() { # $1: regex pattern, such as ^[\s+]*deb.*backports
+#    res=$(find /etc/apt/ -type f -name "*.list" | xargs cat | grep $1)
+#    if [ "$res" == "" ]; then
+#        echo 0
+#    else
+#        echo 1
+#    fi
+#}
 
-set -e # exit script on any error
+
+#set -e # exit script on any error
 
 if [[ $EUID -ne 0 ]]; then
     echo "Error. IFS installation must be run as root!" 1>&2;
@@ -73,7 +84,7 @@ echo 'is not suited to your system, you should install IFS manually.'
 read -p 'Continue? [y/N]: ' yn
 yn=$(format_string "$yn")
 if [ "$yn" != 'y' ] && [ "$yn" != "yes" ]; then
-    echo 'Cancelled installation.'
+    echo 'Cancelled installation.' >&2
     exit
 fi
 echo ""
@@ -88,14 +99,14 @@ NODEVERSION="6.9.4"
 MYSQLVERSION="5.7.17"
 
 if [ "$DISTRO" != "ubuntu" ] && [ "$DISTRO" != "debian" ]; then
-    echo 'This installation script only supports Ubuntu/Debian.'
+    echo 'This installation script only supports Ubuntu/Debian.' >&2
     exit
 fi
 
 # install dependencies and prefer distro packaged node/npm if possible
 echo 'Installing core dependencies...'
 apt-get -y update
-apt-get -y install npm nodejs mysql-server redis-server nginx git libreoffice
+apt-get -y install redis-server nginx git libreoffice
 if [ ! -f /usr/bin/node ]; then
     ln -s /usr/bin/nodejs /usr/bin/node
 fi
@@ -103,13 +114,18 @@ echo ""
 
 # now check the packaged version of node, if it is too low, upgrade from
 # NodeSource repository
-node_v="$(apt-cache policy nodejs | grep Installed)"
+node_v="$(apt-cache policy nodejs | grep Candidate)"
 node_v=$(format_num "$node_v")
 dpkg --compare-versions "$node_v" lt "$NODEVERSION"
 v_is_low=$?
 
 if [ $v_is_low -eq 0 ]; then
     codename=$(set_repo "NodeSource" "nodejs")
+    codename=$(format_string "$codename")
+    if [[ $? -eq 1 ]]; then
+        echo "Cancelled installation." >&2
+        exit
+    fi
 
     echo "Removing old version..."
     apt-get remove nodejs npm
@@ -119,11 +135,14 @@ if [ $v_is_low -eq 0 ]; then
     wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
     echo "deb https://deb.nodesource.com/node_7.x $codename main" > \
          /etc/apt/sources.list.d/nodesource-"$codename".list
-    echo "deb-src https://deb.nodesource.com/node_7.x $codename main" >> \
+    echo "#deb-src https://deb.nodesource.com/node_7.x $codename main" >> \
         /etc/apt/sources.list.d/nodesource-"$codename".list
 
     apt-get update
     apt-get install nodejs # installs both nodejs and npm from the same package
+else # if the repository version is good
+    echo "Installing nodejs..."
+    apt-get install nodejs npm
 fi
 
 
@@ -132,13 +151,18 @@ echo 'Configuring MySQL...'
 
 # now check if the packaged version of mysql-server, if it is too low, upgrade
 # from repo.mysql.com
-mysql_v="$(apt-cache policy mysql-server | grep Installed)"
+mysql_v="$(apt-cache policy mysql-server | grep Candidate)"
 mysql_v=$(format_num "$mysql_v");
 dpkg --compare-versions "$mysql_v" lt "$MYSQLVERSION"
 v_is_low=$?
 
 if [ $v_is_low -eq 0 ]; then
     codename=$(set_repo "MySQL" "mysql-server")
+    codename=$(format_string "$codename")
+    if [[ $? -eq 1 ]]; then
+        echo "Cancelled Installation." >&2
+        exit
+    fi
 
     echo "Removing old version..."
     apt-get remove mysql-server
@@ -149,12 +173,15 @@ if [ $v_is_low -eq 0 ]; then
     # https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/
     gpg --keyserver pgp.mit.edu --recv-keys 5072E1F5
     gpg --export 5072E1F5 | apt-key add -
-    echo "deb https://repo.mysql.com/apt/$DISTRO $codename main" > \
-        /etc/apt/sources.list.d/mysql-server-"$codename".list
-    echo "#deb-src https://repo.mysql.com/apt/$DISTRO $codename main" >> \
-        /etc/apt/sources.list.d/mysql-server-"$codename".list
+    echo "deb https://repo.mysql.com/apt/$DISTRO $codename mysql-5.7" > \
+         /etc/apt/sources.list.d/mysql-server-"$codename".list
+    echo "#deb-src https://repo.mysql.com/apt/$DISTRO $codename mysql-5.7" >> \
+         /etc/apt/sources.list.d/mysql-server-"$codename".list
 
     apt-get update
+    apt-get install mysql-server
+else # if the repository version is good
+    echo "Installing mysql-server..."
     apt-get install mysql-server
 fi
 
@@ -181,11 +208,14 @@ ifs_sql_db=${ifs_sql_db:-$ifs_sql_db_def}
 echo "To create the user $ifs_sql_user and database $ifs_sql_db, authenticate as mySQL root."
 read -p 'Enter the mySQL root username, this is usually "root": ' sql_root
 
-mysql -ve "CREATE USER '$ifs_sql_user'@'localhost' IDENTIFIED BY '$ifs_sql_passwd';
+echo "Upgrading mysql... $sql_root user passwd required."
+mysql_upgrade -u $sql_root -p
+echo "Creating user $ifs_sqp_user... $sql_root user passwd required."
+mysql -ve "CREATE USER IF NOT EXISTS '$ifs_sql_user'@'localhost' IDENTIFIED BY '$ifs_sql_passwd';
            CREATE DATABASE IF NOT EXISTS $ifs_sql_db;
            GRANT ALL ON $ifs_sql_db.* TO '$ifs_sql_user'@'localhost';
            FLUSH PRIVILEGES;" \
-      -u root -p
+      -u $sql_root -p
 echo ""
 
 # configure nginx
@@ -252,12 +282,13 @@ echo ""
 # https://certbot.eff.org
 echo 'Installing SSL certificate...'
 
-if [ "$DISTRO" == "ubuntu" ] && (($(awk "BEGIN{if($VERSION >= 14.04) print 1}"))); then
+if [ "$DISTRO" == "ubuntu" ] && (($(compare_num "$VERION" ">=" "14.04"))); then
     add-apt-repository ppa:certbot/certbot
     apt-get update
     apt-get install certbot
-elif [ "$DISTRO" == "debian" ] && (($(awk "BEGIN{if(print $VERSION >= 8.0) print 1}"))); then
-    echo "deb http://ftp.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/backports.list
+elif [ "$DISTRO" == "debian" ] && (($(compare_num "$VERSION" ">=" "8.0"))); then
+    echo "deb http://ftp.debian.org/debian jessie-backports main" > \
+         /etc/apt/sources.list.d/backports.list
     apt-get update
     apt-get install certbot -t jessie-backports
 else
