@@ -20,16 +20,45 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Notes: this script relies on a system having lsb_release installed to
+#        determine distribution release information for your system.
+
 
 format_string() {
-    string=$(awk '{print tolower($0)}' <<< $1)
+    local string=$(awk '{print tolower($0)}' <<< $1)
     string=$(sed 's/\s+//g;s/[^a-z]//g' <<< $string)
-    echo $string
+    echo "$string"
 }
 format_num() {
-    num=$(sed 's/\s+//g;s/[a-zA-Z]//g' <<< $1)
-    echo $num
+    local num=$(sed 's/[^0-9\.]//g' <<< $1)
+    echo "$num"
 }
+
+set_repo() { # $1: repo description, $2: pkg name
+    echo "Warning: IFS requires a newer version of $2."
+    echo "Reinstalling a newer package version from $1 repositories."
+    read -p "Adding $1 signing key to keyring. Continue? [y/N] " yn
+
+    local yn=$(format_string "$yn")
+    if [ "$yn" != 'y' ] && [ "$yn" != 'yes' ]; then
+        echo 'Cancelled installation.'
+        exit
+    fi
+    echo ""
+
+    # note that sometimes apt repositories do not exist for the latest releases
+    # this gives the system administrator some freedom to choose the correct
+    # repository, however it will not be checked for validity
+    local codename="$CODENAME"
+    read -p "Using $1 repository for $codename. Is this correct? [y/N] " yn
+    yn=$(format_string "$yn")
+    if [ "$yn" != 'y' ] && [ "$yn" != 'yes' ]; then
+        read -p "Enter different codename (e.g. jessie): " codename
+    fi
+
+    echo "$codename"
+}
+
 
 set -e # exit script on any error
 
@@ -54,8 +83,9 @@ DISTRO=$(format_string "$(lsb_release -si 2>/dev/null)")
 VERSION=$(lsb_release -sr 2>/dev/null)
 CODENAME=$(lsb_release -sc 2>/dev/null)
 
-# set min nodejs version
+# set min dependency versions
 NODEVERSION="6.9.4"
+MYSQLVERSION="5.7.17"
 
 if [ "$DISTRO" != "ubuntu" ] && [ "$DISTRO" != "debian" ]; then
     echo 'This installation script only supports Ubuntu/Debian.'
@@ -73,54 +103,63 @@ echo ""
 
 # now check the packaged version of node, if it is too low, upgrade from
 # NodeSource repository
-node_v="$(nodejs -v)"
+node_v="$(apt-cache policy nodejs | grep Installed)"
 node_v=$(format_num "$node_v")
-dpkg --compare-versions "$node_v" "lt" "$NODEVERSION"
+dpkg --compare-versions "$node_v" lt "$NODEVERSION"
 v_is_low=$?
 
 if [ $v_is_low -eq 0 ]; then
-    echo 'Warning: IFS requires a newer version of nodejs.'
-    echo 'Reinstalling a newer package version from NodeSource repositories.'
-    read -p "Adding NodeSource signing key to keyring. Continue? [y/N] " yn
+    codename=$(set_repo "NodeSource" "nodejs")
 
-    yn=$(format_string "$yn")
-    if [ "$yn" != 'y' ] && [ "$yn" != 'yes' ]; then
-        echo 'Cancelled installation.'
-        exit
-    fi
-    echo ""
-
-    case "$CODENAME" in
-        precise) echo 'Using NodeSource repository for Precise Pangolin.';;
-        trusty) echo 'Using NodeSource repository for Trust Tahr.';;
-        xenial) echo 'Using NodeSource repository for Xenial Xerus.';;
-        yakkety) echo 'Using NodeSource repository for Yakkety Yak.';;
-        jessie) echo 'Using NodeSource repository for Debian Jessie.';;
-        *) echo "Distro version is not supported. See wiki for details."
-           exit
-        ;;
-    esac
     echo "Removing old version..."
     apt-get remove nodejs npm
 
-    echo "Installing NodeJS from NodeSource repository..."
+    echo "Installing nodejs from NodeSource repository..."
 
     wget -qO- https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
-    echo "deb https://deb.nodesource.com/node_7.x $CODENAME main" > \
-         /etc/apt/sources.list.d/nodesource.list
-    echo "deb-src https://deb.nodesource.com/node_7.x $CODENAME main" >> \
-        /etc/apt/sources.list.d/nodesource.list
+    echo "deb https://deb.nodesource.com/node_7.x $codename main" > \
+         /etc/apt/sources.list.d/nodesource-"$codename".list
+    echo "deb-src https://deb.nodesource.com/node_7.x $codename main" >> \
+        /etc/apt/sources.list.d/nodesource-"$codename".list
 
     apt-get update
-    # installs both nodejs and npm from the same package
-    apt-get install nodejs
+    apt-get install nodejs # installs both nodejs and npm from the same package
 fi
 
 
 # configure mySQL
-echo 'Configuring mySQL...'
+echo 'Configuring MySQL...'
+
+# now check if the packaged version of mysql-server, if it is too low, upgrade
+# from repo.mysql.com
+mysql_v="$(apt-cache policy mysql-server | grep Installed)"
+mysql_v=$(format_num "$mysql_v");
+dpkg --compare-versions "$mysql_v" lt "$MYSQLVERSION"
+v_is_low=$?
+
+if [ $v_is_low -eq 0 ]; then
+    codename=$(set_repo "MySQL" "mysql-server")
+
+    echo "Removing old version..."
+    apt-get remove mysql-server
+
+    echo "Installing mysql-server from MySQL repository..."
+
+    # manual apt repository configuration from
+    # https://dev.mysql.com/doc/mysql-apt-repo-quick-guide/en/
+    gpg --keyserver pgp.mit.edu --recv-keys 5072E1F5
+    gpg --export 5072E1F5 | apt-key add -
+    echo "deb https://repo.mysql.com/apt/$DISTRO $codename main" > \
+        /etc/apt/sources.list.d/mysql-server-"$codename".list
+    echo "#deb-src https://repo.mysql.com/apt/$DISTRO $codename main" >> \
+        /etc/apt/sources.list.d/mysql-server-"$codename".list
+
+    apt-get update
+    apt-get install mysql-server
+fi
+
 echo 'In a moment we will need to create a user and set up SQL tables for the IFS.'
-echo 'Please enter the username, passwd, and database IFS should use.'
+echo 'Please enter the username, password, and database IFS should use.'
 echo 'These should all be values that do not exist yet.'
 
 ifs_sql_user_def='ifs-admin'
@@ -230,7 +269,6 @@ else
         chmod 755 certbot-auto
         ln -s /opt/certbot/certbot-auto /usr/sbin/certbot
     fi
-    apt-get install certbot
 fi
 
 service nginx stop
