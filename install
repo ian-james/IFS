@@ -51,11 +51,14 @@ set_repo() { # $1: repo description, $2: pkg name
     # note that sometimes apt repositories do not exist for the latest releases
     # this gives the system administrator some freedom to choose the correct
     # repository, however it will not be checked for validity
+    # ex. the server is running ubuntu 17.04 zesty zapus, but nodesource does
+    #     not have an apt repository set up yet; the yakkety repo would likely
+    #     be compatible however
     local codename="$CODENAME"
     read -p "Using $1 repository for $codename. Is this correct? [y/N] " yn
     yn=$(format_string "$yn")
     if [ "$yn" != 'y' ] && [ "$yn" != 'yes' ]; then
-        read -p "Enter different codenamsuch ase.g. jessie): " codename
+        read -p "Enter different codename (e.g. jessie): " codename
     fi
 
     echo "$codename"
