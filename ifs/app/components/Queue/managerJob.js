@@ -65,8 +65,6 @@ function loadAllTools(job, done)
                         }
                     }
                 }
-                console.log("HERE");
-                console.log("P=", passed.length, "F=", failed.length );
                 var Err = passed.length == 0 && failed.length  > 0 ? new Error('No jobs successfully completed.') : null;
                 done( Err, { 'passed': passed, 'failed': failed } );
 

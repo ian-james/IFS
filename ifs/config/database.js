@@ -49,7 +49,7 @@ function query( queryStr, args, callback) {
         }
 
         connection.on('error', function(err) {
-          console.log("IN ERROR");
+          console.log("DB Connection error handled");
           handleConnectionError(err,connection);
         });
 
