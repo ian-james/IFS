@@ -28,7 +28,7 @@ module.exports = function (app, iosocket) {
     require(componentsPath + '/Survey/surveyRoutes')(app,iosocket);
 
     // Testing Routes, leave commented out in commits
-    //require(componentsPath + '/Survey/surveyBuildRoutes')(app);
+    require(componentsPath + '/Survey/surveyBuildRoutes')(app);
 
     //Feedback pages routes
     require(componentsPath + '/Feedback/feedbackRoutes')(app,iosocket);
