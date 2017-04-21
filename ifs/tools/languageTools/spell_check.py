@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3
 
 # This script uses Hunspell to process arbitrary text strings and provide
 # suggestions for spelling correction.

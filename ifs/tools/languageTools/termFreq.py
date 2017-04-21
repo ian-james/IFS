@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This script uses Hunspell to process arbitrary text strings and provide
 # suggestions for spelling correction.
@@ -80,13 +80,13 @@ def main(argv):
         elif opt in ('--ifsOff', '-i'):
             options['ifs'] = False
         else:
-            print 'Usage: Displays the most frequently occurring terms from a file'
-            print 'termFreq.py [-i IFS MODE] [-t TERM_LIMIT] [-l LANGUAGE] -f InputFile'
+            print( 'Usage: Displays the most frequently occurring terms from a file' )
+            print( 'termFreq.py [-i IFS MODE] [-t TERM_LIMIT] [-l LANGUAGE] -f InputFile' )
             sys.exit()
 
     if ifile != '':
         options['file'] = ifile
-        with open(ifile, 'r') as myfile:
+        with open(ifile, 'r', encoding="utf-8") as myfile:
             fileContents= myfile.read().replace('\n','')
 
         result = termFreq(fileContents, options )
