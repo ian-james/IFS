@@ -4,11 +4,14 @@ include ../../shared/UI_components/formSubmit.pug
 block content
     //link(rel="stylesheet" href="/prettyifyTheme/doxy.css")
     //link(rel="stylesheet" href="/prettyifyTheme/sons-of-obsidian.css")
-    link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
+    
     link(rel="stylesheet" href="components/Feedback/feedback.css")
+    link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
     link(rel="stylesheet" href="components/Feedback/errors.css")
     link(rel="stylesheet" href="components/Feedback/feedbackMini.css")
     script(src="/prettyify/run_prettify.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/components/InteractionEvents/feedbackEvents.js")
 
     div(ng-controller="feedbackCtrl")
         div.row
@@ -27,6 +30,7 @@ block content
                             div.row
                                 div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")
                                     if toolType == 'programming'
+                                        /// pre(class="markedTextArea2 prettyprint linenums") !{file.markedUp}
                                         pre(class="markedTextArea2 prettyprint") !{file.markedUp}
                                     else
                                         pre(class="markedTextArea2")

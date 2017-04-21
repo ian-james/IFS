@@ -1,5 +1,5 @@
 // Uploads the form data in an ajax request.
-$(function() {    
+$(function() {
     $("#uploadForm").submit( function(event ) {
         
         // Prevent submission from happening.

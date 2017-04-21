@@ -110,3 +110,5 @@
 .miniCard {
     padding:20;
 }
+
+.prettyprint ol.linenums > li { list-style-type: decimal; }
