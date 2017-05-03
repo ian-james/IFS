@@ -7,7 +7,7 @@
     "pretest": "node ./config/createDatabase.js",
     "test": "mocha --timeout 10000",
     "prestart": "node ./config/createDatabase.js",
-    "start": "nodemon --debug --config ./config/nodemon.json ./config/index.js"
+    "start": "nodemon --inspect --config ./config/nodemon.json ./config/index.js"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
     "browserify": "^13.3.0",
     "code-prettify": "^0.1.0",
     "command-line-args": "^4.0.1",
+    "connect-redis": "^3.2.0",
     "cookie-parser": "^1.4.3",
     "errorhandler": "^1.5.0",
     "express": "^4.14.0",
@@ -46,7 +47,7 @@
     "he": "^1.1.1",
     "i18n": "^0.8.3",
     "jquery": "^3.1.1",
-    "jquery-form-validator": "^2.3.54",
+    "jquery-validation": "^1.16.0",
     "jshint": "^2.9.4",
     "kue": "^0.11.5",
     "less": "^2.7.2",

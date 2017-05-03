@@ -18,7 +18,6 @@ function getQuestion( questionSurveyId, questionIndex, callback ) {
 function getQuestions( surveyId, callback ) {
     var req = "SELECT * FROM " + config.question_table + " WHERE surveyId = ?";
     db.query(req, questionData, function(err,data){
-        console.log("GET Question");
         callback(err,data);
     });
 }
@@ -26,7 +25,6 @@ function getQuestions( surveyId, callback ) {
 function insertQuestion( questionData, callback ) {
     var req = "INSERT INTO " + config.question_table + " (surveyId, language, origOrder, text, visualFile, type) values (?,?,?,?,?,?)";
     db.query(req, questionData, function(err,data){
-        console.log("INSERT Question");
         callback(err,data);
     });
 }

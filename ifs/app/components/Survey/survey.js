@@ -18,7 +18,6 @@ function getSurvey( surveyName, callback ) {
 
     var req = "SELECT * FROM " + config.survey_table + " WHERE surveyName = ?";
      db.query(req,surveyName, function(err,data){
-        console.log(err,data);
         callback(err,data);
     });
 }
@@ -27,7 +26,6 @@ function getSurveyId( surveyId, callback ) {
 
     var req = "SELECT * FROM " + config.survey_table + " WHERE id = ?";
     db.query(req,surveyId, function(err,data){
-        console.log(err,data);
         callback(err,data);
     });
 }
@@ -38,10 +36,8 @@ function getSurveyByTitle( surveyTitle, callback ) {
 }
 
 function insertSurvey( surveyData, callback ) {
-    console.log("Surve Table is ", config.survey_table);
     var req = "INSERT INTO " + config.survey_table + " (surveyName, authorNames, title, fullSurveyFile, totalQuestions) values (?,?,?,?,?)";
     db.query(req, surveyData, function(err,data){
-        console.log("INSERT TOP");
         callback(err,data);
     });
 }

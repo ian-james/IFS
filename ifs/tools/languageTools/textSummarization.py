@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This script uses Hunspell to process arbitrary text strings and provide
 # suggestions for spelling correction.
@@ -75,9 +75,14 @@ class FrequencySummarizer:
         maxCut = self.maxCut * maxFreq
         minCut = self.minCut * maxFreq
 
-        for w in freqDist.keys():
+        # Doesn't delete in iteration, likely newer python feature
+        toDelete = [];
+        for w,v in freqDist.items():
             if( freqDist[w] < minCut or freqDist[w] > maxCut ):
-                del freqDist[w]
+                toDelete.append(w)
+
+        for w in toDelete:
+            del freqDist[w]
 
         return freqDist
 
@@ -146,13 +151,13 @@ def main(argv):
         elif opt in ('--sentences', '-s'):
             options['sentences'] = arg
         else:
-            print 'Usage: Displays the sentences with the most commonly used words'
-            print 'textSummarization.py [-s SENTANCES TO INCLUDE] -f InputFile'
+            print('Usage: Displays the sentences with the most commonly used words')
+            print('textSummarization.py [-s SENTANCES TO INCLUDE] -f InputFile')
             sys.exit()
 
     if ifile != '':
         options['file'] = ifile;
-        with open(ifile, 'r') as myfile:
+        with open(ifile, 'r', encoding='utf-8') as myfile:
             fileContents= myfile.read()
 
         summarizer = FrequencySummarizer()

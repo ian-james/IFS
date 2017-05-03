@@ -30,9 +30,9 @@ function query( queryStr, args, callback) {
    //Logger.info("Database query started");
    pool.getConnection( function(err,connection) {
 
-        console.log("IN QUERY ");
+        //console.log("IN QUERY ");
         if( connection ){
-            console.log(" querSTr", queryStr, JSON.stringify(args));
+            //console.log(" querSTr", queryStr, JSON.stringify(args));
             connection.query( queryStr, args, function(err,data) {
                 if(err)
                   console.log("ERROR ", err);
@@ -43,13 +43,13 @@ function query( queryStr, args, callback) {
             });
         }
         else {
-          console.log("ERR IN QUERY");
+          //console.log("ERR IN QUERY");
           handleConnectionError(err);
           callback(err,null);
         }
 
         connection.on('error', function(err) {
-          console.log("IN ERROR");
+          console.log("DB Connection error handled");
           handleConnectionError(err,connection);
         });
 

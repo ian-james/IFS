@@ -21,7 +21,7 @@ var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFil
 
 var Errors = require(__components + "Errors/errors");
 
-module.exports = function (app) {
+module.exports = function (app, iosocket) {
 
     function setupSessionFiles( req, organizedResults)
     {
@@ -35,11 +35,15 @@ module.exports = function (app) {
     }
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
+
+        //console.log("***************************************");
+        //console.log(req.body);
+        //console.log(req.files);
          // Handle Zip files, text, docs and projects
         var uploadedFiles = Helpers.handleFileTypes( req, res );
 
         if( Errors.hasErr(uploadedFiles) )
-        {            
+        {
             var err = Errors.getErrMsg(uploadedFiles);
             //req.flash('errorMessage', err );
             res.status(500).send(JSON.stringify({"msg":err}));
@@ -51,11 +55,17 @@ module.exports = function (app) {
 
         // Create Job Requests
         var tools = ToolManager.createJobRequests( req.session.toolFile, userSelection );
-        var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});        
+        if(!tools || tools.length == 0)
+        {
+            var err = Errors.cErr();
+            res.status(500).send(JSON.stringify({"msg":"Please select a tool to evaluate your work."}));
+            return;
+        }
+        var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
         req.session.jobRequestFile = requestFile;
-        
+
         res.writeHead(202, { 'Content-Type': 'application/json' });
-        
+
         // Add the jobs to the queue, results are return in object passed:[], failed:[]
         manager.makeJob(tools).then( function( jobResults ) {
             FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {
@@ -70,6 +80,9 @@ module.exports = function (app) {
             //req.flash('errorMessage', "There was an error processing your files." );
             res.status(400).send(JSON.stringify({"msg":err}));
         }, function(prog) {
+
+            if(prog.tool == "Manager" && prog.msg == "Progress")
+                iosocket.emit("ifsProgress", prog);
             Logger.log("Manager's progress is ", prog.progress, "%");
         })
         .catch( function(err){

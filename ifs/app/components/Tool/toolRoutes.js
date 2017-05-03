@@ -13,10 +13,6 @@ module.exports = function (app) {
     app.get('/tool/data', function(req,res) {
         var supportedToolsFile = './tools/toolListProgramming.json';
 
-        console.log("**************************");
-        console.log(req.session.toolSelect);
-        console.log(req.session.toolFile);
-
         if( req.session.toolSelect  == "Writing") {
             supportedToolsFile  = './tools/toolList.json';
             req.session.toolSelect = 'Writing';
@@ -49,11 +45,6 @@ module.exports = function (app) {
      */
     app.get('/tool', function( req, res , next ) {
 
-
-        console.log("**************************");
-        console.log(req.session.toolSelect);
-        console.log(req.session.toolFile);
-        
         var userId = req.user.id || req.passport.user;
         SurveyManager.getUserSurveyProfile(userId, function(err,surveyPrefData) {
             //Array of preferences per survey.            

@@ -1,16 +1,24 @@
 
-<div class="miniCardContainer  row container-fluid">
-        <p> {{ selectedFeedback.type  }} :
-            <span class="{{ selectedFeedback.type  }}">
-                {{ selectedFeedback.target}}
-            </span>
+<div class="uk-card uk-card-default uk-card-hover uk-grid-small uk-grid-match" style="margin:0;">
+    <div class='uk-card-header'>
+        <h3 class="uk-card-title uk-text-center"> 
+            {{ selectedFeedback.type  }}
+        </h3>
+    </div>
+    <div class="uk-card-body uk-text-center miniCard">
+        <span class="{{ selectedFeedback.type }}">
+            {{ selectedFeedback.target}}
+        </span>
+        <div>
             &#8594;
-            <span class="suggestion">
-                {{ selectedFeedback.suggestions[0]}}
-            </span>
-
-             <a class="btn miniBtn" ng-click="test(); showSideBar = !showSideBar">
-                <span class="glyphicon glyphicon-expand"></span>
+        </div>
+        <span class="suggestion">
+            {{ selectedFeedback.suggestions[0]}}
+        </span>
+    </div>
+    <div class="uk-card-footer">
+            <a href="#" class="uk-button uk-button-text" uk-toggle="target: #popOver">Read More
+            <span class="glyphicon glyphicon-expand"></span>
             </a>
-        <p>
+    </div>
 </div>

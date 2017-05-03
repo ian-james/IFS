@@ -39,7 +39,7 @@ function loadAllTools(job, done)
     // Wait for everything to finish before emitting that parent is done.
     Q.allSettled(promises)
         .then( function(res) {
-                // return everything that passed and was fulfilled
+                // return everything that passed and was fulfilled                
                 var passed =[], failed = [];
 
                 for( var i = 0; i < res.length; i++ ) {
@@ -65,7 +65,7 @@ function loadAllTools(job, done)
                         }
                     }
                 }
-                var Err = passed.length > 0 ? null : new Error('No jobs successfully completed.');
+                var Err = passed.length == 0 && failed.length  > 0 ? new Error('No jobs successfully completed.') : null;
                 done( Err, { 'passed': passed, 'failed': failed } );
 
             }, function(reason) {
