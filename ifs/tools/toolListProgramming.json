@@ -1,21 +1,61 @@
 {
     "tools": [
          {
-            "displayName": "Compiler Tool", 
+            "displayName": "GCC", 
             "progName":"./tools/programmingTools/programmingParser.py",
             "progfullName": "./tools/programmingTools/programmingParser.py",
             "runType": "programming",
             "filesAllowed": "zipFile",
             "parseCmd": "",
-            "defaultArg": "",
+            "defaultArg": "-t gcc",
+            "fileArgs": "-d",
+            "options" :  [ 
+                {
+                    "displayName" : "Language Standard",
+                    "type" : "select",
+                    "name" : "gccLanguageStd",
+                    "values": [ "c89", "c99","c11"],
+                    "arg": "-s",
+                    "params":""
+                }
+            ]
+        },
+        {
+            "displayName": "Clang", 
+            "progName":"./tools/programmingTools/programmingParser.py",
+            "progfullName": "./tools/programmingTools/programmingParser.py",
+            "runType": "programming",
+            "filesAllowed": "zipFile",
+            "parseCmd": "",
+            "defaultArg": "-t clang",
+            "fileArgs": "-d",
+            "options" :  [ 
+                {
+                    "displayName" : "Language Standard",
+                    "type" : "select",
+                    "name" : "clangLanguageStd",
+                    "values": [ "c89", "c99","c11"],
+                    "arg": "-s",
+                    "params":""
+                }
+            ]
+        },
+        {
+            "displayName": "CppCheck", 
+            "progName":"./tools/programmingTools/programmingParser.py",
+            "progfullName": "./tools/programmingTools/programmingParser.py",
+            "runType": "programming",
+            "filesAllowed": "zipFile",
+            "parseCmd": "",
+            "defaultArg": "-t cppcheck",
             "fileArgs": "-d",
             "options" :  [ 
                 {
                     "displayName" : "Tool",
                     "type" : "select",
                     "name" : "toolSelection",
-                    "values": [ "cppcheck", "gcc", "clang"],
-                    "arg": "-t",
+                    "values": [ "all", "error", "warning", "style","performance"],
+                    "arg": "-e",
                     "params":""
                 }
             ]

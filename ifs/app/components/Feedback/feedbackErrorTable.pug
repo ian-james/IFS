@@ -1,4 +1,4 @@
-div(class="col-md-10 col-md-offset-1")
+div(class="col-md-10")
     h3 Generalized Feedback
     table
         table(class="table")
@@ -9,6 +9,7 @@ div(class="col-md-10 col-md-offset-1")
                         th Type
                         th Feedback
                         th File
+                        th Line
                         th Suggestion
                     tbody
                         each f in feedbackItems
@@ -17,6 +18,7 @@ div(class="col-md-10 col-md-offset-1")
                                     td #{f.displayName}
                                     td #{f.type}
                                     td #{f.feedback}
+                                    td ""
                                     td ""
                                     td #{f.suggestion}
                     tbody
@@ -27,6 +29,7 @@ div(class="col-md-10 col-md-offset-1")
                                     td #{f.type}
                                     td #{f.feedback}
                                     td #{f.filename}
+                                    td #{f.lineNum}
                                     td #{f.suggestion}
             else
                 tbody

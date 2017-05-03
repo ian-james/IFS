@@ -26,7 +26,7 @@ module.exports = function (app) {
         // Thus it's last in the allData variable, so it can be easily extracted.
         var surveyNames = ["CPSEPS","GSE","SEWS", "AGQ"];
         var surveyAuthors = ["Unknown", "Unknown","Unknown","Unknown"];
-        var surveyTitle = ["Computer Programming Self-Efficacy Survey", "General Self-Efficacy",
+        var surveyTitle = ["Computer Programming Self-Efficacy Survey", "General Self-Efficacy Survey",
                             "Self-Efficacy Writing Scale", "Achievement Goal Questionnaire"];
         var surveyFiles = [ "data/surveys/surveyCPSEPS.json", "data/surveys/surveyGSE.json",
                             "data/surveys/surveySEWS.json", "data/surveys/surveyAGQ.json" ];
