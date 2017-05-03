@@ -40,6 +40,17 @@
             ]
         },
         {
+            "displayName": "Prose", 
+            "progName":"./tools/languageTools/proseLinter.py",
+            "progfullName": "./tools/languageTools/proseLinter.py",
+            "runType": "writing",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" :  []
+        },
+        {
             "displayName": "Word Cloud",
             "progName":"./tools/languageTools/termFreq.py",
             "progfullName": "./tools/languageTools/termFreq.py",
