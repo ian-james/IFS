@@ -69,7 +69,6 @@ def main(argv):
 
     for opt, arg in opts:
         if opt in ('--terms', '-t'):
-           # open infile for reading
            options['termLimit'] = int(arg)
             
         elif opt in ('--file', '-f'):
@@ -80,13 +79,13 @@ def main(argv):
         elif opt in ('--ifsOff', '-i'):
             options['ifs'] = False
         else:
-            print( 'Usage: Displays the most frequently occurring terms from a file' )
-            print( 'termFreq.py [-i IFS MODE] [-t TERM_LIMIT] [-l LANGUAGE] -f InputFile' )
+            print('Usage: Displays the most frequently occurring terms from a file')
+            print('termFreq.py [-i IFS MODE] [-t TERM_LIMIT] [-l LANGUAGE] -f InputFile')
             sys.exit()
 
     if ifile != '':
         options['file'] = ifile
-        with open(ifile, 'r', encoding="utf-8") as myfile:
+        with open(ifile, 'r', encoding='utf-8') as myfile:
             fileContents= myfile.read().replace('\n','')
 
         result = termFreq(fileContents, options )

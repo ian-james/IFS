@@ -131,7 +131,6 @@ module.exports = {
         }
 
         if( survey ) {
-            console.log("Starting at survey.currentIndex", survey.currentIndex);
             var opts = SurveyBuilder.setDisplaySurveyOptions(null,null,[survey.currentIndex, survey.lastIndex]);
             callback(null,{"data":survey, options:opts});
         }

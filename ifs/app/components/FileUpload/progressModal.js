@@ -93,7 +93,6 @@ $(function() {
               // an alert could happen here too before even submitting. Not sure how UIKit would do that.        
 
             var errMessage = $(".errorMessage");
-            console.log(errMessage);
             errMessage.text("Please select at least one tool");
             errMessage.parent().show();
 

@@ -44,7 +44,6 @@ module.exports = function (app) {
      * @return {[type]}      [description]
      */
     app.get('/tool', function( req, res , next ) {
-        
         var userId = req.user.id || req.passport.user;
         SurveyManager.getUserSurveyProfile(userId, function(err,surveyPrefData) {
             //Array of preferences per survey.            
