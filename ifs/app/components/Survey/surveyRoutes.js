@@ -15,7 +15,9 @@ var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var SurveyResponse = require(__components + "Survey/surveyResponse");
 
-module.exports = function (app) {
+var event = require(__components + "InteractionEvents/Event.js" );
+
+module.exports = function (app, iosocket ) {
     /**
      * Method gets the full survey and displays it.
      * @param  {[type]} req  [description]
@@ -50,6 +52,7 @@ module.exports = function (app) {
      * @return {[type]}      [description]
      */
     app.post( '/survey/sentData', function(req,res) {
+
         try {
             var title = req.body['title'];
             var results = req.body['result'];
@@ -58,6 +61,7 @@ module.exports = function (app) {
                 if(err) {
                     Logger.error("ERRR< GETTING TITLE", err);
                 }
+
                 if(data && data.length > 0) {
                     var surveyId = data[0].id;
                     var userId = req.user.id || req.passport.user;
@@ -112,6 +116,14 @@ module.exports = function (app) {
                             }
                         );
 
+                        event.trackEvent(iosocket, event.surveyEvent(req.user.id, "addSection", {
+                             "surveyId": surveyId,
+                             "questionIds": qids,
+                             "questionsAnswered": qids.length,
+                             "lastQuestion": lastId,
+                             "surveyIndex": surveyIndex
+                        }));
+
                         // Set the Preferences qestion Index
                         SurveyPreferences.setQuestionCounter(surveyId,userId,lastId, function(err,qData) {
                             if(err)
@@ -131,7 +143,7 @@ module.exports = function (app) {
         }
         catch(e) {
             Logger.error("Could not save data from survey");
-            res.writeHead(400, { 'Content-Type': 'application/json' }); 
+            res.writeHead(400, { 'Content-Type': 'application/json' });
             res.json( Errors.cErr("Could not save data from survey") );
             res.end();
         }

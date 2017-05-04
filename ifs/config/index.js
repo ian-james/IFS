@@ -38,9 +38,8 @@ var mySession =  session({
                             ttl: redisOpts.ttl
                         }),
     saveUninitialized: true,
-    cookie: {maxAge:60*60*1000}
+    cookie: {maxAge:30*60*1000}
 });
-
 
 // Add middleware 
 require( "./addMiddleware.js") (app,mySession);
@@ -50,33 +49,42 @@ const server = app.listen( app.get('port') , function() {
     console.log( "Listening on port " + app.get('port'));
 });
 
+var event = require(__components + "InteractionEvents/Event.js" );
+
 const socket_io = require('socket.io')(server).
                 use(function(socket,next) {
-                    mySession(socket.request, {}, next);
-                }).
-                on('connection', (socket) => {
-                    // This is temporary to evaluate
-                    socket.on('disconnect',() =>{
-                        console.log("user disconnected");
-                    });
-
-                    socket.on('howdy', function(data) {
-                        console.log("Data:", data);
-                    });
-
-                    socket.on('disconnect',() =>{
-                        console.log("user disconnected");
-                    });
-
-                    socket.on('authorized',() =>{
-                        var id = socket.request.session.passport.user;
-                        console.log("YOUR ID IS ", id);
-                    });
-
-                    socket.emit('greet', {my:'something'});
+                    mySession(socket.request, socket.request.res, next);
                 });
 
-//require("./socketIoServer")(socket_io);
+socket_io.on('connection', (socket) => {
+
+                    if(!(socket.request.session.passport && socket.request.session.passport.user )) {
+                        socket.disconnect();
+                        return;
+                    }
+
+                    var id = socket.request.session.passport.user;
+
+                    socket.on('disconnect',() =>{
+                        console.log("user disconnected");
+                        // Will have to be tracked via DB.
+                        //event.trackEvent(socket, event.makeEvent(id, "disconnection", "Authorized",   {}, Date.now() ) );
+                    });
+
+                    socket.on('event', function(data) {
+                        console.log(data);
+                        //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
+                        socket.broadcast.emit('trackEvent', event.makeEvent( id, data.eventType, data.name, data.data, Date.now() ));
+                        //event.trackEvent( socket, event.makeEvent( id, data.eventType, data.name, data.data, Date.now() ) );
+                    });
+
+                    socket.on('trackEvent', function(data) {
+                        console.log("SERVER GOT TRACK EVENT", data);
+                    });
+
+                    console.log("emit event");
+                    event.trackEvent( socket, event.makeEvent( id,"connection", "Authorized", {}, Date.now() ) );
+                });
 
 // Add Developer Routes
 require("./addRoutes.js")(app, socket_io);

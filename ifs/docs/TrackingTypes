@@ -1,0 +1,33 @@
+Documentation for event tracking
+
+Events  UserId, Type, name, data, timestamp
+
+If you have all necessary information, you can 
+
+emit('trackEvent', .... ) to store your data
+
+Mostly for client side, if you don't have easy access to all information
+such as userId
+
+emit(event) which will add user information then call trackEvent.
+
+
+Submission Event 
+    Types:
+
+    Received -> body of the request
+    Failed -> Submission invalid reason
+    toolError -> Unable to process for some reason
+
+    Success -> Empty
+    Info -> Information about submission.
+
+    Feedback -> (tool, type)
+
+Viewing Event
+
+    File
+    Item
+    ItemFull
+    ToolInfo
+    Page

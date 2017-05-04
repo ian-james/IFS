@@ -1,20 +1,16 @@
-var _. require('lodash');
+var event = require(__components + "InteractionEvents/Event.js" );
 
-module.exports = function (app) { 
+module.exports = function (app, iosocket) { 
 
     /* This function will pre-catch all calls to the server 
        and keep track of basic usage stats.
     */
 
-    app.get('/', function(req,res, next) {
+    app.use(function(req,res, next) {
 
-        if( req.user && req.isAuthenticated())
+        if( req.user)
         {
-            var pickReq = ['originalUrl','baseUrl','path','params.name','body'];
-            var pickUser = ['username'];
-            var date = Date.now();
-            //TODO In Progress, just collecting informatioon about what we might want
-            // to observe per submission.
+            event.trackEvent( iosocket, event.viewEvent(req.user.id, "page", req.originalUrl));
         }
 
         next();

@@ -10,7 +10,7 @@ block content
             div(class="col-md-8 col-md-offset-2")
                 form(id="uploadForm" class='uk-form' enctype="multipart/form-data" action="/tool_upload" method="post")
                     div.uk-clearfix
-                        h2.uk-float-left Tool Settings
+                        h2.uk-float-left #{title}
                         span(uk-toggle="target: #toolSelection; animation: uk-animation-fade" uk-icon="icon: settings")#settingsToggle.uk-icon-button.uk-float-right
 
                     div(hidden)#toolSelection
@@ -31,3 +31,4 @@ block content
 
         script(src="components/Tool/toolController.js")
         script(src="components/Tool/tool-settings-panel.js")
+
