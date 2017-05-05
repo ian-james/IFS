@@ -10,20 +10,29 @@ var Survey = require( __components + "Survey/survey");
 module.exports = function (app) {
 
     /* Solution #2 for connecting Express and Angular makes a 2nd route called data to http req*/
-    app.get('/tool/data', function(req,res) {
-        var supportedToolsFile = './tools/toolListProgramming.json';
 
-        if( req.session.toolSelect  == "Writing") {
-            supportedToolsFile  = './tools/toolList.json';
-            req.session.toolSelect = 'Writing';
-            req.session.toolFile = supportedToolsFile;
+    function setupDefaultTool(req) {
+        //TODO: Move this to register and login pages.
+        if( req.session && !(req.session.toolSeelct && req.session.toolFile ) ) {
+            var supportedToolsFile = './tools/toolListProgramming.json';
+
+            if( req.session.toolSelect  == "Writing") {
+                supportedToolsFile  = './tools/toolList.json';
+                req.session.toolSelect = 'Writing';
+                req.session.toolFile = supportedToolsFile;
+            }
+            else {
+                req.session.toolSelect = 'Programming';
+                req.session.toolFile = supportedToolsFile;
+            }
         }
-        else {
-            req.session.toolSelect = 'Programming';
-            req.session.toolFile = supportedToolsFile;
-        }
-        
-        fs.readFile( supportedToolsFile, 'utf-8', function( err, data ) {
+    }
+
+    app.get('/tool/data', function(req,res) {
+
+        setupDefaultTool(req);
+
+        fs.readFile( req.session.toolFile, 'utf-8', function( err, data ) {
             if( err ) {
                 //Unable to get support tools file, larger problem here.
                 console.log(err);
@@ -44,6 +53,9 @@ module.exports = function (app) {
      * @return {[type]}      [description]
      */
     app.get('/tool', function( req, res , next ) {
+        
+        setupDefaultTool(req);
+
         var userId = req.user.id || req.passport.user;
         SurveyManager.getUserSurveyProfile(userId, function(err,surveyPrefData) {
             //Array of preferences per survey.            

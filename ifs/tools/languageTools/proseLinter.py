@@ -86,7 +86,7 @@ def decorateData( result, options ):
 
         j_array = "[]"
         if obj["replacements"] != None:
-            j_array = json.dumps(obj["replacements"])
+            j_array = json.dumps( [ obj["replacements"] ] )
         json_string += '"suggestions": ' + j_array + '\n'
         json_string += "}"
         if i != (len(jdata["errors"]) - 1):
