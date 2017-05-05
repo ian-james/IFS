@@ -34,20 +34,20 @@ function makeJob(  toolOptions, jobOpts )
 
     job.on('enqueue', function() {
         //console.log( job.data.name + " has been enKued");
-        deferred.notify({ msg:"Task Received:" + job.data.name, progress: 0});
+        deferred.notify({ msg:"Task Received", "tool": job.data.name, progress: 0});
     })
     .on('start', function() {
         //console.log(job.data.name + " has been Started");
-        deferred.notify({ msg:"Starting:" + job.data.name, progress: 0});
+        deferred.notify({ msg:"Starting", "tool":job.data.name, progress: 0});
     })
     .on('progress', function(progress, data) {
-        deferred.notify( { msg:"Starting:" + job.data.name, progress: progress} );
+        deferred.notify( { msg:"Progress", "tool": job.data.name, progress: progress} );
     })
     .on('complete', function(result) {
         //console.log("*****1COMPLETE JOB IS ", JSON.stringify(job.data));
         //console.log("*****2COMPLETE JOB IS ", JSON.stringify(job));
         //console.log("*****3COMPLETE JOB IS ", "=>", JSON.stringify(result));
-        deferred.notify({ msg:"Completed:" + job.data.name, progress: 100});
+        deferred.notify({ msg:"Completed", "tool": job.data.name, progress: 100});
         deferred.resolve({
             done: true,
             job: job.data,
@@ -56,7 +56,7 @@ function makeJob(  toolOptions, jobOpts )
         });
     })
     .on('failed', function( errorMessage ) {
-        Logger.error("Error job failed", job.name);
+        Logger.error("Error job failed", job);
         deferred.reject({
             done: true,
             job: job.data,

@@ -1,22 +1,29 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
-    link(rel="stylesheet" href="components/Login/login.css")
-    div(class="row" ng-controller="loginCtrl")
-        div(class="col-md-3 col-md-offset-4" class="login-form")
-            h1.text-center  Welcome to IFS!
-            form(id="loginFrm" name="login" method="post"  action="/login")
-                div.form-group
-                    span(class="glyphicon glyphicon-user")
-                    input( id="inputEmail"  type="email" "name"="username" class="form-control" placeholder="Enter Email" required )
-                div.form-group
-                    span(class="glyphicon glyphicon-lock")
-                    input( id="pwd"  type="password" "name"="password" class="form-control" placeholder="Enter passowrd" required)
-                span
-                    input( id="rememberMe" type="checkbox" name="checkbox")
-                    label( for="checkbox") Remember me
-                p.forgot
-                    a(href="#") Forgot password?
+    h1.uk-text-center  Welcome to IFS!
+    div(class="uk-card uk-card-default uk-card-body uk-align-center uk-width-1-2@s")
+        div(ng-controller="loginCtrl")
+            div(uk-alert).uk-alert-danger
                 p.errorMessage #{messages.errorMessage}
-                div.form-actions
-                    input(type="submit" value="Login")
+
+            script(src="/validate/jquery.validate.min.js")
+            script(src="shared/views/js/form-rules.js")
+
+            form(id="loginFrm" name="login" method="post" action="/login" uk-grid).uk-grid-small
+                div.uk-width-1-1
+                    input(type="email" name="username" placeholder="Enter email" required).uk-input#inputEmail
+                div.uk-width-1-1
+                    input(type="password" name="password" placeholder="Enter password" required).uk-input#pwd
+
+                div.uk-width-1-2
+                    .checkbox
+                    label
+                    input( id="rememberMe" type="checkbox" name="checkbox").uk-checkbox
+                    |   Remember me?
+
+                div.uk-width-1-2
+                    input(type="submit" value="Login").uk-button.uk-button-default.uk-align-right
+
+            div.forgot
+                a(href="#") Forgot password?

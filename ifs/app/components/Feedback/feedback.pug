@@ -4,41 +4,40 @@ include ../../shared/UI_components/formSubmit.pug
 block content
     //link(rel="stylesheet" href="/prettyifyTheme/doxy.css")
     //link(rel="stylesheet" href="/prettyifyTheme/sons-of-obsidian.css")
-    link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
+    
     link(rel="stylesheet" href="components/Feedback/feedback.css")
+    link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
     link(rel="stylesheet" href="components/Feedback/errors.css")
     link(rel="stylesheet" href="components/Feedback/feedbackMini.css")
     script(src="/prettyify/run_prettify.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/components/InteractionEvents/feedbackEvents.js")
 
     div(ng-controller="feedbackCtrl")
         div.row
-            div(class="col-md-11 col-md-offset-1")
-                form(id="toolSelectionFrm", action="/feedback" method="post")
-                    label(class="text-center") Please selected a tool: 
+            div(class="col-md-2 col-md-offset-5")
+                form(id="toolSelectionFrm" action="/feedback" method="post")
+                    label(class="text-center") View feedback from specific tool:
                     select(id="toolSelectorId" onchange="this.form.submit()" name="toolSelector")
                         option( selected= "All"==selectedTool ) All
                         each tool in toolsUsed
                             option( selected= tool.toolName==selectedTool) #{ tool.toolName }
         div.row
-            div(ng-class="showSideBar ? 'col-md-7 col-md-offset-1' : 'col-md-10 col-md-offset-1' ")
+            div(class="col-md-10 col-md-offset-1")
                 uib-tabset( active="active")
                     each file, findex in files
                         uib-tab( index=findex heading= file.originalname disable="{{tab.disabled}}")
                             div.row
                                 div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")
-                                    if toolType == 'writing'
-                                        pre(class="markedTextArea2") 
-                                            code !{file.markedUp}
-                                    else
+                                    if toolType == 'programming'
+                                        /// pre(class="markedTextArea2 prettyprint linenums") !{file.markedUp}
                                         pre(class="markedTextArea2 prettyprint") !{file.markedUp}
+                                    else
+                                        pre(class="markedTextArea2")
+                                            code !{file.markedUp}
 
-
-            div(ng-class="!showSideBar ? 'col-md-1' : 'col-md-3' ")
-                button(id="showLongFeedback" type="button" class="btnIcon" ng-show="!showSideBar" ng-click="showSideBar = !showSideBar")
-                    span(class="glyphicon glyphicon-list")
-
-            div(class="col-md-3 longFeedbackContainer ng-cloak" ng-show="showSideBar")
-                    include popover.html
+            div(class="uk-offcanvas-content")
+                include popover.html
 
         div.row.generalErrorsSection
             div(class="col-md-10 col-md-offset-1")
@@ -47,11 +46,14 @@ block content
                         uib-accordion-heading Feedback Table
                             <i class="glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
                         include feedbackErrorTable.pug
- 
+
 
         div.row.summarySection
             div(class="col-md-10 col-md-offset-1")
-                h4 Feedback Messsages #{feedbackItems.length}
+                if feedbackItems && feedbackItems.length > 0
+                    h4 Feedback Messsages #{feedbackItems.length}
+                else
+                    h4 No Errors where found
 
     script(src="components/Feedback/feedbackController.js")
 

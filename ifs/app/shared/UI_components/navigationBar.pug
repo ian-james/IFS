@@ -1,33 +1,25 @@
-<!-- <link rel="stylesheet" href="shared/UI_components/navigationBar.css"/> -->
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header"><a class="navbar-brand" href="/">IFS</a></div>
-    <ul class="nav navbar-nav">
-      <li><a href="/">Home</a></li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-   
-        <li ng-show="!isLoggedIn">
-            <a href="/register">
-                <span class="glyphicon glyphicon-user"> Sign-up </span>
-                
-            </a>
-        </li>
-        <li ng-show="!isLoggedIn">
-            <a href="/login">
-                <span class="glyphicon glyphicon-log-in"> Login </span>
-            </a>
-        </li>
-        <li ng-show="isLoggedIn">
-            <a href="/preferences">
-                <span class="glyphicon glyphicon-user"> Preferences </span>
-            </a>
-        </li>
-        <li ng-show="isLoggedIn">
-            <a href="/logout">
-                <span class="glyphicon glyphicon-log-in"> Logout </span>
-            </a>
-        </li>
-    </ul>
-  </div>
-</nav>
+nav(uk-navbar).uk-background-secondary.uk-margin
+    div.uk-navbar-left
+        a(href="/").uk-navbar-item.uk-logo.uk-light IFS
+    div.uk-navbar-right
+        ul.uk-navbar-nav
+            li
+                a(href="/")
+                    span(uk-icon="icon: home").uk-margin-small-right
+                    span(class="uk-visible@m") Home
+            li(ng-show="!isLoggedIn")
+                a(href="/register")
+                    span(uk-icon="icon: plus-circle").uk-margin-small-right
+                    | Sign-up
+            li(ng-show="!isLoggedIn")
+                a(href="/login")
+                    span(uk-icon="icon: sign-in").uk-margin-small-right
+                    | Login
+            li(ng-show="isLoggedIn")
+                a(href="/preferences")
+                    span(uk-icon="icon: cog").uk-margin-small-right
+                    span(class="uk-visible@m") Preferences
+            li(ng-show="isLoggedIn")
+                a(href="/logout")
+                    span(uk-icon="icon: sign-out").uk-margin-small-right
+                    span(class="uk-visible@m") Logout

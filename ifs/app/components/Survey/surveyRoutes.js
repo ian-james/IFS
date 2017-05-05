@@ -1,60 +1,151 @@
 var path = require('path');
+var fs = require('fs');
+var async = require('async');
+var _ = require('lodash');
+
+var db = require( __configs + 'database');
 var viewPath = path.join( __dirname + "/");
+var Logger = require( __configs + "loggingConfig");
+var Survey = require( __components + "/Survey/survey");
+var Question = require( __components + "Survey/question")
+var Errors = require(__components + "Errors/errors");
 
-module.exports = function (app) {
+var SurveyManager = require( __components + "Survey/surveyManager");
+var SurveyBuilder = require( __components + "Survey/surveyBuilder");
+var SurveyPreferences = require( __components + "Survey/surveyPreferences");
+var SurveyResponse = require(__components + "Survey/surveyResponse");
 
-// This just tests the i18n
-     app.get('/question', function(req,res) {
-        res.render(viewPath + "questionsLayout", { title: res.__('Question Screen'), test:res.__('Test Me')});
-    })
+var event = require(__components + "InteractionEvents/Event.js" );
 
-/* Expected Routes are just copied and pasted */
-
-    app.get('/addQuestion', function(req,res) {
-        res.render(viewPath + "createQuestion", { title: res.__('Create Survey')} );
+module.exports = function (app, iosocket ) {
+    /**
+     * Method gets the full survey and displays it.
+     * @param  {[type]} req  [description]
+     * @param  {[type]} res) {                   var surveyName [description]
+     * @return {[type]}      [description]
+     */
+    app.get('/survey:surveyName', function(req,res) {
+        var surveyName = req.params.surveyName;
+        Survey.getSurvey(surveyName, function(err,surveyData) {
+            if( err ) {
+                Logger.error(err);
+            }
+            else if(surveyData.length >= 1 && surveyData[0].surveyName == surveyName)
+            {
+                SurveyBuilder.loadSurveyFile( surveyData[0], function(err,data){
+                    var sqs = JSON.stringify(data);
+                    res.render(viewPath + "questionsLayout", { "title": 'Survey', "surveyQuestions": sqs} );
+                });
+            }
+            else {
+                // Could throw an error here indicating failure to reach survey
+                res.end();
+            }
+        });
     });
 
-    app.post('/addQuestion', function(req,res) {
-        //To stuff
-        //res.render(viewPath + "createSurvey", { title: res.__('Create Survey')} );
-    });
+    /**
+     * This function receives the survey data from SurveyJS and parses it and
+     * updates the databases with relevenat information.
+     * @param  {[type]} req  [description]
+     * @param  {[type]} res) {                   try {            var title [description]
+     * @return {[type]}      [description]
+     */
+    app.post( '/survey/sentData', function(req,res) {
 
-    app.get('/editQuestion', function(req,res) {
-        res.render(viewPath + "createQuestion", { title: res.__('Create Survey')} );
-    });
+        try {
+            var title = req.body['title'];
+            var results = req.body['result'];
 
-    app.post('/editQuestion', function(req,res) {
-        //To stuff
-        //res.render(viewPath + "createSurvey", { title: res.__('Create Survey')} );
-    });
+            Survey.getSurveyByTitle(title, function(err,data){
+                if(err) {
+                    Logger.error("ERRR< GETTING TITLE", err);
+                }
 
-    app.get('/deleteQuestion', function(req,res) {
-        res.render(viewPath + "createQuestion", { title: res.__('Create Survey')} );
-    });
+                if(data && data.length > 0) {
+                    var surveyId = data[0].id;
+                    var userId = req.user.id || req.passport.user;
 
-    app.post('/deleteQuestion', function(req,res) {
-        //To stuff
-        //res.render(viewPath + "createSurvey", { title: res.__('Create Survey')} );
-    });
+                    SurveyPreferences.getSurveyPreferences(surveyId,userId, function(err,surveyPrefData) {
 
-   
+                        if(err) {
+                            Logger.error("Unable to get Survey Preferences");
+                            return;
+                        }
 
-/***************************End Question section******************************************/
-    // Allow sellecting survey
-    app.get('/survey', function(req,res) {
-        //TODO
-    });
+                        var surveyIndex = surveyPrefData[0].currentSurveyIndex;
+                        var surveyLastIndex = surveyPrefData[0].lastIndex;
 
-    app.post('/survey', function(req,res) {
-        //TODO;
-    });
+                        var resultsToDb = [];
+                        var qids = [];
+                        var answers = [];
+                        var lastId = 0;
 
-    app.get('/addSurvey', function(req,res) {
-        res.render(viewPath + "createSurvey", { title: res.__('Create Survey')} );
-    });
+                        // For each Question section, get question key and value into a single array.
+                        // ex) sews1 value 1
+                        var ks = Object.keys(results);
 
-    app.post('/addSurvey', function(req,res) {
-        //To stuff
-        //res.render(viewPath + "createSurvey", { title: res.__('Create Survey')} );
+                        for( var i= 0; i < ks.length;i++) {
+                            var k = ks[i];
+                            qids = qids.concat( _.keys(results[k]) );
+                            answers = answers.concat( _.values(results[k]) );
+                        }
+
+                        // Get the index of the last question answered.
+                        for(var i = 0; i < qids.length && i < answers.length;i++) {
+
+                            var qid = qids[i];
+                            var m = qid.toString().match( /[a-zA-Z]*(\d*)/);
+                            if( m && m.length > 1 ) {
+                                lastId = Math.max(lastId, parseInt(m[1]) );
+                            }
+                        }
+
+                        // Organize results for survey response database.
+                        for(var i = 0; i < qids.length && i < answers.length;i++) {
+                            resultsToDb.push( [ surveyId, userId, qids[i], answers[i],surveyIndex ]);
+                        }
+
+                        // Insert the response to the survey into DB.
+                        async.map(resultsToDb,
+                            SurveyResponse.insertSurveyResponse,
+                            function(err,d){
+                                if(err) {
+                                    Logger.error("ERROR: inserting Survey Response");
+                                }
+                            }
+                        );
+
+                        event.trackEvent(iosocket, event.surveyEvent(req.user.id, "addSection", {
+                             "surveyId": surveyId,
+                             "questionIds": qids,
+                             "questionsAnswered": qids.length,
+                             "lastQuestion": lastId,
+                             "surveyIndex": surveyIndex
+                        }));
+
+                        // Set the Preferences qestion Index
+                        SurveyPreferences.setQuestionCounter(surveyId,userId,lastId, function(err,qData) {
+                            if(err)
+                                Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId );
+                        });
+
+                        // Check if survey was finished update counter, user survey preferences.
+                        if( lastId == surveyLastIndex ){
+                            SurveyPreferences.incrementSurveyIndex(surveyId,userId, function(err,qData) {
+                                if(err)
+                                    Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId );
+                            });
+                        }
+                    });
+                }
+            });
+        }
+        catch(e) {
+            Logger.error("Could not save data from survey");
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.json( Errors.cErr("Could not save data from survey") );
+            res.end();
+        }
     });
 }

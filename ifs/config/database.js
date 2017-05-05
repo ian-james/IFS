@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var config = require('./databaseConfig');
 var Logger = require( __configs + "loggingConfig");
+var Errors = require(__components + "Errors/errors");
 
 var pool = mysql.createPool( {
     connectionLimit: config.connectionLimit,
@@ -11,15 +12,14 @@ var pool = mysql.createPool( {
     debug: false
 });
 
+
+
 // Common functionality to handle releasing connection on error
 // throw error 
 function handleConnectionError( err,connection){
-    if(err) {
-        Logger.error("Error: Handling database connection error");
-		if( connection )
-        	connection.release();
-        throw err;
-    }
+    Errors.ifErrLog(err)
+    if( connection )
+      connection.release();
 }
 
 /* This is a generic query that get information from the database.clear
@@ -30,21 +30,27 @@ function query( queryStr, args, callback) {
    //Logger.info("Database query started");
    pool.getConnection( function(err,connection) {
 
-       handleConnectionError( err, connection );
-
+        //console.log("IN QUERY ");
         if( connection ){
-            //Logger.info("Db connection ok, make the call");
+            //console.log(" querSTr", queryStr, JSON.stringify(args));
             connection.query( queryStr, args, function(err,data) {
+                if(err)
+                  console.log("ERROR ", err);
+                Errors.ifErrLog(err);
+                
                 callback(err, data);
                 connection.release();
             });
         }
         else {
-          Logger.error("Error getting DB connection");
+          //console.log("ERR IN QUERY");
+          handleConnectionError(err);
+          callback(err,null);
         }
 
         connection.on('error', function(err) {
-           handleConnectionError(err,connection);
+          console.log("DB Connection error handled");
+          handleConnectionError(err,connection);
         });
 
    });

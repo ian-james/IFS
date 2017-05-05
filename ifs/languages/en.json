@@ -1,5 +1,6 @@
 {
-	"Test Me": "Hello I'm in English",
-	"Authentication Failed": "Authentication Failed",
-	"Authentication Success": "Authentication Success"
+    "Test Me": "Hello I'm in English",
+    "Authentication Failed": "Authentication Failed",
+    "Authentication Success": "Authentication Success",
+    "Question Screen": "Question Screen"
 }

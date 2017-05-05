@@ -2,7 +2,7 @@
     resize:none; width:100%; 
     white-space: pre-line;
     
-    font-size:2em;
+    font-size:1em;
     font-family: "Times New Roman", Times, serif;
     height:100%;
     min-height:100%;
@@ -94,3 +94,21 @@
 {
    margin-top:10px;
 }
+
+.additionInfoContainer {
+    padding:10px;
+}
+
+.descriptionTitle {
+    color:#909090;
+}
+
+.suggestionListItem {
+    color: black;
+}
+
+.miniCard {
+    padding:20;
+}
+
+.prettyprint ol.linenums > li { list-style-type: decimal; }
