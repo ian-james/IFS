@@ -11,24 +11,30 @@ module.exports = function( app ) {
         res.render( viewPath + "about", { title: 'About page', message:'ok'})
     })
 
-    // not sure how to get a unified toolList returned that is visible by Angular??
-    /*app.get('/about', function(req,res) {
+    // this is not working
+    app.get('/about', function(req,res) {
         var langToolsFile = './tools/toolList.json';
         var progToolsFile = './tools/toolListProgramming.json';
-        fsCallback(err, data) {
-            if( err ) {
+        fs.readFile(langToolsFile, 'utf-8', function(err, data) {
+            if (err) {
                 // unable to get supported tools file, larger problem here.
-                Logger.error(err);
+                console.log(err);
+            } else {
+                var langToolsObj = JSON.parse(data);
             }
-            else {
-                var jsonObj = JSON.parse(data);
-                return jsonObj['tools'];
+        });
+        fs.readFile(progToolsFile, 'utf-8', function(err, data) {
+            if (err) {
+                // unable to get supported tools file, larger problem here.
+                console.log(err);
+            } else {
+                var progToolsObj = JSON.parse(data);
             }
-        };
 
-        langToolsObj = fs.readFile(langToolsFile, 'utf-8', fsCallback);
-        console.log(langToolsObj);
+        });
 
-    });*/
+        console.log('where does this log to??');
+        res.json({'lang':langToolsObj, 'prog':progToolsObj})
+    })
 }
 
