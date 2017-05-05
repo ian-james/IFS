@@ -14,8 +14,10 @@ html
         block scripts
 
     body(ng-app="myApp")
-        include ../UI_components/appNavBar.pug
+        div.content
+            include ../UI_components/appNavBar.pug
 
-        block content
+            block content
 
-        block footer
+    footer
+        include ../UI_components/footer.pug
