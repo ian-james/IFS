@@ -7,21 +7,24 @@ module.exports = function (app, iosocket) {
     var componentsPath = __components
     var passport = require('passport');
 
-    // i18n Translation Routes
+    // i18n Translation routes
     require( path.join( __dirname, "/i18nRoutes"))(app);
 
     require( componentsPath + "/InteractionEvents/EventRoutes")(app,iosocket);
 
-    // Dev team Controllers
+    // Dev Team Controllers
     require(componentsPath + "/Login/loginRoutes")(app, passport);
 
-    //Tool Page and information
-    require(componentsPath + "/Tool/toolRoutes") (app, iosocket);
+    // Tool routes
+    require(componentsPath + "/Tool/toolRoutes")(app, iosocket);
+
+    // About page routes
+    require(componentsPath + "/About/aboutRoutes")(app);
 
     //File Upload routes
     require(componentsPath + "/FileUpload/fileUploadRoutes")(app,iosocket);
 
-    // Preferences page Routes
+    // Preferences page routes
     require(componentsPath + "/Preferences/preferencesRoutes")(app, iosocket);
 
     // Survey page routes

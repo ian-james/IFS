@@ -1,0 +1,49 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container
+        div#ifs.uk-section
+            h1 About IFS
+            p
+
+        // should this be hard coded? is it worth generating this from json?
+        div#team.uk-section
+            h1 Team
+            p These are some of the awesome people that made IFS happen.
+            div(uk-grid).uk-grid-small
+                div(class="uk-width-1-2@m").uk-card.uk-card-default
+                    div.uk-card-header
+                        div(uk-grid).uk-grid-small.uk-flex-middle
+                            div.uk-width-auto
+                                img(src="../../shared/img/jfraser.png").avatar
+                            div.uk-width-expand
+                                h3.uk-card-title.uk-margin-remove-bottom Jamey Fraser
+                                p.uk-text-meta.uk-margin-remove-top
+                                    a(href="https://github.com/ian-james" target="blank")
+                                        span(uk-icon="icon: github").uk-margin-small-right
+                                        span.uk-margin-right ian-james
+                    div.uk-card-body
+                        p Jamey Fraser is a graduate student at the University of Guelph.
+                div(class="uk-width-1-2@m").uk-card.uk-card-default
+                    div.uk-card-header
+                        div(uk-grid).uk-grid-small.uk-flex-middle
+                            div.uk-width-auto
+                                img(src="../../shared/img/krourke.png").avatar
+                            div.uk-width-expand
+                                h3.uk-card-title.uk-margin-remove-bottom Keefer Rourke
+                                p.uk-text-meta.uk-margin-remove-top
+                                    a(href="https://krourke.org" target="blank")
+                                        span(uk-icon="icon: world").uk-margin-small-right
+                                        span.uk-margin-right krourke.org
+                                    a(href="https://github.com/keeferrourke" target="blank")
+                                        span(uk-icon="icon: github").uk-margin-small-right
+                                        | keeferrourke
+                    div.uk-card-body
+                        p Keefer Rourke is an undergraduate student at the University of Guelph.
+
+
+        div#licenses.uk-section
+            h1#licenses Open Source Licences
+            p The Immediate Feedback System makes use of several other open source projects. Below is the licensing information attached to each of the core tools.
+
+            // display fancy variable list of tools (with license texts) somehow
