@@ -13,7 +13,7 @@ module.exports = function (app) {
 
     function setupDefaultTool(req) {
         //TODO: Move this to register and login pages.
-        if( req.session && !(req.session.toolSeelct && req.session.toolFile ) ) {
+        if( req.session && !(req.session.toolSelect && req.session.toolFile ) ) {
             var supportedToolsFile = './tools/toolListProgramming.json';
 
             if( req.session.toolSelect  == "Writing") {
