@@ -5,6 +5,11 @@ block content
         div#ifs.uk-section
             h1 About IFS
             p
+                | The 
+                em Immediate Feed Back System 
+                | (IFS) is a web application for student programming and essay writing assessment. Feedback is generated based on the output of a set of configurable 
+                a(href="#tools") tools 
+                | which students can choose to enable or disable as they choose.
 
         // should this be hard coded? is it worth generating this from json?
         div#team.uk-section
@@ -42,19 +47,46 @@ block content
                         p Keefer Rourke is an undergraduate student at the University of Guelph.
 
 
-        div#licenses.uk-section
-            h1#licenses Open Source Licences
-            p The Immediate Feedback System makes use of several other open source projects. Below is the licensing information attached to each of the core tools.
+        div#tools.uk-section
+            h1 IFS Tools
+            p The following are all the IFS core tools, with a brief discription of each.
 
             // display fancy variable list of tools (with license texts) somehow
             
             // Very minor changes here, I'm assuming if you could have seen the console output you would have fixed the easily enough
             // toolAbtList.prog and lang are the two variables and each has an array called tools.
             div(ng-controller="aboutCtrl")
-                h2 Programming Tools
-                    div(uk-grid).uk-grid-small
-                        div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.prog.tools").uk-card.uk-card-default
-                            div.uk-card-header
-                                h3.uk-card-title.uk-margin-remove-bottom {{ tool.displayName }}
+                div.uk-clearfix
+                    h2.uk-float-left Programming Tools
+                    span(uk-toggle="target: #progAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down")#progAbtToggle.uk-icon-button.uk-float-right
+                div(uk-grid hidden)#progAbt.uk-grid-small
+                    div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.prog.tools").uk-card.uk-card-default
+                        div.uk-card-header
+                            h3.uk-card-title.uk-margin-remove-bottom {{ tool.displayName }}
+                            p.uk-text-meta.uk-margin-remove-top Written by: {{ tool.author }}
+                        div.uk-card-body
+                            p.uk-text-meta {{ tool.description }}
+
+                br
+                div.uk-clearfix
+                    h2.uk-float-left Language Tools
+                    span(uk-toggle="target: #langAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down")#langAbtToggle.uk-icon-button.uk-float-right
+                div(uk-grid hidden)#langAbt.uk-grid-small
+                    div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.lang.tools").uk-card.uk-card-default
+                        div.uk-card-header
+                            h3.uk-card-title.uk-margin-remove-bottom {{ tool.displayName }}
+                            p.uk-text-meta.uk-margin-remove-top Written by: {{ tool.author }}
+                        div.uk-card-body
+                            p.uk-text-meta {{ tool.description }}
+
+                            
+
+        script(src="components/About/aboutController.js")
+        script(src="components/About/about-toggles.js")
+
+                                    
+        
+        // It might be nice to include this section, in order to properly attribute the dependencies that we are pulling in via npm
+        // div#licenses.uk-section
+        //    h1 Open Source Licenses
             
-            script(src="components/About/aboutController.js")

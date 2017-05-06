@@ -1,15 +1,18 @@
 {
     "tools": [
          {
-            "displayName": "GCC", 
-            "progName":"./tools/programmingTools/programmingParser.py",
-            "progfullName": "./tools/programmingTools/programmingParser.py",
+            "displayName": "GCC",
+            "description": "A Python script that checks C/C++ compilation with the GNU Compiler Collection",
+            "author": "Jamey Fraser",
+            "license": "./tools/programmingTools/c_tools/LICENSE.txt",
+            "progName": "./tools/programmingTools/c_tools/programmingParser.py",
+            "progfullName": "./tools/programmingTools/c_tools/programmingParser.py",
             "runType": "programming",
             "filesAllowed": "zipFile",
             "parseCmd": "",
             "defaultArg": "-t gcc",
             "fileArgs": "-d",
-            "options" :  [ 
+            "options" :  [
                 {
                     "displayName" : "Language Standard",
                     "type" : "select",
@@ -21,15 +24,17 @@
             ]
         },
         {
-            "displayName": "Clang", 
-            "progName":"./tools/programmingTools/programmingParser.py",
-            "progfullName": "./tools/programmingTools/programmingParser.py",
+            "displayName": "Clang",
+            "description": "A Python script that checks C/C++ compilation with the Clang compiler.",
+            "author": "Jamey Fraser",
+            "progName": "./tools/programmingTools/c_tools/programmingParser.py",
+            "progfullName": "./tools/programmingTools/c_tools/programmingParser.py",
             "runType": "programming",
             "filesAllowed": "zipFile",
             "parseCmd": "",
             "defaultArg": "-t clang",
             "fileArgs": "-d",
-            "options" :  [ 
+            "options" :  [
                 {
                     "displayName" : "Language Standard",
                     "type" : "select",
@@ -41,15 +46,17 @@
             ]
         },
         {
-            "displayName": "CppCheck", 
-            "progName":"./tools/programmingTools/programmingParser.py",
-            "progfullName": "./tools/programmingTools/programmingParser.py",
+            "displayName": "CppCheck",
+            "description": "A Python script that checks C/C++ syntax.",
+            "author": "Jamey Fraser",
+            "progName": "./tools/programmingTools/c_tools/programmingParser.py",
+            "progfullName": "./tools/programmingTools/c_tools/programmingParser.py",
             "runType": "programming",
             "filesAllowed": "zipFile",
             "parseCmd": "",
             "defaultArg": "-t cppcheck",
             "fileArgs": "-d",
-            "options" :  [ 
+            "options" :  [
                 {
                     "displayName" : "Tool",
                     "type" : "select",

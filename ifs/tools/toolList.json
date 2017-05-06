@@ -2,8 +2,11 @@
     "tools": [
          {
             "displayName": "Spell Checker",
-            "progName":"./tools/languageTools/spell_check.py",
-            "progfullName": "./tools/languageTools/spell_check.py",
+            "description": "A simple Python script that uses Hunspell to process text and provide suggestions for spelling correction.",
+            "author": "Keefer Rourke",
+            "license": "./tools/langaugeTools/spell_check/LICENSE.txt",
+            "progName": "./tools/languageTools/spell_check/spell_check.py",
+            "progfullName": "./tools/languageTools/spell_check/spell_check.py",
             "runType": "writing",
             "filesAllowed": "singleFile",
             "parseCmd": "",
@@ -12,7 +15,7 @@
             "options" :  [ {
                     "displayName": "Dictionary",
                     "type": "select",
-                    "values": [ "en_US", "en_CA","en_GB"],
+                    "values": ["en_US", "en_CA","en_GB"],
                     "name": "spellDictionary",
                     "arg": "-l",
                     "params":""
@@ -20,9 +23,12 @@
             ]
         },
         {
-            "displayName": "Grammar Checker", 
-            "progName":"./tools/languageTools/grammar.py",
-            "progfullName": "./tools/languageTools/grammar.py",
+            "displayName": "Grammar Checker",
+            "description": "A simple Python script that uses LanguageTool to process text and provide suggestions for grammar correction.",
+            "author": "Keefer Rourke",
+            "license": "./tools/langaugeTools/grammar/LICENSE.txt",
+            "progName": "./tools/languageTools/grammar/grammar.py",
+            "progfullName": "./tools/languageTools/grammar/grammar.py",
             "runType": "writing",
             "filesAllowed": "singleFile",
             "parseCmd": "",
@@ -31,7 +37,7 @@
             "options" :  [ {
                     "displayName": "Dictionary",
                     "type": "select",
-                    "values": [ "en-US", "en-CA","en-GB"],
+                    "values": ["en-US", "en-CA","en-GB"],
                     "name": "gramDictionary",
                     "arg": "-l",
                     "params":""
@@ -40,9 +46,12 @@
             ]
         },
         {
-            "displayName": "Prose", 
-            "progName":"./tools/languageTools/proseLinter.py",
-            "progfullName": "./tools/languageTools/proseLinter.py",
+            "displayName": "Prose",
+            "description": "",
+            "author": "Jamey Fraser",
+            "license": "./tools/langaugeTools/prose/LICENSE.txt",
+            "progName": "./tools/languageTools/prose/proseLinter.py",
+            "progfullName": "./tools/languageTools/prose/proseLinter.py",
             "runType": "writing",
             "filesAllowed": "singleFile",
             "parseCmd": "",
@@ -52,17 +61,20 @@
         },
         {
             "displayName": "Word Cloud",
-            "progName":"./tools/languageTools/termFreq.py",
-            "progfullName": "./tools/languageTools/termFreq.py",
+            "description": "",
+            "author": "Jamey Fraser",
+            "license": "./tools/langaugeTools/word_cloud/LICENSE.txt",
+            "progName": "./tools/languageTools/word_cloud/termFreq.py",
+            "progfullName": "./tools/languageTools/word_cloud/termFreq.py",
             "runType": "visual",
             "filesAllowed": "singleFile",
             "parseCmd": "",
             "defaultArg": "",
             "fileArgs": "-f",
             "options" :  [ {
-                    "displayName": "Word In Cloud",
+                    "displayName": "Words In Cloud",
                     "type": "select",
-                    "values": [5, 10,20],
+                    "values": [5,10,20],
                     "name": "wordCloud",
                     "arg": "-t",
                     "params":""
@@ -71,8 +83,11 @@
         },
         {
             "displayName": "Text Summary",
-            "progName":"./tools/languageTools/textSummarization.py",
-            "progfullName": "./tools/languageTools/textSummarization.py",
+            "description": "",
+            "author": "Jamey Fraser",
+            "license": "./tools/langaugeTools/text_summary/LICENSE.txt",
+            "progName":"./tools/languageTools/text_summary/textSummarization.py",
+            "progfullName": "./tools/languageTools/text_summary/textSummarization.py",
             "runType": "visual",
             "parseCmd": "",
             "defaultArg": "",
