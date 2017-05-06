@@ -48,12 +48,13 @@ block content
 
             // display fancy variable list of tools (with license texts) somehow
             
+            // Very minor changes here, I'm assuming if you could have seen the console output you would have fixed the easily enough
+            // toolAbtList.prog and lang are the two variables and each has an array called tools.
             div(ng-controller="aboutCtrl")
                 h2 Programming Tools
                     div(uk-grid).uk-grid-small
-                        // this does not render!
-                        div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.progList").uk-card.uk-card-default
+                        div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.prog.tools").uk-card.uk-card-default
                             div.uk-card-header
-                                h3.uk-card-title.uk-margin-remove-bottom {{ tool.progName }}
+                                h3.uk-card-title.uk-margin-remove-bottom {{ tool.displayName }}
             
             script(src="components/About/aboutController.js")
