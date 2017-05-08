@@ -92,15 +92,7 @@ block content
                     span(uk-toggle="target: #progAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down")#progAbtToggle.uk-icon-button.uk-float-right
                 div(uk-grid hidden)#progAbt.uk-grid-small
                     div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.prog.tools").uk-card.uk-card-default
-                        div.uk-card-header
-                            h3.uk-card-title.uk-margin-remove-bottom {{ tool.displayName }}
-                            div.uk-clearfix
-                                div.uk-float-left
-                                    p.uk-text-meta.uk-margin-remove-top {{ tool.copyright}} {{ tool.author }}
-                                div.uk-float-right
-                                    p.uk-text-meta {{ tool.license }}
-                        div.uk-card-body
-                            p.uk-text-meta {{ tool.description }}
+                        include ./tool-card.pug
 
                 br
                 div.uk-clearfix
@@ -108,15 +100,7 @@ block content
                     span(uk-toggle="target: #langAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down")#langAbtToggle.uk-icon-button.uk-float-right
                 div(uk-grid hidden)#langAbt.uk-grid-small
                     div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.lang.tools").uk-card.uk-card-default
-                        div.uk-card-header
-                            h3.uk-card-title.uk-margin-remove-bottom {{ tool.displayName }}
-                            div.uk-clearfix
-                                div.uk-float-left
-                                    span.uk-text-meta.uk-margin-remove-top {{ tool.copyright}} {{ tool.author }}
-                                div.uk-float-right
-                                    span.uk-text-meta {{ tool.license }}
-                        div.uk-card-body
-                            p.uk-text-meta {{ tool.description }}
+                        include ./tool-card.pug
 
         script(src="components/About/aboutController.js")
         script(src="components/About/about-toggles.js")
