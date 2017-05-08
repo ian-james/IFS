@@ -11,7 +11,6 @@ module.exports = function( app ) {
         res.render( viewPath + "about", { title: 'About page', message:'ok'})
     });
 
-    // this is not working
     app.get('/about/data', function(req,res) {
         var langToolsFile = './tools/toolList.json';
         var progToolsFile = './tools/toolListProgramming.json';
