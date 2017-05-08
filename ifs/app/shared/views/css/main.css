@@ -4,6 +4,23 @@
  */
 
 /***
+ * Flexbox sticky footer
+ ***/
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+/***
  * CSS toggle switch, since UI Kit does not include this UI element
  * Based on UI Kit styles; usage requires a checkbox element with a wrapper
  * label that has the .switch-wrapper class; this relies on the fact that
@@ -66,3 +83,11 @@ input:checked + .switch:before {
   border-radius: 50%;
 }
 
+/***
+ * Rounded avatar images
+ ***/
+img.avatar {
+    height: 80;
+    width: 80;
+    border-radius: 50%;
+}

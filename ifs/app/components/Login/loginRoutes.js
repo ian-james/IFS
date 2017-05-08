@@ -14,7 +14,7 @@ var _ = require('lodash');
 module.exports = function( app, passport ) {
 
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/about', '/user/data'];
+        var nonSecurePaths = ['/', '/login', '/register', '/about', '/about/data', '/user/data'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
 
         if(result >= 0 || (req.user) ) {
