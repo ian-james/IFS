@@ -8,12 +8,12 @@ var Feedback = require('./feedbackSetup');
 var Logger = require( __configs + "loggingConfig");
 var _ = require('lodash');
 
-module.exports = function( app ) { 
+module.exports = function( app ) {
 
 
 /**************************************************************  Values Controller *************************/
     /**
-     * Read the feedback information file 
+     * Read the feedback information file
      *  and process and highlight
      * @param  {[type]} req [description]
      * @param  {[type]} res [description]
@@ -28,7 +28,7 @@ module.exports = function( app ) {
         var result = _.assign(page,feedback);
         res.render( viewPath + "feedback", result );
     }
-  
+
     app.get('/feedback', function(req,res ){
        showFeedback(req,res);
     });

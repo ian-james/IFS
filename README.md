@@ -69,5 +69,7 @@ In your browser go to localhost:3000/ to see the web interface
  * LanguageTool
    + language-check &rarr; `sudo -H pip install 3to2 && sudo -H pip install
                         language-check`
+ * ProseLint
+   + ProseLint &rarr; `sudo pip3 install proselint
 
 
