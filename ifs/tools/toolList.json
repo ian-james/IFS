@@ -47,7 +47,7 @@
         },
         {
             "displayName": "Prose",
-            "description": "",
+            "description": "A Python script that uses proselint to process text and provide suggestions for strengthening language and tone.",
             "author": "Jamey Fraser",
             "license": "./tools/langaugeTools/prose/LICENSE.txt",
             "progName": "./tools/languageTools/prose/proseLinter.py",
@@ -61,7 +61,7 @@
         },
         {
             "displayName": "Word Cloud",
-            "description": "",
+            "description": "A Python script that calculates word frequency and organizes results for wordcloud2.js.",
             "author": "Jamey Fraser",
             "license": "./tools/langaugeTools/word_cloud/LICENSE.txt",
             "progName": "./tools/languageTools/word_cloud/termFreq.py",
@@ -83,7 +83,7 @@
         },
         {
             "displayName": "Text Summary",
-            "description": "",
+            "description": "A Python script that identifies the most prevalent sentences in your writing based on term frequency.",
             "author": "Jamey Fraser",
             "license": "./tools/langaugeTools/text_summary/LICENSE.txt",
             "progName":"./tools/languageTools/text_summary/textSummarization.py",

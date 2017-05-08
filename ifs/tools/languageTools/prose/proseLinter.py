@@ -58,10 +58,10 @@ def decorateData( result, options ):
         print("FAILED")
 
     filename = os.path.basename(options['file'])
-  
+
     content = ""
     with open(options['file'], 'r') as outFile:
-        content = outFile.read()    
+        content = outFile.read()
 
     jdata = jdata["data"]
 
@@ -101,18 +101,18 @@ def decorateData( result, options ):
 def getProcessInfo( cmd, outFile, errorFile ):
     # Executing an external command, to retrieve the output
     # This funciton is supported by several answers on StackOverflow
-    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308     
+    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
 
     with open(outFile, 'w') as fout:
         with open(errorFile,'w') as ferr:
             args = shlex.split(cmd)
-        
+
             # Note this requires python 3.3
             proc = Popen(args, stdout=fout, stderr=ferr)
 
             out, err = proc.communicate()
             exitcode = proc.returncode
-            
+
             return exitcode, out, err
 
 
@@ -121,10 +121,10 @@ def getProcessInfo( cmd, outFile, errorFile ):
 def main(argv):
 
     ifile = ''
- 
-    options = { 'tool': 'proselint', 
+
+    options = { 'tool': 'proselint',
                 'ifs': True,
-                'outFile':'stdout.txt', 
+                'outFile':'stdout.txt',
                 'outErrFile':'stderr.txt',
                 'arg': '-j'
               }
@@ -139,10 +139,10 @@ def main(argv):
         elif opt in ('--ifsOff', '-i'):
             options['ifs'] = False
         elif opt in ('--language', '-l'):
-            options['language'] = arg        
+            options['language'] = arg
         elif opt in ('file', '-f'):
             ifile = arg
-            if not (os.path.isfile(ifile)): 
+            if not (os.path.isfile(ifile)):
                 sys.stderr.write( 'Error. Directory ' + ifile + ' does not exist.\n' )
                 sys.exit()
         else:
@@ -157,13 +157,13 @@ def main(argv):
 
         if( cmd ):
             try:
-                outFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outFile']) )             
-                outErrFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outErrFile']) )                
+                outFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outFile']) )
+                outErrFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outErrFile']) )
                 code, out, err = getProcessInfo( cmd, outFile, outErrFile )
 
                 with open(outFile, 'r') as outFile:
-                    result = outFile.read()                   
-                   
+                    result = outFile.read()
+
                     if( result and options['ifs'] ):
                         result = decorateData( result, options )
                     print( result )
