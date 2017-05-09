@@ -42,12 +42,11 @@ import glob
 # "severity": "warning",
 # "start": 92}
 
-def createCmd( options):
+def createCmd( options ):
 
     cmdStr = ""
     cmdStr = " ".join( [ options['tool'], options['arg'], options['file']])
     return cmdStr
-
 
 def decorateData( result, options ):
 
@@ -58,10 +57,10 @@ def decorateData( result, options ):
         print("FAILED")
 
     filename = os.path.basename(options['file'])
-  
+
     content = ""
-    with open(options['file'], 'r') as outFile:
-        content = outFile.read()    
+    with open(options['file'], 'r', encoding='utf-8') as outFile:
+        content = outFile.read()
 
     jdata = jdata["data"]
 
@@ -101,53 +100,46 @@ def decorateData( result, options ):
 def getProcessInfo( cmd, outFile, errorFile ):
     # Executing an external command, to retrieve the output
     # This funciton is supported by several answers on StackOverflow
-    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308     
+    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
 
-    with open(outFile, 'w') as fout:
-        with open(errorFile,'w') as ferr:
+    with open(outFile, 'w', encoding='utf-8') as fout:
+        with open(errorFile,'w', encoding='utf-8') as ferr:
             args = shlex.split(cmd)
-        
+
             # Note this requires python 3.3
             proc = Popen(args, stdout=fout, stderr=ferr)
 
             out, err = proc.communicate()
             exitcode = proc.returncode
-            
+
             return exitcode, out, err
-
-
 
 # main program that takes arguments
 def main(argv):
 
     ifile = ''
- 
-    options = { 'tool': 'proselint', 
+
+    options = { 'tool': 'proselint',
                 'ifs': True,
-                'outFile':'stdout.txt', 
+                'outFile':'stdout.txt',
                 'outErrFile':'stderr.txt',
                 'arg': '-j'
               }
 
     # define command line arguments and check if the script call is validq
-    opts, args = getopt.getopt(argv,'t:i:l:f:h',
-        ['tool=','ifsOff=','language=','file=','help'])
+    opts, args = getopt.getopt(argv,'l:f:h', ['language=','file=','help'])
 
     for opt, arg in opts:
-        if opt in ('--tool', '-t'):
-            options['tool'] = arg
-        elif opt in ('--ifsOff', '-i'):
-            options['ifs'] = False
-        elif opt in ('--language', '-l'):
-            options['language'] = arg        
+        if opt in ('--language', '-l'):
+            options['language'] = arg
         elif opt in ('file', '-f'):
             ifile = arg
-            if not (os.path.isfile(ifile)): 
-                sys.stderr.write( 'Error. Directory ' + ifile + ' does not exist.\n' )
+            if not (os.path.isfile(ifile)):
+                sys.stderr.write( 'Error: File ' + ifile + ' does not exist.\n' )
                 sys.exit()
         else:
-            print( 'Usage: Process prose files and out error to JSON format')
-            print( 'proseLinter.py [-t tool] [-i IFS MODE] [-l LANGUAGE] -d InputDirectory')
+            print( 'Usage: Process files looking for common errors and inconsistencies.')
+            print( 'proseLinter.py [-l LANGUAGE] -f file')
             sys.exit()
 
     if ifile != '':
@@ -157,22 +149,22 @@ def main(argv):
 
         if( cmd ):
             try:
-                outFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outFile']) )             
-                outErrFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outErrFile']) )                
+                outFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outFile']) )
+                outErrFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outErrFile']) )
                 code, out, err = getProcessInfo( cmd, outFile, outErrFile )
 
-                with open(outFile, 'r') as outFile:
-                    result = outFile.read()                   
-                   
+                with open(outFile, 'r', encoding='utf-8') as outFile:
+                    result = outFile.read()
+
                     if( result and options['ifs'] ):
                         result = decorateData( result, options )
                     print( result )
             except:
-                sys.stderr.write("Unable to successfully retrieve assessment information")
+                sys.stderr.write("Unable to successfully retrieve assessment information.\n")
         else:
             sys.stderr.write( 'Invalid tool selected, please select a valid tool name.\n')
     else:
-        sys.stderr.write( 'Please a project directory to evaluate.\n')
+        sys.stderr.write( 'Please provide a text file for evaluation.\n')
         sys.exit()
 
 if __name__ == '__main__':
