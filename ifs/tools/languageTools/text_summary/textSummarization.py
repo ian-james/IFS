@@ -25,7 +25,7 @@
 # Optimiziationa and Customization performed to suit our own academic needs.
 #
 #
-# Required is nltk punckt and stopwords
+# Required is nltk punkt and stopwords
 #
 # This file reads in a text file and summarizes the text.
 # It does this by selecting sentences with the high total score based on
