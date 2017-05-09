@@ -61,7 +61,7 @@ module.exports = function (app) {
             //Array of preferences per survey.            
             SurveyManager.setupSurvey( surveyPrefData, function(err, selectedSurveyData) {
                 if(err || !selectedSurveyData) {
-                    res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":[] } );
+                    res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
                 }
                 else {
                     var opts = Constants.surveyDisplayDefaultOptions();

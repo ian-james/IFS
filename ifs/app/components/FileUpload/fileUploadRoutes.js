@@ -58,7 +58,7 @@ module.exports = function (app, iosocket) {
 
     function emitJobOptions( req, iosocket, formData ) {
         var options =  _.pickBy(formData, function(value,key){
-            return !(_.startsWith(key,'tool-') /*|| _.startsWith(key,'enabled-')*/) 
+            return !(_.startsWith(key,'tool-') /*|| _.startsWith(key,'enabled-')*/)
         });
 
         event.trackEvent( iosocket, event.submissionEvent(req.user.id, "info-options", options));
@@ -72,9 +72,8 @@ module.exports = function (app, iosocket) {
      * @return {[type]}               [description]
      */
     function emitFeedbackResults( req, iosocket, feedbackItems ){
-        _.forEach(feedbackItems, function(fi){
-            console.log("FEEDBACK FOR ", fi.displayName);
-            event.trackEvent( iosocket, event.submissionEvent(req.user.id ,"feedback", { 
+        _.forEach(feedbackItems, function(fi ){
+            event.trackEvent( iosocket, event.submissionEvent(req.user.id ,"feedback", {
                 "displayName": fi.displayName,
                 "type": fi.type ,
                 "runType": fi.runType
@@ -120,7 +119,7 @@ module.exports = function (app, iosocket) {
 
         // Add the jobs to the queue, results are return in object passed:[], failed:[]
         manager.makeJob(tools).then( function( jobResults ) {
-           
+
             emitFeedbackResults(req, iosocket, jobResults.result.passed);
 
             FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {

@@ -91,6 +91,19 @@ try  {
             PRIMARY KEY(id), \
             FOREIGN Key (surveyId) REFERENCES " + config.database + "." +config.survey_table + "(id) \
         )");
+
+        Logger.info("Create the Table:", config.users_interation_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.users_interation_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            eventType VARCHAR(40) NOT NULL, \
+            name VARCHAR(40) NOT NULL, \
+            data TEXT NOT NULL, \
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_interation_table + "(id) \
+        )");
+
         Logger.info("Success: Database created.");
 
     }

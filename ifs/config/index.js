@@ -72,9 +72,9 @@ socket_io.on('connection', (socket) => {
                     });
 
                     socket.on('event', function(data) {
-                        console.log(data);
+                        //console.log(data);
                         //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
-                        socket.broadcast.emit('trackEvent', event.makeEvent( id, data.eventType, data.name, data.data, Date.now() ));
+                        event.btrackEvent(socket, event.makeEvent( id, data.eventType, data.name, data.data, Date.now()) );
                         //event.trackEvent( socket, event.makeEvent( id, data.eventType, data.name, data.data, Date.now() ) );
                     });
 
@@ -82,7 +82,7 @@ socket_io.on('connection', (socket) => {
                         console.log("SERVER GOT TRACK EVENT", data);
                     });
 
-                    console.log("emit event");
+                    //console.log("emit event");
                     event.trackEvent( socket, event.makeEvent( id,"connection", "Authorized", {}, Date.now() ) );
                 });
 
