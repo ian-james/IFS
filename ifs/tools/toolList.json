@@ -51,7 +51,7 @@
         },
         {
             "displayName": "Prose",
-            "description": "A Python script that uses proselint to process text and provide suggestions for strengthening language and tone.",
+            "description": "A Python script that uses proselint to process text and provides suggestions for strengthening language and tone.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
