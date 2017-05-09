@@ -6,15 +6,10 @@ html
         block head
             include headers.pug
             script(src="shared/modules/angularApp.js")
-            //script(src="shared/js/jquery-3.1.1.min.js")
-            //script(src="shared/js/uikit.min.js" defer)
-            //script(src="shared/js/uikit-icons.min.js" defer)
-            script(src="components/Login/loginController.js")
-            //link(rel="stylesheet" href="shared/css/uikit.min.css")
         block scripts
 
     body(ng-app="myApp")
-        include ../UI_components/appNavBar.pug
+        include ../UI_components/navigationBar.pug
 
         block content
 

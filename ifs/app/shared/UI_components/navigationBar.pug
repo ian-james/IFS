@@ -7,19 +7,21 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                 a(href="/")
                     span(uk-icon="icon: home").uk-margin-small-right
                     span(class="uk-visible@m") Home
-            li(ng-show="!isLoggedIn")
-                a(href="/register")
-                    span(uk-icon="icon: plus-circle").uk-margin-small-right
-                    | Sign-up
-            li(ng-show="!isLoggedIn")
-                a(href="/login")
-                    span(uk-icon="icon: sign-in").uk-margin-small-right
-                    | Login
-            li(ng-show="isLoggedIn")
-                a(href="/preferences")
-                    span(uk-icon="icon: cog").uk-margin-small-right
-                    span(class="uk-visible@m") Preferences
-            li(ng-show="isLoggedIn")
-                a(href="/logout")
-                    span(uk-icon="icon: sign-out").uk-margin-small-right
-                    span(class="uk-visible@m") Logout
+            if !user 
+                li
+                    a(href="/register")
+                        span(uk-icon="icon: plus-circle").uk-margin-small-right
+                        | Sign-up
+                li
+                    a(href="/login")
+                        span(uk-icon="icon: sign-in").uk-margin-small-right
+                        | Login
+            else
+                li
+                    a(href="/preferences")
+                        span(uk-icon="icon: cog").uk-margin-small-right
+                        span(class="uk-visible@m") Preferences
+                li
+                    a(href="/logout")
+                        span(uk-icon="icon: sign-out").uk-margin-small-right
+                        span(class="uk-visible@m") Logout

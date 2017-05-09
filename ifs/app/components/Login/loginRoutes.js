@@ -14,10 +14,12 @@ var _ = require('lodash');
 module.exports = function( app, passport ) {
 
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/about', '/user/data'];
+        var nonSecurePaths = ['/', '/login', '/register', '/about'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
 
         if(result >= 0 || (req.user) ) {
+            if(req.user)
+                res.locals.user = req.user;
             next();
         }
         else {
@@ -25,16 +27,8 @@ module.exports = function( app, passport ) {
         }
     }
 
-    // This function ensure the user in or returns them to main navigation point.+
-    function isLoggedIn( req, res, next ) {
-        if( req.user )
-            return next();
-        res.redirect('/');
-    }
-
     // Call Authenticate before every function
     app.use( isAuthenticated );
-
 
     // Function to provide login Information to Angular
     app.get("/user/data", function(req,res) {
