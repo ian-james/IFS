@@ -1,14 +1,15 @@
 extends ../../shared/views/pageLayout.pug
 
+block scripts
+    script(src="/socket.io/socket.io.js")
+
 block content
-    div.uk-container.uk-container-expand
-        script(src="/socket.io/socket.io.js")
-       
+    div.uk-container.uk-container-small
         div(uk-alert).uk-alert-danger
             p.uk-align-center.errorMessage #{messages.errorMessage}
         div.row(ng-controller="toolCtrl")
-            div(class="col-md-8 col-md-offset-2")
-                form(id="uploadForm" class='uk-form' enctype="multipart/form-data" action="/tool_upload" method="post")
+            div
+                form(class='uk-form' enctype="multipart/form-data" action="/tool_upload" method="post")#uploadForm
                     div.uk-clearfix
                         h2.uk-float-left #{title}
                         span(uk-toggle="target: #toolSelection; animation: uk-animation-fade" uk-icon="icon: settings")#settingsToggle.uk-icon-button.uk-float-right
@@ -20,7 +21,7 @@ block content
                                 h3.uk-accordion-title {{tool.displayName}}
                                 div.uk-accordion-content.uk-background-muted
                                     ul.uk-list.uk-list-divider
-                                        li.uk-padding-small.uk-padding-remove-bottom
+                                        li.uk-padding-small
                                             span.uk-float-left Enable {{ tool.displayName }}
                                             label.switch-wrapper.uk-float-right
                                                 input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true")
