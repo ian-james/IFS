@@ -5,7 +5,7 @@
 var router = require('express').Router();
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
-var maxCookieAge = 1000*60*5; //TODO: Moves this to sessionConfig
+var maxCookieAge = 1000*60*30; //TODO: Moves this to sessionConfig
 
 var Logger = require( __configs + "loggingConfig");
 
