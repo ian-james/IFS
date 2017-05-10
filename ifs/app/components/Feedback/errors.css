@@ -1,27 +1,41 @@
-.spelling
-{
+/***
+ * stylesheet for feedback errors, warnings, and suggestions
+ *
+ * note: the !important directive (though usually discouraged), is necessary
+ * here in order to ensure the mark-up is not overridden by code-highlighting
+ ***/
+.spelling {
     display:inline-block;
-    color:red;
-    text-decoration: underline;
+    color:red !important;
+    text-decoration: underline !important;
 }
 
-.grammar 
-{
-    color: blue;
-    
+.grammar {
+    color: blue !important;
 }
 
 .multiError {
-    color:orange;
+    color: pink !important;
 }
 
-.suggestion
-{
+.suggestion {
     display:inline-block;
-    color:green;
+    color: green !important;
 }
 
-.style
-{
-    color: purple;
+.style {
+    color: purple !important;
+}
+
+/***
+ * code mark-up classes
+ ***/
+.warning {
+    color: orange !important;
+    font-style: italic !important;
+}
+
+.error {
+    color: red !important;
+    font-weight: 800 !important;
 }
