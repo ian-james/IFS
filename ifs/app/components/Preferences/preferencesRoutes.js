@@ -12,7 +12,7 @@ module.exports = function( app ) {
 
     .post(function(req,res,next) {
         if( req.body ) {
-            // TODO: Preferences aren't save anywhere except this variable.
+            // TODO: Preferences aren't saved anywhere except this variable.
             // Partially because we don't have preferences yet
             // This will create a minor bug in that
             if( req.session) {
@@ -27,8 +27,8 @@ module.exports = function( app ) {
     });
 
     app.get('/preference/data', function(req,res) {
-        var supportedToolsFile = './users/preferencesList.json';
-        fs.readFile( supportedToolsFile, 'utf-8', function( err, data ) {
+        var preferencesFile = './users/preferencesList.json';
+        fs.readFile( preferencesFile, 'utf-8', function( err, data ) {
             if( err ) {
                 //Unable to get support tools file, larger problem here.
                 Logger.error(err);
