@@ -3,6 +3,8 @@ var LocalStrategy = require('passport-local').Strategy;
 var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 var db = require('./database');
+var dbHelpers = require(__components + "Databases/dbHelpers");
+var config = require(__configs + 'databaseConfig');
 
 var path = require('path');
 var Logger = require( path.join( __dirname, "/loggingConfig") );
@@ -12,11 +14,11 @@ var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 module.exports = function (passport) {
 
     passport.serializeUser ( function(user,done) {
-        done(null, user.id);
+        done(null,  { 'id': user.id, 'sessionId': user.sessionId } );
     });
 
-    passport.deserializeUser( function(id,done) {
-        db.query( "SELECT id,username FROM users where id = ? ", id, function(err,rows) {
+    passport.deserializeUser( function(user,done) {
+        db.query( "SELECT id,username,sessionId FROM users where id = ? ", user.id, function(err,rows) {
             done( err, rows[0]);
         });
     });
@@ -91,6 +93,15 @@ module.exports = function (passport) {
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
+
+                    // Increment sessionId for user
+                    db.query(dbHelpers.buildUpdate(config.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
+                        if(err)
+                            Logger.error( err );
+                    });
+
+                    // Increment local copy, instead of reading from DB.
+                    rows[0].sessionId += 1;
 
                     return done(null, rows[0]);
                 });

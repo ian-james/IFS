@@ -21,6 +21,7 @@ try  {
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             username VARCHAR(20) NOT NULL, \
             password CHAR(60) NOT NULL, \
+            sessionId INT NOT NULL DEFAULT 0, \
             PRIMARY KEY(id) \
         )");
 
@@ -96,12 +97,13 @@ try  {
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.users_interation_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             userId INT UNSIGNED NOT NULL, \
+            sessionId INT UNSIGNED NOT NULL, \
             eventType VARCHAR(40) NOT NULL, \
             name VARCHAR(40) NOT NULL, \
             data TEXT NOT NULL, \
             date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
             PRIMARY KEY(id), \
-            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_interation_table + "(id) \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
 
         Logger.info("Success: Database created.");

@@ -15,7 +15,7 @@ var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var SurveyResponse = require(__components + "Survey/surveyResponse");
 
-var event = require(__components + "InteractionEvents/Event.js" );
+var event = require(__components + "InteractionEvents/buildEvent.js" );
 
 module.exports = function (app, iosocket ) {
     /**
@@ -116,7 +116,7 @@ module.exports = function (app, iosocket ) {
                             }
                         );
 
-                        event.trackEvent(iosocket, event.surveyEvent(req.user.id, "addSection", {
+                        event.trackEvent(iosocket, event.surveyEvent(req.user.sessionId, req.user.id, "addSection", {
                              "surveyId": surveyId,
                              "questionIds": qids,
                              "questionsAnswered": qids.length,

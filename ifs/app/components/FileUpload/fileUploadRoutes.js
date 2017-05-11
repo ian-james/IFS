@@ -21,7 +21,7 @@ var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFil
 
 var Errors = require(__components + "Errors/errors");
 
-var event = require(__components + "InteractionEvents/Event.js" );
+var event = require(__components + "InteractionEvents/buildEvent.js" );
 
 module.exports = function (app, iosocket) {
 
@@ -51,7 +51,7 @@ module.exports = function (app, iosocket) {
      */
     function emitJobRequests( req, iosocket, jobRequests ) {
         _.forEach(jobRequests, function(job){
-            event.trackEvent( iosocket, event.submissionEvent(req.user.id ,"info", { "displayName": job.displayName, "runCmd": job.runCmd }));
+            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id ,"info", { "displayName": job.displayName, "runCmd": job.runCmd }));
         });
 
     }
@@ -61,7 +61,7 @@ module.exports = function (app, iosocket) {
             return !(_.startsWith(key,'tool-') /*|| _.startsWith(key,'enabled-')*/)
         });
 
-        event.trackEvent( iosocket, event.submissionEvent(req.user.id, "info-options", options));
+        event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "info-options", options));
     }
 
     /**
@@ -73,7 +73,7 @@ module.exports = function (app, iosocket) {
      */
     function emitFeedbackResults( req, iosocket, feedbackItems ){
         _.forEach(feedbackItems, function(fi ){
-            event.trackEvent( iosocket, event.submissionEvent(req.user.id ,"feedback", {
+            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id ,"feedback", {
                 "displayName": fi.displayName,
                 "type": fi.type ,
                 "runType": fi.runType
@@ -83,7 +83,7 @@ module.exports = function (app, iosocket) {
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
-        event.trackEvent( iosocket, event.submissionEvent(req.user.id, "received", req.body) );
+        event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "received", req.body) );
 
         emitJobOptions( req, iosocket, req.body);
 
@@ -92,7 +92,7 @@ module.exports = function (app, iosocket) {
         if( Errors.hasErr(uploadedFiles) )
         {
             var err = Errors.getErrMsg(uploadedFiles);
-            event.trackEvent( iosocket, event.submissionEvent(req.user.id,"failed", err) ) ;
+            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id,"failed", err) ) ;
             //req.flash('errorMessage', err );
             res.status(500).send(JSON.stringify({"msg":err}));
             return;
@@ -106,7 +106,7 @@ module.exports = function (app, iosocket) {
         if(!tools || tools.length == 0)
         {
             var err = Errors.cErr();
-            event.trackEvent( iosocket, event.submissionEvent(req.user.id, "failed", err) );
+            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "failed", err) );
             res.status(500).send(JSON.stringify({"msg":"Please select a tool to evaluate your work."}));
             return;
         }
@@ -124,7 +124,7 @@ module.exports = function (app, iosocket) {
 
             FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {
                 setupSessionFiles(req, organized);
-                event.trackEvent( iosocket, event.submissionEvent(req.user.id, "success", {}) );
+                event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "success", {}) );
                 var data = { "msg":"Awesome"};
                 res.write(JSON.stringify(data));
                 res.end();
@@ -132,7 +132,7 @@ module.exports = function (app, iosocket) {
         }, function(err){
             //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
             Logger.error("Failed to make jobs:", err );
-            event.trackEvent( iosocket, event.submissionEvent(req.user.id, "toolError", {"msg":e}) );
+            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "toolError", {"msg":e}) );
             //req.flash('errorMessage', "There was an error processing your files." );
             res.status(400).send(JSON.stringify({"msg":err}));
         }, function(prog) {
@@ -142,7 +142,7 @@ module.exports = function (app, iosocket) {
             Logger.log("Manager's progress is ", prog.progress, "%");
         })
         .catch( function(err){
-            event.trackEvent( iosocket, event.submissionEvent(req.user.id, "toolError", {"msg":e}) );
+            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "toolError", {"msg":e}) );
             res.status(500).send({
                 error: e
             });

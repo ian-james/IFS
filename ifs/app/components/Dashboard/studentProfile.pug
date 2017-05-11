@@ -2,18 +2,116 @@ extends ../../shared/views/pageLayout.pug
 
 block content
     div.uk-container.uk-container-expand
-        script(src="/socket.io/socket.io.js")
-        script(src="/components/Dashboard/trackedEvents.js")
         h1 #{title}
 
         div(class="col-md-10 col-md-offset-1")
-            table.uk-table#eventsTable
-                caption Session events
-                thead
-                    tr
-                        th Event Name
-                        th Event Information
-                tbody
-                    tr
-                        td #{f.displayName}
-                        td #{f.type}
+            div.uk-section#studentProfile
+                h2 Student Profile
+    
+                table.uk-table
+                    thead
+                        tr
+                            td Session Related
+                    tbody
+                        tr 
+                            td Sesssion Start
+                            td {select * from userInteractions where userId = 4 and  name = "Authorized" and eventType = "connection"  ORDER BY date desc Limit 1;}
+                        tr 
+                            td Last Session
+                            td {select * from userInteractions where userId = 4 and  name = "Authorized" and eventType = "disconnection"  ORDER BY date desc Limit 1;}
+                        tr 
+                            td Consecutive Days
+                            td {SELECT DATE(date) Date, COUNT(DISTINCT userId) totalCount FROM userInteractions WHERE date >= DATE(NOW()) - INTERVAL 7 DAY GROUP BY Date(date);}
+                        tr 
+                            td Last 7 days
+                            td {SELECT DATE(date) Date, COUNT(DISTINCT userId) totalCount FROM userInteractions WHERE date >= DATE(NOW()) - INTERVAL 7 DAY GROUP BY Date(date);}
+                        tr
+                            td Number of Sessions
+                            td {Time}
+                        tr
+                            td Longest Sesssion Length
+                            td {Time}
+                        tr
+                            td Average Sessions Length
+                            td {Time}
+                        tr
+                            td Max Sessions per days.
+                            td {Time}
+                    thead
+                        tr
+                            td Page Visits
+                    tbody
+                        tr 
+                            td Page Visits per page
+                            td { select userId,eventType,name,data,COUNT(*) from userInteractions WHERE userId = 4 and eventType = "view" and name ="page" GROUP by data; }
+                         tr 
+                            td To Fill
+                            td {TODO}
+
+                    thead
+                        tr
+                            td Submissions
+                    tbody
+                        tr 
+                            td Number of submissions
+                            td select userId,eventType,name, COUNT(*) from userInteractions where userId = 4 and eventType = "submission" and name="received";
+                        tr 
+                            td View all submissions received with data information
+                            td select userId,eventType,name,date from userInteractions where userId = 4 and eventType = "submission" and name="received";
+                         tr 
+                            td To Fill
+                            td {TODO}
+                    thead
+                        tr
+                            td Preferences
+                    tbody
+                        tr 
+                            td To Fill
+                            td {TODO}
+                    thead
+                        tr
+                            td Tools and Options
+                    tbody
+                        tr 
+                            td To Fill
+                            td {TODO}
+                    thead
+                        tr
+                            td Feedback
+                    tbody
+                        tr 
+                            td To Fill
+                            td {TODO}
+                    thead
+                        tr
+                            td Feedback Usage
+                    tbody
+                        tr 
+                            td To Fill
+                            td {TODO}
+                    thead
+                        tr
+                            td Surveys
+                    tbody
+                        tr 
+                            td To Fill
+                            td {TODO}
+
+                    thead
+                        tr
+                            td Personal Model
+                    tbody
+                        tr 
+                            td To Fill
+                            td {TODO}
+
+                    thead
+                        tr
+                            td Social Models
+                    tbody
+                        tr 
+                            td To Fill
+                            td {TODO}
+
+
+

@@ -15,5 +15,5 @@ module.exports = {
     'users_interation_table': 'userInteractions',
     'user_feedback_table' : 'userFeedback',
     'preferences_table': 'preferences',
-    'question_table': 'questions'
+    'question_table': 'questions',
 };

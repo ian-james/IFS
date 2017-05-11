@@ -8,8 +8,9 @@ iosocket.on('trackEvent', function(data) {
           '<tr>'
           + '<td> ' + data.eventType + "</td>"
           + '<td> ' + data.name + "</td>"
-          + '<td> ' + data.time + "</td>"
-          + '<td> ' + data.user+ "</td>" 
+          + '<td> ' + Date.now() + "</td>"
+          + '<td> ' + data.userId + "</td>" 
+          + '<td> ' + data.sessionId + "</td>" 
           + '<td> ' + JSON.stringify(data.data) + "</td>" 
           + '</tr>'
     );

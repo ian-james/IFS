@@ -1,4 +1,4 @@
-var event = require(__components + "InteractionEvents/Event.js" );
+var event = require(__components + "InteractionEvents/buildEvent.js" );
 
 module.exports = function (app, iosocket) { 
 
@@ -10,7 +10,7 @@ module.exports = function (app, iosocket) {
 
         if( req.user)
         {
-            event.trackEvent( iosocket, event.viewEvent(req.user.id, "page", req.originalUrl));
+            event.trackEvent( iosocket, event.viewEvent(req.user.sessionId, req.user.id, "page", req.originalUrl));
         }
 
         next();
