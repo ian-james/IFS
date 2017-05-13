@@ -43,7 +43,7 @@ block content
             uib-tabset( active="active")
                 each file, findex in files
                     uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
-                        div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText
+                        div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
                             if toolType == 'programming'
                                 pre.prettyprint
                                     code !{file.markedUp}
@@ -53,7 +53,7 @@ block content
                         br
 
             div(class="uk-offcanvas-content")
-                include popover.html
+                include popover.pug
 
     script(src="components/Feedback/feedbackController.js")
 

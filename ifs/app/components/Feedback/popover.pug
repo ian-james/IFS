@@ -1,0 +1,24 @@
+div(uk-offcanvas="flip:true; overlay: true")#popOver
+    div.uk-offcanvas-bar.uk-text-left
+        button(type="button" uk-close).uk-offcanvas-close
+        h3 Additional Information
+
+        dl.description-list
+            dt Error Type
+            dd {{ selectedFeedback.type }}
+            br
+
+            dt Tool
+            dd {{ selectedFeedback.toolName }}
+            br
+
+            dt Description
+            dd {{ selectedFeedback.feedback }}
+            br
+
+            dt
+                | Suggestions for 
+                em {{ selectedFeedback.target }}
+        div
+            ul.uk-list.uk-list-divider
+                li(ng-repeat="suggestion in selectedFeedback.suggestions | limitTo: 5") {{ suggestion }}

@@ -1,17 +1,16 @@
-<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/components/InteractionEvents/feedbackEvents.js"></script>
-<div class="uk-card uk-card-default uk-card-hover uk-grid-small uk-grid-match" style="margin:0;">
+<div class="uk-card uk-text-center" style="margin:0;">
     <div class='uk-card-header'>
-        <h3 class="uk-card-title uk-text-center"> 
+        <h3 class="uk-card-title">
             {{ selectedFeedback.type  }}
         </h3>
     </div>
-    <div class="uk-card-body uk-text-center miniCard">
-        <span class="{{ selectedFeedback.type }}">
+    <div class="uk-card-body">
+        <span class="{{ selectedFeedback.type }}-display">
             {{ selectedFeedback.target}}
         </span>
         <div>
-            &#8594;
+            <span uk-icon="icon: arrow-up"></span>
+            <span uk-icon="icon: arrow-down"></span>
         </div>
         <span class="suggestion">
             {{ selectedFeedback.suggestions[0]}}
@@ -19,7 +18,7 @@
     </div>
     <div class="uk-card-footer">
             <a href="#" class="uk-button uk-button-text" uk-toggle="target: #popOver">Read More
-            <span class="glyphicon glyphicon-expand"></span>
+            <span uk-icon="icon: info"></span>
             </a>
     </div>
 </div>
