@@ -43,12 +43,12 @@ block content
             uib-tabset( active="active")
                 each file, findex in files
                     uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
-                        div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.form-control.markedTextArea.container-fluid
+                        div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText
                             if toolType == 'programming'
-                                pre.markedTextArea2.prettyprint
+                                pre.prettyprint
                                     code !{file.markedUp}
                             else
-                                pre.markedTextArea2
+                                pre
                                     code !{file.markedUp}
                         br
 
