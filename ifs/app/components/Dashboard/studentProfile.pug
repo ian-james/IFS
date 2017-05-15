@@ -11,7 +11,7 @@ block content
                 table.uk-table
                     thead
                         tr
-                            td Session Related
+                            td Session
                     tbody
                         tr 
                             td Sesssion Start
@@ -27,16 +27,19 @@ block content
                             td {SELECT DATE(date) Date, COUNT(DISTINCT userId) totalCount FROM userInteractions WHERE date >= DATE(NOW()) - INTERVAL 7 DAY GROUP BY Date(date);}
                         tr
                             td Number of Sessions
-                            td {Time}
+                            td { select sessionId from users where id = 4;}
                         tr
                             td Longest Sesssion Length
-                            td {Time}
+                            td {select Date(a.date) as datetime, MAX(a.date) as max_datetime, MIN(a.date) as min_datetime FROM userInteractions a WHERE userId=4 and sessionId=16 GROUP BY DATE(    a.date);}
+                        tr
+                            td Session Length
+                            td { select MAX(a.date) as max_datetime, MIN(a.date) as min_datetime, TIMEDIFF(MAX(a.date),MIN(a.date)) FROM userInteractions a WHERE userId=4 and sessionId=16 GROUP BY DATE(a.date); }
                         tr
                             td Average Sessions Length
                             td {Time}
                         tr
                             td Max Sessions per days.
-                            td {Time}
+                            td {SELECT DATE(date) Date, COUNT(DISTINCT userId) totalCount FROM userInteractions}
                     thead
                         tr
                             td Page Visits
@@ -44,7 +47,7 @@ block content
                         tr 
                             td Page Visits per page
                             td { select userId,eventType,name,data,COUNT(*) from userInteractions WHERE userId = 4 and eventType = "view" and name ="page" GROUP by data; }
-                         tr 
+                        tr 
                             td To Fill
                             td {TODO}
 
@@ -58,7 +61,7 @@ block content
                         tr 
                             td View all submissions received with data information
                             td select userId,eventType,name,date from userInteractions where userId = 4 and eventType = "submission" and name="received";
-                         tr 
+                        tr 
                             td To Fill
                             td {TODO}
                     thead

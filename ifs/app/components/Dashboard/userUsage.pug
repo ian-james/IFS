@@ -1,0 +1,317 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container.uk-container-expand
+        h1 #{title}
+
+        div(class="col-md-10 col-md-offset-1")
+            div.uk-section#studentProfile
+                h2 Student Profile
+                p #{JSON.stringify(data)}
+    
+                table.uk-table
+                    thead
+                        tr
+                            td Session Related
+                    tbody
+                        tr 
+                            td Sesssion Start
+                            td #{data.startSession}
+                        tr 
+                            td Last Session
+                            td #{data.lastSession}
+                        tr 
+                            td Session Length
+                            td #{data.sessionLength}
+                        tr 
+                            td Total Session This Week
+                            td #{data.sessionsThisWeek}
+                        tr 
+                            td Days This week
+                            td #{data.daysLoggedInWeek}
+                        tr 
+                            td Total Session 
+                            td #{data.totalSessions}
+                        tr 
+                            td MAX sessions
+                            td #{data.maxDailySession}
+                        tr 
+                            td Sessions today
+                            td #{data.dailySessions}
+                        //-
+                            tr 
+                                td Session Consecutive Days
+                                td #{data.consDays}
+                        tr 
+                            td 
+                            td 
+                    thead
+                        tr
+                            td Page Related
+                    tbody
+                        tr 
+                            td Page Views
+                            td #{data.pageViews}
+                        tr
+                            td Fav Page
+                            td #{data.favPage}
+                        tr 
+                            td 
+                            td 
+                    thead
+                        tr
+                            td Submission
+                    tbody
+                        tr
+                            td Total Submissions
+                            td #{data.totalSubmissions}
+
+                        tr
+                            td Most Recent Submission
+                            td #{data.mostRecentSubmission}
+
+                        tr
+                            td Submissions This Session
+                            td #{data.countSessionSubmissions}
+
+                        tr
+                            td Submissions today
+                            td #{data.dailySubmissions}
+                        //-
+                            tr
+                                td Time between submissions
+                                td #{data.dailySubmissions}
+                            tr
+                                td Average time between submission
+                                td #{data.dailySubmissions}
+                            tr
+                                td Errors per submission
+                                td #{data.dailySubmissions}
+                            tr
+                                td Files per submission
+                                td #{data.dailySubmissions}
+                        tr 
+                            td 
+                            td 
+                        tr 
+                            td 
+                            td 
+
+                    thead
+                        tr
+                            td Preferences
+                    tbody
+                        tr
+                            td Preferences Changes
+                            td #{data.preferenceChanges}
+                        //-
+                            tr
+                                td Tools Disabled
+                                td #{data.preferenceChanges}
+                            tr 
+                                td Tools Enabled
+                                td #{data.preferenceChanges}
+                    tbody
+                        tr 
+                            td 
+                            td 
+                        tr 
+                            td 
+                            td 
+                    thead
+                        tr
+                            td Feedback Usage
+                            td
+                    tbody
+                        tr 
+                            td Total Errors Suggested
+                            td #{data.totalFeedbackCount}
+                        tr 
+                            td Error Per Tool
+                            td {TODO-PARSE DATE OR NEW TABLE}
+                        tr 
+                            td Feedback viewed per submission
+                            td
+                        tr 
+                            td Most Feedback per Tool
+                            td
+                        tr
+                            td Feedback Rated?
+                            td 
+                        tr 
+                            td Feedback committed
+                            td 
+                        tr 
+                            td Feedback Viewed Extended
+                            td
+                        tr 
+                            td Feedback time viewed
+                            td
+                        tr 
+                            td Total Errors Suggested
+                            td 
+                        tr 
+                            td Reoccuring Error
+                            td 
+                        tr 
+                            td Viewed Individual tool feedback
+                            td
+                        tr 
+                            td Feedback Item fixed per tool
+                            td
+                        tr
+                            td Total errors
+                            td 
+                        tr 
+                            td Errors between submission
+                            td 
+                        tr 
+                            td Last Submission
+                            td
+                        tr 
+                            td Last Submission feedback Viewed
+                            td
+                        tr 
+                            td Last Submission feedback Fixed
+                            td
+                        tr 
+                            td Last Submission feedback Ignored
+                            td
+                        tr 
+                            td Reoccuring Error
+                            td 
+                        tr 
+                            td Reoccuring Viewed Item
+                            td
+                        tr 
+                            td Viewed all tools
+                            td
+                        tr 
+                            td Feedback from which tools
+                            td
+                        tr 
+                            td Viewed Common Mistakes
+                            td
+                        tr 
+                            td Average errors per submission
+                            td
+                        tr 
+                            td Errors fixed
+                            td 
+                        tr 
+                            td Lines changed.
+                            td
+                        tr
+                            td Code Readability Score
+                            td
+
+                    thead
+                        tr
+                            td Tools
+                    tbody
+                        tr 
+                            td Most Frequently used tool
+                            td {TODO}
+                        tr 
+                            td Tools Set used
+                            td {TODO}
+                        tr 
+                            td Options Per Tool
+                            td {TODO}
+                    tbody
+                        tr 
+                            td 
+                            td 
+                        tr 
+                            td 
+                            td 
+
+                    thead
+                        tr
+                            td Surveys
+                    tbody
+                        tr 
+                            td Enabled
+                            td {TODO}
+                        tr 
+                            td Questions Answered
+                            td {TODO}
+                        tr 
+                            td Time between questions answered
+                            td {TODO}
+                        tr 
+                            td MIN Time between questions answered
+                            td {TODO}
+                        tr 
+                            td MAX Time between questions answered
+                            td {TODO}
+                        tr 
+                            td AVG Time between questions answered
+                            td {TODO}
+                        tr 
+                            td Surveys Completed
+                            td {TODO}
+                        tr 
+                            td Time Paused
+                            td {TODO}
+                        tr 
+                            td Questionnaires skipped
+                            td {TODO}
+                        tr 
+                            td 
+                            td 
+                        tr 
+                            td 
+                            td 
+
+                    thead
+                        tr
+                            td Personal Model
+                    tbody
+                        tr 
+                            td Model Views
+                            td #{data.pageViews}
+                        tr 
+                            td Page Views
+                            td #{data.pageViews}
+                        tr
+                            td
+                            td
+                        tr
+                            td
+                            td
+                    thead
+                        tr
+                            td Social Models
+                    tbody
+                        tr 
+                            td Model Views
+                            td #{data.pageViews}
+                        tr 
+                            td Page Views
+                            td #{data.pageViews}
+                        tr
+                            td
+                            td
+                        tr 
+                            td
+                            td
+                    thead
+                        tr
+                            td Course
+                    tbody
+                        tr
+                            td Viewed item before deadline
+                            td {TODO}
+                        tr
+                            td Checked assignment list
+                            td {TODO}
+                        tr
+                            td checked skills list.
+                            td {TODO}
+                        tr
+                            td
+                            td
+                        tr 
+                            td
+                            td
