@@ -10,8 +10,23 @@ module.exports = {
         return "WHERE " + key + " = ?";
     },
 
+    /**
+     * BUild where statement with multiple keys
+     * @param  {[type]} keys [description]
+     * @return {[type]}      [description]
+     */
+    buildWhere: function(keys){
+        console.log("Keys",keys);
+        if(!keys || keys.length == 0)
+            return "";
+        if(keys.length == 1 )
+            return this.buildWS(keys[0]);
+
+        return  _.join(keys, " = ? and  ") + " = ?";
+    },
+
     buildValues: function(keys){
-        if( _.isObject(keys))
+        if( _.isPlainObject(keys))
             keys = _.keys(keys);
 
         // build values part of sql statement ex) (var1, var2, var3) values (?,?,?);

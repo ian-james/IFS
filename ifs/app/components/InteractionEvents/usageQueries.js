@@ -1,39 +1,43 @@
-var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
-var Errors = require(__components + "Errors/errors");
-var Logger = require( __configs + "loggingConfig");
-var _ = require('lodash');
+/**
+ * THis creates a long list of data read from database.
+ * Consider it for a admin page.
+ */
 
-var eventDB = require(__components + "InteractionEvents/event.js" );
-var dbHelpers = require(__components + "Databases/dbHelpers");
+// Event DB requests
+var sessionDB = require(__components + "InteractionEvents/event.js" );
+var pageDB = require(__components + "InteractionEvents/event.js" );
+var submissionDB = require(__components + "InteractionEvents/event.js" );
+var prefDB = require(__components + "InteractionEvents/event.js" );
+var feedbackDB = require(__components + "InteractionEvents/event.js" );
+var surveyDB = require(__components + "InteractionEvents/event.js" );
 
 module.exports = {
 
-        studentModelQueries: function (req) {
+    studentModelQueries: function (req) {
 
-            return [
-                eventDB.getSessionStart(req.user.id),
-                eventDB.getLastSession(req.user.id, req.user.sessionId ),
-                eventDB.getSessionLength(req.user.id, req.user.sessionId ),
-                eventDB.getSessionsThisWeek(req.user.id),
-                //eventDB.getConsecutiveDays(req.userId),
-                eventDB.getCountDaysLoggedInThisWeek(req.user.id),
-                eventDB.getTotalSessions(req.user.id),
-                eventDB.getMaxSessionsPerDay(req.user.id),
-                eventDB.getMaxSessionsToday(req.user.id),
+        return [
+            sessionDB.getSessionStart(req.user.id),
+            sessionDB.getLastSession(req.user.id, req.user.sessionId ),
+            sessionDB.getSessionLength(req.user.id, req.user.sessionId ),
+            sessionDB.getSessionsThisWeek(req.user.id),
+            //sessionDB.getConsecutiveDays(req.userId),
+            sessionDB.getCountDaysLoggedInThisWeek(req.user.id),
+            sessionDB.getTotalSessions(req.user.id),
+            sessionDB.getMaxSessionsPerDay(req.user.id),
+            sessionDB.getMaxSessionsToday(req.user.id),
 
-                eventDB.getPageViews(req.user.id),
-                eventDB.getFavPage(req.user.id),
+            pageDB.getPageViews(req.user.id),
+            pageDB.getFavPage(req.user.id),
 
-                eventDB.getTotalSubmissionsCount(req.user.id),
-                eventDB.getMostRecentSubmission(req.user.id),
-                eventDB.getSessionSubmissionsCount(req.user.id, req.user.sessionId),
-                eventDB.getDailySubmission(req.user.id),
+            submissionDB.getTotalSubmissionsCount(req.user.id),
+            submissionDB.getMostRecentSubmission(req.user.id),
+            submissionDB.getSessionSubmissionsCount(req.user.id, req.user.sessionId),
+            submissionDB.getDailySubmission(req.user.id),
 
-                eventDB.getPreferenceChanges(req.user.id),
+            prefDB.getPreferenceChanges(req.user.id),
 
-                eventDB.getCountTotalFeedbackItems(req.user.id),
-                eventDB.getMeanFeedbackPerSubmission(req.user.id)
-            ];
-        }
+            feedbackDB.getCountTotalFeedbackItems(req.user.id),
+            feedbackDB.getMeanFeedbackPerSubmission(req.user.id)
+        ];
+    }
 };

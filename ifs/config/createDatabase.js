@@ -106,6 +106,49 @@ try  {
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
 
+        Logger.info("Create the Table:", config.preferences_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.preferences_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            prefId INT UNSIGNED NOT NULL DEFAULT 0, \
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
+        )");
+
+        Logger.info("Create the Table:", config.submission_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.submission_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            sessionId INT UNSIGNED NOT NULL DEFAULT 0, \
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
+        )");
+
+        Logger.info("Create the Table:", config.feedback_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            sessionId INT UNSIGNED NOT NULL DEFAULT 0, \
+            submissionId INT UNSIGNED NOT NULL, \
+            toolName TEXT NOT NULL, \
+            filename TEXT NOT NULL, \
+            runType TEXT NOT NULL, \
+            type TEXT NOT NULL, \
+            charPos INT UNSIGNED, \
+            charNum INT UNSIGNED, \
+            lineNum INT UNSIGNED, \
+            target TEXT, \
+            suggestion TEXT, \
+            feedback TEXT, \
+            severity TEXT, \
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id) \
+        )");
+
         Logger.info("Success: Database created.");
 
     }

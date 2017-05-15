@@ -50,6 +50,7 @@ const server = app.listen( app.get('port') , function() {
 });
 
 var event = require(__components + "InteractionEvents/buildEvent.js" );
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
 const socket_io = require('socket.io')(server).
                 use(function(socket,next) {
@@ -68,14 +69,13 @@ socket_io.on('connection', (socket) => {
 
                     socket.on('disconnect',() =>{
                         console.log("user disconnected");
-                        // Will have to be tracked via DB.
-                        event.trackEvent(socket, event.makeEvent(sessionId, id, "disconnection", "Authorized", {} ) );
+                        tracker.trackEvent(socket, event.makeEvent(sessionId, id, "disconnection", "Authorized", {} ) );
                     });
 
                     socket.on('event', function(data) {
                         //console.log(data);
                         //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
-                        event.btrackEvent(socket, event.makeEvent(sessionId, id, data.eventType, data.name, data.data) );
+                        tracker.btrackEvent(socket, event.makeEvent(sessionId, id, data.eventType, data.name, data.data) );
                         //event.trackEvent( socket, event.makeEvent( id, data.eventType, data.name, data.data ) );
                     });
 
@@ -84,7 +84,7 @@ socket_io.on('connection', (socket) => {
                     });
 
                     //console.log("emit event");
-                    event.trackEvent( socket, event.makeEvent(sessionId, id, "connection", "Authorized", {} ) );
+                    tracker.trackEvent( socket, event.makeEvent(sessionId, id, "connection", "Authorized", {} ) );
                 });
 
 // Add Developer Routes

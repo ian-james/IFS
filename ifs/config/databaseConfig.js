@@ -16,4 +16,5 @@ module.exports = {
     'user_feedback_table' : 'userFeedback',
     'preferences_table': 'preferences',
     'question_table': 'questions',
+    'submission_table': 'submission',
 };

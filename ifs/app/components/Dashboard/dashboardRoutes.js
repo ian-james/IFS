@@ -50,12 +50,11 @@ module.exports = function (app, iosocket ) {
 
         async.map(queries, function( query, callback ) {
             console.log(query.data);
-            console.log(query.request);
 
             db.query( query.request, query.data, function(err,data){
 
                 if(err)
-                    callback("\nErrored on query:", query.request);
+                    callback("\nErrored on query:" +  query.request, null);
                 else {
                     console.log("Adding Data:", query.name, ":\n", data);
                     callback(null,{ "name": query.name, "result": data } );

@@ -4,9 +4,18 @@ var Errors = require(__components + "Errors/errors");
 var Logger = require( __configs + "loggingConfig");
 var _ = require('lodash');
 
+/* Retrieve or insert interactions events */
+
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 module.exports = {
+
+    /* Inserting Events */
+    insertInteractionEvent: function( eventData ) {
+        dbHelpers.insertEvent(config.users_interation_table,eventData);
+    },
+
+    /* Retrieval by types of events */
    
     getUserEvents: function( user, callback ){
         dbHelpers.selectWhere(config.users_interation_table, "userId", user, callback);
@@ -20,7 +29,13 @@ module.exports = {
         dbHelpers.selectWhere(config.users_interation_table, "name",eventName, callback);
     },
 
-    insertEvent: function( eventData ) {
-        dbHelpers.insertEvent(config.users_interation_table,eventData);
-    }
+    /**
+     *  Handles null and empty responses from data base.
+     */
+
+    returnData: function(data){
+        if( _.isEmpty(data) || !_.has(data,'value'))
+            return "Not available";
+        return data.value;
+    },
 };

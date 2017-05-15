@@ -3,6 +3,7 @@ var _ = require('lodash');
 
 // Path and file management
 var path = require('path');
+var async = require('async');
 
 // Managers
 var manager = require( __components + 'Queue/managerJob');
@@ -19,9 +20,14 @@ var upload = require("./fileUploadConfig").upload;
 // Feedback
 var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFilterSystem');
 
+var config = require(__configs + 'databaseConfig');
+var db = require( __configs + 'database');
+var dbHelpers = require(__components + "Databases/dbHelpers");
 var Errors = require(__components + "Errors/errors");
-
-var event = require(__components + "InteractionEvents/buildEvent.js" );
+var eventDB = require(__components + "InteractionEvents/buildEvent.js" );
+var event = require(__components + "InteractionEvents/event.js" );
+var submissionEvent = require(__components + "InteractionEvents/submissionEvents.js");
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
 module.exports = function (app, iosocket) {
 
@@ -51,17 +57,24 @@ module.exports = function (app, iosocket) {
      */
     function emitJobRequests( req, iosocket, jobRequests ) {
         _.forEach(jobRequests, function(job){
-            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id ,"info", { "displayName": job.displayName, "runCmd": job.runCmd }));
+            tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id ,"info", { "displayName": job.displayName, "runCmd": job.runCmd }));
         });
 
     }
 
+    /**
+     * Emit the options associated with job requests.
+     * @param  {[type]} req      [description]
+     * @param  {[type]} iosocket [description]
+     * @param  {[type]} formData [description]
+     * @return {[type]}          [description]
+     */
     function emitJobOptions( req, iosocket, formData ) {
         var options =  _.pickBy(formData, function(value,key){
             return !(_.startsWith(key,'tool-') /*|| _.startsWith(key,'enabled-')*/)
         });
 
-        event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "info-options", options));
+        tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "info-options", options));
     }
 
     /**
@@ -71,83 +84,104 @@ module.exports = function (app, iosocket) {
      * @param  {[type]} feedbackItems [description]
      * @return {[type]}               [description]
      */
-    function emitFeedbackResults( req, iosocket, feedbackItems ){
-        _.forEach(feedbackItems, function(fi ){
-            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id ,"feedback", {
-                "displayName": fi.displayName,
-                "type": fi.type ,
-                "runType": fi.runType
-            }));
+    function emitFeedbackResults( req, iosocket, submissionId, feedbackItems ){
+
+        console.log("PRE SUBMIT:", feedbackItems);
+
+        async.each(feedbackItems, function( fi, callback ) {
+            console.log("FI is", fi);
+            var fe =  eventDB.makeFeedbackEvent( req.user.sessionId, req.user.id, submissionId, fi );
+
+            dbHelpers.insertEventC( config.feedback_table, fe, function(err,d){
+                console.log("INSIDE");
+                callback();
+            });
+
+        }, function(err){
+            if(err)
+                Logger.error(err);
+            else
+                Logger.log("Finished writing feedback to DB.");
         });
     }
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
-        event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "received", req.body) );
+        submissionEvent.addSubmission( eventDB.eventID(req), function(subErr, succSubmission) {
 
-        emitJobOptions( req, iosocket, req.body);
+            var submissionRequest = submissionEvent.getSubmissionNumber(req.user.id);
+            db.query(submissionRequest.request,submissionRequest.data, function(err,submissionIdRes){
 
-        var uploadedFiles = Helpers.handleFileTypes( req, res );
+                var submissionId = event.returnData( submissionIdRes[0] );
 
-        if( Errors.hasErr(uploadedFiles) )
-        {
-            var err = Errors.getErrMsg(uploadedFiles);
-            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id,"failed", err) ) ;
-            //req.flash('errorMessage', err );
-            res.status(500).send(JSON.stringify({"msg":err}));
-            return;
-        }
+                emitJobOptions( req, iosocket, req.body);
 
-        var userSelection = req.body;
-        userSelection['files'] = uploadedFiles;
+                var uploadedFiles = Helpers.handleFileTypes( req, res );
 
-        // Create Job Requests
-        var tools = ToolManager.createJobRequests( req.session.toolFile, userSelection );
-        if(!tools || tools.length == 0)
-        {
-            var err = Errors.cErr();
-            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "failed", err) );
-            res.status(500).send(JSON.stringify({"msg":"Please select a tool to evaluate your work."}));
-            return;
-        }
-        var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
-        req.session.jobRequestFile = requestFile;
+                if( Errors.hasErr(uploadedFiles) )
+                {
+                    var err = Errors.getErrMsg(uploadedFiles);
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id,"failed", err) ) ;
+                    //req.flash('errorMessage', err );
+                    res.status(500).send(JSON.stringify({"msg":err}));
+                    return;
+                }
 
-        emitJobRequests(req,iosocket,tools);
+                var userSelection = req.body;
+                userSelection['files'] = uploadedFiles;
 
-        res.writeHead(202, { 'Content-Type': 'application/json' });
+                // Create Job Requests
+                var tools = ToolManager.createJobRequests( req.session.toolFile, userSelection );
+                if(!tools || tools.length == 0)
+                {
+                    var err = Errors.cErr();
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "failed", err) );
+                    res.status(500).send(JSON.stringify({"msg":"Please select a tool to evaluate your work."}));
+                    return;
+                }
+                var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
+                req.session.jobRequestFile = requestFile;
 
-        // Add the jobs to the queue, results are return in object passed:[], failed:[]
-        manager.makeJob(tools).then( function( jobResults ) {
+                emitJobRequests(req,iosocket,tools);
 
-            emitFeedbackResults(req, iosocket, jobResults.result.passed);
+                res.writeHead(202, { 'Content-Type': 'application/json' });
 
-            FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {
-                setupSessionFiles(req, organized);
-                event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "success", {}) );
-                var data = { "msg":"Awesome"};
-                res.write(JSON.stringify(data));
-                res.end();
-            });
-        }, function(err){
-            //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
-            Logger.error("Failed to make jobs:", err );
-            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "toolError", {"msg":e}) );
-            //req.flash('errorMessage', "There was an error processing your files." );
-            res.status(400).send(JSON.stringify({"msg":err}));
-        }, function(prog) {
+                // Add the jobs to the queue, results are return in object passed:[], failed:[]
+                manager.makeJob(tools).then( function( jobResults ) {
 
-            if(prog.tool == "Manager" && prog.msg == "Progress")
-                iosocket.emit("ifsProgress", prog);
-            Logger.log("Manager's progress is ", prog.progress, "%");
-        })
-        .catch( function(err){
-            event.trackEvent( iosocket, event.submissionEvent(req.user.sessionId, req.user.id, "toolError", {"msg":e}) );
-            res.status(500).send({
-                error: e
+                    console.log("HERE");
+                    console.log("Submission id ", submissionId);
+                    emitFeedbackResults(req, iosocket, submissionId, jobResults.result.passed);
+                    console.log("HERE23");
+
+                    FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {
+                        setupSessionFiles(req, organized);
+                        tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "success", {}) );
+                        var data = { "msg":"Awesome"};
+                        res.write(JSON.stringify(data));
+                        res.end();
+                    });
+                }, function(err){
+                    //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
+                    Logger.error("Failed to make jobs:", err );
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "toolError", {"msg":e}) );
+                    //req.flash('errorMessage', "There was an error processing your files." );
+                    res.status(400).send(JSON.stringify({"msg":err}));
+                }, function(prog) {
+
+                    if(prog.tool == "Manager" && prog.msg == "Progress")
+                        iosocket.emit("ifsProgress", prog);
+                    Logger.log("Manager's progress is ", prog.progress, "%");
+                })
+                .catch( function(err){
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "toolError", {"msg":e}) );
+                    res.status(500).send({
+                        error: e
+                    });
+                });
+
+                manager.runJob();
             });
         });
-
-        manager.runJob();
-    });
+    })
 }
