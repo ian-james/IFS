@@ -29,11 +29,21 @@ module.exports = {
 
         var e = {};
         try {
-            var keys = [
+
+            e['userId'] = userId;
+            e['sessionId'] = sessionId;
+            e['submissionId'] = submissionId;
+
+            var requiredKeys = [
                 'toolName',
-                'filename',
                 'runType',
-                'type',
+                'filename',
+                'type'
+            ];
+
+             var rk =  _.pick(toolFeedbackItem,requiredKeys);
+
+            var keys = [
                 'charPos',
                 'charNum',
                 'lineNum',
@@ -43,10 +53,12 @@ module.exports = {
                 'severity'
             ];
 
-            e =  _.pick(toolFeedbackItem,keys);
-            e['userId'] = userId;
-            e['sessionId'] = sessionId;
-            e['submissionId'] = submissionId;
+            // Pick non-empty and non required keys from feedback object.
+            var k = _.pickBy(toolFeedbackItem, function(value,key){ 
+                return (value != "" && keys.indexOf(key) >= 0 );
+            });
+            e = _.assign(e, rk, k);
+            
         }
         catch( e ){
             Logger.error("Error Making feedback");

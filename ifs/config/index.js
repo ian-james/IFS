@@ -68,7 +68,9 @@ socket_io.on('connection', (socket) => {
                     var sessionId = socket.request.session.passport.user.sessionId;
 
                     socket.on('disconnect',() =>{
-                        console.log("user disconnected");
+                        // NOTE, THIS DISCONNECTS on connection made from client ajax calls..
+                        // So not reliable as session disconnect.
+                        //console.log("user disconnected");
                         tracker.trackEvent(socket, event.makeEvent(sessionId, id, "disconnection", "Authorized", {} ) );
                     });
 

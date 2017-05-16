@@ -86,14 +86,11 @@ module.exports = function (app, iosocket) {
      */
     function emitFeedbackResults( req, iosocket, submissionId, feedbackItems ){
 
-        console.log("PRE SUBMIT:", feedbackItems);
-
         async.each(feedbackItems, function( fi, callback ) {
-            console.log("FI is", fi);
             var fe =  eventDB.makeFeedbackEvent( req.user.sessionId, req.user.id, submissionId, fi );
 
             dbHelpers.insertEventC( config.feedback_table, fe, function(err,d){
-                console.log("INSIDE");
+                // Empty Callback if feedback fails to save, we aren't too concerned.
                 callback();
             });
 
@@ -149,10 +146,7 @@ module.exports = function (app, iosocket) {
                 // Add the jobs to the queue, results are return in object passed:[], failed:[]
                 manager.makeJob(tools).then( function( jobResults ) {
 
-                    console.log("HERE");
-                    console.log("Submission id ", submissionId);
                     emitFeedbackResults(req, iosocket, submissionId, jobResults.result.passed);
-                    console.log("HERE23");
 
                     FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {
                         setupSessionFiles(req, organized);
