@@ -136,8 +136,12 @@ module.exports = function (app, iosocket) {
                     res.status(500).send(JSON.stringify({"msg":"Please select a tool to evaluate your work."}));
                     return;
                 }
+
+                //Upload files names and job requests
                 var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
+                var filesFile = Helpers.writeResults( uploadedFiles, { 'filepath': uploadedFiles[0].filename, 'file': 'fileUploads.json'});
                 req.session.jobRequestFile = requestFile;
+                req.session.uploadFilesFile = filesFile;
 
                 emitJobRequests(req,iosocket,tools);
 

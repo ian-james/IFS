@@ -16,6 +16,7 @@ module.exports = {
 
     // Note: sessionId is unique only to userId
     makeEvent: function(sessionId, userId, et, name, data ) {
+
         return {
             "userId": userId,
             "sessionId": sessionId,
@@ -48,7 +49,7 @@ module.exports = {
                 'charNum',
                 'lineNum',
                 'target',
-                'suggestion',
+                'suggestions',
                 'feedback',
                 'severity'
             ];
@@ -58,7 +59,8 @@ module.exports = {
                 return (value != "" && keys.indexOf(key) >= 0 );
             });
             e = _.assign(e, rk, k);
-            
+
+            e['suggestions'] = JSON.stringify(e['suggestions']);
         }
         catch( e ){
             Logger.error("Error Making feedback");

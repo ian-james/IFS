@@ -29,63 +29,94 @@ module.exports = function (app, iosocket ) {
         });
     });
 
-    app.get('/userUsage', function(req,res) {
-
-        console.log("URUI",req.user);
-         
-        var queries = usageQueries.studentModelQueries(req);
-
-        console.log("**********************************************************************************************************");
-
-        _.forEach(queries, function(q){
-            console.log("1)");
-            console.log(q);
-            console.log("\n");
-
-        });
-
-        console.log("**********************************************************************************************************");
-
-        console.log("\n\n");
-
-        async.map(queries, function( query, callback ) {
-            console.log(query.data);
-
-            db.query( query.request, query.data, function(err,data){
-
-                if(err)
-                    callback("\nErrored on query:" +  query.request, null);
-                else {
-                    console.log("Adding Data:", query.name, ":\n", data);
-                    callback(null,{ "name": query.name, "result": data } );
-                }
-            });
-
-        }, function(err, results){
-            if(err)
-                console.log("Throwing usage error", err);
-            else {
-                console.log("\n\nLast Callback Results:\n",results);
-                console.log("**********************************************************************************************************");
-                var usageSummary = {};
-
-                for( var i = 0; i < results.length; i++ ){
-                    var o = results[i];
-                    console.log( "\n",results[i].name );
-                    console.log( results[i].result );
-                    usageSummary[ results[i].name ] = eventDB.returnData(results[i].result[0]);
-                }
-
-                console.log("JSON stringify answer", JSON.stringify(usageSummary));
-                res.render( viewPath + "userUsage", {title:"User Usage", data:usageSummary});
-            }
-        });
-    });
-
     app.get('/dashboard', function( req, res , next ) {
     });
 
     app.get('/studentProfile', function(req,res) {
         res.render( viewPath + "studentProfile", {title:"Tracked Events Logger"});
+    });
+
+
+    function handleQueries( queries, callback ) {
+
+        async.map(queries, function( query, _callback ) {
+            
+            db.query( query.request, query.data, function(err,data){
+                if(err)
+                    _callback("\nErrored on query:" +  query.request, null);
+                else {
+                    _callback(null,{ "name": query.name, "result": data } );
+                }
+            });
+
+        }, function(err, results){
+            if(err)
+                callback({});
+            else {
+               
+                var usageSummary = {};
+
+                for( var i = 0; i < results.length; i++ ){
+                    var o = results[i];
+                    usageSummary[ results[i].name ] = eventDB.returnData(results[i].result[0]);
+                }
+                callback(usageSummary);
+            }
+        });
+    }
+
+    app.get('/userUsage', function(req,res) {
+        handleQueries(usageQueries.getAllQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsage", {title:"All Session Data", data:usageSummary});
+        });
+    });
+
+    app.get('/userUsageSession', function(req,res) {
+        handleQueries(usageQueries.getSessionQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsageSection", {title:"Session Data", data:usageSummary});
+        });
+    });
+
+
+    app.get('/userUsageNavigation', function(req,res) {
+        handleQueries(usageQueries.getNavigationQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsageSection", {title:"Session Data", data:usageSummary});
+        });
+    });
+
+    app.get('/userUsageSubmission', function(req,res) {
+        handleQueries(usageQueries.getSubmissionQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsageSection", {title:"Submission Data", data:usageSummary});
+        });
+    });
+
+    app.get('/userUsagePreferences', function(req,res) {
+        handleQueries(usageQueries.getPreferenceQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsageSection", {title:"PReferences Data", data:usageSummary});
+        });
+    });
+
+    app.get('/userUsageFeedback', function(req,res) {
+        handleQueries(usageQueries.getFeedbackQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsageSection", {title:"Feedback Data", data:usageSummary});
+        });
+    });
+
+    app.get('/userUsageFeedbackInteraction', function(req,res) {
+        handleQueries(usageQueries.getFeedbackInteractionQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsageSection", {title:"Feedback Interaction Data", data:usageSummary});
+        });
+    });
+
+    app.get('/userUsageTool', function(req,res) {
+        handleQueries(usageQueries.getToolQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsageSection", {title:"Tool Data", data:usageSummary});
+        });
+    });
+
+    app.get('/userUsageSurvey', function(req,res) {
+        handleQueries(usageQueries.getSurveyQueries(req), function(usageSummary){
+            res.render( viewPath + "userUsageSection", {title:"Survey Data", data:usageSummary});
+        });
     });
 }

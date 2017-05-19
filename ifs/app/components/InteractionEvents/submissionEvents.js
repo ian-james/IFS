@@ -20,8 +20,8 @@ module.exports = {
     getAllSubmissions: function( userId ){
         return {
             'name': "allSubmissions",
-            'data':[userId,"submission", "received"],
-            'request': "select userId,eventType,name, COUNT(*) as value from userInteractions where userId = ? and eventType = ? and name = ?"
+            'data':[userId],
+            'request': "select COUNT(*) as value from "  + config.submission_table +  " where userId = ?"
         };
     },
 
@@ -29,48 +29,94 @@ module.exports = {
         return {
             'name': "totalSubmissions",
             'data':[userId, "submission", "received"],
-            'request': "select userId,eventType,name, COUNT(*) as value from userInteractions where userId = ? and eventType = ? and name = ?"
+            'request': "select COUNT(*) as value from "  + config.submission_table +  " where userId = ?"
         };
     },
 
     getSessionSubmissionsCount: function( userId, sessionId ){
         return {
             'name': "countSessionSubmissions",
-            'data':[userId, sessionId, "submission", "received"],
-            'request': "select userId,eventType,name, COUNT(*) as value from userInteractions where userId = ? and sessionId = ? and eventType = ? and name = ?"
+            'data':[userId, sessionId],
+            'request': "select COUNT(*) as value from "  + config.submission_table +  " where userId = ? and sessionId = ?"
         };
     },
 
+    // TODO: TEST and USE
     getSubmissions: function( userId ){
         return {
             'name': "submissions",
             'data':[userId, "submission", "received"],
-            'request': "select userId,eventType,name,date from userInteractions where userId = ? and eventType = ? and name=?"
+            'request': "select userId,date from "  + config.submission_table +  " where userId = ? and eventType = ? and name=?"
         };
     },
 
     getMostRecentSubmission: function( userId ){
         return {
             'name': "mostRecentSubmission",
-            'data':[userId, "submission", "received"],
-            'request': "select userId,eventType,name,date as value from userInteractions where userId = ?  and eventType = ? and name= ? ORDER BY date desc LIMIT 1"
+            'data':[userId],
+            'request': "select userId,date as value from "  + config.submission_table +  " where userId = ? ORDER BY date desc LIMIT 1"
         };
     },
 
+    // TODO: TEST and USE
     getSessionSubmissions: function( userId, sessionId ){
         return {
             'name': "sessionSubmissions",
             'data':[userId, sessionId, "submission", "received"],
-            'request': "select userId,eventType,name,date from userInteractions where userId = ? and sessionId = ? and eventType = ? and name=?"
+            'request': "select userId,date from "  + config.submission_table +  " where userId = ? and sessionId = ?"
         };
     },
     
     getDailySubmission: function( userId ){
         return {
             'name': "dailySubmissions",
-            'data':[userId, "submission", "received"],
-            'request': "select userId, eventType, name,date, COUNT(*) as value  from userInteractions where userId = ?  and eventType = ? and name = ? and Date(date) = Date(NOW()) GROUP By date"
+            'data':[userId],
+            'request': "select userId, COUNT(*) as value  from "  + config.submission_table +  " where userId = ? and Date(date) = Date(NOW()) GROUP By date"
         };
     },
 
+    getWeeklySubmission: function( userId ){
+        return {
+            'name': "weeklySubmissions",
+            'data':[userId],
+            'request': "select userId, COUNT(*) as value  from "  + config.submission_table +  " where userId = ? and date >= Date(NOW()) - INTERVAL 7 DAY"
+        };
+    },
+
+    getTimeBetweenMostRecentSubmissions: function( userId ) {
+        return {
+            'name': "timediffLastSubmissions",
+            'data':[userId],
+            'request': "select timediff(MAX(a.date),MIN(a.date)) as value from (SELECT DISTINCT date from submission  where userId = ? ORDER BY date desc limit 0,2) a"
+        };
+    },
+
+/*
+    getTimeBetweenMostRecentSubmissions: function( userId ) {
+        return {
+            'name': "timediffLastSubmissions",
+            'data':[userId],
+            'request': "select timediff(MAX(a.date),MIN(a.date)) as value from (SELECT DISTINCT date from submission  where userId = ? ORDER BY date desc limit 0,2) a"
+        };
+    },
+*/
+    getMostFeedbackPerSubmission: function( userId ) {
+        return {
+            'name': "mostFeedbackPerSubmission",
+            'data':[userId],
+            'request': "select MAX(a.subFeedback) as value from (select COUNT(*) as subFeedback from feedback where userId = ? GROUP BY submissionId) a"
+        };
+    },
+
+     getMeanFeedbackPerSubmission: function( userId ) {
+        return {
+            'name': "meanFeedbackPerSubmission",
+            'data':[userId],
+            'request': "select AVG(a.subFeedback) as value from (select COUNT(*) as subFeedback from feedback where userId = ? GROUP BY submissionId) a"
+        };
+    },
+
+    /*
+    select MAX(a.date) as max_datetime, MIN(a.date) as min_datetime, TIMEDIFF(MAX(a.date),MIN(a.date)) FROM userInteractions a WHERE userId=4 and sessionId=16 GROUP BY DATE(a.date);
+     */
 }

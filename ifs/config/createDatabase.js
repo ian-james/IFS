@@ -140,7 +140,7 @@ try  {
             charNum INT UNSIGNED, \
             lineNum INT UNSIGNED, \
             target TEXT, \
-            suggestion TEXT, \
+            suggestions TEXT, \
             feedback TEXT, \
             severity TEXT, \
             date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \

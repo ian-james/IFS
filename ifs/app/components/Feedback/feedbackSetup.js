@@ -41,7 +41,7 @@ function readFeedbackFormat( feedback , options)
 {
     var feedbackFormat = JSON.parse(feedback);
 
-    var feedbackItems = feedbackFormat.feedback.writing || feedbackFormat.feedback.programming;
+    var feedbackItems = feedbackFormat.feedback;
     var files = feedbackFormat.files;
 
     // setup Project and organize.
@@ -56,6 +56,11 @@ function readFeedbackFormat( feedback , options)
 
     // A Unique list of tools used for UI
     var toolsUsed = _.uniqBy(feedbackItems,'toolName');
+
+    // Suggestions are stringified json, convert back to array.
+    for(var i = 0; i < feedbackItems.length;i++){
+        feedbackItems[i]['suggestions'] = JSON.parse(feedbackItems[i]['suggestions']);
+    }
 
     // Tool should always be selected unless it's defaulted too.
     var selectedTool = (options && options['tool'] || toolsUsed.length >= 1 && toolsUsed[0].toolName);
@@ -145,5 +150,5 @@ function toolsMatch( toolName, selectedToolName ) {
     return ( selectedToolName == "All" || toolName == selectedToolName );
 }
 
-module.exports.readFeedbackFormat = readFeedbackFormat;
-module.exports.setupFeedback = readFiles;
+module.exports.setupFeedback = readFeedbackFormat;
+module.exports.readFileAndSetupFeedback = readFiles;

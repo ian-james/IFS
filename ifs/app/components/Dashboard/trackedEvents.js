@@ -2,7 +2,6 @@
 var iosocket = io.connect();
 
 iosocket.on('trackEvent', function(data) {
-    console.log("HERE RECEIVED", data);
 
     $("#eventsTable > tbody:last-child").append(
           '<tr>'

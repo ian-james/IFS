@@ -16,7 +16,6 @@ module.exports = {
      * @return {[type]}      [description]
      */
     buildWhere: function(keys){
-        console.log("Keys",keys);
         if(!keys || keys.length == 0)
             return "";
         if(keys.length == 1 )

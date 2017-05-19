@@ -4,40 +4,155 @@
  */
 
 // Event DB requests
-var sessionDB = require(__components + "InteractionEvents/event.js" );
-var pageDB = require(__components + "InteractionEvents/event.js" );
-var submissionDB = require(__components + "InteractionEvents/event.js" );
-var prefDB = require(__components + "InteractionEvents/event.js" );
-var feedbackDB = require(__components + "InteractionEvents/event.js" );
-var surveyDB = require(__components + "InteractionEvents/event.js" );
+var sessionDB = require(__components + "InteractionEvents/sessionEvents.js" );
+var pageDB = require(__components + "InteractionEvents/pageEvents.js" );
+var submissionDB = require(__components + "InteractionEvents/submissionEvents.js" );
+var prefDB = require(__components + "InteractionEvents/preferenceEvents.js" );
+var feedbackDB = require(__components + "InteractionEvents/feedbackEvents.js" );
+var surveyDB = require(__components + "InteractionEvents/surveyEvents.js" );
 
 module.exports = {
 
-    studentModelQueries: function (req) {
+    getAllQueries: function(req) {
+        var arr = [];
+        return arr.concat( 
+            this.getSessionQueries(req),
+            this.getNavigationQueries(req),
+            this.getSubmissionQueries(req),
+            this.getPreferenceQueries(req),
+            this.getFeedbackQueries(req),
+            this.getFeedbackInteractionQueries(req),
+            this.getToolQueries(req),
+            this.getSurveyQueries(req)
+        );
+    },
+
+    getSessionQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
 
         return [
-            sessionDB.getSessionStart(req.user.id),
-            sessionDB.getLastSession(req.user.id, req.user.sessionId ),
-            sessionDB.getSessionLength(req.user.id, req.user.sessionId ),
-            sessionDB.getSessionsThisWeek(req.user.id),
+            sessionDB.getSessionStart(id),
+            sessionDB.getLastSession(id, sessionId ),
+            sessionDB.getSessionLength(id, sessionId ),
+            sessionDB.getSessionsThisWeek(id),
             //sessionDB.getConsecutiveDays(req.userId),
-            sessionDB.getCountDaysLoggedInThisWeek(req.user.id),
-            sessionDB.getTotalSessions(req.user.id),
-            sessionDB.getMaxSessionsPerDay(req.user.id),
-            sessionDB.getMaxSessionsToday(req.user.id),
+            sessionDB.getCountDaysLoggedInThisWeek(id),
+            sessionDB.getTotalSessions(id),
+            sessionDB.getMaxSessionsPerDay(id),
+            sessionDB.getMaxSessionsToday(id)
+        ];
+    },
 
-            pageDB.getPageViews(req.user.id),
-            pageDB.getFavPage(req.user.id),
+    getNavigationQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
 
-            submissionDB.getTotalSubmissionsCount(req.user.id),
-            submissionDB.getMostRecentSubmission(req.user.id),
-            submissionDB.getSessionSubmissionsCount(req.user.id, req.user.sessionId),
-            submissionDB.getDailySubmission(req.user.id),
+        return [
+            pageDB.getPageViews(id),
+            pageDB.getFavPage(id)
+        ];
+    },
 
-            prefDB.getPreferenceChanges(req.user.id),
+    getSubmissionQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
 
-            feedbackDB.getCountTotalFeedbackItems(req.user.id),
-            feedbackDB.getMeanFeedbackPerSubmission(req.user.id)
+        return [
+            submissionDB.getTotalSubmissionsCount(id),
+            submissionDB.getMostRecentSubmission(id),
+            submissionDB.getSessionSubmissionsCount(id, sessionId),
+            submissionDB.getDailySubmission(id),
+            submissionDB.getWeeklySubmission(id),
+            submissionDB.getTimeBetweenMostRecentSubmissions(id),
+            submissionDB.getMostFeedbackPerSubmission(id),
+            submissionDB.getMeanFeedbackPerSubmission(id)
+        ];
+    },
+
+    getPreferenceQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+
+        return [
+            prefDB.getPreferenceChanges(id)
+        ];
+    },
+
+    getFeedbackQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+
+        return [
+            feedbackDB.getCountFeedbackItems(id),
+            feedbackDB.getMeanFeedbackPerSubmission(id),
+            feedbackDB.getToolWithMostFeedback(id),
+            feedbackDB.getToolWithLeastFeedback(id),
+            feedbackDB.getCountMostFeedback(id),
+            feedbackDB.getCountLeastFeedback(id),
+            feedbackDB.getMeanFeedbackPerTool(id),
+            feedbackDB.getMostCommonFeedbackType(id),
+            feedbackDB.getLeastCommonFeedbackType(id),
+        ];
+    },
+
+    /** Information about what the user interacted with  */
+    getFeedbackInteractionQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+
+        return [
+            // TODO:JF
+        ];
+    },
+    
+    /** Information about what the user interacted with  */
+    getToolQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+
+        return [
+            // TODO:JF
+        ];
+    },
+
+    /** Information about what the user interacted with  */
+    getSurveyQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+
+        return [
+            // TODO:JF
+        ];
+    },
+
+    /** Compare information between submissions such as lines changed or files committed */
+    getSubmissionComparisonQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+
+        return [
+            // TODO:JF
+        ];
+    },
+
+    /** Compare if items viewed reflected, items fixed.  */
+    getFeedbackToSubmissionComparisonQueries: function (req) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+
+        return [
+            // TODO:JF
+        ];
+    },
+
+    /** View student's interaction with student model information.  */
+    getStudentModelQueries: function (req) {
+
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+        return [
+            // TODO:JF
         ];
     }
 };

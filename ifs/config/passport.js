@@ -50,7 +50,7 @@ module.exports = function (passport) {
                     }
                     else{
                         Logger.info("Adding new user");
-                        var newUser = { 
+                        var newUser = {
                             username: username,
                             password: bcrypt.hashSync( password, null, null )
                         };
@@ -58,6 +58,7 @@ module.exports = function (passport) {
                         var insertQuery = "INSERT INTO users (username, password) values (?,?)";
                         db.query( insertQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
+                            newUser.sessionId = 0;
                             req.flash('success', 'Successfully signed up.');
                             SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
                                 return done(null, newUser);

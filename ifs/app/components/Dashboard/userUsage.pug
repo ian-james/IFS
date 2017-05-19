@@ -77,19 +77,25 @@ block content
                         tr
                             td Submissions today
                             td #{data.dailySubmissions}
-                        //-
-                            tr
-                                td Time between submissions
-                                td #{data.dailySubmissions}
-                            tr
+                        tr
+                            td Weekly Submissions
+                            td #{data.weeklySubmissions}
+                        tr
+                            td Time between submissions
+                            td #{data.timediffLastSubmissions}
+                            //-tr
                                 td Average time between submission
                                 td #{data.dailySubmissions}
-                            tr
-                                td Errors per submission
-                                td #{data.dailySubmissions}
-                            tr
-                                td Files per submission
-                                td #{data.dailySubmissions}
+                        tr
+                            td Max Errors per submission
+                            td #{data.mostFeedbackPerSubmission}
+                        tr
+                            td Average Errors per submission
+                            td #{data.meanFeedbackPerSubmission}
+                            //-
+                                tr
+                                    td Files per submission
+                                    td #{data.dailySubmissions}
                         tr 
                             td 
                             td 
@@ -120,21 +126,55 @@ block content
                             td 
                     thead
                         tr
-                            td Feedback Usage
+                            td Submission Feedback
                             td
                     tbody
                         tr 
-                            td Total Errors Suggested
+                            td Total Feedback
                             td #{data.totalFeedbackCount}
                         tr 
+                            td Tool with most feedback
+                            td #{data.mostFeedbackTool}
+                        tr 
+                            td Count Most feedback
+                            td #{data.countMostFeedback}
+                        tr 
+                            td Tool with leastfeedback
+                            td #{data.leastFeedbackTool}
+                        tr 
+                            td Count Least Feedback
+                            td #{data.countLeastFeedback}
+                        tr 
+                            td Mean Feedback Per Tool
+                            td #{data.meanFeedbackPerTool}
+                        tr
+                            td Most Common Feedback Type
+                            td #{data.mostCommonFeedbackType}
+                        tr
+                            td Least Common Feedback Type
+                            td #{data.leastCommonFeedbackType}
+                        tr 
                             td Error Per Tool
-                            td {TODO-PARSE DATE OR NEW TABLE}
+                            td #{data.totalFeedbackPerTool}
+                        tr
+                            td Code Readability Score
+                            td
+                    tbody
+                        tr 
+                            td 
+                            td 
+                        tr 
+                            td 
+                            td 
+                       
+                    thead
+                        tr
+                            td Feedback Interaction
+                            td
+                    tbody
                         tr 
                             td Feedback viewed per submission
                             td
-                        tr 
-                            td Most Feedback per Tool
-                            td {TODO-PARSE DATE OR NEW TABLE}
                         tr
                             td Feedback Rated?
                             td {TODO-PARSE DATE OR NEW TABLE}
@@ -147,27 +187,11 @@ block content
                         tr 
                             td Feedback time viewed
                             td
-                        tr 
-                            td Total Errors Suggested
-                            td 
-                        tr 
-                            td Reoccuring Error
-                            td 
+                       
                         tr 
                             td Viewed Individual tool feedback
                             td
-                        tr 
-                            td Feedback Item fixed per tool
-                            td
-                        tr
-                            td Total errors
-                            td 
-                        tr 
-                            td Errors between submission
-                            td 
-                        tr 
-                            td Last Submission
-                            td
+                        
                         tr 
                             td Last Submission feedback Viewed
                             td
@@ -178,15 +202,9 @@ block content
                             td Last Submission feedback Ignored
                             td
                         tr 
-                            td Reoccuring Error
-                            td 
-                        tr 
-                            td Reoccuring Viewed Item
-                            td
-                        tr 
                             td Viewed all tools
                             td
-                        tr 
+                        tr
                             td Feedback from which tools
                             td
                         tr 
@@ -195,15 +213,37 @@ block content
                         tr 
                             td Average errors per submission
                             td
+                    thead
+                        tr
+                            td Feedback Correction
+                            td
+                    tbody
+                        tr 
+                            td Reoccuring Error
+                            td 
                         tr 
                             td Errors fixed
                             td 
+                        tr
+                            td Reoccuring Viewed Item
+                            td
+                        tr 
+                            td Feedback Items fixed per tool
+                            td
                         tr 
                             td Lines changed.
                             td
-                        tr
-                            td Code Readability Score
-                            td
+                        tr 
+                            td Errors between submission
+                            td 
+                    tbody
+                        tr 
+                            td 
+                            td 
+                        tr 
+                            td 
+                            td 
+                       
 
                     thead
                         tr
