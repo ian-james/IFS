@@ -33,7 +33,9 @@ def decorateData( result, options ):
     json_string += '"feedback": [\n'
     json_string += '{\n'
     json_string += '"type": "wordCloud",\n'
+    json_string += '"toolName": "wordCloud",\n'
     json_string += '"wordCount":' + str(options['termLimit']) + ',\n'
+    json_string += '"filename": "' + str(options['file']) + '",\n'
     j_array = json.dumps( result );
     json_string += '"wordFreq": ' + j_array + '\n'
     json_string += '}\n'
