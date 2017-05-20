@@ -23,7 +23,7 @@ module.exports = {
         return { 
             'name': "mostRecentFeedback",
             'data':[userId],
-            'request': "select * from feedback where userId = ? and submissionId = (select MAX(submissionId) from feedback) ORDER BY filename,lineNum,toolName"
+            'request': "select * from feedback where userId = ? and submissionId = (select MAX(submissionId) from feedback) ORDER BY filename,lineNum,charPos,toolName"
         }
     },
 
@@ -32,7 +32,7 @@ module.exports = {
         return { 
             'name': "mostRecentFeedbackNonVisual",
             'data':[userId],
-            'request': "select * from feedback where userId = ? and runType in (\"writing\",\"programming\") and submissionId = (select MAX(submissionId) from feedback) ORDER BY filename,lineNum,toolName"
+            'request': "select * from feedback where userId = ? and runType in (\"writing\",\"programming\") and submissionId = (select MAX(submissionId) from feedback) ORDER BY filename,lineNum,charPos,toolName"
         }
     },
 
@@ -40,7 +40,7 @@ module.exports = {
          return { 
             'name': "mostRecentFeedbackPerTool",
             'data':[userId,toolName],
-            'request': "select * from feedback where userId = ? and toolName = ? and submissionId = (select MAX(submissionId) from feedback) ORDER BY filename,lineNum,toolName"
+            'request': "select * from feedback where userId = ? and toolName = ? and submissionId = (select MAX(submissionId) from feedback) ORDER BY filename,lineNum,charPos, toolName"
         }
     },
 

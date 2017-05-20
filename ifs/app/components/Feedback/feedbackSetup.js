@@ -4,7 +4,6 @@ var he = require('he');
 var path = require('path');
 
 var fbHighlighter = require('./feedbackHighlighter');
-var buttonMaker = require('./createTextButton');
 var Logger = require( __configs + "loggingConfig");
 
 var Helpers = require( __components+ "FileUpload/fileUploadHelpers");
@@ -72,13 +71,8 @@ function readFeedbackFormat( feedback , options)
 
         //TODO: Positional setup information should be moved to the feedback filtering and organization
         // This decopules the task of highlights and positioning.
-
         if( selectedTool ) {
             setupFilePositionInformation(file, selectedTool,feedbackItems);
-
-            var sortedOrder = [ 'charNum', 'filename', 'toolName'];
-            feedbackItems = _.sortBy( feedbackItems, sortedOrder );
-
             file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
         else 
@@ -113,7 +107,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
             }
-
+            
             // Try to fill out positional information first.
             if( !feedbackItem.charNum ) {
                 feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
@@ -121,7 +115,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 
             // Without a target you have to use the line or a range
             if( !feedbackItem.target ) {
-                if( feedbackItem.hlBegin ) {
+                if( feedbackItem.hlBeginChar ) {
                     // Section to highlight
                     feedbackItem.target = fileParser.getRange( feedbackItem );
                 }

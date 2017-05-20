@@ -76,23 +76,21 @@ def build_json(filename, lang, matches):
         # [char pos relative to start of line, line relative to start of file]
         # 
         # fromx = line position, line number
-        # 
-        hl_begin = [matches[i].fromx, matches[i].fromy + 1]
-        hl_begin = json.dumps(hl_begin)
-        hl_end = [matches[i].tox, matches[i].toy + 1]
-        hl_end = json.dumps(hl_end)
 
         # Meeting IFS Minimum interface
-        json_string += '"charPos": ' + str(matches[i].fromx + 1) + ',\n'
+        json_string += '"charPos": ' + str(matches[i].fromx) + ',\n'
         json_string += '"lineNum": ' + str(matches[i].fromy + 1) + ',\n'
 
-        json_string += ( '"hlBegin": ' + hl_begin + ', '
-                        + '"hlEnd": ' + hl_end + ', '
-                        + '"lang": ' + '"' + lang + '", '
-                        + '"type": "' + matches[i].locqualityissuetype + '", '
-                        + '"toolName": "Language Tool", '
-                        + '"filename": "' + filename + '", '
-                        + '"feedback": ' + '"' + str(matches[i].msg) + '", ')
+        json_string += ( '"hlBeginChar": ' + str(matches[i].fromx) + ', '
+                         + '"hlBeginLine": ' +  str(matches[i].fromy + 1) +  ', '
+                         + '"hlEndChar": ' + str(matches[i].tox) + ', '
+                         + '"hlEndLine": ' + str(matches[i].toy + 1) + ', '
+                         + '"lang": "' + lang + '", '
+                         + '"type": "' + matches[i].locqualityissuetype + '", '
+                         + '"toolName": "Language Tool", '
+                         + '"filename": "' + os.path.basename(filename) + '", '
+                         + '"feedback": "' + str(matches[i].msg) + '", '
+                      )
         j_array = json.dumps(matches[i].replacements)
         json_string += ('"suggestions": ' + j_array
                         + ' }')

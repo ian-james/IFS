@@ -12,6 +12,7 @@ module.exports = {
     'survey_results_table': 'surveyResult',
     'survey_preferences_table': 'survey_preferences',
     'feedback_table':'feedback',
+    'feedback_interaction_table': 'feedback_interaction',
     'users_interation_table': 'userInteractions',
     'user_feedback_table' : 'userFeedback',
     'preferences_table': 'preferences',

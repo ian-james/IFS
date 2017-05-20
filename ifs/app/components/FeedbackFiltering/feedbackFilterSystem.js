@@ -91,7 +91,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 
             // Without a target you have to use the line or a range
             if( !feedbackItem.target ) {
-                if( feedbackItem.hlBegin ) {
+                if( feedbackItem.hlBeginChar ) {
                     // Section to highlight
                     feedbackItem.target = fileParser.getRange( feedbackItem );
                 }

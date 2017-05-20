@@ -157,7 +157,7 @@ function markupFile( file, selectedTool, feedbackItems )
             else if( feedbackItem.lineNum == undefined || feedbackItem.charNum == undefined ){
                 // Previously tried to setup positional information and failed.
                 continue;
-            }           
+            }
             // Assumption should probably change
             var nextMatches =  checkErrorOverlap(feedbackItems, i );
 
@@ -172,7 +172,7 @@ function markupFile( file, selectedTool, feedbackItems )
                 // Assign either the multiError or the specific error type.
                 // Also an array for the feedback Items array that match this error
                 matchClasses =   matchClasses == "" ? feedbackItems[i].type : matchClasses;
-                var options = { 'classes': matchClasses, 'data': idArr };
+                var options = { 'classes': matchClasses, 'data': idArr , 'id': idArr, 'feedbackId':feedbackItems[i].id};
 
                 // Create a popover button at position to highlight text and count the offset.
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);

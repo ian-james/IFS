@@ -187,13 +187,14 @@ function FileParser() {
 
     this.getRange = function( position ) {
 
-        if( position.hasOwnProperty('hlBegin') && position.hasOwnProperty('hlEnd') ) {
+        if( position.hasOwnProperty('hlBeginChar') && position.hasOwnProperty('hlEndChar') &&
+            position.hasOwnProperty('hlBeginLine') && position.hasOwnProperty('hlEndLine') ) {
 
             // IF one same line, just return substr
             // else add until finishe
             
-            var [bch, bline] = position.hlBegin;
-            var [ech, eline] = position.hlEnd;
+            var bch = position.hlBeginChar, bline = position.hlBeginLine;
+            var ech = position.hlEndChar, eline = position.hlEndLine;
 
             var line = this.getLine(position);
             // If errors is on the same line, get the section of code

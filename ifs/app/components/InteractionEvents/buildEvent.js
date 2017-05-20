@@ -51,12 +51,16 @@ module.exports = {
                 'target',
                 'suggestions',
                 'feedback',
-                'severity'
+                'severity',
+                'hlBeginChar',
+                'hlEndChar',
+                'hlBeginLine',
+                'hlEndLine',
             ];
 
             // Pick non-empty and non required keys from feedback object.
-            var k = _.pickBy(toolFeedbackItem, function(value,key){ 
-                return (value != "" && keys.indexOf(key) >= 0 );
+            var k = _.pickBy(toolFeedbackItem, function(value,key){
+                return (value !== "" && keys.indexOf(key) >= 0 );
             });
             e = _.assign(e, rk, k);
 
