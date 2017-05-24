@@ -76,7 +76,7 @@ function readFeedbackFormat( feedback , options)
 
             file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
-        else 
+        else
             file.markedUp = file.content;
     }
 
@@ -116,7 +116,11 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 
             // Without a target you have to use the line or a range
             if( !feedbackItem.target ) {
-                if( feedbackItem.hlBegin ) {
+                // if we are marking up a programming file, then only get the line
+                if (feedbackItem.runType == "programming") {
+                    feedbackItem.target = fileParser.getLine(feedbackItem, false);
+                }
+                else if( feedbackItem.hlBegin ) {
                     // Section to highlight
                     feedbackItem.target = fileParser.getRange( feedbackItem );
                 }
@@ -127,6 +131,10 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                 if(!feedbackItem.target) {
                     feedbackItem.target = fileParser.getLine(feedbackItem,false);
                 }
+            }
+            // Set up a decoded target for Bootstrap UI Popover
+            if ( !feedbackItem.decodedTarget ) {
+                feedbackItem.decodedTarget = he.decode(feedbackItem.target);
             }
         }
     }

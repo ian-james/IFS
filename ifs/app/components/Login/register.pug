@@ -1,13 +1,15 @@
 extends ../../shared/views/pageLayout.pug
 
+block scripts
+    script(src="/validate/jquery.validate.min.js")
+    script(src="shared/views/js/form-rules.js")
+
 block content
     h1.uk-text-center Sign Up
     div(class="uk-card uk-card-default uk-card-body uk-align-center uk-width-1-2@s")
         div(uk-alert).uk-alert-danger
             p.errorMessage #{messages.errorMessage}
 
-        script(src="/validate/jquery.validate.min.js")
-        script(src="shared/views/js/form-rules.js")
         form(id="registerFrm" name="register" method="post" action="/register" uk-grid).uk-grid-small
             div.uk-width-1-1
                 input(type="text" name="firstname" placeholder="First name" required).uk-input#inputFirstName

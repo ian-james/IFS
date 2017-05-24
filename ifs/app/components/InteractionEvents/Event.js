@@ -1,6 +1,6 @@
 module.exports = {
     makeEvent: function( userId, et, name, data, time = Date.now() ) {
-        return { 
+        return {
             "eventType": et,
             "name": name,
             "time": time,
@@ -10,7 +10,7 @@ module.exports = {
     },
 
     trackEvent(iosocket, event ) {
-        console.log("SEDNING EVENT", event );
+        console.log("SENDING EVENT", event );
         iosocket.emit("trackEvent", event);
     },
 

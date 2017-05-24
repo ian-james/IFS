@@ -7,7 +7,6 @@ block scripts
     link(rel="stylesheet" href="/prettyifyTheme/desert.css")
     //link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
 
-    link(rel="stylesheet" href="components/Feedback/feedback.css")
     link(rel="stylesheet" href="components/Feedback/errors.css")
     link(rel="stylesheet" href="components/Feedback/feedbackMini.css")
     script(src="/prettyify/run_prettify.js")
@@ -22,9 +21,9 @@ block content
                     label(for="toolSelector").uk-form-label View feedback from tool:
                     div.uk-form-controls
                         select(onchange="this.form.submit()" name="toolSelector")#toolSelectorId.uk-select
-                            option( selected= "All"==selectedTool ) All
+                            option(selected="All"==selectedTool ) All
                             each tool in toolsUsed
-                                option( selected= tool.toolName==selectedTool) #{ tool.toolName }
+                                option(selected=tool.toolName==selectedTool) #{ tool.displayName }
             div.generalErrorsSection
                 if feedbackItems && feedbackItems.length > 0
                     hr
@@ -40,20 +39,20 @@ block content
 
         hr
         div.filesSection
-            uib-tabset( active="active")
+            uib-tabset(active="active")
                 each file, findex in files
                     uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
-                        div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.form-control.markedTextArea.container-fluid
+                        div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
                             if toolType == 'programming'
-                                pre.markedTextArea2.prettyprint
+                                pre.prettyprint
                                     code !{file.markedUp}
                             else
-                                pre.markedTextArea2
+                                pre
                                     code !{file.markedUp}
                         br
 
             div(class="uk-offcanvas-content")
-                include popover.html
+                include popover.pug
 
     script(src="components/Feedback/feedbackController.js")
 

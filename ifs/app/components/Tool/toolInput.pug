@@ -7,7 +7,8 @@ div(ng-if="option.type == 'text'")
     input(type="text" name="{{option.name}}" id="{{option.name}}")
 
 div(ng-if="option.type == 'select'")
-    label(for="{{ option.displayName }}")
+    label(for="{{ option.displayName }}").uk-form-label
         | {{ option.displayName }}
-    select(id="{{option.name}}" name="{{option.name}}").uk-select
-        option( ng-repeat='val in option.values') {{ val }}
+    div.uk-form-controls
+        select(id="{{option.name}}" name="{{option.name}}").uk-select
+            option( ng-repeat='val in option.values') {{ val }}
