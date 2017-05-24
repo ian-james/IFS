@@ -8,26 +8,37 @@
 /* mark up for text boxes */
 .spelling, .error {
     display:inline-block;
-    background-color: #fb9fb1 !important;
+    background-color: rgba(238, 46, 36, 0.6) !important; /* #ee2e24 */
     font-weight: 800 !important;
     text-decoration: none !important;
+    border-radius: 3px !important;
 }
 
 .grammar {
     display: inline-block;
     background-color: #6fc2ef !important;
     text-decoration: none !important;
+    border-radius: 3px !important;
+}
+
+.whitespace {
+    display: inline-block;
+    background-color: #a0a0a0 !important;
+    text-decoration: underline dashed #ddd !important;
+    border-bottom: 1px !important;
+    border-radius: 3px !important;
 }
 
 .multiError {
     display: inline-block;
     background-color: #e1a3ee !important;
     text-decoration: none !important;
+    border-radius: 3px !important;
 }
 
 .suggestion {
     display:inline-block;
-    color: green !important;
+    color: #00c918 !important;
     text-decoration: none !important;
 }
 
@@ -35,23 +46,25 @@
     display: inline-block;
     background-color: #c8c8fa !important;
     text-decoration: none !important;
+    border-radius: 3px !important;
 }
 
 .warning {
     display: inline-block;
     background-color: #eda987 !important;
     font-style: italic !important;
+    border-radius: 3px !important;
 }
 
 /* mark up for popover cards */
 .spelling-display, .error-display {
     display: inline-block;
-    color:red !important;
+    color: #ee2e24!important;
 }
 
 .grammar-display {
     display: inline-block;
-    color: blue !important;
+    color: #1e87f0 !important;
 }
 
 .multiError-display {
@@ -62,7 +75,7 @@
 .suggestion-display {
     display: inline-block;
     display:inline-block;
-    color: green !important;
+    color: #00C918 !important;
 }
 
 .style-display {
