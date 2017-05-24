@@ -137,7 +137,7 @@ function markupFile( file, selectedTool, feedbackItems )
 
     var nextItem = null;
     var idArr = [];
-    var matchClasses = "";  
+    var matchClasses = "";
 
     for( var i = 0; i < feedbackItems.length; i++ )
     {
@@ -149,7 +149,7 @@ function markupFile( file, selectedTool, feedbackItems )
                 // Most have line number and character position.
                 // Interestingly, calculating this value can give different answers...
                 // I think it depends on line-breaks.
-                // Momementarily setting this to always run.            
+                // Momementarily setting this to always run.
             if( !feedbackItem.filename || !feedbackItem.target ) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
@@ -157,7 +157,7 @@ function markupFile( file, selectedTool, feedbackItems )
             else if( feedbackItem.lineNum == undefined || feedbackItem.charNum == undefined ){
                 // Previously tried to setup positional information and failed.
                 continue;
-            }           
+            }
             // Assumption should probably change
             var nextMatches =  checkErrorOverlap(feedbackItems, i );
 
@@ -166,24 +166,23 @@ function markupFile( file, selectedTool, feedbackItems )
                 matchClasses = " multiError";
             }
 
-            idArr.push(i);
             if(!nextMatches)
             {
                 // Assign either the multiError or the specific error type.
                 // Also an array for the feedback Items array that match this error
                 matchClasses =   matchClasses == "" ? feedbackItems[i].type : matchClasses;
-                var options = { 'classes': matchClasses, 'data': idArr };
+                var options = { 'classes': matchClasses, 'data': i };
 
                 // Create a popover button at position to highlight text and count the offset.
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);
                 var str = newStr.start + he.decode(newStr.mid) + newStr.end;
                 var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset } );
+
                 content = contentObj.content;
                 offset += ( (str.length  - newStr.mid.length + 1 ) + contentObj.offset);
 
                 // Reset data
                 matchClasses = "";
-                idArr = [];
             }
         }
     }

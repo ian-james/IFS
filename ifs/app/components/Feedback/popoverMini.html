@@ -1,12 +1,12 @@
 <div class="uk-card uk-text-center" style="margin:0;">
     <div class='uk-card-header'>
         <h3 class="uk-card-title">
-            {{ selectedFeedback.type  }}
+            {{ selectedFeedback.type }}
         </h3>
     </div>
-    <div class="uk-card-body">
+    <div class="uk-card-body" ng-if="selectedFeedback.runType == 'writing' && selectedFeedback.type != 'whitespace'">
         <span class="{{ selectedFeedback.type }}-display">
-            {{ selectedFeedback.target}}
+            {{ selectedFeedback.target }}
         </span>
         <div>
             <span uk-icon="icon: arrow-up"></span>
@@ -16,6 +16,12 @@
             {{ selectedFeedback.suggestions[0]}}
         </span>
     </div>
+    <div class="uk-card-body" ng-if="selectedFeedback.runType === 'programming'">
+        <span class="{{ selectedFeedback.type }}-display">
+            {{ selectedFeedback.feedback }}
+        </span>
+    </div>
+
     <div class="uk-card-footer">
             <a href="#" class="uk-button uk-button-text" uk-toggle="target: #popOver">Read More
             <span uk-icon="icon: info"></span>

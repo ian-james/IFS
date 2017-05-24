@@ -31,7 +31,7 @@ function Position()
     this.lineNum = 0; //Global
     this.charPos = 0; //Relative Character position per line.
     this.wordPos = 0; // Relative
-} 
+}
 
 function FileInfo()
 {
@@ -144,7 +144,7 @@ function FileParser() {
     };
 
     this.getLine = function( position, is0Based = true ) {
-        
+
         if( this.validLineNum(position ) ) {
                 if(position.lineNum - 1 < 0)
                     return "";
@@ -155,7 +155,7 @@ function FileParser() {
     };
 
     this.getLineI = function( i, is0Based = true ) {
-        
+
         if( i < this.fileInfo.numLines && i >= 0 ) {
             var ni = is0Based ? i-1 : i;
             return this.sentences[ ni ];
@@ -187,11 +187,12 @@ function FileParser() {
 
     this.getRange = function( position ) {
 
+        console.log("I AM IN GETRANGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         if( position.hasOwnProperty('hlBegin') && position.hasOwnProperty('hlEnd') ) {
 
             // IF one same line, just return substr
             // else add until finishe
-            
+
             var [bch, bline] = position.hlBegin;
             var [ech, eline] = position.hlEnd;
 
@@ -202,12 +203,12 @@ function FileParser() {
             }
             else {
                 // Errors spans multiple lines.
-                
+
                 var target = this.getLineSectionEnd(line, bch);
-                
+
                 for( var i = bline+1; i<=eline; i++) {
                     line = this.getLineI(i);
-                    
+
                     if( i == ech) {
                         target += this.getLineSectionEnd(line,0,ech);
                     }
