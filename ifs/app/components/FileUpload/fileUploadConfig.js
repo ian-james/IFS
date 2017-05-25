@@ -74,19 +74,14 @@ var storage = multer.diskStorage({
         // date will be year-month-date
         // submissionTime will need to include minutes and seconds.
         var dest = "./uploads";
-        if(req.user && req.user.username)
-        {
-            // Must be logged in
-            username = req.user.username;
-            var at = username.indexOf('@');
-            username = username.substr(0, at >= 0 ? at : username.length );
-        }
+        console.log('USER OBJECT\n' + JSON.stringify(req.user));
 
         // LIttle Time Hack to keep all the submission files in the same output folder but also timebased.
         var submissionTime = Date.now();
         submissionTime = Math.floor( submissionTime / 100 );
+        var userID = req.user.id;
 
-        var submissionFolder = path.join(dest,username, Helpers.getYearMonthDayStr(), "" + submissionTime);
+        var submissionFolder = path.join(dest,userID.toString(), Helpers.getYearMonthDayStr(), "" + submissionTime);
 
         mkdirp(submissionFolder, function(err) {
             if(err) {
