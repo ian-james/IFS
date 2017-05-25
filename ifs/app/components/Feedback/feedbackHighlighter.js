@@ -176,7 +176,7 @@ function markupFile( file, selectedTool, feedbackItems )
                 //      Might be deprecated soon too. Essentially old method allows moving between errors on the readMore. This
                 //      fix remove that capability.
                 //OLD var options = { 'classes': matchClasses, 'data': idArr , 'id': idArr, 'feedbackId':feedbackItems[i].id};
-                var options = { 'classes': matchClasses, 'data': i , , 'id': i 'feedbackId':feedbackItems[i].id};
+                var options = { 'classes': matchClasses, 'data': i , 'id': i, 'feedbackId':feedbackItems[i].id};
 
                 // Create a popover button at position to highlight text and count the offset.
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);

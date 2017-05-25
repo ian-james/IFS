@@ -54,7 +54,7 @@ function readFeedbackFormat( feedback , options)
         files = _.sortBy(files, ['filename']);
 
     // A Unique list of tools used for UI
-    var toolsUsed = _.uniqBy(feedbackItems,'toolName');
+    var toolsUsed = _.uniq(_.map(feedbackItems,'toolName'));
 
     // Suggestions are stringified json, convert back to array.
     for(var i = 0; i < feedbackItems.length;i++){
@@ -62,7 +62,8 @@ function readFeedbackFormat( feedback , options)
     }
 
     // Tool should always be selected unless it's defaulted too.
-    var selectedTool = (options && options['tool'] || toolsUsed.length >= 1 && toolsUsed[0].toolName);
+    var toolIsSelected = ( options && options['tool'] || toolsUsed.length >= 1);
+    var selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
     // For each file, read in the content and mark it up for display.
     for( var i = 0; i < files.length; i++ )
     {
@@ -71,7 +72,7 @@ function readFeedbackFormat( feedback , options)
 
         //TODO: Positional setup information should be moved to the feedback filtering and organization
         // This decopules the task of highlights and positioning.
-        if( selectedTool ) {
+        if( toolIsSelected ) {
             setupFilePositionInformation(file, selectedTool,feedbackItems);
             file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
@@ -80,8 +81,11 @@ function readFeedbackFormat( feedback , options)
     }
 
     var result =  { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
-    if(selectedTool)
-        result['toolType'] = toolsUsed[0].runType;
+    if(selectedTool){
+        var i =  selectedTool == "All" ? 0 : _.findIndex(feedbackItems,['toolName',selectedTool]);
+        if( i >= 0 && feedbackItems.length > i)
+            result['toolType'] = feedbackItems[i]['runType'];
+    }
     return result;
 }
 
@@ -115,15 +119,13 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 
             // Without a target you have to use the line or a range
             if( !feedbackItem.target ) {
-<<<<<<< HEAD
-                if( feedbackItem.hlBeginChar ) {
-=======
+
                 // if we are marking up a programming file, then only get the line
                 if (feedbackItem.runType == "programming") {
                     feedbackItem.target = fileParser.getLine(feedbackItem, false);
                 }
-                else if( feedbackItem.hlBegin ) {
->>>>>>> master
+                else if( feedbackItem.hlBeginChar ) {
+
                     // Section to highlight
                     feedbackItem.target = fileParser.getRange( feedbackItem );
                 }
@@ -156,10 +158,5 @@ function toolsMatch( toolName, selectedToolName ) {
     return ( selectedToolName == "All" || toolName == selectedToolName );
 }
 
-<<<<<<< HEAD
 module.exports.setupFeedback = readFeedbackFormat;
 module.exports.readFileAndSetupFeedback = readFiles;
-=======
-module.exports.readFeedbackFormat = readFeedbackFormat;
-module.exports.setupFeedback = readFiles;
->>>>>>> master

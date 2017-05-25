@@ -11,7 +11,6 @@ block scripts
     link(rel="stylesheet" href="components/Feedback/feedbackMini.css")
     script(src="/prettyify/run_prettify.js")
     script(src="/socket.io/socket.io.js")
-    script(src="/components/InteractionEvents/feedbackEvents.js")
 
 block content
     div(ng-controller="feedbackCtrl").uk-container
@@ -23,7 +22,7 @@ block content
                         select(onchange="this.form.submit()" name="toolSelector")#toolSelectorId.uk-select
                             option(selected="All"==selectedTool ) All
                             each tool in toolsUsed
-                                option(selected=tool.toolName==selectedTool) #{ tool.displayName }
+                                option(selected=tool==selectedTool) #{ tool }
             div.generalErrorsSection
                 if feedbackItems && feedbackItems.length > 0
                     hr

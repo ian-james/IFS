@@ -112,4 +112,4 @@ module.exports = {
             'request':"select type as value from ( select type, COUNT(*) as val from feedback where  userId = ? GROUP BY type) a ORDER BY a.val LIMIT 1"
         };
     }
-};
+}

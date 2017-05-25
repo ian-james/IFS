@@ -29,7 +29,7 @@ module.exports = {
         };
     },
 
-  
+
     /**
      * Feedback items are stored using this format in DB.
      * @param  {[type]} sessionId        [description]
@@ -110,9 +110,6 @@ module.exports = {
         catch( e ){
             Logger.error("Error Making feedback interaction event");
         }
-
-        console.log("E IS MC=", e );
-
         return e;
     },
 
