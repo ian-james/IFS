@@ -1,6 +1,7 @@
 /**
- * THis creates a long list of data read from database.
- * Consider it for a admin page.
+ * This creates a long list of data read from database.
+ * Each section has their own page but also a full page that is being developed
+ * As kind of a view all stats.
  */
 
 // Event DB requests
@@ -10,6 +11,7 @@ var submissionDB = require(__components + "InteractionEvents/submissionEvents.js
 var prefDB = require(__components + "InteractionEvents/preferenceEvents.js" );
 var feedbackDB = require(__components + "InteractionEvents/feedbackEvents.js" );
 var surveyDB = require(__components + "InteractionEvents/surveyEvents.js" );
+var feedbackInteractionDB = require(__components + "InteractionEvents/feedbackInteractionEvents.js" );
 
 module.exports = {
 
@@ -102,7 +104,11 @@ module.exports = {
         var sessionId = req.user.sessionId;
 
         return [
-            // TODO:JF
+            feedbackInteractionDB.getFeedbackViewedThisSession(id,sessionId),
+            feedbackInteractionDB.getFeedbackViewedThisSubmission(id,sessionId),
+            feedbackInteractionDB.getFeedbackViewedMoreThisSession(id,sessionId),
+            feedbackInteractionDB.getFeedbackViewedMoreThisSubmission(id,sessionId),
+            // TODO:JF Fill in more options
         ];
     },
     

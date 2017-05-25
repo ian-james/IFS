@@ -37,7 +37,7 @@ module.exports = {
          return { 
             'name': "mostRecentFeedbackPerTool",
             'data':[userId,toolName],
-            'request': "select * from feedback where userId = ? and toolName = ? and submissionId = (select MAX(submissionId) from feedback) ORDER BY filename,lineNum,charPos, toolName"
+            'request': "select * from feedback where userId = ? and toolName = ? and submissionId = (select MAX(submissionId) from feedback where userId = ?) ORDER BY filename,lineNum,charPos, toolName"
         }
     },
 
