@@ -53,7 +53,6 @@ module.exports = {
      * @return {[type]}          [description]
      */
     btrackFeedbackInteractionEvent: function(iosocket, event){
-        console.log("Btrack FE", event);
         dbHelpers.insertEvent(config.feedback_interaction_table,event);
         iosocket.broadcast.emit('trackEvent', event);
     }

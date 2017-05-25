@@ -34,8 +34,6 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
             $scope.sideSelectedId = $scope.selectedArray[ $scope.sideSelectedArrId ];
             $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
         }
-        else
-            console.log("SET SECLT ITEM");
     };
     
 

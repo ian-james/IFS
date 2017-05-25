@@ -14,8 +14,6 @@ $(function() {
         }
         else if( $(e.target).hasClass("nocode") ){
            // Clicking a link for feedback minicard.
-            var feedbackId = $(e.target).attr('data-feedbackid');
-            console.log("FEEDBACK ID = ", feedbackId);
             socket.emit("feedbackEvent",{
                     "feedbackId": parseInt($(e.target).attr('data-feedbackid')),
                     "submissionId": parseInt($(e.target).attr('data-submissionId')),
@@ -25,7 +23,6 @@ $(function() {
         else if( $(e.target).attr("href") == "#") {
             // NOTE: HANDLED IN popoverFeedbackEvents.js
             // Here in case it falls into this case.
-            console.log("read more", $(e.target)[0]);
             socket.emit("feedbackEvent",{
                     "feedbackId": $(e.target).attr('data-feedbackid'),
                     "submissionId":  $(e.target).attr('data-submissionId'),

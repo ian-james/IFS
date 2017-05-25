@@ -1,7 +1,10 @@
 var Logger = require( __configs + "loggingConfig");
 var eventDB = require(__components + "InteractionEvents/event.js" );
 
-/* build basic objects for event Event Types */
+/**
+ * These are helper functions to build events, some events will only arrive from "objects"
+ * So then we're simplying 'picking' the keys we need from the object.
+ */
 
 var _ = require('lodash');
 
