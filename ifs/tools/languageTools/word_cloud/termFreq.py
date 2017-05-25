@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #
-# This script uses Hunspell to process arbitrary text strings and provide
-# suggestions for spelling correction.
+# This script calculates word frequency and organizes results for wordcloud2.js
 #
 # Copyright (c) 2017 James Fraser jfrase09@uoguelph.ca
 #
@@ -16,8 +15,7 @@
 # LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-# 
-# 
+#
 # Usage notes: You'll have to install stopwords from nltk.download('stopwords')
 
 import sys, getopt, os
@@ -72,10 +70,10 @@ def main(argv):
     for opt, arg in opts:
         if opt in ('--terms', '-t'):
            options['termLimit'] = int(arg)
-            
+
         elif opt in ('--file', '-f'):
             ifile = arg
-            if not (os.path.isfile(ifile)): 
+            if not (os.path.isfile(ifile)):
                 sys.stderr.write( 'Error. File ' + ifile + ' does not exist.' )
                 sys.exit()
         elif opt in ('--ifsOff', '-i'):

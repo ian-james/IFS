@@ -40,9 +40,9 @@ def print_usage(supported_langs = []):
         supported_langs = list(supported_langs)  # sets are not iterable?
         print('Supported languages on this system:')
         for i in range(len(supported_langs)):
-            print(supported_langs[i],)
+            print(supported_langs[i], end='')
             if i != len(supported_langs) - 1:
-                print(",",)
+                print(",", end='')
         print()
 
 # grcheck(string to_check, language_check.LanguageTool ltool,

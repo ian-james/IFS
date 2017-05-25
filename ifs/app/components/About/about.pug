@@ -1,0 +1,114 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container
+        div#ifs.uk-section
+            h1 About IFS
+            // Better description probably needed
+            p
+                | The 
+                em Immediate Feed Back System 
+                | (IFS) is a web application for student programming and essay writing assessment. Feedback is generated based on the output of a set of configurable 
+                a(href="#tools") tools 
+                | which students can enable or disable as they choose.
+
+        // contributors organized alphabetically by last name for now
+        div#team.uk-section
+            h1 Team
+            p These are some of the awesome people that made IFS happen.
+            div(uk-grid).uk-grid-small.uk-grid-match
+                div(class="uk-width-1-2@m")
+                    div.uk-card.uk-card-default
+                        div.uk-card-header
+                            div(uk-grid).uk-grid-small.uk-flex-middle
+                                div.uk-width-auto
+                                    img(src="../../shared/img/jfraser.png").avatar
+                                div.uk-width-expand
+                                    h3.uk-card-title.uk-margin-remove-bottom Jamey Fraser
+                                    p.uk-text-meta.uk-margin-remove-top
+                                        a(href="https://github.com/ian-james" target="blank")
+                                            span(uk-icon="icon: github").uk-margin-small-right
+                                            span.uk-margin-right ian-james
+                        div.uk-card-body
+                            p Jamey Fraser is a graduate student at the University of Guelph.
+
+                div(class="uk-width-1-2@m")
+                    div.uk-card.uk-card-default
+                        div.uk-card-header
+                            div(uk-grid).uk-grid-small.uk-flex-middle
+                                div.uk-width-auto
+                                    img(src="../../shared/img/dgillis.png").avatar
+                                div.uk-width-expand
+                                    h3.uk-card-title.uk-margin-remove-bottom Dr. Daniel Gillis
+                                    p.uk-text-meta.uk-margin-remove-top
+                                        a(href="https://www.uoguelph.ca/computing/people/daniel-gillis" target="blank")
+                                            span(uk-icon="icon: world").uk-margin-small-right
+                                            span.uk-margin-right Guelph Computing
+                        div.uk-card-body
+                            p Dr. Daniel Gillis is an Assistant Professor in the School of Computer Science at the University of Guelph.
+
+                div(class="uk-width-1-2@m")
+                    div.uk-card.uk-card-default
+                        div.uk-card-header
+                            div(uk-grid).uk-grid-small.uk-flex-middle
+                                div.uk-width-auto
+                                    img(src="../../shared/img/jmccuaig.png").avatar
+                                div.uk-width-expand
+                                    h3.uk-card-title.uk-margin-remove-bottom Dr. Judi McCuaig
+                                    p.uk-text-meta.uk-margin-remove-top
+                                        a(href="https://www.uoguelph.ca/computing/people/judi-mccuaig" target="blank")
+                                            span(uk-icon="icon: world").uk-margin-small-right
+                                            span.uk-margin-right Guelph Computing
+                        div.uk-card-body
+                            p Dr. Judi McCuaig is an Associate Director and Associate Professor in the School of Computer Science at the University of Guelph.
+
+                div(class="uk-width-1-2@m")
+                    div.uk-card.uk-card-default
+                        div.uk-card-header
+                            div(uk-grid).uk-grid-small.uk-flex-middle
+                                div.uk-width-auto
+                                    img(src="../../shared/img/krourke.png").avatar
+                                div.uk-width-expand
+                                    h3.uk-card-title.uk-margin-remove-bottom Keefer Rourke
+                                    p.uk-text-meta.uk-margin-remove-top
+                                        a(href="https://krourke.org" target="blank")
+                                            span(uk-icon="icon: world").uk-margin-small-right
+                                            span.uk-margin-right krourke.org
+                                        a(href="https://github.com/keeferrourke" target="blank")
+                                            span(uk-icon="icon: github").uk-margin-small-right
+                                        | keeferrourke
+                        div.uk-card-body
+                            p Keefer Rourke is an undergraduate student at the University of Guelph.
+
+
+        div#tools.uk-section
+            h1 IFS Tools
+            p
+                | The following are all the IFS core tools, with a brief description of each. See the 
+                a(href="https://github.com/ian-james/IFS/wiki#hacking" target="_blank") wiki 
+                | for more information on how you can add to this list for your own IFS installation.
+
+            // display fancy variable list of tools
+            // toolAbtList.prog and lang are the two variables and each has an array called tools.
+            div(ng-controller="aboutCtrl")
+                div.uk-clearfix
+                    h2.uk-float-left Programming Tools
+                    span(uk-toggle="target: #progAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down")#progAbtToggle.uk-icon-button.uk-float-right
+                div(uk-grid hidden)#progAbt.uk-grid-small.uk-grid-match
+                    div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.prog.tools")
+                        include ./tool-card.pug
+
+                br
+                div.uk-clearfix
+                    h2.uk-float-left Language Tools
+                    span(uk-toggle="target: #langAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down")#langAbtToggle.uk-icon-button.uk-float-right
+                div(uk-grid hidden)#langAbt.uk-grid-small
+                    div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.lang.tools")
+                        include ./tool-card.pug
+
+        script(src="components/About/aboutController.js")
+        script(src="components/About/about-toggles.js")
+
+        // It might be nice to include this section, in order to properly attribute the dependencies that we are pulling in via npm
+        // div#licenses.uk-section
+        //    h1 Open Source Licenses

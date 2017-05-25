@@ -21,7 +21,7 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     }
 
 
-    $scope.setSelectedItem = function( event ) {
+    $scope.setSelectedItem = function(event) {
         // Array of items matching this error are passed
         
         if( event.target.getAttribute("data-feedback")){
@@ -35,21 +35,17 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
             $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
         }
     };
-    
 
-    $scope.getNextSelected = function() 
-    {        
+    $scope.getNextSelected = function() {
         $scope.sideSelectedArrId++;
         $scope.sideSelectedArrId =  $scope.sideSelectedArrId  % $scope.selectedArray.length;
 
         // Set the first item for the mini popover
         $scope.sideSelectedId =  $scope.selectedArray[ $scope.sideSelectedArrId ];
         $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
-        
     };
 
-    $scope.getPrevSelected = function() 
-    {
+    $scope.getPrevSelected = function() {
         if( $scope.sideSelectedArrId <= 0 )
             $scope.sideSelectedArrId = $scope.selectedArray.length-1;
         else
@@ -65,11 +61,12 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.toolsUsed = [];
     $scope.feedbackItems=[];
 
-    $http.get("/feedback/data").then( function(res) {
+    $http.get("/feedback/data").then(function(res) {
         $scope.feedbackItems = res.data.feedbackItems;
         $scope.files = res.data.files;
         $scope.toolsUsed = res.data.toolsUsed;
     });
+
 
 /*
     $http.get("/feedbackTest/data").then( function(res) {

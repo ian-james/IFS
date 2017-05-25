@@ -13,7 +13,7 @@ var feedbackEvents = require(__components + "InteractionEvents/feedbackEvents");
 module.exports = function( app ) {
 
 
-/**************************************************************  Values Controller *************************/
+/**************************  Values Controller *************************/
     /**
      * Read the feedback information file
      *  and process and highlight
@@ -39,13 +39,13 @@ module.exports = function( app ) {
                 res.render( viewPath + "feedback", result );
             }
         });
-    }
+    };
 
-    app.get('/feedback', function(req,res ){
+    app.get('/feedback', function(req, res) {
        showFeedback(req,res);
     });
 
-    app.post('/feedback', function(req,res,next){
+    app.post('/feedback', function(req, res, next) {
         var opt = { 'tool': req.body.toolSelector };
         req.session.activeTool = req.body.toolSelector;
         showFeedback(req,res,opt);

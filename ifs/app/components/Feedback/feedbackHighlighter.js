@@ -137,7 +137,7 @@ function markupFile( file, selectedTool, feedbackItems )
 
     var nextItem = null;
     var idArr = [];
-    var matchClasses = "";  
+    var matchClasses = "";
 
     for( var i = 0; i < feedbackItems.length; i++ )
     {
@@ -149,7 +149,7 @@ function markupFile( file, selectedTool, feedbackItems )
                 // Most have line number and character position.
                 // Interestingly, calculating this value can give different answers...
                 // I think it depends on line-breaks.
-                // Momementarily setting this to always run.            
+                // Momementarily setting this to always run.
             if( !feedbackItem.filename || !feedbackItem.target ) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
@@ -166,24 +166,28 @@ function markupFile( file, selectedTool, feedbackItems )
                 matchClasses = " multiError";
             }
 
-            idArr.push(i);
             if(!nextMatches)
             {
                 // Assign either the multiError or the specific error type.
                 // Also an array for the feedback Items array that match this error
                 matchClasses =   matchClasses == "" ? feedbackItems[i].type : matchClasses;
-                var options = { 'classes': matchClasses, 'data': idArr , 'id': idArr, 'feedbackId':feedbackItems[i].id};
+
+                //TODO JF: This helps fixes an issue, but keeping i vs idarr as it potentially reduces functionality but that functionality
+                //      Might be deprecated soon too. Essentially old method allows moving between errors on the readMore. This
+                //      fix remove that capability.
+                //OLD var options = { 'classes': matchClasses, 'data': idArr , 'id': idArr, 'feedbackId':feedbackItems[i].id};
+                var options = { 'classes': matchClasses, 'data': i , , 'id': i 'feedbackId':feedbackItems[i].id};
 
                 // Create a popover button at position to highlight text and count the offset.
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);
                 var str = newStr.start + he.decode(newStr.mid) + newStr.end;
                 var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset } );
+
                 content = contentObj.content;
                 offset += ( (str.length  - newStr.mid.length + 1 ) + contentObj.offset);
 
                 // Reset data
                 matchClasses = "";
-                idArr = [];
             }
         }
     }
@@ -193,4 +197,3 @@ function markupFile( file, selectedTool, feedbackItems )
 
 module.exports.replaceText = replaceText;
 module.exports.markupFile = markupFile;
-

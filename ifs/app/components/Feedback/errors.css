@@ -1,27 +1,90 @@
-.spelling
-{
+/***
+ * stylesheet for feedback errors, warnings, and suggestions
+ *
+ * note: the !important directive (though usually discouraged), is necessary
+ * here in order to ensure the mark-up is not overridden by code-highlighting
+ ***/
+
+/* mark up for text boxes */
+.spelling, .error {
     display:inline-block;
-    color:red;
-    text-decoration: underline;
+    background-color: #fb9fb1 !important;
+    font-weight: 800 !important;
+    text-decoration: none !important;
+    border-radius: 3px !important;
 }
 
-.grammar 
-{
-    color: blue;
-    
+.grammar {
+    display: inline-block;
+    background-color: #6fc2ef !important;
+    text-decoration: none !important;
+    border-radius: 3px !important;
+}
+
+.whitespace {
+    display: inline-block;
+    background-color: #a0a0a0 !important;
+    text-decoration: underline dashed #ddd !important;
+    border-bottom: 1px !important;
+    border-radius: 3px !important;
 }
 
 .multiError {
-    color:orange;
+    display: inline-block;
+    background-color: #e1a3ee !important;
+    text-decoration: none !important;
+    border-radius: 3px !important;
 }
 
-.suggestion
-{
+.suggestion {
     display:inline-block;
-    color:green;
+    color: #00c918 !important;
+    text-decoration: none !important;
 }
 
-.style
-{
-    color: purple;
+.style {
+    display: inline-block;
+    background-color: #c8c8fa !important;
+    text-decoration: none !important;
+    border-radius: 3px !important;
+}
+
+.warning {
+    display: inline-block;
+    background-color: #eda987 !important;
+    font-style: italic !important;
+    border-radius: 3px !important;
+}
+
+/* mark up for popover cards */
+.spelling-display, .error-display {
+    display: inline-block;
+    color: #ee2e24!important;
+}
+
+.grammar-display {
+    display: inline-block;
+    color: #1e87f0 !important;
+}
+
+.multiError-display {
+    display: inline-block;
+    color: pink !important;
+}
+
+.suggestion-display {
+    display: inline-block;
+    display:inline-block;
+    color: #00C918 !important;
+}
+
+.style-display {
+    display: inline-block;
+    color: purple !important;
+}
+
+.warning-display {
+    display: inline-block;
+    color: orange !important;
+    font-style: italic !important;
 }

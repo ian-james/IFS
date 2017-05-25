@@ -1,5 +1,9 @@
 extends ../../shared/views/pageLayout.pug
 
+block scripts
+    script(src="/validate/jquery.validate.min.js")
+    script(src="shared/views/js/form-rules.js")
+
 block content
     h1.uk-text-center  Welcome to IFS!
     div(class="uk-card uk-card-default uk-card-body uk-align-center uk-width-1-2@s")
@@ -7,20 +11,15 @@ block content
             div(uk-alert).uk-alert-danger
                 p.errorMessage #{messages.errorMessage}
 
-            script(src="/validate/jquery.validate.min.js")
-            script(src="shared/views/js/form-rules.js")
-
             form(id="loginFrm" name="login" method="post" action="/login" uk-grid).uk-grid-small
                 div.uk-width-1-1
                     input(type="email" name="username" placeholder="Enter email" required).uk-input#inputEmail
                 div.uk-width-1-1
                     input(type="password" name="password" placeholder="Enter password" required).uk-input#pwd
-
                 div.uk-width-1-2
-                    .checkbox
                     label
-                    input( id="rememberMe" type="checkbox" name="checkbox").uk-checkbox
-                    |   Remember me?
+                        input(type="checkbox" name="checkbox")#rememberMe.uk-checkbox
+                        |  Remember me?
 
                 div.uk-width-1-2
                     input(type="submit" value="Login").uk-button.uk-button-default.uk-align-right

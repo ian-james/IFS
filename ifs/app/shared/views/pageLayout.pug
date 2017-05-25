@@ -9,8 +9,10 @@ html
         block scripts
 
     body(ng-app="myApp")
-        include ../UI_components/navigationBar.pug
+        div.content
+            include ../UI_components/navigationBar.pug
 
-        block content
+            block content
 
-        block footer
+    footer
+        include ../UI_components/footer.pug

@@ -5,7 +5,7 @@
 var router = require('express').Router();
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
-var maxCookieAge = 1000*60*5; //TODO: Moves this to sessionConfig
+var maxCookieAge = 1000*60*30; //TODO: Moves this to sessionConfig
 
 var Logger = require( __configs + "loggingConfig");
 
@@ -14,7 +14,7 @@ var _ = require('lodash');
 module.exports = function( app, passport ) {
 
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/about'];
+        var nonSecurePaths = ['/', '/login', '/register', '/about','/about/data'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
 
         if(result >= 0 || (req.user) ) {

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-# This script uses Hunspell to process arbitrary text strings and provide
-# suggestions for spelling correction.
+# This script uses proselint to process text and provide suggestions for
+# strengthening language and tone.
 #
 # Copyright (c) 2017  James Fraser  <jamey.fraser@gmail.com>
 #
@@ -116,9 +116,7 @@ def getProcessInfo( cmd, outFile, errorFile ):
 
 # main program that takes arguments
 def main(argv):
-
     ifile = ''
-
     options = { 'tool': 'proselint',
                 'ifs': True,
                 'outFile':'stdout.txt',

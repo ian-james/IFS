@@ -4,22 +4,20 @@ var viewPath = path.join( __dirname + "/");
 var fs = require('fs');
 
 module.exports = function( app ) {
-
     app.route("/preferences")
 
     .get( function(req,res,next){
-        res.render( viewPath + "preferences", { title: 'Prefernces page', message:'ok'})
+        res.render( viewPath + "preferences", { title: 'Preferences', message:'ok'})
     })
 
     .post(function(req,res,next) {
         if( req.body ) {
-            // TODO: Preferences aren't save anywhere except this variable.
+            // TODO: Preferences aren't saved anywhere except this variable.
             // Partially because we don't have preferences yet
-            // This will create a minor bug in that 
+            // This will create a minor bug in that
             if( req.session) {
                 req.session.toolSelect = req.body.toolSelect;
-                req.session.toolFile = req.body.toolSelect == "Programming" ? './tools/toolListProgramming.json'
-                                                                                :  './tools/toolList.json';
+                req.session.toolFile = req.body.toolSelect == "Programming" ? './tools/toolListProgramming.json' :  './tools/toolList.json';
             }
         }
 
@@ -27,10 +25,10 @@ module.exports = function( app ) {
         res.location( "/tool");
         res.redirect( "/tool" );
     });
-     
+
     app.get('/preference/data', function(req,res) {
-        var supportedToolsFile = './users/preferencesList.json';
-        fs.readFile( supportedToolsFile, 'utf-8', function( err, data ) {
+        var preferencesFile = './users/preferencesList.json';
+        fs.readFile( preferencesFile, 'utf-8', function( err, data ) {
             if( err ) {
                 //Unable to get support tools file, larger problem here.
                 Logger.error(err);
