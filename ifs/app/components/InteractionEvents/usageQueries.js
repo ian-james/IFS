@@ -85,7 +85,7 @@ module.exports = {
 
         return [
             feedbackDB.getCountFeedbackItems(id),
-            feedbackDB.getMeanFeedbackPerSubmission(id),
+            //feedbackDB.getMeanFeedbackPerSubmission(id),
             feedbackDB.getToolWithMostFeedback(id),
             feedbackDB.getToolWithLeastFeedback(id),
             feedbackDB.getCountMostFeedback(id),

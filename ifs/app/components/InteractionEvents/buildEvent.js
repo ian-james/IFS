@@ -26,6 +26,15 @@ module.exports = {
         };
     },
 
+  
+    /**
+     * Feedback items are stored using this format in DB.
+     * @param  {[type]} sessionId        [description]
+     * @param  {[type]} userId           [description]
+     * @param  {[type]} submissionId     [description]
+     * @param  {[type]} toolFeedbackItem [description]
+     * @return {[type]}                  [description]
+     */
     makeFeedbackEvent: function( sessionId, userId, submissionId, toolFeedbackItem ){
 
         var e = {};
@@ -69,6 +78,37 @@ module.exports = {
         catch( e ){
             Logger.error("Error Making feedback");
         }
+
+        return e;
+    },
+
+
+    /**
+     * Make feedback interaction events from object for DB.
+     * @param  {[type]} eventData [description]
+     * @return {[type]}           [description]
+     */
+    makeFeedbackInteractionEvent: function( sessionId, userId, eventData ) {
+
+        var e = {};
+        try {
+            e['userId'] = userId;
+            e['sessionId'] = sessionId;
+
+            var requiredKeys = [
+                'submissionId',
+                'feedbackId',
+                'action'
+            ];
+
+            var rk =  _.pick(eventData,requiredKeys);
+            e = _.assign(e, rk);
+        }
+        catch( e ){
+            Logger.error("Error Making feedback interaction event");
+        }
+
+        console.log("E IS MC=", e );
 
         return e;
     },

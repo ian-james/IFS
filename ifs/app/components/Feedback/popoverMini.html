@@ -1,8 +1,7 @@
-<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/components/InteractionEvents/browserFeedbackEvents.js"></script>
+<script type="text/javascript" src="/components/InteractionEvents/popoverMiniFeedbackEvents.js"></script>
 <div class="uk-card uk-card-default uk-card-hover uk-grid-small uk-grid-match" style="margin:0;">
     <div class='uk-card-header'>
-        <h3 class="uk-card-title uk-text-center"> 
+        <h3 class="uk-card-title uk-text-center">
             {{ selectedFeedback.type  }}
         </h3>
     </div>
@@ -18,8 +17,12 @@
         </span>
     </div>
     <div class="uk-card-footer">
-            <a href="#" class="uk-button uk-button-text" uk-toggle="target: #popOver">Read More
+        <a href="#" class="uk-button uk-button-text readMoreEvent"
+            data-feedbackId={{selectedFeedback.id}}
+            data-sessionId={{selectedFeedback.sessionId}}
+            data-submissionId={{selectedFeedback.submissionId}}
+            uk-toggle="target: #popOver">Read More
             <span class="glyphicon glyphicon-expand"></span>
-            </a>
+        </a>
     </div>
 </div>

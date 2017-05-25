@@ -75,10 +75,17 @@ socket_io.on('connection', (socket) => {
                     });
 
                     socket.on('event', function(data) {
-                        //console.log(data);
+                        //console.log("INDEX DATA EVENT", data);
                         //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
                         tracker.btrackEvent(socket, event.makeEvent(sessionId, id, data.eventType, data.name, data.data) );
                         //event.trackEvent( socket, event.makeEvent( id, data.eventType, data.name, data.data ) );
+                    });
+
+                    socket.on('feedbackEvent', function(data){
+
+                        //console.log("IFeedbacl  DATA EVENT", data);
+                        //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
+                        tracker.btrackFeedbackInteractionEvent(socket, event.makeFeedbackInteractionEvent(sessionId,id, data) );
                     });
 
                     socket.on('trackEvent', function(data) {

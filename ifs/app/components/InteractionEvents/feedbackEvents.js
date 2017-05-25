@@ -1,6 +1,3 @@
-/* Helper functions to retrieve feedback events */
-var dbHelpers = require(__components + "Databases/dbHelpers");
-
 module.exports = {
     /************************ Feedback Event *******************************************/
     getCountFeedbackItems: function( userId ){

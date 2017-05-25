@@ -23,14 +23,19 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
 
     $scope.setSelectedItem = function( event ) {
         // Array of items matching this error are passed
-        $scope.selectedArray = event.target.getAttribute("data-feedback");
-        $scope.selectedArray = $scope.selectedArray.split(",");
+        
+        if( event.target.getAttribute("data-feedback")){
+            $scope.selectedArray = event.target.getAttribute("data-feedback");
+            $scope.selectedArray = $scope.selectedArray.split(",");
 
-        $scope.sideSelectedArrId = 0;
+            $scope.sideSelectedArrId = 0;
 
-        // Set the first item for the mini popover
-        $scope.sideSelectedId = $scope.selectedArray[ $scope.sideSelectedArrId ];
-        $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
+            // Set the first item for the mini popover
+            $scope.sideSelectedId = $scope.selectedArray[ $scope.sideSelectedArrId ];
+            $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
+        }
+        else
+            console.log("SET SECLT ITEM");
     };
     
 

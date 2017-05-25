@@ -143,10 +143,29 @@ try  {
             suggestions TEXT, \
             feedback TEXT, \
             severity TEXT, \
+            hlBeginChar INT UNSIGNED, \
+            hlEndChar INT UNSIGNED, \
+            hlBeginLine INT UNSIGNED, \
+            hlEndLine INT UNSIGNED, \
             date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
             PRIMARY KEY(id), \
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
             FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id) \
+        )");
+
+        Logger.info("Create the Table:", config.feedback_interaction_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_interaction_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            sessionId INT UNSIGNED NOT NULL DEFAULT 0, \
+            submissionId INT UNSIGNED NOT NULL, \
+            feedbackId INT UNSIGNED NOT NULL, \
+            action TEXT NOT NULL, \
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id), \
+            FOREIGN Key (feedbackId) REFERENCES " + config.database + "." + config.feedback_table + "(id) \
         )");
 
         Logger.info("Success: Database created.");

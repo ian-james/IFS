@@ -1,6 +1,7 @@
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var submissionEvent = require(__components + "InteractionEvents/submissionEvents.js");
 var eventDB = require(__components + "InteractionEvents/event.js" );
+var config = require(__configs + 'databaseConfig');
 
 var _ = require('lodash');
 
@@ -25,7 +26,7 @@ module.exports = {
      * @param  {[type]} event    [description]
      * @return {[type]}          [description]
      */
-    trackEvent(iosocket, event ) {
+    trackEvent: function (iosocket, event ) {
         //console.log("SEDNING EVENT", event );
         eventDB.insertInteractionEvent(event);
         iosocket.emit("trackEvent", event);
@@ -33,14 +34,27 @@ module.exports = {
     
 
     /**
-     * Tack with broadcast, for client side
+     * Track with broadcast, for client side
      * @param  {[type]} iosocket [description]
      * @param  {[type]} event    [description]
      * @return {[type]}          [description]
      */
-    btrackEvent(iosocket, event ) {
+    btrackEvent: function(iosocket, event ) {
         //console.log("SEDNING BROADCAST EVENT", event );
         eventDB.insertInteractionEvent(event);
         iosocket.broadcast.emit('trackEvent', event);
     },
+
+    /**
+     * [btrackFeedbackEvent tracks feedback events and broadcasts it.]
+     * @param  {[type]} iosocket [description]
+     * @param  {[type]} eventDB  [description]
+     * @param  {[type]} event    [description]
+     * @return {[type]}          [description]
+     */
+    btrackFeedbackInteractionEvent: function(iosocket, event){
+        console.log("Btrack FE", event);
+        dbHelpers.insertEvent(config.feedback_interaction_table,event);
+        iosocket.broadcast.emit('trackEvent', event);
+    }
 };
