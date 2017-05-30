@@ -108,6 +108,7 @@ module.exports = {
             feedbackInteractionDB.getFeedbackViewedThisSubmission(id,sessionId),
             feedbackInteractionDB.getFeedbackViewedMoreThisSession(id,sessionId),
             feedbackInteractionDB.getFeedbackViewedMoreThisSubmission(id,sessionId),
+            feedbackInteractionDB.getFeedbackToViewedRatio(id,sessionId)
             // TODO:JF Fill in more options
         ];
     },
