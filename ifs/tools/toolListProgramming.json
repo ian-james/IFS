@@ -19,8 +19,40 @@
                     "displayName" : "Language Standard",
                     "type" : "select",
                     "name" : "gccLanguageStd",
-                    "values": [ "c89", "c99","c11"],
+                    "values": [ "ansi", "c99","c11"],
                     "arg": "-s",
+                    "params":""
+                },
+                {
+                    "displayName" : "Standard Warnings ",
+                    "type" : "checkbox",
+                    "name" : "gccLanguageWarningAll",
+                    "values":"",
+                    "arg": "-f -Wall ",
+                    "params":""
+                },
+                {
+                    "displayName" : "Extra Warnings",
+                    "type" : "checkbox",
+                    "name" : "gccLanguageExtraWarning",
+                    "values":"",
+                    "arg": "-f -Wextra",
+                    "params":""
+                },
+                {
+                    "displayName" : "Use strict Pedantic Warning",
+                    "type" : "checkbox",
+                    "name" : "gccLanguagePendantic",
+                    "values":"",
+                    "arg": "-f -pedantic",
+                    "params":""
+                },
+                {
+                    "displayName" : "Convert Warnings to Errors",
+                    "type" : "checkbox",
+                    "name" : "gccLanguagePendanticToError",
+                    "values":"",
+                    "arg": "-f -pedantic-errors",
                     "params":""
                 }
             ]
@@ -47,6 +79,38 @@
                     "values": [ "c89", "c99","c11"],
                     "arg": "-s",
                     "params":""
+                },
+                {
+                    "displayName" : "Standard Warnings ",
+                    "type" : "checkbox",
+                    "name" : "clangLanguageWarningAll",
+                    "values":"",
+                    "arg": "-f -Wall ",
+                    "params":""
+                },
+                {
+                    "displayName" : "Extra Warnings",
+                    "type" : "checkbox",
+                    "name" : "clangLanguageExtraWarning",
+                    "values":"",
+                    "arg": "-f -Wextra",
+                    "params":""
+                },
+                {
+                    "displayName" : "Use strict Pedantic Warning",
+                    "type" : "checkbox",
+                    "name" : "clangLanguagePendantic",
+                    "values":"",
+                    "arg": "-f -pedantic",
+                    "params":""
+                },
+                {
+                    "displayName" : "Convert Warnings to Errors",
+                    "type" : "checkbox",
+                    "name" : "clangLanguagePendanticToError",
+                    "values":"",
+                    "arg": "-f -pedantic-errors",
+                    "params":""
                 }
             ]
         },
@@ -66,11 +130,27 @@
             "fileArgs": "-d",
             "options" :  [
                 {
-                    "displayName" : "Tool",
+                    "displayName" : "Error Severity Level",
                     "type" : "select",
-                    "name" : "toolSelection",
+                    "name" : "cppCheckErrorLevel",
                     "values": [ "all", "error", "warning", "style","performance"],
                     "arg": "-e",
+                    "params":""
+                },
+                {
+                    "displayName" : "CppCheck Language Standard",
+                    "type" : "select",
+                    "name" : "cppCheckLanguageStd",
+                    "values": [ "c89", "c99","c11"],
+                    "arg": "-s",
+                    "params":""
+                },
+                {
+                    "displayName" : "Inconclusive",
+                    "type" : "checkbox",
+                    "name" : "cppCheckUseInconclusive",
+                    "values":"",
+                    "arg": "-f --inconclusive",
                     "params":""
                 }
             ]
