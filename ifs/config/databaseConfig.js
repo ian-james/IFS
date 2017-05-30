@@ -7,7 +7,6 @@ module.exports = {
     },
     'database' :  'IFS',
     'users_table' : 'users',
-    'raw_feedback_table' : 'rawFeedback',
     'survey_table': 'survey',
     'survey_results_table': 'surveyResult',
     'survey_preferences_table': 'survey_preferences',

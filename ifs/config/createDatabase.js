@@ -25,16 +25,6 @@ try  {
             PRIMARY KEY(id) \
         )");
 
-        Logger.info("Create the Table:", config.raw_feedback_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.raw_feedback_table + " ( \
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-            username VARCHAR(20) NOT NULL, \
-            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
-            tools TEXT NOT NULL, \
-            feedback TEXT NOT NULL, \
-            PRIMARY KEY(id) \
-        )");
-
         Logger.info("Create the Table:", config.survey_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \

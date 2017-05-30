@@ -10,9 +10,6 @@ var manager = require( __components + 'Queue/managerJob');
 var ToolManager = require( __components + '/Tool/buildTool');
 var Logger = require( __configs + "loggingConfig");
 
-// Database
-var rawFeedbackDB = require(__components  + 'Feedback/feedbackDatabase.js');
-
 // File Upload
 var Helpers = require("./fileUploadHelpers");
 var upload = require("./fileUploadConfig").upload;
