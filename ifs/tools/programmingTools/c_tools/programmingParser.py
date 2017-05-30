@@ -49,6 +49,8 @@ def getProcessInfo( cmd, outFile, errorFile ):
     # This funciton is supported by several answers on StackOverflow
     # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
 
+    #print("cmd is", cmd )
+
     with open(outFile, 'w') as fout:
         with open(errorFile,'w') as ferr:
 
@@ -134,23 +136,23 @@ def createCmd( options ):
     elif options['tool'] == 'gcc':
         options['initP'] = '-'
         options['splitSeq'] = ':'
-        options['flags'] = ' -Wall -Wextra -fno-diagnostics-show-caret -fsyntax-only'
+        options['flags'].append(' -fno-diagnostics-show-caret -fsyntax-only')
         options['splitTypes'] = [ "filename", "lineNum", "charPos", "type", "feedback"]
         cmdStr = " ".join( [
                         options['tool'],
                         getKV(options,'std'),
-                        options['flags'],
+                        " ".join(options['flags']),
                         " " + srcDir if iDir == "" else "-iquote " + iDir + " " + srcDir
                     ])
     elif options['tool'] == 'clang':
         options['initP'] = '-'
         options['splitSeq'] = ':'
-        options['flags'] = ' -Wall -Wextra -fno-caret-diagnostics -fsyntax-only'
+        options['flags'].append(' -fno-caret-diagnostics -fsyntax-only')
         options['splitTypes'] = [ "filename", "lineNum", "charPos", "type", "feedback"]
         cmdStr = " ".join( [
                         options['tool'],
                         getKV(options,'std'),
-                        options['flags'],
+                        " ".join(options['flags']),
                         " " + srcDir  if iDir == "" else "-iquote " + iDir + " " + srcDir
                     ])
     else:
@@ -173,7 +175,7 @@ def main(argv):
                 'ifs': True,
                 'language':'c',
                 'errorLevel':'all',
-                'flags': '--inconclusive',
+                'flags': [],
                 'std': 'c99',
                 'suppress':'',
                 'dir':'',
@@ -200,7 +202,7 @@ def main(argv):
         elif opt in ('--errorLevel', '-e'):
             options['errorLevel'] = arg
         elif opt in ('--flags=', '-f'):
-            options['flags'] = arg
+            options['flags'].append(arg)
         elif opt in ('--std=', '-s'):
             options['std'] = arg
         elif opt in ('--suppress', '-u'):
@@ -239,7 +241,7 @@ def main(argv):
         else:
             sys.stderr.write( 'Invalid tool selected, please select a valid tool name.\n')
     else:
-        sys.stderr.write( 'Please a project directory to evaluate.\n')
+        sys.stderr.write( 'Please rovide a project directory to evaluate using -d <dir>.\n')
         sys.exit()
 
 if __name__ == '__main__':
