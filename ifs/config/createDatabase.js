@@ -49,7 +49,7 @@ try  {
             FOREIGN Key (surveyId) REFERENCES " + config.database + "." +config.survey_table + "(id), \
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
-    
+
         Logger.info("Create the Table:", config.survey_preferences_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_preferences_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -91,16 +91,6 @@ try  {
             eventType VARCHAR(40) NOT NULL, \
             name VARCHAR(40) NOT NULL, \
             data TEXT NOT NULL, \
-            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
-            PRIMARY KEY(id), \
-            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
-        )");
-
-        Logger.info("Create the Table:", config.preferences_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.preferences_table + " ( \
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-            userId INT UNSIGNED NOT NULL, \
-            prefId INT UNSIGNED NOT NULL DEFAULT 0, \
             date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
             PRIMARY KEY(id), \
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
@@ -156,6 +146,56 @@ try  {
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
             FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id), \
             FOREIGN Key (feedbackId) REFERENCES " + config.database + "." + config.feedback_table + "(id) \
+        )");
+
+
+        Logger.info("Create the Table:", config.student_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.config.student_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            name TEXT, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+        )");
+
+        Logger.info("Create the Table:", config.class_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.config.class_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            name TEXT, \
+            description TEXT, \
+            disciplineType ENUM ('computer science','psychology', 'other'), \
+            PRIMARY KEY(id) \
+        )");
+
+        Logger.info("Create the Table:", config.student_class_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.config.student_class_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            studentId INT UNSIGNED NOT NULL, \
+            classId INT UNSIGNED NOT NULL, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (studentId) REFERENCES " + config.database + "." + config.student_table + "(id), \
+            FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id), \
+        )");
+
+
+        Logger.info("Create the Table:", config.assignment_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.config.assignment_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            name TEXT, \
+            description TEXT, \
+            disciplineType ENUM ('computer science','psychology', 'other'), \
+            PRIMARY KEY(id) \
+        )");
+
+        /* Stores only current value of preferences, interactions and changes are captured else where */
+        Logger.info("Create the Table:", config.preferences_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.preferences_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            toolName TEXT NOT NULL, \
+            toolValue TEXT NOT NULL, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
 
         Logger.info("Success: Database created.");

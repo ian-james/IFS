@@ -17,4 +17,10 @@ module.exports = {
     'preferences_table': 'preferences',
     'question_table': 'questions',
     'submission_table': 'submission',
+    'student_table': 'student',
+    'class_table': 'class',
+    'student_class_table': 'student_class',
+    'assignment_table': 'assignment',
+    'assignment_skill_table': 'assignment_skill',
+    'student_skill_table': 'student_skill'
 };
