@@ -68,7 +68,7 @@ function readFeedbackFormat( feedback , options)
     for( var i = 0; i < files.length; i++ )
     {
         var file = files[i];
-        file.content = he.encode( fs.readFileSync( file.filename, 'utf-8') );
+        file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
 
         //TODO: Positional setup information should be moved to the feedback filtering and organization
         // This decopules the task of highlights and positioning.
@@ -111,7 +111,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
             }
-            
+
             // Try to fill out positional information first.
             if( !feedbackItem.charNum ) {
                 feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
@@ -138,6 +138,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                 }
             }
             // Set up a decoded target for Bootstrap UI Popover
+            // This is probably a bad temporary fix
             if ( !feedbackItem.decodedTarget ) {
                 feedbackItem.decodedTarget = he.decode(feedbackItem.target);
             }

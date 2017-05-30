@@ -24,8 +24,7 @@ var natural = require('natural');
 var sentTok = new natural.SentenceTokenizer();
 var wordTok = new natural.WordTokenizer();
 
-function Position()
-{
+function Position() {
     this.charNum = 0; //Global
     this.wordNum = 0; //Global
     this.lineNum = 0; //Global
@@ -33,8 +32,7 @@ function Position()
     this.wordPos = 0; // Relative
 }
 
-function FileInfo()
-{
+function FileInfo() {
     this.numLines = 0;
     this.charCount = [];
     this.wordCount = [];
@@ -46,7 +44,6 @@ function FileInfo()
 }
 
 function FileParser() {
-
     this.senTokenizer = sentTok;
     this.wordTokenizer =  wordTok;
     this.file = "";
@@ -144,7 +141,6 @@ function FileParser() {
     };
 
     this.getLine = function( position, is0Based = true ) {
-
         if( this.validLineNum(position ) ) {
                 if(position.lineNum - 1 < 0)
                     return "";
@@ -155,7 +151,6 @@ function FileParser() {
     };
 
     this.getLineI = function( i, is0Based = true ) {
-
         if( i < this.fileInfo.numLines && i >= 0 ) {
             var ni = is0Based ? i-1 : i;
             return this.sentences[ ni ];
@@ -169,7 +164,6 @@ function FileParser() {
      * @return {[string]}          empty or a section of a line of text
      */
     this.getLineSection = function( position ) {
-
         var line = this.getLine(position);
         if( line != "" && this.hasCharPos(position) ) {
             return this.getLineSectionEnd(line, position.charPos);
@@ -186,7 +180,6 @@ function FileParser() {
     }
 
     this.getRange = function( position ) {
-
         if( position.hasOwnProperty('hlBeginChar') && position.hasOwnProperty('hlEndChar') &&
             position.hasOwnProperty('hlBeginLine') && position.hasOwnProperty('hlEndLine') ) {
 

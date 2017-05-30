@@ -14,7 +14,7 @@
     border-radius: 3px !important;
 }
 
-.grammar {
+.grammar, .note {
     display: inline-block;
     background-color: #6fc2ef !important;
     text-decoration: none !important;
@@ -62,7 +62,7 @@
     color: #ee2e24!important;
 }
 
-.grammar-display {
+.grammar-display, .note-display {
     display: inline-block;
     color: #1e87f0 !important;
 }

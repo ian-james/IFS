@@ -180,7 +180,7 @@ function markupFile( file, selectedTool, feedbackItems )
 
                 // Create a popover button at position to highlight text and count the offset.
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);
-                var str = newStr.start + he.decode(newStr.mid) + newStr.end;
+                var str = newStr.start + newStr.mid + newStr.end;
                 var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset } );
 
                 content = contentObj.content;
