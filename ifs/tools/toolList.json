@@ -14,7 +14,8 @@
             "parseCmd": "",
             "defaultArg": "",
             "fileArgs": "-i",
-            "options" :  [ {
+            "options" : [
+                {
                     "displayName": "Dictionary",
                     "type": "select",
                     "values": ["en_US", "en_CA","en_GB"],
@@ -38,16 +39,32 @@
             "parseCmd": "",
             "defaultArg": "",
             "fileArgs": "-i",
-            "options" :  [ {
+            "options" : [
+                {
                     "displayName": "Dictionary",
                     "type": "select",
                     "values": ["en-US", "en-CA","en-GB"],
                     "name": "opt-gramDictionary",
                     "arg": "-l",
-                    "params":""
-
+                    "params": ""
                 }
             ]
+        },
+        {
+            "displayName": "APA Style Checker",
+            "description": "A simple Python script that uses regular expressions to check for common errors in APA style writing.",
+            "author": "Keefer Rourke",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/apa/LICENSE.txt",
+            "progName": "./tools/languageTools/apa/apa_check.py",
+            "progfullName": "./tools/languageTools/apa/apa_check.py",
+            "runType": "writing",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-i",
+            "options" : []
         },
         {
             "displayName": "Prose",
@@ -63,7 +80,7 @@
             "parseCmd": "",
             "defaultArg": "",
             "fileArgs": "-f",
-            "options" :  []
+            "options" : []
         },
         {
             "displayName": "Word Cloud",
@@ -102,7 +119,8 @@
             "parseCmd": "",
             "defaultArg": "",
             "fileArgs": "-f",
-            "options" :  [ {
+            "options" :  [
+                {
                     "displayName": "Sentences in Summary",
                     "type": "select",
                     "values": [1,3,5,10],

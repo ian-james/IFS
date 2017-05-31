@@ -104,7 +104,8 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
     for( var i = 0; i < feedbackItems.length; i++ ) {
 
         var feedbackItem = feedbackItems[i];
-        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool) )
+
+        if( filesMatch(file.originalname, feedbackItem.filename) && toolsMatch(feedbackItem.toolName,selectedTool) )
         {
             if( !feedbackItem.filename || !feedbackItem.lineNum )
             {
@@ -112,29 +113,31 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                 continue;
             }
 
-            // Try to fill out positional information first.
-            if( !feedbackItem.charNum ) {
-                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
-            }
-
-            // Without a target you have to use the line or a range
-            if( !feedbackItem.target ) {
-
-                // if we are marking up a programming file, then only get the line
-                if (feedbackItem.runType == "programming") {
-                    feedbackItem.target = fileParser.getLine(feedbackItem, false);
+            if (!feedbackItem.target) {
+                // Try to fill out positional information first.
+                if( !feedbackItem.charNum ) {
+                    feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
                 }
-                else if( feedbackItem.hlBeginChar ) {
 
-                    // Section to highlight
-                    feedbackItem.target = fileParser.getRange( feedbackItem );
-                }
-                else if( feedbackItem.charPos ) {
-                    // You can get a target better than the line.
-                    feedbackItem.target = fileParser.getLineSection( feedbackItem );
-                }
-                if(!feedbackItem.target) {
-                    feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                // Without a target you have to use the line or a range
+                if( !feedbackItem.target ) {
+
+                    // if we are marking up a programming file, then only get the line
+                    if (feedbackItem.runType == "programming") {
+                        feedbackItem.target = fileParser.getLine(feedbackItem, false);
+                    }
+                    else if( feedbackItem.hlBeginChar ) {
+
+                        // Section to highlight
+                        feedbackItem.target = fileParser.getRange( feedbackItem );
+                    }
+                    else if( feedbackItem.charPos ) {
+                        // You can get a target better than the line.
+                        feedbackItem.target = fileParser.getLineSection( feedbackItem );
+                    }
+                    else {
+                        feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                    }
                 }
             }
             // Set up a decoded target for Bootstrap UI Popover

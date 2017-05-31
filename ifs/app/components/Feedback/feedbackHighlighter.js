@@ -143,6 +143,8 @@ function markupFile( file, selectedTool, feedbackItems )
     {
         var feedbackItem = feedbackItems[i];
 
+        console.log("FEEDBACK OBJECT\n" + JSON.stringify(feedbackItem));
+
         // Check for a specific tool and specific filename or all
         if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool ) )
         {
