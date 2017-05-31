@@ -21,7 +21,7 @@ module.exports = {
         if(keys.length == 1 )
             return this.buildWS(keys[0]);
 
-        return  _.join(keys, " = ? and  ") + " = ?";
+        return  "WHERE " +  _.join(keys, " = ? and  ") + " = ?";
     },
 
     buildValues: function(keys){

@@ -18,7 +18,7 @@
                 {
                     "displayName" : "Language Standard",
                     "type" : "select",
-                    "name" : "gccLanguageStd",
+                    "name" : "opt-gccLanguageStd",
                     "values": [ "ansi", "c99","c11"],
                     "arg": "-s",
                     "params":""
@@ -26,7 +26,7 @@
                 {
                     "displayName" : "Standard Warnings ",
                     "type" : "checkbox",
-                    "name" : "gccLanguageWarningAll",
+                    "name" : "opt-gccLanguageWarningAll",
                     "values":"",
                     "arg": "-f -Wall ",
                     "params":""
@@ -34,7 +34,7 @@
                 {
                     "displayName" : "Extra Warnings",
                     "type" : "checkbox",
-                    "name" : "gccLanguageExtraWarning",
+                    "name" : "opt-gccLanguageExtraWarning",
                     "values":"",
                     "arg": "-f -Wextra",
                     "params":""
@@ -42,7 +42,7 @@
                 {
                     "displayName" : "Use strict Pedantic Warning",
                     "type" : "checkbox",
-                    "name" : "gccLanguagePendantic",
+                    "name" : "opt-gccLanguagePendantic",
                     "values":"",
                     "arg": "-f -pedantic",
                     "params":""
@@ -50,7 +50,7 @@
                 {
                     "displayName" : "Convert Warnings to Errors",
                     "type" : "checkbox",
-                    "name" : "gccLanguagePendanticToError",
+                    "name" : "opt-gccLanguagePendanticToError",
                     "values":"",
                     "arg": "-f -pedantic-errors",
                     "params":""
@@ -75,7 +75,7 @@
                 {
                     "displayName" : "Language Standard",
                     "type" : "select",
-                    "name" : "clangLanguageStd",
+                    "name" : "opt-clangLanguageStd",
                     "values": [ "c89", "c99","c11"],
                     "arg": "-s",
                     "params":""
@@ -83,7 +83,7 @@
                 {
                     "displayName" : "Standard Warnings ",
                     "type" : "checkbox",
-                    "name" : "clangLanguageWarningAll",
+                    "name" : "opt-clangLanguageWarningAll",
                     "values":"",
                     "arg": "-f -Wall ",
                     "params":""
@@ -91,7 +91,7 @@
                 {
                     "displayName" : "Extra Warnings",
                     "type" : "checkbox",
-                    "name" : "clangLanguageExtraWarning",
+                    "name" : "opt-clangLanguageExtraWarning",
                     "values":"",
                     "arg": "-f -Wextra",
                     "params":""
@@ -99,7 +99,7 @@
                 {
                     "displayName" : "Use strict Pedantic Warning",
                     "type" : "checkbox",
-                    "name" : "clangLanguagePendantic",
+                    "name" : "opt-clangLanguagePendantic",
                     "values":"",
                     "arg": "-f -pedantic",
                     "params":""
@@ -107,7 +107,7 @@
                 {
                     "displayName" : "Convert Warnings to Errors",
                     "type" : "checkbox",
-                    "name" : "clangLanguagePendanticToError",
+                    "name" : "opt-clangLanguagePendanticToError",
                     "values":"",
                     "arg": "-f -pedantic-errors",
                     "params":""
@@ -132,7 +132,7 @@
                 {
                     "displayName" : "Error Severity Level",
                     "type" : "select",
-                    "name" : "cppCheckErrorLevel",
+                    "name" : "opt-cppCheckErrorLevel",
                     "values": [ "all", "error", "warning", "style","performance"],
                     "arg": "-e",
                     "params":""
@@ -140,7 +140,7 @@
                 {
                     "displayName" : "CppCheck Language Standard",
                     "type" : "select",
-                    "name" : "cppCheckLanguageStd",
+                    "name" : "opt-cppCheckLanguageStd",
                     "values": [ "c89", "c99","c11"],
                     "arg": "-s",
                     "params":""
@@ -148,7 +148,7 @@
                 {
                     "displayName" : "Inconclusive",
                     "type" : "checkbox",
-                    "name" : "cppCheckUseInconclusive",
+                    "name" : "opt-cppCheckUseInconclusive",
                     "values":"",
                     "arg": "-f --inconclusive",
                     "params":""

@@ -26,6 +26,8 @@ var event = require(__components + "InteractionEvents/event.js" );
 var submissionEvent = require(__components + "InteractionEvents/submissionEvents.js");
 var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
+var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
+
 module.exports = function (app, iosocket) {
 
     /**
@@ -99,7 +101,33 @@ module.exports = function (app, iosocket) {
         });
     }
 
+    /**
+     * Preferences are saved
+     * @param  {[type]} req [description]
+     * @return {[type]}     [description]
+     */
+    function saveToolSelectionPreferences( userId, toolType, formData ) {
+
+        var preferences =  _.pickBy(formData, function(value,key){
+            return (_.startsWith(key,'opt-') || _.startsWith(key,'enabled-'))
+        });
+
+        preferencesDB.clearStudentFormPreferences(userId,toolType, function( err, clearResult ) {
+            // Whether clearing successeds or failes, change preferences that where selected.
+            async.eachOf(preferences, function( value,key, callback ) {
+                preferencesDB.setStudentPreferences(userId, toolType,  key, value, callback);
+            }, function(err){
+                if(err)
+                    Logger.error(err);
+                else
+                    Logger.log("Finished writing feedback to DB.");
+            });
+        });
+    }
+
     app.post('/tool_upload', upload.any(), function(req,res,next) {
+
+        saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
 
         submissionEvent.addSubmission( eventDB.eventID(req), function(subErr, succSubmission) {
 

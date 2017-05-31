@@ -18,7 +18,7 @@
                     "displayName": "Dictionary",
                     "type": "select",
                     "values": ["en_US", "en_CA","en_GB"],
-                    "name": "spellDictionary",
+                    "name": "opt-spellDictionary",
                     "arg": "-l",
                     "params":""
                 }
@@ -42,7 +42,7 @@
                     "displayName": "Dictionary",
                     "type": "select",
                     "values": ["en-US", "en-CA","en-GB"],
-                    "name": "gramDictionary",
+                    "name": "opt-gramDictionary",
                     "arg": "-l",
                     "params":""
 
@@ -83,7 +83,7 @@
                     "displayName": "Words In Cloud",
                     "type": "select",
                     "values": [5,10,20],
-                    "name": "wordCloud",
+                    "name": "opt-wordCloud",
                     "arg": "-t",
                     "params":""
                  }
@@ -106,7 +106,7 @@
                     "displayName": "Sentences in Summary",
                     "type": "select",
                     "values": [1,3,5,10],
-                    "name": "txtSummary",
+                    "name": "opt-txtSummaryLineCount",
                     "arg": "-s",
                     "params":""
                  }

@@ -150,16 +150,16 @@ try  {
 
 
         Logger.info("Create the Table:", config.student_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.config.student_table + " ( \
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             userId INT UNSIGNED NOT NULL, \
             name TEXT, \
             PRIMARY KEY(id), \
-            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
 
         Logger.info("Create the Table:", config.class_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.config.class_table + " ( \
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.class_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             name TEXT, \
             description TEXT, \
@@ -168,18 +168,18 @@ try  {
         )");
 
         Logger.info("Create the Table:", config.student_class_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.config.student_class_table + " ( \
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_class_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             studentId INT UNSIGNED NOT NULL, \
             classId INT UNSIGNED NOT NULL, \
             PRIMARY KEY(id), \
             FOREIGN Key (studentId) REFERENCES " + config.database + "." + config.student_table + "(id), \
-            FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id), \
+            FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id) \
         )");
 
 
         Logger.info("Create the Table:", config.assignment_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.config.assignment_table + " ( \
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.assignment_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             name TEXT, \
             description TEXT, \
@@ -192,10 +192,12 @@ try  {
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.preferences_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             userId INT UNSIGNED NOT NULL, \
-            toolName TEXT NOT NULL, \
+            toolType VARCHAR(60) NOT NULL, \
+            toolName VARCHAR(60) NOT NULL, \
             toolValue TEXT NOT NULL, \
             PRIMARY KEY(id), \
-            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            UNIQUE Key userTool (userId,toolName) \
         )");
 
         Logger.info("Success: Database created.");
