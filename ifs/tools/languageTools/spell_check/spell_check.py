@@ -122,6 +122,8 @@ def build_json(misspelled, filename, lang, correct=[]):
                             + '"wordNum": ' + str(correct[i][1]) + ', '
                             + '"lineNum": ' + str(correct[i][0]) + ', '
                             + '"filename": "' + filename + ', '
+                            + '"type": "correct",'
+                            + '"toolName": "Spell Checker",'
                             + '"feedback": "Selected word is correct.", '
                             + '"lang": ' + '"' + lang + '"'
                             + ' },')
@@ -129,19 +131,19 @@ def build_json(misspelled, filename, lang, correct=[]):
     # always add misspelled words to the json, along with other useful info
     for i in range(len(misspelled)):
 
-        j_array = json.dumps(misspelled[i][5][1]) 
-        json_string += '{\n'
-        json_string += '"target":"' + str(misspelled[i][5][0]) + '",\n' 
-        json_string += '"lineNum": ' + str(misspelled[i][0]) + ',\n'
-        json_string += '"wordNum": ' + str(misspelled[i][1]) + ',\n'
-        json_string += '"charNum": ' + str(misspelled[i][2]) + ',\n'
-        json_string += '"charPos": ' + str(misspelled[i][3]) + ',\n'
-        json_string += '"wordPos": ' + str(misspelled[i][4]) + ',\n'
-        json_string += '"type": "spelling",\n'
-        json_string += '"toolName": "hunspell",\n'
-        json_string += '"filename": "' + filename + '",\n'
+        j_array = json.dumps(misspelled[i][5][1])
+        json_string += '{'
+        json_string += '"target":"' + str(misspelled[i][5][0]) + '",'
+        json_string += '"lineNum": ' + str(misspelled[i][0]) + ','
+        json_string += '"wordNum": ' + str(misspelled[i][1]) + ','
+        json_string += '"charNum": ' + str(misspelled[i][2]) + ','
+        json_string += '"charPos": ' + str(misspelled[i][3]) + ','
+        json_string += '"wordPos": ' + str(misspelled[i][4]) + ','
+        json_string += '"type": "spelling",'
+        json_string += '"toolName": "Spell Checker",'
+        json_string += '"filename": "' + filename + '",'
         json_string += '"feedback": "Selected word not found in ' + lang + ' dictionary", '
-        json_string += '"suggestions": ' + j_array + '\n'
+        json_string += '"suggestions": ' + j_array + ''
         json_string += '}'
 
         if i != (len(misspelled) - 1):
