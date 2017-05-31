@@ -1,0 +1,14 @@
+An Inquiry Into The Nature Of Ice Cream Cones.
+
+This is a sentence.This one has bad spacing.
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit (Rubio and Bianchini, 1884), sed do eiusmod (2000A) tempor incididunt ut labore et dolore magna aliqua (Aquino, et al. 1996). Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat (Lucas 2000) (Ruiz 1990). Duis aute irure dolor in reprehenderit Pearson & de Broglie (2000) in voluptate velit esse cillum dolore eu fugiat nulla pariatur. (Briones, 2000) Excepteur sint occaecat cupidatat non proident, sunt in culpa qui (Sumo, et al. 2003) officia deserunt mollit anim id est laborum.
+
+References
+
+Smith, J., Tree, T. (1991) Ice cream and the state.Elsevier, NY: New York.
+Hopper, G. (2023). The Decline And Fall Of Ice Cream. Dessert Journal, 5(15), 1-3.
+
+http://whatever.com
+mail@krourke.org
+    
