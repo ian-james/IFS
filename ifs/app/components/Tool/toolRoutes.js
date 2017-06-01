@@ -12,28 +12,37 @@ var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 
 module.exports = function (app) {
 
-    /* Solution #2 for connecting Express and Angular makes a 2nd route called data to http req*/
+    function updateJsonWithDbValues( toolPreferences, tools ){
+        var toolPrefix = "enabled-";
+        var optionPrefix = "opt-";
+        for( var i = 0; i < toolPreferences.length; i++ ) {
 
-    function setupDefaultTool(req) {
-        //TODO: Move this to register and login pages.
-        if( req.session && !(req.session.toolSelect && req.session.toolFile ) ) {
-            var supportedToolsFile = './tools/toolListProgramming.json';
-
-            if( req.session.toolSelect  == "Writing") {
-                supportedToolsFile  = './tools/toolList.json';
-                req.session.toolSelect = 'Writing';
-                req.session.toolFile = supportedToolsFile;
+            var optionName = toolPreferences[i].toolName;
+            //console.log("TRying Name", optionName);
+            if( _.startsWith(optionName,toolPrefix) ) {
+                //Enable the tool checkbox
+                optionName = _.replace(optionName,toolPrefix,"");
+                var r = _.find(tools,_.matchesProperty('displayName',optionName));
+                if(r)
+                    r['prefValue'] = toolPreferences[i].toolValue == "true";
             }
-            else {
-                req.session.toolSelect = 'Programming';
-                req.session.toolFile = supportedToolsFile;
+            else if(_.startsWith(optionName,optionPrefix) ) {
+                var r = undefined;
+                for(var y = 0; y < tools.length && !r; y++){
+                    var options = tools[y].options;
+                    r = _.find(options, _.matchesProperty("name", optionName));
+                    if( r ){
+                        if(r.type == "checkbox")
+                            r['prefValue'] = toolPreferences[i].toolValue == "on";
+                        else if(r.type == "select")
+                            r['prefValue'] = toolPreferences[i].toolValue;
+                    }
+                }
             }
         }
     }
 
     app.get('/tool/data', function(req,res) {
-
-        setupDefaultTool(req);
 
         fs.readFile( req.session.toolFile, 'utf-8', function( err, toolData ) {
             if( err ) {
@@ -49,38 +58,9 @@ module.exports = function (app) {
                     var jsonObj = JSON.parse(toolData);
                     var tools = jsonObj['tools'];
 
-                    var toolPrefix = "enabled-";
-                    var optionPrefix = "opt-";
-
-                    if(toolPreferences){
-                        for( var i = 0; i < toolPreferences.length; i++ ) {
-
-                            var optionName = toolPreferences[i].toolName;
-                            //console.log("TRying Name", optionName);
-                            if( _.startsWith(optionName,toolPrefix) ) {
-                                //Enable the tool checkbox
-                                optionName = _.replace(optionName,toolPrefix,"");
-                                var r = _.find(tools,_.matchesProperty('displayName',optionName));
-                                if(r)
-                                    r['prefValue'] = toolPreferences[i].toolValue == "true";
-                            }
-                            else if(_.startsWith(optionName,optionPrefix) ) {
-                                var r = undefined;
-                                for(var y = 0; y < tools.length && !r; y++){
-                                    var options = tools[y].options;
-                                    r = _.find(options, _.matchesProperty("name", optionName));
-                                    if( r ){
-                                        if(r.type == "checkbox")
-                                            r['prefValue'] = toolPreferences[i].toolValue == "on";
-                                        else if(r.type == "select")
-                                            r['prefValue'] = toolPreferences[i].toolValue;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    if(toolPreferences)
+                        updateJsonWithDbValues(toolPreferences,tools);
                     res.json(tools);
-
                 });
             }
         });
@@ -94,8 +74,6 @@ module.exports = function (app) {
      * @return {[type]}      [description]
      */
     app.get('/tool', function( req, res , next ) {
-        
-        setupDefaultTool(req);
 
         var userId = req.user.id || req.passport.user;
         SurveyManager.getUserSurveyProfile(userId, function(err,surveyPrefData) {

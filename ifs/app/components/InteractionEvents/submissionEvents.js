@@ -8,6 +8,14 @@ module.exports = {
         dbHelpers.insertEventC(config.submission_table, submissionData ,callback);
     },
 
+    getLastSubmissionId: function(userId, sessionId ){
+        return {
+            "name": 'lastSubmissionNumber',
+            "data": [ userId,sessionId ],
+            "request": "select id as value from " + config.submission_table +  " where userId = ? and sessionId = sessionId ORDER BY id desc LIMIT 1"
+        };
+    },
+
     getSubmissionNumber: function( userId ) {
         return {
             "name": 'submissionNumber',

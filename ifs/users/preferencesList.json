@@ -4,7 +4,7 @@
         "name": "preferencesOptions",
         "options": [{
                 "displayName":"Preferred Assessment Tools",
-                "name": "toolSelect",
+                "name": "pref-toolSelect",
                 "type": "select",
                 "values": [  "Programming","Writing" ],
                 "value": "Programming"

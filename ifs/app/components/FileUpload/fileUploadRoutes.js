@@ -127,11 +127,12 @@ module.exports = function (app, iosocket) {
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
+        var user = eventDB.eventID(req);
         saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
 
-        submissionEvent.addSubmission( eventDB.eventID(req), function(subErr, succSubmission) {
+        submissionEvent.addSubmission( user, function(subErr, succSubmission) {
 
-            var submissionRequest = submissionEvent.getSubmissionNumber(req.user.id);
+            var submissionRequest = submissionEvent.getLastSubmissionId(user.userId, user.sessoinId);
             db.query(submissionRequest.request,submissionRequest.data, function(err,submissionIdRes){
 
                 var submissionId = event.returnData( submissionIdRes[0] );
@@ -143,7 +144,7 @@ module.exports = function (app, iosocket) {
                 if( Errors.hasErr(uploadedFiles) )
                 {
                     var err = Errors.getErrMsg(uploadedFiles);
-                    tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id,"failed", err) ) ;
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId,"failed", err) ) ;
                     //req.flash('errorMessage', err );
                     res.status(500).send(JSON.stringify({"msg":err}));
                     return;
@@ -157,7 +158,7 @@ module.exports = function (app, iosocket) {
                 if(!tools || tools.length == 0)
                 {
                     var err = Errors.cErr();
-                    tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "failed", err) );
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "failed", err) );
                     res.status(500).send(JSON.stringify({"msg":"Please select a tool to evaluate your work."}));
                     return;
                 }
@@ -179,7 +180,7 @@ module.exports = function (app, iosocket) {
 
                     FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {
                         setupSessionFiles(req, organized);
-                        tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "success", {}) );
+                        tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "success", {}) );
                         var data = { "msg":"Awesome"};
                         res.write(JSON.stringify(data));
                         res.end();
@@ -187,7 +188,7 @@ module.exports = function (app, iosocket) {
                 }, function(err){
                     //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
                     Logger.error("Failed to make jobs:", err );
-                    tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "toolError", {"msg":e}) );
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "toolError", {"msg":e}) );
                     //req.flash('errorMessage', "There was an error processing your files." );
                     res.status(400).send(JSON.stringify({"msg":err}));
                 }, function(prog) {
@@ -197,7 +198,7 @@ module.exports = function (app, iosocket) {
                     Logger.log("Manager's progress is ", prog.progress, "%");
                 })
                 .catch( function(err){
-                    tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "toolError", {"msg":e}) );
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "toolError", {"msg":e}) );
                     res.status(500).send({
                         error: e
                     });

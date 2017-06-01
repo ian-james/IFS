@@ -2,8 +2,10 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 
 var fs = require('fs');
+var _ = require('lodash');
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
+var defaultTool = require( __components + 'Preferences/setupDefaultToolType.js');
 
 module.exports = function( app ) {
     app.route("/preferences")
@@ -13,19 +15,16 @@ module.exports = function( app ) {
     })
 
     .post(function(req,res,next) {
-        if( req.body ) {
-            // TODO: Preferences aren't saved anywhere except this variable.
-            // Partially because we don't have preferences yet
-            // This will create a minor bug in that
-            if( req.session) {
-                req.session.toolSelect = req.body.toolSelect;
-                req.session.toolFile = req.body.toolSelect == "Programming" ? './tools/toolListProgramming.json' :  './tools/toolList.json';
-            }
-        }
+        var pref = req.body["pref-toolSelect"];
+        preferencesDB.setStudentPreferences(req.user.id,"Option", "pref-toolSelect", pref , function(err,result){
 
-        //TODO pop or message
-        res.location( "/tool");
-        res.redirect( "/tool" );
+            if(!err)
+                defaultTool.setupDefaultTool(req, pref);
+
+             //TODO pop or message
+            res.location( "/tool");
+            res.redirect( "/tool" );
+        });
     });
 
     app.get('/preference/data', function(req,res) {
@@ -38,52 +37,32 @@ module.exports = function( app ) {
             }
             else {
                 var jsonObj = JSON.parse(data);
-                res.json(jsonObj['preferences']);
-            }
-        });
-    });
+                var preferences = jsonObj['preferences'];
 
-    
-    app.get('/testPref', function(req,res){
-
-        /*
-        preferencesDB.clearStudentFormPreferences(req.user.id, req.session.toolSelect, function(err,data){
-            console.log("Error", err);
-            console.log("Result", data);
-        });
-        */
-        /*
-        preferencesDB.setStudentPreferences(req.user.id, "fakeTool2", "SOmething", function(err,data){
-            if(err) {
-                console.log(err);
-            }
-            else {
-                console.log("Data",data);
-                console.log("****************************************** 0 ");
-                preferencesDB.getStudentPreferences(req.user.id, function( err1, toolsPrefs ) {
-                    if(err1)
-                        console.log(err1);
-                    else {
-                        console.log(toolsPrefs);
-                        console.log("****************************************** 1 ");
-                        preferencesDB.setStudentPreferences(req.user.id, "fakeTool2", "zzzanotherThing",  function(err2,set2){
-                            if(err) {
-                                console.log(err);
-                            }
-                            else {
-                                console.log(set2);
-                                console.log("****************************************** 2 ");
-                                preferencesDB.getStudentPreferencesByTool(req.user.id, "fakeTool2", function(err3, set3) {
-                                    console.log("Error", err3);
-                                    console.log("Result", set3);
-                                });
-                            }
-                        });
-                    }
+                preferencesDB.getStudentPreferencesByToolType(req.user.id, "Option", function( err, preferencesDB ) {
+                    if(!err)
+                        updateJsonWithDbValues(preferencesDB, preferences.options );
+                    res.json(preferences);
                 });
             }
         });
-        */
     });
-}
 
+    function updateJsonWithDbValues( preferencesDB, preferencesOptions) {
+        var prefPrefix = "pref-"
+        for( var i = 0; i < preferencesDB.length; i++ ) {
+
+            var optionName = preferencesDB[i].toolName;
+
+            if( _.startsWith(optionName,prefPrefix) ) {
+                var r = _.find(preferencesOptions,_.matchesProperty('name',optionName));
+                 if( r ){
+                    if(r.type == "checkbox")
+                        r['prefValue'] = preferencesDB[i].toolValue == "on";
+                    else if(r.type == "select")
+                        r['prefValue'] = preferencesDB[i].toolValue;
+                }
+            }
+        }
+    }
+}

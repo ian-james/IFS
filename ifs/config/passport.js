@@ -10,8 +10,16 @@ var path = require('path');
 var Logger = require( path.join( __dirname, "/loggingConfig") );
 
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
+var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
+
+var defaultTool = require( __components + 'Preferences/setupDefaultToolType.js');
 
 module.exports = function (passport) {
+
+    // TODO: Default ToolType is should be set somewhere else with greater visbility.
+    var defaultToolType = "Programming";
+    var toolTypeKey = "pref-toolSelect";
+    var prefToolType = "Option";
 
     passport.serializeUser ( function(user,done) {
         done(null,  { 'id': user.id, 'sessionId': user.sessionId } );
@@ -60,8 +68,12 @@ module.exports = function (passport) {
                             newUser.id = rows.insertId;
                             newUser.sessionId = 0;
                             req.flash('success', 'Successfully signed up.');
-                            SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
-                                return done(null, newUser);
+
+                            //Load Preferences
+                            preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
+                                SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
+                                    return done(null, newUser);
+                                });
                             });
                         });
                     }
@@ -104,7 +116,15 @@ module.exports = function (passport) {
                     // Increment local copy, instead of reading from DB.
                     rows[0].sessionId += 1;
 
-                    return done(null, rows[0]);
+                    //Set a single preference on login to load their toolType preferences (defaults to programming)
+                    preferencesDB.getStudentPreferencesByToolName( rows[0].id,  toolTypeKey, function(toolErr, result){
+                        if( toolErr || !result || result.length == 0)
+                            defaultTool.setupDefaultTool(req);
+                        else
+                            defaultTool.setupDefaultTool(req, result[0].toolValue );
+
+                        return done(null, rows[0]);
+                    });
                 });
             }
         )
