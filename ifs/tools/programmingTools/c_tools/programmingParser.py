@@ -176,7 +176,7 @@ def main(argv):
                 'language':'c',
                 'errorLevel':'all',
                 'flags': [],
-                'std': 'c99',
+                'std': 'c89',
                 'suppress':'',
                 'dir':'',
                 'splitSeq': "##",

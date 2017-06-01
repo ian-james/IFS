@@ -19,7 +19,7 @@
                     "displayName" : "Language Standard",
                     "type" : "select",
                     "name" : "opt-gccLanguageStd",
-                    "values": [ "ansi", "c99","c11"],
+                    "values": [ "c89", "c99","c11"],
                     "arg": "-s",
                     "params":""
                 },
