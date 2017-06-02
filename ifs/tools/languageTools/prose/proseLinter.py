@@ -54,7 +54,7 @@ def decorateData( result, options ):
     try:
         jdata = json.loads(result)
     except:
-        print("FAILED")
+        raise
 
     filename = os.path.basename(options['file'])
 
