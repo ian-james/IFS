@@ -39,19 +39,19 @@ function loadAllTools(job, done)
     // Wait for everything to finish before emitting that parent is done.
     Q.allSettled(promises)
         .then( function(res) {
-                // return everything that passed and was fulfilled                
+                // return everything that passed and was fulfilled
                 var passed =[], failed = [];
 
                 for( var i = 0; i < res.length; i++ ) {
 
                     if( res[i].state == 'fulfilled' ) {
+
                         var val = res[i].value;
+                        console.log("VALUE RETURNED IS ", val );
 
                         // Attach these two fields from job tool to the result.
                         var toolAdd = {"displayName": val.job.tool.displayName, "runType": val.job.tool.runType};
-                        _.forEach( val.result.feedback, function(f){
-                            return _.extend(f,toolAdd);
-                        });
+                        _.extend(val.result.feedback,toolAdd);
 
                         if( val.success ) {
                             if( val.result.feedback )
@@ -65,6 +65,8 @@ function loadAllTools(job, done)
                         }
                     }
                 }
+                Logger.log("****** Passed is :", passed.length );
+                Logger.log("****** FAILED is :", failed.length );
                 var Err = passed.length == 0 && failed.length  > 0 ? new Error('No jobs successfully completed.') : null;
                 done( Err, { 'passed': passed, 'failed': failed } );
 

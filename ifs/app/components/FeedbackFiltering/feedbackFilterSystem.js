@@ -12,6 +12,7 @@ var async = require('async');
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
+/*
 function organizeResults( fileInfo, fullData, callback )
 {
     var obj = {};
@@ -57,6 +58,7 @@ function organizeResults( fileInfo, fullData, callback )
     });
 
 }
+*/
 
 /**
  * Sets up position information for feedback items.
@@ -107,4 +109,4 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
     }
 }
 
-module.exports.organizeResults = organizeResults;
+//module.exports.organizeResults = organizeResults;

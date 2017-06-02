@@ -171,7 +171,7 @@ function buildJobs( fullJobs, files, options ) {
     // Create an array of jobs with just the above mentioned keys, most important for passing.
     // Create a new property of the job that is the complete run call
     // TODO: Might eventually change this based on cmdType restType and cmdType
-    var keys = [ 'displayName', 'progName', 'runType', 'defaultArg', 'fileArgs', 'options'];
+    var keys = [ 'displayName', 'progName', 'runType', 'defaultArg', 'fileArgs', 'options', "cmdToolName"];
 
     var halfJobs = _.map( fullJobs, obj => _.pick(obj, keys) );
 

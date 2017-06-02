@@ -4,6 +4,7 @@ var _ = require('lodash');
 // Path and file management
 var path = require('path');
 var async = require('async');
+var fs = require('fs');
 
 // Managers
 var manager = require( __components + 'Queue/managerJob');
@@ -36,6 +37,7 @@ module.exports = function (app, iosocket) {
      * @param  {[type]} organizedResults [description]
      * @return {[type]}                  [description]
      */
+    /*
     function setupSessionFiles( req, organizedResults)
     {
         req.session.allFeedbackFile = organizedResults.allFeedbackFile;
@@ -46,6 +48,7 @@ module.exports = function (app, iosocket) {
             }
         }
     }
+    */
 
     /**
      * Emit an event for each job that will run indicate the tool and run command basic information.
@@ -76,6 +79,42 @@ module.exports = function (app, iosocket) {
         tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "info-options", options));
     }
 
+    //function writeFeedbackItemsToDB( filename, sessionId, userId, submissionId)
+
+    function writeFeedbackFile( sessionId, userId, submissionId, feedbackFileObj, callback ) {
+        fs.readFile( feedbackFileObj.file, function(err,data){
+            if(data) {
+                var feedbackItemData = JSON.parse(data);
+                var feedbackItems = feedbackItemData['feedback'];
+
+                async.each(feedbackItems, function( fi, _callback ) {
+
+                    //Add displayName and runType before inserting into DB
+                    var toolAdd = {"displayName": feedbackFileObj.displayName, "runType": feedbackFileObj.runType };
+                    _.extend(fi,toolAdd);
+
+                    var fe =  eventDB.makeFeedbackEvent( sessionId, userId, submissionId, fi );
+
+                    dbHelpers.insertEventC( config.feedback_table, fe, function(err,d){
+                        // Empty Callback if feedback fails to save, we aren't too concerned.
+                        _callback();
+                    });
+
+                }, function(err){
+                    if(err)
+                        Logger.error(err);
+                    else
+                        Logger.log("Finished writing feedback to DB.");
+
+                    callback();
+                });
+            }
+            else
+                callback("Failed to read file");
+        });
+    }
+
+
     /**
      * Emits very basic information about the raw data (tool, type )
      * @param  {[type]} req           [description]
@@ -83,21 +122,15 @@ module.exports = function (app, iosocket) {
      * @param  {[type]} feedbackItems [description]
      * @return {[type]}               [description]
      */
-    function emitFeedbackResults( req, iosocket, submissionId, feedbackItems ){
+    function emitFeedbackResults( sessionId, userId, submissionId, feedbackItemFiles ){
 
-        async.each(feedbackItems, function( fi, callback ) {
-            var fe =  eventDB.makeFeedbackEvent( req.user.sessionId, req.user.id, submissionId, fi );
-
-            dbHelpers.insertEventC( config.feedback_table, fe, function(err,d){
-                // Empty Callback if feedback fails to save, we aren't too concerned.
-                callback();
-            });
-
-        }, function(err){
+        async.each(feedbackItemFiles, function( feedbackFile, callback) {
+            writeFeedbackFile(sessionId, userId, submissionId,feedbackFile, callback );
+        }, function(err) {
             if(err)
                 Logger.error(err);
             else
-                Logger.log("Finished writing feedback to DB.");
+                Logger.log("Finished writing  all feedback to DB.");
         });
     }
 
@@ -163,7 +196,7 @@ module.exports = function (app, iosocket) {
                     return;
                 }
 
-                //Upload files names and job requests
+                //Upload files names and job requests, jobRequests remains to ease testing and debugging.
                 var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
                 var filesFile = Helpers.writeResults( uploadedFiles, { 'filepath': uploadedFiles[0].filename, 'file': 'fileUploads.json'});
                 req.session.jobRequestFile = requestFile;
@@ -175,16 +208,13 @@ module.exports = function (app, iosocket) {
 
                 // Add the jobs to the queue, results are return in object passed:[], failed:[]
                 manager.makeJob(tools).then( function( jobResults ) {
+                
+                    tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "success", {}) );
+                    emitFeedbackResults(user.sessionId, user.userId, submissionId, jobResults.result.passed);
+                    var data = { "msg":"Awesome"};
+                    res.write(JSON.stringify(data));
+                    res.end();
 
-                    emitFeedbackResults(req, iosocket, submissionId, jobResults.result.passed);
-
-                    FeedbackFilterSystem.organizeResults( uploadedFiles, jobResults.result.passed, function(organized) {
-                        setupSessionFiles(req, organized);
-                        tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "success", {}) );
-                        var data = { "msg":"Awesome"};
-                        res.write(JSON.stringify(data));
-                        res.end();
-                    });
                 }, function(err){
                     //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
                     Logger.error("Failed to make jobs:", err );
