@@ -37,10 +37,10 @@ module.exports = function (app, iosocket) {
     require(componentsPath + '/Feedback/feedbackRoutes')(app,iosocket);
 
     //Word Cloud
-    require(componentsPath + '/WordCloud/wordCloudRoutes')(app, iosocket);
+    require(componentsPath + '/WordCloud/wordCloudRoutes')(app);
 
     //Text Summarization
-    require(componentsPath + '/TextSummarization/textSummaryRoutes')(app,iosocket);
+    require(componentsPath + '/TextSummarization/textSummaryRoutes')(app);
 
     require(componentsPath + '/Dashboard/dashboardRoutes')(app,iosocket);
 

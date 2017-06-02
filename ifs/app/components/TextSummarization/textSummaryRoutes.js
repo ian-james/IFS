@@ -3,35 +3,37 @@ var viewPath = path.join( __dirname + "/");
 var fs = require('fs');
 var _ = require('lodash');
 
-module.exports = function( app ) {
+var db = require( __configs + 'database');
 
-    app.get('/summary', function(req, res, next ){
+module.exports = function (app) {
 
-        var msg = "";
-        var files = [];
-        if( req.session.allFeedbackFile ) {
-            try {
-                var file = req.session.allFeedbackFile;
-                var feedback = fs.readFileSync( file , 'utf-8');
-                var jdata = JSON.parse( feedback );
+    app.get('/summary', function( req, res ) {
 
-                if(jdata && jdata.feedback && jdata.feedback.visual) {
+         var q = "select filename,runType,type,feedback from feedback where userId = ? and runType = ? and type = ? and " +
+                    "submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1)";
 
-                    var visualArr = jdata.feedback.visual;
-                    for( var i= 0; i < visualArr.length; i++ )
-                    {
-                        if( visualArr[i].tool  == "textSummarization" ) {
-                            var obj = { 'originalname': visualArr[i].originalname, 'summary':  visualArr[i].sentences.join(' ') }
-                            files.push(obj);
-                        }
-                    }
+        db.query(q, [req.user.id,"visual","textSummarization",req.user.id], function(err,data) {
+            
+            var msg = "";
+            var files = [];
+            if( data ) {
+                
+                var result = {};
+                for( var i = 0; i< data.length; i++ ) {
+                    var filename = path.basename(data[i].filename);
+                    if(!_.has(result,filename)) 
+                        result[filename] = "";
+                    result[filename] += data[i].feedback;
                 }
-            }
-            catch( e ) {
-                msg = "Unable to produce a text summary";
-            }
-        }
 
-        res.render( viewPath + "textSummary", { title: "Text Summary", files:files, msg: msg });
+                _.forEach( result, function(value,key){
+                    files.push({'originalname':key, 'summary': value });
+                });
+            }
+            else
+                msg =  "Unable to produce a text summary";
+
+            res.render( viewPath + "textSummary", { title: "Text Summary", files:files, msg: msg });
+        });
     });
-};
+}
