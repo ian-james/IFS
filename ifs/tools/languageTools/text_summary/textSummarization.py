@@ -118,15 +118,18 @@ def decorateData( result, options ):
     json_string = ""
     json_string += '{\n'
     json_string += '"feedback": [\n'
-    json_string += '{\n'
-    json_string += '"toolName": "textSummarization",\n'
-    json_string += '"type": "textSummarization",\n'
-    json_string += '"filename": "' + str(options['file']) + '",\n'
-    json_string += '"originalname": "' + str( os.path.basename( options['file']) ) + '",\n'
-    json_string += '"senCount":' + str(options['sentences']) + ',\n'
-    j_array = json.dumps( result );
-    json_string += '"sentences": ' + j_array + '\n'
-    json_string += '}\n'
+    for i in range(len(result)):
+        json_string += '{\n'
+        json_string += '"toolName": "textSummarization",\n'
+        json_string += '"type": "textSummarization",\n'
+        json_string += '"filename": "' + str(options['file']) + '",\n'
+        json_string += '"originalname": "' + str( os.path.basename( options['file']) ) + '",\n'
+        json_string += '"senCount":' + str(options['sentences']) + ',\n'
+        json_string += '"feedback": ' + json.dumps(result[i].strip()) + '\n'
+        json_string += '}\n'
+        if i != (len(result) - 1):
+            json_string += ','
+
     json_string += ']\n'
     json_string += '}\n'
 
