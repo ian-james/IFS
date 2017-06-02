@@ -69,13 +69,12 @@ function runSingleTool( job, done )
 
     // Event on close to indicate progress has finished and close the stream.
     child.on('close', function(code) {
-
-        //console.log("CLOSESSDDDDDDDDDDDDDDDDDDDDDDDDDDDDD", job.data.tool.runCmd);
+        
         job.progress(100,100);
         ws.end();
         if(error) {
+            done({"code":-1, "response":new Error("Failed to execute assessment tool: ", job.data.name)});
             job.emit('failed');
-            done({"code":-1, "response":new Error(data)});
         }
         else {
             done(null, {"code":code, "feedback":{"file":filepath}});
@@ -90,7 +89,6 @@ function runChildJob(){
         runSingleTool( job, done );
     });
 }
-
 
 module.exports.makeJob = makeJob;
 module.exports.handleTool = runSingleTool;

@@ -32,25 +32,6 @@ var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 module.exports = function (app, iosocket) {
 
     /**
-     * Stores feedback file names in session variables based on type.
-     * @param  {[type]} req              [description]
-     * @param  {[type]} organizedResults [description]
-     * @return {[type]}                  [description]
-     */
-    /*
-    function setupSessionFiles( req, organizedResults)
-    {
-        req.session.allFeedbackFile = organizedResults.allFeedbackFile;
-        if( organizedResults.hasOwnProperty('feedbackFiles')) {
-
-            for( var k in organizedResults['feedbackFiles'] ) {
-                req.session[k] = organizedResults['feedbackFiles'][k];
-            }
-        }
-    }
-    */
-
-    /**
      * Emit an event for each job that will run indicate the tool and run command basic information.
      * @param  {[type]} req         [description]
      * @param  {[type]} iosocket    [description]
@@ -79,8 +60,15 @@ module.exports = function (app, iosocket) {
         tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "info-options", options));
     }
 
-    //function writeFeedbackItemsToDB( filename, sessionId, userId, submissionId)
-
+    /**
+     * Simplifying all the callbacks for writing feedback files to DB.
+     * @param  {[type]}   sessionId       [description]
+     * @param  {[type]}   userId          [description]
+     * @param  {[type]}   submissionId    [description]
+     * @param  {[type]}   feedbackFileObj [description]
+     * @param  {Function} callback        [description]
+     * @return {[type]}                   [description]
+     */
     function writeFeedbackFile( sessionId, userId, submissionId, feedbackFileObj, callback ) {
         fs.readFile( feedbackFileObj.file, function(err,data){
             if(data) {
@@ -89,7 +77,7 @@ module.exports = function (app, iosocket) {
 
                 async.each(feedbackItems, function( fi, _callback ) {
 
-                    //Add displayName and runType before inserting into DB
+                    // Add displayName and runType before inserting into DB
                     var toolAdd = {"displayName": feedbackFileObj.displayName, "runType": feedbackFileObj.runType };
                     _.extend(fi,toolAdd);
 
@@ -208,7 +196,7 @@ module.exports = function (app, iosocket) {
 
                 // Add the jobs to the queue, results are return in object passed:[], failed:[]
                 manager.makeJob(tools).then( function( jobResults ) {
-                
+
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "success", {}) );
                     emitFeedbackResults(user.sessionId, user.userId, submissionId, jobResults.result.passed);
                     var data = { "msg":"Awesome"};
@@ -216,11 +204,15 @@ module.exports = function (app, iosocket) {
                     res.end();
 
                 }, function(err){
-                    //TODO: Log failed attempt into a database and pass a flash message  (or more ) to tool indicate
                     Logger.error("Failed to make jobs:", err );
-                    tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "toolError", {"msg":e}) );
-                    //req.flash('errorMessage', "There was an error processing your files." );
-                    res.status(400).send(JSON.stringify({"msg":err}));
+
+                    // NOTE: Abusing XHR communication because I can't get the below code to communicate.
+                    // Want to just sent error to XHR but nothing gets communicated. So added 'err':true
+                    // res.status(500).send(data)
+                    var data = { "err": true, "msg":"Assessment tools did not succesfully complete, no feedback available."};
+                    res.write(JSON.stringify(data));
+                    res.end();
+
                 }, function(prog) {
 
                     if(prog.tool == "Manager" && prog.msg == "Progress")

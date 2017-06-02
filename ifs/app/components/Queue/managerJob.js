@@ -64,10 +64,20 @@ function loadAllTools(job, done)
                             failed = failed.concat( val.result );
                         }
                     }
+                    else if( res[i].state == 'rejected') {
+                        failed.push(res[i].reason.job);
+                    }
                 }
-                Logger.log("****** Passed is :", passed.length );
-                Logger.log("****** FAILED is :", failed.length );
-                var Err = passed.length == 0 && failed.length  > 0 ? new Error('No jobs successfully completed.') : null;
+                /*
+                console.log("****** Passed is :", passed.length );
+                console.log("****** FAILED is :", failed.length );
+                console.log("****** FAILED jobs are \n :" );
+
+                for( var i = 0; i < failed.length; i++ )
+                    console.log("job:", failed[i] );
+                */
+
+                var Err = passed.length == 0 ? new Error('No jobs successfully completed.') : null;
                 done( Err, { 'passed': passed, 'failed': failed } );
 
             }, function(reason) {
