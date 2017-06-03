@@ -1,2 +1,0 @@
-src/testMain.c:74: warning: Either the condition 'arr!=0' is redundant or there is possible null pointer dereference: arr.
-src/testMain.c:100: style: Variable 'testsPassed' is assigned a value that is never used.
