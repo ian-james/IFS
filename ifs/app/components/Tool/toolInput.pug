@@ -4,7 +4,7 @@ div(ng-if="option.type == 'checkbox'")
 
 div(ng-if="option.type == 'text'")
     p {{ option.displayName }}
-    input(type="text" name="{{option.name}}" id="{{option.name}}")
+    input(type="text" name="{{option.name}}" id="{{option.name}}" value="{{option.prefValue}}")
 
 div(ng-if="option.type == 'select'")
     label(for="{{ option.displayName }}").uk-form-label

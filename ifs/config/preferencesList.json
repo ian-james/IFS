@@ -2,7 +2,29 @@
     "preferences" : {
         "displayName": "Preferences",
         "name": "preferencesOptions",
-        "options": [{
+        "options": [
+            {
+                "displayName":"Student Name",
+                "name": "student-name",
+                "type": "text",
+                "values": "",
+                "value": "Student"
+            },
+            {
+                "displayName":"Student Avatar",
+                "name": "student-avatarFileName",
+                "type": "text",
+                "values": "",
+                "value": "Student"
+            },
+            {
+                "displayName":"Bio blurb",
+                "name": "student-bio",
+                "type": "text",
+                "values": "",
+                "value": "A Great student"
+            },
+            {
                 "displayName":"Preferred Assessment Tools",
                 "name": "pref-toolSelect",
                 "type": "select",

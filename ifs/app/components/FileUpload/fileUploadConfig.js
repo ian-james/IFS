@@ -72,8 +72,8 @@ var storage = multer.diskStorage({
         // Check if a folder exists and make it if necessary.
         // Folder structure is upload/user/date/submissionTime
         // date will be year-month-date
-        // submissionTime will need to include minutes and seconds.
-        var dest = "./uploads";
+        // submissionTime will need to include minutes and seconds.        
+        var dest = "./users";
         console.log('USER OBJECT\n' + JSON.stringify(req.user));
 
         // LIttle Time Hack to keep all the submission files in the same output folder but also timebased.
@@ -86,7 +86,7 @@ var storage = multer.diskStorage({
         mkdirp(submissionFolder, function(err) {
             if(err) {
                 Logger.error("Unable to create folder for submission");
-                return callback(null,"/uploads");
+                return callback(null,dest);
             }
             else {
                 Logger.info("Folder Structure for ", submissionFolder, " has been created");

@@ -154,6 +154,8 @@ try  {
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             userId INT UNSIGNED NOT NULL, \
             name TEXT, \
+            bio TEXT, \
+            avatarFileName VARCHAR(80), \
             PRIMARY KEY(id), \
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");

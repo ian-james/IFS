@@ -151,6 +151,8 @@ module.exports = function (app, iosocket) {
         var user = eventDB.eventID(req);
         saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
 
+        console.log("HERE");
+
         submissionEvent.addSubmission( user, function(subErr, succSubmission) {
 
             var submissionRequest = submissionEvent.getLastSubmissionId(user.userId, user.sessoinId);
