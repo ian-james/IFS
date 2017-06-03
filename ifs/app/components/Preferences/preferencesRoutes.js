@@ -28,7 +28,7 @@ module.exports = function( app ) {
     });
 
     app.get('/preference/data', function(req,res) {
-        var preferencesFile = './users/preferencesList.json';
+        var preferencesFile = './config/preferencesList.json';
         fs.readFile( preferencesFile, 'utf-8', function( err, data ) {
             if( err ) {
                 //Unable to get support tools file, larger problem here.
