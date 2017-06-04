@@ -77,7 +77,7 @@ module.exports = {
         var sessionId = req.user.sessionId;
 
         return [
-            prefDB.getPreferenceChanges(id)
+            //prefDB.getPreferenceChanges(id)
         ];
     },
 
