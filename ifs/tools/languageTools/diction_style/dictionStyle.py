@@ -66,6 +66,7 @@ def findSection( target, sch, ech, begin ):
 def decorateData( result, options ):
 
     i = 0
+    divCh = "->"
     json_string = ''
     json_string += '{ '
     json_string += '"feedback": [ '
@@ -85,7 +86,6 @@ def decorateData( result, options ):
         linenum = sections[1]
         fullFeedback =  sections[2]
 
-        divCh = "->"
         try:
             fid = 0
             while( fid >= 0 and fid < len(fullFeedback) ):
