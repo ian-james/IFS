@@ -68,35 +68,36 @@ def spcheck(to_check, lang, hun):
     char_num = 0
     line_num = 0
     word_num = 0
-    # optimized regex provided by Jamey
-    regex = re.compile(r'[^a-zA-z]*([a-zA-Z]+([-\'][a-zA-Z]+)*)')
+    # use built in word matching pattern
+    regex = re.compile(r'(\w+)')
 
     for line in to_check:
         char_pos= 0
         word_pos = 0
-        for word in line.split():  # tokenize by whitespace delimeters?            
+        for chunk in line.split():  # tokenize by whitespace delimeters?
             # simple regex to ensure that punctuation at the end of a word is
             # not passed to hunspell i.e. prevents false alarms
-            res = regex.match(word)
+            res = regex.match(chunk)
             if res:
-                word = res.group(1)
+                word = res.group(0)
 
-            # note that hunspell will think that cat!dog is not a word, but
-            # hyphenated words such as cat-dog may pass, even though they
-            # aren't in the English lexicon        
+                # note that hunspell will think that cat!dog is not a word, but
+                # hyphenated words such as cat-dog may pass, even though they
+                # aren't in the English lexicon
 
-            char_pos = line.find(word, char_pos)
+                char_pos = line.find(word, char_pos)
 
-            if not hun.spell(word):
-                sug = [ x.decode('utf-8') for x in hun.suggest(word) ]
-                suggestion = (line_num, word_num, char_num+char_pos, char_pos, word_pos, (word, sug))
+                if not hun.spell(word):
+                    sug = [ x.decode('utf-8') for x in hun.suggest(word) ]
+                    suggestion = (line_num, word_num, char_num+char_pos,
+                                  char_pos, word_pos, (word, sug))
+                    misspelled.append(suggestion)
 
-                misspelled.append(suggestion)
-            else:
-                correct_words.append((line_num, word_num, word))
+                else:
+                    correct_words.append((line_num, word_num, word))
 
-            word_num += 1
-            word_pos += 1
+                word_num += 1
+                word_pos += 1
 
         line_num +=1
         char_num += len(line)
@@ -130,7 +131,6 @@ def build_json(misspelled, filename, lang, correct=[]):
 
     # always add misspelled words to the json, along with other useful info
     for i in range(len(misspelled)):
-
         j_array = json.dumps(misspelled[i][5][1])
         json_string += '{'
         json_string += '"target":"' + str(misspelled[i][5][0]) + '",'
