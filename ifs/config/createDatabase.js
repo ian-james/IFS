@@ -163,6 +163,7 @@ try  {
         Logger.info("Create the Table:", config.class_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.class_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            code VARCHAR(40) UNIQUE NOT NULL, \
             name TEXT, \
             description TEXT, \
             disciplineType ENUM ('computer science','psychology', 'other'), \
@@ -186,6 +187,7 @@ try  {
             name TEXT, \
             description TEXT, \
             disciplineType ENUM ('computer science','psychology', 'other'), \
+            deadline DATETIME DEFAULT CURRENT_TIMESTAMP , \
             PRIMARY KEY(id) \
         )");
 
@@ -202,6 +204,46 @@ try  {
             UNIQUE Key userTool (userId,toolName) \
         )");
 
+        Logger.info("Create the Table:", config.upcoming_event_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.upcoming_event_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            classId INT UNSIGNED NOT NULL, \
+            name TEXT, \
+            title TEXT, \
+            description TEXT, \
+            openDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
+            closedDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
+            dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id) \
+        )");
+
+        /// Class skil can be associated with a specific assignment or not
+        Logger.info("Create the Table:", config.class_skill_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.class_skill_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            classId INT UNSIGNED NOT NULL, \
+            assignmentId INT UNSIGNED NULL, \
+            name TEXT, \
+            description TEXT, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id), \
+            FOREIGN Key (assignmentId) REFERENCES " + config.database + "." + config.assignment_table + "(id) \
+        )");
+
+
+        /// Skills as rated by the student
+        Logger.info("Create the Table:", config.student_skill_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_skill_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            studentId INT UNSIGNED NOT NULL, \
+            classSkillId INT UNSIGNED, \
+            value DECIMAL(2,2), \
+            PRIMARY KEY(id), \
+            FOREIGN Key (studentId) REFERENCES " + config.database + "." + config.student_table + "(id), \
+            FOREIGN Key (classSkillId) REFERENCES " + config.database + "." + config.class_skill_table + "(id), \
+            UNIQUE Key studentClassSkill (studentId,classSkillId) \
+        )");
         Logger.info("Success: Database created.");
 
     }

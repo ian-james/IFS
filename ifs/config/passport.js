@@ -11,6 +11,7 @@ var Logger = require( path.join( __dirname, "/loggingConfig") );
 
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
+var studentProfile = require(__components + "StudentProfile/studentProfileDB")
 
 var defaultTool = require( __components + 'Preferences/setupDefaultToolType.js');
 
@@ -70,9 +71,12 @@ module.exports = function (passport) {
                             req.flash('success', 'Successfully signed up.');
 
                             //Load Preferences
-                            preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
-                                SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
-                                    return done(null, newUser);
+                            console.log("HERE");
+                            studentProfile.insertStudentProfile( newUser.id, "Student", "Tell us about yourself", "defaultImg.png", function(profileErr, studentSet) {
+                                preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
+                                    SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
+                                        return done(null, newUser);
+                                    });
                                 });
                             });
                         });

@@ -21,6 +21,7 @@ module.exports = {
     'class_table': 'class',
     'student_class_table': 'student_class',
     'assignment_table': 'assignment',
-    'assignment_skill_table': 'assignment_skill',
-    'student_skill_table': 'student_skill'
+    'class_skill_table': 'class_skill',
+    'student_skill_table': 'student_skill',
+    'upcoming_event_table': 'upcoming_event',
 };
