@@ -49,7 +49,8 @@ const server = app.listen( app.get('port') , function() {
     console.log( "Listening on port " + app.get('port'));
 });
 
-var event = require(__components + "InteractionEvents/Event.js" );
+var event = require(__components + "InteractionEvents/buildEvent.js" );
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
 const socket_io = require('socket.io')(server).
                 use(function(socket,next) {
@@ -63,27 +64,36 @@ socket_io.on('connection', (socket) => {
                         return;
                     }
 
-                    var id = socket.request.session.passport.user;
+                    var id = socket.request.session.passport.user.id;
+                    var sessionId = socket.request.session.passport.user.sessionId;
 
                     socket.on('disconnect',() =>{
-                        console.log("user disconnected");
-                        // Will have to be tracked via DB.
-                        //event.trackEvent(socket, event.makeEvent(id, "disconnection", "Authorized",   {}, Date.now() ) );
+                        // NOTE, THIS DISCONNECTS on connection made from client ajax calls..
+                        // So not reliable as session disconnect.
+                        //console.log("user disconnected");
+                        tracker.trackEvent(socket, event.makeEvent(sessionId, id, "disconnection", "Authorized", {} ) );
                     });
 
                     socket.on('event', function(data) {
-                        console.log(data);
+                        //console.log("INDEX DATA EVENT", data);
                         //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
-                        socket.broadcast.emit('trackEvent', event.makeEvent( id, data.eventType, data.name, data.data, Date.now() ));
-                        //event.trackEvent( socket, event.makeEvent( id, data.eventType, data.name, data.data, Date.now() ) );
+                        tracker.btrackEvent(socket, event.makeEvent(sessionId, id, data.eventType, data.name, data.data) );
+                        //event.trackEvent( socket, event.makeEvent( id, data.eventType, data.name, data.data ) );
+                    });
+
+                    socket.on('feedbackEvent', function(data){
+
+                        //console.log("IFeedbacl  DATA EVENT", data);
+                        //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
+                        tracker.btrackFeedbackInteractionEvent(socket, event.makeFeedbackInteractionEvent(sessionId,id, data) );
                     });
 
                     socket.on('trackEvent', function(data) {
                         console.log("SERVER GOT TRACK EVENT", data);
                     });
 
-                    console.log("emit event");
-                    event.trackEvent( socket, event.makeEvent( id,"connection", "Authorized", {}, Date.now() ) );
+                    //console.log("emit event");
+                    tracker.trackEvent( socket, event.makeEvent(sessionId, id, "connection", "Authorized", {} ) );
                 });
 
 // Add Developer Routes

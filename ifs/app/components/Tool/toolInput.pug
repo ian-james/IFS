@@ -1,14 +1,14 @@
 div(ng-if="option.type == 'checkbox'")
     span {{ option.displayName }}
-    input(type="checkbox" name="{{option.name}}" id="{{option.name}}").uk-checkbox.uk-float-right
+    input(type="checkbox" name="{{option.name}}" id="{{option.name}}" ng-checked="{{option.prefValue}}").uk-checkbox.uk-float-right
 
 div(ng-if="option.type == 'text'")
     p {{ option.displayName }}
-    input(type="text" name="{{option.name}}" id="{{option.name}}")
+    input(type="text" name="{{option.name}}" id="{{option.name}}" value="{{option.prefValue}}")
 
 div(ng-if="option.type == 'select'")
     label(for="{{ option.displayName }}").uk-form-label
         | {{ option.displayName }}
     div.uk-form-controls
         select(id="{{option.name}}" name="{{option.name}}").uk-select
-            option( ng-repeat='val in option.values') {{ val }}
+            option( ng-repeat='val in option.values' ng-selected="val==option.prefValue" ) {{ val }}

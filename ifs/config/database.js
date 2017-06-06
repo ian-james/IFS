@@ -34,8 +34,12 @@ function query( queryStr, args, callback) {
         if( connection ){
             //console.log(" querSTr", queryStr, JSON.stringify(args));
             connection.query( queryStr, args, function(err,data) {
-                if(err)
+
+
+                if(err) {
+                  console.log("ERROR FOR STRING: ", queryStr);
                   console.log("ERROR ", err);
+                }
                 Errors.ifErrLog(err);
                 
                 callback(err, data);

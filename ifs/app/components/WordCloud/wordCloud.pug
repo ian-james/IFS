@@ -5,28 +5,6 @@ block content
     link(rel="stylesheet" href="components/WordCloud/wordCloud.css")
     
     div(class="fluid-container" ng-controller="wordCloudCtrl")
-        //-
-            div.row
-                form(id="wordCloudFrm" class="col-md-2 col-md-offset-1")
-                    fieldset
-                        label(for='shapeSelect') Select Cloud Shape
-                        <select ng-model="selectedShape" ng-options='val for val in shapes'>
-                        </select>
-
-                    fieldset
-                        label(for="minFontSize") Select Minimm Font Size
-                        <select ng-model="selectedFontSize" ng-options='font for font in fontSizes'>
-                        </select>
-
-                    fieldset
-                        label(for="minRotation") Select Minimum Word Rotation
-                        <select ng-model="selectedRotation" ng-options='rot for rot in rotations'>
-                        </select>
-
-                    fieldset
-                        label(for="colorSelect") Background Color
-                        <select ng-model="selectedColor" ng-options='col for col in colors'>
-                        </select>
         div.row
             p(id="NotSupported" class="col-md-offset-5")
             p(class="col-md-offset-5")= msg

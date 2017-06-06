@@ -39,19 +39,19 @@ function loadAllTools(job, done)
     // Wait for everything to finish before emitting that parent is done.
     Q.allSettled(promises)
         .then( function(res) {
-                // return everything that passed and was fulfilled                
+                // return everything that passed and was fulfilled
                 var passed =[], failed = [];
 
                 for( var i = 0; i < res.length; i++ ) {
 
                     if( res[i].state == 'fulfilled' ) {
+
                         var val = res[i].value;
+                        console.log("VALUE RETURNED IS ", val );
 
                         // Attach these two fields from job tool to the result.
                         var toolAdd = {"displayName": val.job.tool.displayName, "runType": val.job.tool.runType};
-                        _.forEach( val.result.feedback, function(f){
-                            return _.extend(f,toolAdd);
-                        });
+                        _.extend(val.result.feedback,toolAdd);
 
                         if( val.success ) {
                             if( val.result.feedback )
@@ -64,8 +64,20 @@ function loadAllTools(job, done)
                             failed = failed.concat( val.result );
                         }
                     }
+                    else if( res[i].state == 'rejected') {
+                        failed.push(res[i].reason.job);
+                    }
                 }
-                var Err = passed.length == 0 && failed.length  > 0 ? new Error('No jobs successfully completed.') : null;
+                /*
+                console.log("****** Passed is :", passed.length );
+                console.log("****** FAILED is :", failed.length );
+                console.log("****** FAILED jobs are \n :" );
+
+                for( var i = 0; i < failed.length; i++ )
+                    console.log("job:", failed[i] );
+                */
+
+                var Err = passed.length == 0 ? new Error('No jobs successfully completed.') : null;
                 done( Err, { 'passed': passed, 'failed': failed } );
 
             }, function(reason) {

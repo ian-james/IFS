@@ -54,7 +54,7 @@ def decorateData( result, options ):
     try:
         jdata = json.loads(result)
     except:
-        print("FAILED")
+        raise
 
     filename = os.path.basename(options['file'])
 
@@ -78,7 +78,7 @@ def decorateData( result, options ):
         json_string += '"charNum": ' + str(obj["start"])  + ',\n'
         json_string += '"charPos": ' + str(obj["column"]) + ',\n'
         json_string += '"severity": "' + str(obj["severity"]) + '",\n'
-        json_string += '"type": "'  + str(obj['check']) + '",\n'
+        json_string += '"type": "recommendation",\n'
         json_string += '"toolName": "proseLinter",\n'
         json_string += '"filename": "' + filename + '",\n'
         json_string += '"feedback":' + json.dumps(obj["message"]) + ',\n'

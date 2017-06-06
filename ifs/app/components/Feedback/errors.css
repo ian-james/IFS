@@ -8,13 +8,13 @@
 /* mark up for text boxes */
 .spelling, .error {
     display:inline-block;
-    background-color: rgba(238, 46, 36, 0.6) !important; /* #ee2e24 */
+    background-color: #fb9fb1 !important;
     font-weight: 800 !important;
     text-decoration: none !important;
     border-radius: 3px !important;
 }
 
-.grammar {
+.grammar, .note {
     display: inline-block;
     background-color: #6fc2ef !important;
     text-decoration: none !important;
@@ -62,7 +62,7 @@
     color: #ee2e24!important;
 }
 
-.grammar-display {
+.grammar-display, .note-display {
     display: inline-block;
     color: #1e87f0 !important;
 }

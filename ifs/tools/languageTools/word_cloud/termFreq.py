@@ -29,12 +29,18 @@ def decorateData( result, options ):
     json_string = ""
     json_string += '{\n'
     json_string += '"feedback": [\n'
-    json_string += '{\n'
-    json_string += '"type": "wordCloud",\n'
-    json_string += '"wordCount":' + str(options['termLimit']) + ',\n'
-    j_array = json.dumps( result );
-    json_string += '"wordFreq": ' + j_array + '\n'
-    json_string += '}\n'
+    for i in range(len(result)):
+        json_string += '{\n'
+        json_string += '"type": "wordCloud",\n'
+        json_string += '"toolName": "wordCloud",\n'
+        json_string += '"wordCount":' + str(options['termLimit']) + ',\n'
+        json_string += '"filename": "' + str(options['file']) + '",\n'
+        json_string += '"feedback": ' + json.dumps(result[i][0]) + ',\n'
+        # Hack putting frequency in charPos since visual tools don't use charPos  or most columns in table.
+        json_string += '"charPos": ' + str(result[i][1]) + '\n'
+        json_string += '}\n'
+        if i != (len(result) - 1):
+            json_string += ','
     json_string += ']\n'
     json_string += '}\n'
 

@@ -171,11 +171,16 @@ function markupFile( file, selectedTool, feedbackItems )
                 // Assign either the multiError or the specific error type.
                 // Also an array for the feedback Items array that match this error
                 matchClasses =   matchClasses == "" ? feedbackItems[i].type : matchClasses;
-                var options = { 'classes': matchClasses, 'data': i };
+
+                //TODO JF: This helps fixes an issue, but keeping i vs idarr as it potentially reduces functionality but that functionality
+                //      Might be deprecated soon too. Essentially old method allows moving between errors on the readMore. This
+                //      fix remove that capability.
+                //OLD var options = { 'classes': matchClasses, 'data': idArr , 'id': idArr, 'feedbackId':feedbackItems[i].id};
+                var options = { 'classes': matchClasses, 'data': i , 'id': i, 'feedbackId':feedbackItems[i].id};
 
                 // Create a popover button at position to highlight text and count the offset.
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);
-                var str = newStr.start + he.decode(newStr.mid) + newStr.end;
+                var str = newStr.start + newStr.mid + newStr.end;
                 var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset } );
 
                 content = contentObj.content;
@@ -192,4 +197,3 @@ function markupFile( file, selectedTool, feedbackItems )
 
 module.exports.replaceText = replaceText;
 module.exports.markupFile = markupFile;
-

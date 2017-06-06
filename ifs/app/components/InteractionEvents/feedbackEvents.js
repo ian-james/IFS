@@ -1,33 +1,115 @@
-var socket = io();
-$(function() {
-    $("a").on('click', function(e) {
-        console.log($(e.target) );
-        // Check if link relates to nav-bar
-        if($(e.target).hasClass('nav-link')) {
-            socket.emit("event",{
-                    "eventType": "view",
-                    "name": "file",
-                    "data": {'file': $(e.target)[0].innerText }
-            });
+module.exports = {
+    /************************ Feedback Event *******************************************/
+    getCountFeedbackItems: function( userId ){
+        return {
+            'name': "totalFeedbackCount",
+            'data':[userId],
+            'request': "select userId, COUNT(*) as value from feedback where userId = ?"
+        };
+    },
+
+    getFeedbackPerTool: function( userId, toolName ){
+        return {
+            'name': "totalFeedbackPerTool",
+            'data':[userId, toolName],
+            'request': "select COUNT(*) as value from feedback where userId = ? and toolName = ?"
+        };
+    },
+
+    getMostRecentFeedback: function(userId ){
+        return { 
+            'name': "mostRecentFeedback",
+            'data':[userId,userId],
+            'request': "select * from feedback where userId = ? and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos,toolName"
         }
-        else if($(e.target).hasClass("nocode")) {
-            //TODO: Might want more information here to
-            socket.emit("event",{
-                    "eventType": "view",
-                    "name": "feedback",
-                    "data": {'feedback': $(e.target)[0].innerText }
-            });
+    },
+
+    /* IGNORES visual feedback information */
+    getMostRecentFeedbackNonVisual: function(userId ){
+        return { 
+            'name': "mostRecentFeedbackNonVisual",
+            'data':[userId,userId],
+            'request': "select * from feedback where userId = ? and runType in (\"writing\",\"programming\") and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos,toolName"
         }
-        else if($(e.target).attr("href") == "#") {
-            console.log("read more", $(e.target)[0]);
-            socket.emit("event",{
-                    "eventType": "view",
-                    "name": "feedback",
-                    "data":  "additionalInfo"
-            });
+    },
+
+    getMostRecentFeedbackPerTool: function(userId, toolName ){
+         return { 
+            'name': "mostRecentFeedbackPerTool",
+            'data':[userId,toolName,userId],
+            'request': "select * from feedback where userId = ? and toolName = ? and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos, toolName"
         }
-        else {
-            console.log("else unknown clicker");
-        }
-    });
-});
+    },
+
+    getCountFeedbackViews: function( userId ) {
+        return {
+            'name': "countFeedbackViews",
+            'data':[userId, "view", "feedback"],
+            'request':"select COUNT(*) as value from userInteractions where userId = ? eventType = ? and name = ?"
+        };
+    },
+
+    getFeedbackCountPerTool: function( userId ) {
+        return {
+            'name': "toolsFeedbackCount",
+            'data':[userId],
+            'request':"select toolName, COUNT(*) from feedback where userId = ? GROUP BY toolName"
+        };
+    },
+
+    getMeanFeedbackPerTool: function( userId ) {
+        return {
+            'name': "meanFeedbackPerTool",
+            'data':[userId],
+            'request': "select AVG(a.val) as value  from ( select COUNT(*) as val from feedback where userId = ? GROUP BY toolName) a"
+        };
+    },
+
+    getCountMostFeedback: function( userId ) {
+        return {
+            'name': "countMostFeedback",
+            'data':[userId],
+            'request':"select val as value from ( select toolName, COUNT(*) as val from feedback where  userId = ? GROUP BY toolName) a ORDER BY a.val desc LIMIT 1"
+        };
+    },
+
+    getCountLeastFeedback: function( userId ) {
+        return {
+            'name': "countLeastFeedback",
+            'data':[userId],
+            'request':"select val as value from ( select toolName, COUNT(*) as val from feedback where  userId = ? GROUP BY toolName) a ORDER BY a.val LIMIT 1"
+        };
+    },
+
+    getToolWithMostFeedback: function( userId ) {
+        return {
+            'name': "mostFeedbackTool",
+            'data':[userId],
+            'request':"select toolName as value from ( select toolName, COUNT(*) as val from feedback where  userId = ? GROUP BY toolName) a ORDER BY a.val desc LIMIT 1"
+        };
+    },
+
+    getToolWithLeastFeedback: function( userId ) {
+        return {
+            'name': "leastFeedbackTool",
+            'data':[userId],
+            'request':"select toolName as value from ( select toolName, COUNT(*) as val from feedback where  userId = ? GROUP BY toolName) a ORDER BY a.val LIMIT 1"
+        };
+    },
+
+     getMostCommonFeedbackType: function( userId ) {
+        return {
+            'name': "mostCommonFeedbackType",
+            'data':[userId],
+            'request':"select type as value from ( select type, COUNT(*) as val from feedback where  userId = ? GROUP BY type) a ORDER BY a.val desc LIMIT 1"
+        };
+    },
+
+    getLeastCommonFeedbackType: function( userId ) {
+        return {
+            'name': "leastCommonFeedbackType",
+            'data':[userId],
+            'request':"select type as value from ( select type, COUNT(*) as val from feedback where  userId = ? GROUP BY type) a ORDER BY a.val LIMIT 1"
+        };
+    }
+}

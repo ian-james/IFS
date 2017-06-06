@@ -24,7 +24,7 @@ block content
                                         li.uk-padding-small
                                             span.uk-float-left Enable {{ tool.displayName }}
                                             label.switch-wrapper.uk-float-right
-                                                input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true")
+                                                input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true" ng-checked="{{tool.prefValue}}")
                                                 div.switch.switch-round
                                         li(ng-repeat="option in tool.options").uk-padding-small
                                             include toolInput.pug
@@ -32,4 +32,3 @@ block content
 
         script(src="components/Tool/toolController.js")
         script(src="components/Tool/tool-settings-panel.js")
-
