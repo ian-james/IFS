@@ -83,6 +83,22 @@
             "options" : []
         },
         {
+            "displayName": "Diction",
+            "description": "A Python script that uses Diction to process text and provides suggestions for strengthening language and tone.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/diction_style/LICENSE.txt",
+            "progName": "./tools/languageTools/diction_style/dictionStyle.py",
+            "cmdToolName": "dictionStyle.py",
+            "runType": "writing",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" : []
+        },
+        {
             "displayName": "Word Cloud",
             "description": "A Python script that calculates word frequency and organizes results for wordcloud2.js.",
             "author": "Jamey Fraser",

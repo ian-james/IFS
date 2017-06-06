@@ -49,7 +49,7 @@ def find( word, target, start ):
 # If end char is not find the remained of the target is used.
 # (suggestion ) [error]
 def findSection( target, sch, ech, begin ):
-  
+
     fid = find( target, sch, begin )
     if( fid >= 0 ):
         sid = find( target, ech, fid+1 )
@@ -59,9 +59,18 @@ def findSection( target, sch, ech, begin ):
             sid = len(target)
         else:
             targetSub = target[fid+1:sid]
-        return [ sid, targetSub ]
+        return [fid, sid, targetSub ]
 
-    return [-1, ""]
+    return [-1,-1, ""]
+
+
+def getStartLineCharPosition( content, lineNum ):
+    res = 0
+    for i in range(min(len(content),lineNum)):
+        res += len(content[i]);
+        #print("res",i, ":", res)
+    return res
+
 
 def decorateData( result, options ):
 
@@ -70,7 +79,11 @@ def decorateData( result, options ):
     json_string = ''
     json_string += '{ '
     json_string += '"feedback": [ '
-       
+
+    content = ""
+    with open(options['file'], 'r', encoding='utf-8') as outFile:
+        content = outFile.readlines()
+
     lines = result.splitlines()
     for line in lines:
 
@@ -82,49 +95,65 @@ def decorateData( result, options ):
         if( len(sections) < 3 ):
             continue
 
+        # Parse the section of the output
         filename = sections[0]
         linenum = sections[1]
         fullFeedback =  sections[2]
 
         try:
             fid = 0
+            globalFilePosition = 0
             while( fid >= 0 and fid < len(fullFeedback) ):
+
                 # 0 is position, 1 is target substr
                 error = findSection(fullFeedback,'[', ']', fid)
-                
+                #print(error)
+
                 # No more errors to process
-                if( error[0] < 0 ):
+                if( error[0] < 0 or error[1] < 0 ):
                     break
 
-                divider = error[1].find(divCh, 0 )
+                # identify position of -> symbol
+                divider = error[2].find(divCh, 0)
 
-                # Likely not an error but a [] statement in user writing
+                # Divider separate input [] statements user writing and feedback
                 addedFeedback = False
                 if( divider >= 0 ):
                     # First part is target, second part is suggestion, sometimes in ()
-                    target = error[1][0:divider]
-                    feedback = findSection( error[1],'(',')', divider ) 
+                    target = error[2][0:divider]
+                    feedback = findSection( error[2],'(',')', divider )
 
                     if( feedback[0] < 0 ):
-                        feedback[0] = divider+len(divCh)+1
-                        feedback[1] = error[1][ feedback[0]:]
-                    
+                        feedback[0] = divider
+                        feedback[1] = divider+len(divCh)+1
+                        feedback[2] = error[2][ feedback[1]:]
+
+                    # Get the character position of this sentence in the document
+                    globalFilePosition = getStartLineCharPosition(content,int(linenum)-1)
+
+                    # Find the local position relative to the start of the sentence
+                    # key is the start of the feedback you received
+                    # cidex is the position in the content sentence.
+                    key = fullFeedback[0:error[0]]
+                    cidx = max(0, find(content[int(linenum)-1], key , 0))
+
                     addedFeedback = True
                     json_string += "{"
                     json_string += '"lineNum": ' + str(linenum) + ',\n'
-                    json_string += '"charPos": ' + str(0) + ',\n'
+                    json_string += '"charPos": ' + str( cidx + len(key) ) + ',\n'
+                    json_string += '"charNum": ' + str( globalFilePosition + cidx + len(key) ) + ',\n'
                     json_string += '"severity": "' + "warning" + '",\n'
                     json_string += '"type": "recommendation",\n'
                     json_string += '"toolName": "dictionStyle",\n'
                     json_string += '"filename": "' + filename + '",\n'
                     json_string += '"target": ' + json.dumps(target.strip()) + ',\n'
-                    json_string += '"feedback": ' + json.dumps(feedback[1].strip()) + '\n'
-                    json_string += "}"   
-                    
-                fid = error[0]+1
+                    json_string += '"feedback": ' + json.dumps(feedback[2].strip()) + '\n'
+                    json_string += "}"
+
+                fid = error[1]+1
                 if( addedFeedback ):
                     json_string += ','
-                
+
         except:
             # find will throw exceptions when not found, no need to report as errors
             pass
