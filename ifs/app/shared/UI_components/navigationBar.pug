@@ -37,7 +37,7 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                         else
                             span(style="background-image: url({{ user.avatar }});").uk-icon.uk-icon-image
                         span(uk-icon="icon: triangle-down")
-                    div(uk-dropdown="mode: click").uk-dropdown
+                    div(uk-dropdown="mode: click; pos: bottom-right").uk-dropdown
                         ul(uk-nav).uk-nav-default
                             // greeting for the user, displaying their name
                             p Signed in as: {{ user.name }}
