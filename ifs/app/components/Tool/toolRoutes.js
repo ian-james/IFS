@@ -10,8 +10,7 @@ var Survey = require( __components + "Survey/survey");
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 
-module.exports = function (app) {
-
+module.exports = function(app) {
     function updateJsonWithDbValues( toolPreferences, tools ){
         var toolPrefix = "enabled-";
         var optionPrefix = "opt-";
@@ -43,17 +42,16 @@ module.exports = function (app) {
     }
 
     app.get('/tool/data', function(req,res) {
-
         fs.readFile( req.session.toolFile, 'utf-8', function( err, toolData ) {
             if( err ) {
-                //Unable to get support tools file, larger problem here.
+                //Unable to get supported tools file, larger problem here.
                 console.log(err);
                 res.end();
             }
             else {
                 //Load JSON tool file and send back to UI to create inputs
 
-                preferencesDB.getStudentPreferencesByToolType(req.user.id, req.session.toolSelect, function( err, toolPreferences){
+                preferencesDB.getStudentPreferencesByToolType(req.user.id, req.session.toolSelect, function(err, toolPreferences){
 
                     var jsonObj = JSON.parse(toolData);
                     var tools = jsonObj['tools'];
@@ -73,12 +71,11 @@ module.exports = function (app) {
      * @param  {[type]} next )             {                var userId [description]
      * @return {[type]}      [description]
      */
-    app.get('/tool', function( req, res , next ) {
-
+    app.get('/tool', function(req, res, next) {
         var userId = req.user.id || req.passport.user;
         SurveyManager.getUserSurveyProfile(userId, function(err,surveyPrefData) {
-            //Array of preferences per survey.            
-            SurveyManager.setupSurvey( surveyPrefData, function(err, selectedSurveyData) {
+            //Array of preferences per survey.
+            SurveyManager.setupSurvey(surveyPrefData, function(err, selectedSurveyData) {
                 if(err || !selectedSurveyData) {
                     res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
                 }
@@ -90,16 +87,15 @@ module.exports = function (app) {
                     // Set pulse survey size
                     options.range[1] = Math.min( options.range[0] + opts.pulseQuestions, options.range[1]);
 
-                    Survey.getSurveyId(surveyId, function(err,surveyData) {
-                        if( surveyData && surveyData.length >= 1)
-                        {
+                    Survey.getSurveyId(surveyId, function(err, surveyData) {
+                        if(surveyData && surveyData.length >= 1) {
                             SurveyBuilder.getSurveySection(surveyData[0], options, function( err, data ) {
                                 data = JSON.stringify(data);
                                 res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":data } );
                             });
                         }
                         else {
-                            res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":[] } );
+                            res.render(viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":[] });
                             res.end();
                         }
                     });

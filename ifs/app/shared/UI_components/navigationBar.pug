@@ -1,13 +1,15 @@
+// TODO user.avatar and user.name are dummy variables for now; they do not do
+// anything. They should be replaced with actual variables containing student
+// profile information from the SQL DB.
+// ex. user.avatar -> path/to/file/avatar.png
+//     user.name   -> student profile name, such as "First Last"
+
 nav(uk-navbar).uk-background-secondary.uk-margin
     div.uk-navbar-left
         a(href="/").uk-navbar-item.uk-logo.uk-light IFS
     div.uk-navbar-right
         ul.uk-navbar-nav
-            li
-                a(href="/")
-                    span(uk-icon="icon: home").uk-margin-small-right
-                    span(class="uk-visible@m") Home
-            if !user 
+            if !user
                 li
                     a(href="/register")
                         span(uk-icon="icon: plus-circle").uk-margin-small-right
@@ -18,10 +20,42 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                         | Login
             else
                 li
-                    a(href="/preferences")
-                        span(uk-icon="icon: cog").uk-margin-small-right
-                        span(class="uk-visible@m") Preferences
+                    a(href="/feedback")
+                        span(uk-icon="icon: commenting").uk-margin-small-right
+                        span(class="uk-visible@m") Feedback
                 li
-                    a(href="/logout")
-                        span(uk-icon="icon: sign-out").uk-margin-small-right
-                        span(class="uk-visible@m") Logout
+                    a(href="/")
+                        span(uk-icon="icon: push").uk-margin-small-right
+                        span(class="uk-visible@m") Upload
+                // Drop down menu
+                li.uk-inline
+                    a(href="#")
+                        // style the avatar with a generic icon, or with the
+                        // user's avatar if any
+                        if !user.avatar
+                            span(uk-icon="icon: user").uk-margin-small-right.uk-icon-button
+                        else
+                            span(style="background-image: url({{ user.avatar }});").uk-icon.uk-icon-image
+                        span(uk-icon="icon: triangle-down")
+                    div(uk-dropdown="mode: click").uk-dropdown
+                        ul(uk-nav).uk-nav-default
+                            // greeting for the user, displaying their name
+                            p Signed in as: {{ user.name }}
+                            hr
+                            // navigation options
+                            li
+                                a(href="/profile")
+                                    span(uk-icon="icon: user").uk-margin-small-right
+                                    | Profile
+                            li
+                                a(href="/dashboard")
+                                    span(uk-icon="icon: thumbnails").uk-margin-small-right
+                                    | Dashboard
+                            li
+                                a(href="/preferences")
+                                    span(uk-icon="icon: cog").uk-margin-small-right
+                                    | Preferences
+                            li
+                                a(href="/logout")
+                                    span(uk-icon="icon: sign-out").uk-margin-small-right
+                                    | Logout
