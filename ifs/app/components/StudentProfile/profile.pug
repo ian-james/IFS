@@ -1,0 +1,53 @@
+extends ../../shared/views/pageLayout.pug
+
+block scripts
+    script(src="/socket.io/socket.io.js")
+
+block content
+    div.uk-container.uk-container
+        div(uk-alert).uk-alert-danger
+            p.uk-align-center.errorMessage #{messages.errorMessage}
+
+        div(uk-grid).uk-grid
+            // profile info
+            div(class="uk-width-1-3@s uk-width-1-4@m uk-width-auto@l").profile.uk-align-left
+                div(class="uk-visible@s").avatar-section
+                    div.uk-align-center
+                            img(src="../../shared/img/user/" + user.id + "/avatar.png").profile-avatar
+                            p.user
+                                span.profile-name #{studentProfile.name}
+                                br
+                                span.profile-username #{user.username} (#{user.id})
+                            hr
+                            p.bio
+                                div.uk-clearfix
+                                    span.profile-h2.uk-float-left Bio
+                                    span(uk-icon="icon: quote-right").uk-float-right
+                                br
+                                span.profile-text #{studentProfile.bio}
+                            p.classes
+                                span.profile-h2 Classes
+                                br
+                                dl.uk-description-list.uk-description-list-divider
+                                    each val,index in courses
+                                        dt
+                                            b= val.code + ": " + val.courseName
+                                        dd= val.description
+
+
+                // achievements and upcoming events
+            div(class="uk-width-expand").event-info.uk-align-right
+                div.acheivements
+                    h2 Achievement Progress
+                    //
+                    // Hardcoded values for now; will need to actually
+                    // populate from top three skills at some point;
+                    // need to display progress bars as well!
+                    //
+                    div.uk-panel.uk-background-muted.uk-padding-small
+                        p SKILL ONE
+                        p SKILL TWO
+                        p SKILL THREE
+                div.events
+                    h2 Upcoming 
+                        span(uk-icon="icon: calendar; ratio: 1.5")

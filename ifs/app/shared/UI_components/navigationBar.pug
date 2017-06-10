@@ -30,17 +30,16 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                 // Drop down menu
                 li.uk-inline
                     a(href="#")
-                        // style the avatar with a generic icon, or with the
                         // user's avatar if any
-                        if !user.avatar
-                            span(uk-icon="icon: user").uk-margin-small-right.uk-icon-button
-                        else
-                            span(style="background-image: url({{ user.avatar }});").uk-icon.uk-icon-image
+                        img(src="../../shared/img/user/" + user.id + "/avatar.png").nav-avatar
                         span(uk-icon="icon: triangle-down")
                     div(uk-dropdown="mode: click; pos: bottom-right").uk-dropdown
                         ul(uk-nav).uk-nav-default
                             // greeting for the user, displaying their name
-                            p Signed in as: {{ user.name }}
+                            p
+                                | Signed in as:
+                                br
+                                //| #{studentProfile.name}
                             hr
                             // navigation options
                             li

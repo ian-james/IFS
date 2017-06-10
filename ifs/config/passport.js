@@ -7,6 +7,8 @@ var dbHelpers = require(__components + "Databases/dbHelpers");
 var config = require(__configs + 'databaseConfig');
 
 var path = require('path');
+var mkdirp = require('mkdirp');
+var cp = require('cp-file');
 var Logger = require( path.join( __dirname, "/loggingConfig") );
 
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
@@ -16,7 +18,6 @@ var studentProfile = require(__components + "StudentProfile/studentProfileDB")
 var defaultTool = require( __components + 'Preferences/setupDefaultToolType.js');
 
 module.exports = function (passport) {
-
     // TODO: Default ToolType is should be set somewhere else with greater visbility.
     var defaultToolType = "Programming";
     var toolTypeKey = "pref-toolSelect";
@@ -27,7 +28,7 @@ module.exports = function (passport) {
     });
 
     passport.deserializeUser( function(user,done) {
-        db.query( "SELECT id,username,sessionId FROM users where id = ? ", user.id, function(err,rows) {
+        db.query( "SELECT id, username, sessionId FROM users where id = ? ", user.id, function(err,rows) {
             done( err, rows[0]);
         });
     });
@@ -37,6 +38,12 @@ module.exports = function (passport) {
     passport.use( 'local-signup',
         new LocalStrategy(
             {
+                /*
+                 * The first and last name fields are not currently being used
+                 * by the sign-up form. How can we make use of them?
+                 */
+                firstnameField: 'firstname',
+                lastnameField: 'lastname',
                 usernameField: 'username',
                 passwordField : 'password',
                 passReqToCallback : true
@@ -67,11 +74,31 @@ module.exports = function (passport) {
                         var insertQuery = "INSERT INTO users (username, password) values (?,?)";
                         db.query( insertQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
+
+                            // copy the default avatar to the user avatar
+                            var imgpath = "./app/shared/img/user/";
+                            var defaultpath = imgpath + "avatar_default.png";
+                            var avatarpath = imgpath + newUser.id + "/";
+                            mkdirp(avatarpath, function(err) {
+                                if(err) {
+                                    Logger.error("Unable to create image folder.");
+                                }
+                            });
+                            cp.sync(defaultpath, avatarpath + "avatar.png");
+
+
                             newUser.sessionId = 0;
                             req.flash('success', 'Successfully signed up.');
 
                             //Load Preferences
-                            console.log("HERE");
+                            console.log("INSERTING DATA TO STUDENT PROFILE");
+
+                            /*
+                             *
+                             * TODO: pass firstname/lastname fields from sign up form to the studentProfile SQL DB
+                             *
+                             */
+
                             studentProfile.insertStudentProfile( newUser.id, "Student", "Tell us about yourself", "defaultImg.png", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
                                     SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){

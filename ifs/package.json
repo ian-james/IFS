@@ -39,6 +39,7 @@
     "command-line-args": "^4.0.1",
     "connect-redis": "^3.2.0",
     "cookie-parser": "^1.4.3",
+    "cp-file": "^4.2.0",
     "errorhandler": "^1.5.0",
     "express": "^4.14.0",
     "express-flash": "0.0.2",
