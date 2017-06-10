@@ -17,7 +17,7 @@ var studentSkill = require(__components + "StudentProfile/studentSkillDB");
 
 module.exports = function (app, iosocket ) {
 
-    app.get('/dashboard', function( req, res , next ) {
+    app.get('/dashboard', function( req, res, next ) {
 
         /* ALl this information should be stored via an initial sign up survey  but for now */
         // MYSQL quick easy tests
@@ -59,31 +59,32 @@ module.exports = function (app, iosocket ) {
             INSERT into student_skill (studentId,classSkillId, value) VALUES(1,2,0.15);
         */
         
-        studentProfile.getStudentProfileAndClasses(req.user.id, function(err, studentData ){
+        studentProfile.getStudentProfileAndClasses(req.user.id, function(err, studentData){
 
-            if( studentData ) {
+            if(studentData) {
                 var studentKeys = ["id","name", "bio", "avatarFileName"];
                 //Note courseName is alias tag to differentiate between student and course.
                 var courseKeys = ["code","courseName","description","disciplineType"];
-                var studentProfile = _.pick(studentData[0], studentKeys );
+                var studentProfile = _.pick(studentData[0], studentKeys);
 
                 // Select Courses/class data
                 var courses = _.map(studentData, obj => _.pick(obj,courseKeys));
                 // Retrieve the upcoming events.
-                upcomingEvents.getStudentUpcomingEvents( req.user.id , function( errEvents, upcomingEventsData ) {
+                upcomingEvents.getStudentUpcomingEvents(req.user.id , function( errEvents, upcomingEventsData) {
                     var studentStats = [];
                     var eventsKeys = ['title','description','closedDate'];
                     var upEvents = _.map(upcomingEventsData, obj => _.pick(obj,eventsKeys));
 
-                    studentSkill.getStudentTop3Skills( studentProfile.id , function(errSkill, skillsData) {
+                    studentSkill.getStudentTop3Skills(studentProfile.id , function(errSkill, skillsData) {
                         var skillsKeys = ['name','value'];
                         studentStats = _.map(skillsData, obj => _.pick(obj,skillsKeys));
-                        res.render( viewPath + "studentDashboard", { "title":"dashboard", "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 'studentStats': studentStats });
+                        res.render( viewPath + "dashboard", { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 'studentStats': studentStats });
                     });
                 });
             }
-            else
+            else {
                 res.status(500).end();
+            }
         });
     });
 }

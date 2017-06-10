@@ -126,7 +126,7 @@ module.exports =  {
 
         if( !uploadedFiles || uploadedFiles.length == 0 )
         {
-            var e = Errors.cLogErr( "Unable to process upload files. Please only upload word, libra office, or text documents." );
+            var e = Errors.cLogErr( "Unable to process upload files. Please only upload Microsoft Office, LibreOffice, or text documents." );
             if( req.session.toolSelect == "Programming" ) {
                 e = Errors.cLogErr( "Unable to process upload files. Please only upload zipped/tar project files or .c or .h files." );
             }

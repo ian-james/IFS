@@ -37,7 +37,7 @@ module.exports = function( app ) {
         });
     });
 
-    app.get('/preference/data', function(req,res) {
+    app.get('/preferences/data.json', function(req,res) {
         var preferencesFile = './config/preferencesList.json';
         fs.readFile( preferencesFile, 'utf-8', function( err, data ) {
             if( err ) {
@@ -50,7 +50,6 @@ module.exports = function( app ) {
                 var preferences = jsonObj['preferences'];
 
                 preferencesDB.getStudentPreferencesByToolType(req.user.id, "Option", function( err, preferencesDB ) {
-                    
                     if(!err)
                         updateJsonWithDbValues(preferencesDB, preferences.options );
 

@@ -10,7 +10,7 @@ module.exports = {
         db.query(q,userId,callback);
     },
 
-      /**
+    /**
      * Update student profile as version should exists already.
      * @param {[type]}   userId   [description]
      * @param {[type]}   name     [description]
@@ -47,6 +47,7 @@ module.exports = {
     getStudentProfileAndClasses: function( userId, callback )
     {
         var q = "select s.id,s.name,s.bio,s.avatarFileName, c.code,c.name as courseName ,c.description,c.disciplineType from student s, student_class sc, class c where s.id = sc.studentId and sc.classId = c.id and s.userId =?";
+        // console.log("QUERYING STUDENT PROFILE AND CLASSES");
         db.query(q,userId,callback);
     }
 }

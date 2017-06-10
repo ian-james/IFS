@@ -32,7 +32,7 @@ module.exports = function( app, passport ) {
 
     // Function to provide login Information to Angular
     app.get("/user/data", function(req,res) {
-        if( req &&  req.user  )
+        if( req && req.user  )
             return res.status(200).json( {user: req.user.username} );
         return res.status(400);
     });
@@ -41,7 +41,7 @@ module.exports = function( app, passport ) {
         if( req &&  req.user  )
             res.redirect('/tool');
         else
-            res.render(viewPath + "login", { title: 'Login  TESTER Screen'});
+            res.render(viewPath + "login", { title: 'Login TESTER Screen'});
     });
 
     // Load the login page
@@ -63,27 +63,26 @@ module.exports = function( app, passport ) {
             else {
                 req.session.cookie.expires = false;
             }
-        res.redirect('/');
-    });
+            res.redirect('/');
+        }
+    );
 
     app.get('/register', function ( req,res ) {
         res.render(viewPath + 'register', { title: "Signup Screen", message:"ok"});
     });
 
+    /*
+     * TODO: pass first and last name information to the SQL database
+     *
+     */
     app.post('/register', passport.authenticate('local-signup', {
-            //TODO: Change /tool to a preference selection page.
-            successRedirect : '/tool',
+            successRedirect : '/preferences',
             failureRedirect : '/register',
             failureFlash : true,
             badRequestMessage: "Failed to login"
     }));
 
-    app.get('/profile', function( req,res ) {
-        res.render(viewPath + "profile", { title: "Profile Screen", message:"ok"});
-    });
-
     app.get('/logout', function (req, res ){
-        
         req.logOut();
         res.redirect('/');
     });

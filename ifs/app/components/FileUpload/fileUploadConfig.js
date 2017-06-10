@@ -61,7 +61,7 @@ var fileFilter = function(req,file,cb)
     }
 
     Logger.error("Invalid file type selection", file.mimetype);
-    return cb( null, false, new Error("In valid file type."));
+    return cb( null, false, new Error("Invalid file type."));
 
 }
 
