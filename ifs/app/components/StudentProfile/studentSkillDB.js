@@ -11,7 +11,7 @@ module.exports = {
     },
 
     getStudentTop3Skills: function( studentId,callback ) {
-        var q = "SELECT cs.name, cs.description, ss.value from student_skill ss, class_skill cs WHERE ss.studentId = 8 AND cs.id = ss.classSkillId ORDER BY value LIMIT 3;"
+        var q = "SELECT cs.name, cs.description, ss.value from student_skill ss, class_skill cs WHERE ss.studentId = ? AND cs.id = ss.classSkillId ORDER BY value LIMIT 3;"
         db.query(q,studentId,callback)
     }
 }
