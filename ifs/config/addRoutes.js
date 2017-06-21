@@ -9,6 +9,8 @@ module.exports = function (app, iosocket) {
     require( path.join( __dirname, "/i18nRoutes"))(app);
     require( componentsPath + "/InteractionEvents/eventRoutes")(app, iosocket);
 
+    require(componentsPath + "/Admin/adminRoutes")(app);
+
     // Dev Team Controllers
     require(componentsPath + "/Login/loginRoutes")(app, passport);
 

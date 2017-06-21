@@ -1,0 +1,52 @@
+{
+    "page" : {
+        "displayName": "Add Upcoming Event",
+        "name": "event",
+        "table": "upcoming_event",
+        "options": [
+            {
+                "displayName":"Class",
+                "name": "class-name",
+                "type": "select",
+                "values": [],
+                "value": "",
+                "dynamic": true
+            },
+            {
+                "displayName":"Event Name",
+                "name": "event-name",
+                "type": "text",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName":"Title",
+                "name": "event-title",
+                "type": "text",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName":"Description",
+                "name": "event-description",
+                "type": "text",
+                "values": "",
+                "value": "Describe the event"
+            },
+            {
+                "displayName":"Start date",
+                "name": "event-startDate",
+                "type": "date",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName":"Due date",
+                "name": "event-endDate",
+                "type": "date",
+                "values": "",
+                "value": ""
+            }
+        ]
+    }
+}

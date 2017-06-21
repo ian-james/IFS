@@ -23,7 +23,6 @@ var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 module.exports = function(app) {
     app.get('/profile/data', function(req,res) {
         var userObj = req.user;
-        console.log("USER DATA:\n" + JSON.stringify(userObj));
     });
 
     /**

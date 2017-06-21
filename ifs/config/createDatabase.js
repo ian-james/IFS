@@ -184,11 +184,13 @@ try  {
         Logger.info("Create the Table:", config.assignment_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.assignment_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            classId INT UNSIGNED NOT NULL, \
             name TEXT, \
+            title TEXT, \
             description TEXT, \
-            disciplineType ENUM ('computer science','psychology', 'other'), \
             deadline DATETIME DEFAULT CURRENT_TIMESTAMP , \
-            PRIMARY KEY(id) \
+            PRIMARY KEY(id), \
+            FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id) \
         )");
 
         /* Stores only current value of preferences, interactions and changes are captured else where */
@@ -244,6 +246,26 @@ try  {
             FOREIGN Key (classSkillId) REFERENCES " + config.database + "." + config.class_skill_table + "(id), \
             UNIQUE Key studentClassSkill (studentId,classSkillId) \
         )");
+
+        /// Roles Tables (student,instructor, owner...etc)
+        Logger.info("Create the Table:", config.role_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.role_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            role VARCHAR(40) NOT NULL DEFAULT \"student\", \
+            PRIMARY KEY(id) \
+        )");
+
+
+        Logger.info("Create the Table:", config.user_role_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.user_role_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            roleId INT UNSIGNED NOT NULL, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            FOREIGN Key (roleId) REFERENCES " + config.database + "." + config.role_table + "(id) \
+        )");
+
         Logger.info("Success: Database created.");
 
     }

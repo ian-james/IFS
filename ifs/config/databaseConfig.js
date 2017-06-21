@@ -24,4 +24,6 @@ module.exports = {
     'class_skill_table': 'class_skill',
     'student_skill_table': 'student_skill',
     'upcoming_event_table': 'upcoming_event',
+    'role_table': 'roles',
+    'user_role_table': 'user_role'
 };

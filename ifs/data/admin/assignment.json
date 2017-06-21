@@ -1,0 +1,45 @@
+{
+    "page" : {
+        "displayName": "Add Assignment",
+        "name": "assignment",
+        "table": "assignment",
+        "options": [
+            {
+                "displayName":"Class Name",
+                "name": "class-name",
+                "type": "select",
+                "values": [],
+                "value": "",
+                "dynamic": true
+            },
+            {
+                "displayName":"Assignment Name",
+                "name": "assignment-name",
+                "type": "text",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName":"Title",
+                "name": "assignment-title",
+                "type": "text",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName":"Description",
+                "name": "assignment-description",
+                "type": "text",
+                "values": "",
+                "value": "Describe the assignment"
+            },
+            {
+                "displayName":"Due date",
+                "name": "assignment-dueDate",
+                "type": "date",
+                "values": "",
+                "value": ""
+            }
+        ]
+    }
+}

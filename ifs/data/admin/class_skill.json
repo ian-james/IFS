@@ -1,0 +1,39 @@
+{
+    "page" : {
+        "displayName": "Add Skill",
+        "name": "skill",
+        "table": "class_skill",
+        "options": [
+            {
+                "displayName":"Class Name",
+                "name": "class-name",
+                "type": "select",
+                "values": [],
+                "value": "",
+                "dynamic": true
+            },
+            {
+                "displayName":"Assignment Name",
+                "name": "assignment-name",
+                "type": "select",
+                "values": [],
+                "value": "",
+                "dynamic": true
+            },
+            {
+                "displayName":"Skill Name",
+                "name": "skill-name",
+                "type": "text",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName":"Skill Description",
+                "name": "skill-description",
+                "type": "text",
+                "values": "",
+                "value": ""
+            }
+        ]
+    }
+}

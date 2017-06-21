@@ -1,0 +1,39 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container.uk-container-expand
+        h1 #{page.displayName}
+
+        div(class="col-md-10 col-md-offset-1")
+            - var faction = formAction;
+            form(class='uk-form' method="post" action="" + formAction )#uploadForm
+                div.uk-clearfix
+                    h2.uk-float-left #{title}
+                    
+                each option, index in page.options
+                    p= JSON.stringify(widget)
+                    - var opt = option;
+                    if option.type == 'checkbox'
+                        span #{option.displayName}
+                        input(type="checkbox" name="" + opt.name, required).uk-checkbox.uk-float-right
+                    else if option.type == 'text'
+                        label(for="{option.displayName}").uk-form-label
+                            | #{option.displayName}
+                        div.uk-form-controls
+                            input(type="text" name="" + opt.name, id="" + opt.name, value="" + opt.value, required).uk-input
+                    else if option.type == 'select'
+                        label(for="{option.displayName}").uk-form-label
+                            | #{option.displayName}
+                        div.uk-form-controls
+                            select(id="" + opt.name name="" + opt.name).uk-select
+                                each optionKey,soId in option.values
+                                    option(value="" + optionKey, selected= soId == 0) #{option.values[soId]}
+                    else if option.type == 'date'
+                        label(for="{option.displayName}").uk-form-label
+                            | #{option.displayName}
+                        div.uk-form-controls
+                            input(type="date" name="" + opt.name, id="" + opt.name, value="" + opt.value, data-optionId="" + opt.dbId, required).uk-input
+                    else
+                        p= option.type
+                br
+                button(type="submit").uk-button.uk-button-primary Create
