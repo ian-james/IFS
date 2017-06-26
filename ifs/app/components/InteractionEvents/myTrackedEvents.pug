@@ -1,0 +1,28 @@
+
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container.uk-container-expand
+        h1 #{title}
+
+        div(class="col-md-10 col-md-offset-1")
+            h2 Events tracked #{events.length}
+            table.uk-table
+                caption Session events
+                thead
+                    tr
+                        td Session ID
+                        th User ID
+                        th Event Type
+                        th Name
+                        th Data
+                        th timestamp
+                tbody
+                    each e in events
+                        tr 
+                            td #{e.sessionId}
+                            td #{e.userId}
+                            td #{e.eventType}
+                            td #{e.name}
+                            td #{e.data}
+                            td #{e.date}

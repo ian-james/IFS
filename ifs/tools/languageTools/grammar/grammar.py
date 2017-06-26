@@ -40,9 +40,9 @@ def print_usage(supported_langs = []):
         supported_langs = list(supported_langs)  # sets are not iterable?
         print('Supported languages on this system:')
         for i in range(len(supported_langs)):
-            print(supported_langs[i],)
+            print(supported_langs[i], end='')
             if i != len(supported_langs) - 1:
-                print(",",)
+                print(",", end='')
         print()
 
 # grcheck(string to_check, language_check.LanguageTool ltool,
@@ -63,42 +63,42 @@ def grcheck(to_check, ltool, with_spelling=False):
 # builds a JSON string from the array of Match objects
 # build_json(string filename, string lang, list matches)
 def build_json(filename, lang, matches):
+    filename = os.path.basename(filename)
     num_matches = len(matches)
     json_string = ''
     json_string += '{ '
     json_string += '"feedback": ['
     for i in range(num_matches):
         json_string += ('{ '
-                    + '"context": "' + str(matches[i].context) + '", ')
+                        + '"context": "' + str(matches[i].context) + '", ')
         # a grammatical issue may span multiple words and lines, so it's best
         # to represent the position of the issue as a span of char coordinates;
         # the hl_begin and hl_end attributes consist of the following structure:
         # [char pos relative to start of line, line relative to start of file]
         # 
         # fromx = line position, line number
-        # 
-        hl_begin = [matches[i].fromx, matches[i].fromy + 1]
-        hl_begin = json.dumps(hl_begin)
-        hl_end = [matches[i].tox, matches[i].toy + 1]
-        hl_end = json.dumps(hl_end)
 
         # Meeting IFS Minimum interface
-        json_string += '"charPos": ' + str(matches[i].fromx + 1) + ',\n'
+        json_string += '"charPos": ' + str(matches[i].fromx) + ',\n'
         json_string += '"lineNum": ' + str(matches[i].fromy + 1) + ',\n'
 
-        json_string += ( '"hlBegin": ' + hl_begin + ', '
-                        + '"hlEnd": ' + hl_end + ', '
-                        + '"lang": ' + '"' + lang + '", '
-                        + '"type": "' + matches[i].locqualityissuetype + '", '
+        json_string += ('"hlBeginChar": ' + str(matches[i].fromx) + ', '
+                        + '"hlBeginLine": ' + str(matches[i].fromy + 1) +  ', '
+                        + '"hlEndChar": ' + str(matches[i].tox) + ', '
+                        + '"hlEndLine": ' + str(matches[i].toy + 1) + ', '
+                        + '"lang": "' + str(lang) + '", '
+                        + '"type": "' + str(matches[i].locqualityissuetype) + '", '
                         + '"toolName": "Language Tool", '
-                        + '"filename": "' + filename + '", '
-                        + '"feedback": ' + '"' + str(matches[i].msg) + '", ')
+                        + '"filename": "' + str(filename) + '", '
+                        + '"feedback": "' + str(matches[i].msg) + '", '
+                       )
         j_array = json.dumps(matches[i].replacements)
         json_string += ('"suggestions": ' + j_array
                         + ' }')
         if i != (num_matches - 1):
             json_string += ','
     json_string += ' ] }'
+
     # make formatting prettier
     json_obj = json.loads(json_string)
     json_string = json.dumps(json_obj, indent=4, sort_keys=True)
@@ -153,10 +153,10 @@ def main(argv):
 
     # define command line arguments and check if the script call is valid
     try:
-        opts, args = getopt.getopt(argv, 'l:o:i:sqh', ['lang=', 'outfile=',
-                                                      'infile=',
-                                                      'with-spelling', 'quiet',
-                                                      'english', 'help'])
+        opts, args = getopt.getopt(argv, 'l:o:i:sqh',
+                                   ['lang=', 'outfile=', 'infile=',
+                                    'with-spelling', 'quiet', 'english',
+                                    'help'])
     except getopt.GetoptError as err:
         sys.stderr.write('Error. ' + str(err) + '\n')
         print_usage();
@@ -221,7 +221,7 @@ def main(argv):
     text = f_in.read()
     matches = grcheck(text, ltool, with_spelling)
     f_in.close()
-    
+
     # build json string
     json_data = build_json(infile, lang, matches)
 

@@ -1,0 +1,136 @@
+{
+    "feedback": [
+        {
+            "feedback": "Letters that appear immediately after a year should be lowercase.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "191",
+            "hlEndChar": "207",
+            "suggestions": [
+                "mod (2000a) temp"
+            ],
+            "target": "mod (2000A) temp",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Do not put a comma before 'et al.'",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "256",
+            "hlEndChar": "274",
+            "suggestions": [
+                "quino et al. 1996"
+            ],
+            "target": "quino, et al. 1996",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Do not put a comma before 'et al.'",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "623",
+            "hlEndChar": "641",
+            "suggestions": [
+                "(Sumo et al. 2003"
+            ],
+            "target": "(Sumo, et al. 2003",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Put a period after the date in a reference.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "190",
+            "hlEndChar": "203",
+            "suggestions": [
+                "smod (2000A) ."
+            ],
+            "target": "smod (2000A) ",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Put a period after the date in a reference.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "465",
+            "hlEndChar": "477",
+            "suggestions": [
+                "glie (2000) ."
+            ],
+            "target": "glie (2000) ",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Put a period after the date in a reference.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "716",
+            "hlEndChar": "728",
+            "suggestions": [
+                ", T. (1991) ."
+            ],
+            "target": ", T. (1991) ",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "If this is an article, consider using lowercase.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "792",
+            "hlEndChar": "829",
+            "suggestions": [
+                "). the decline and fall of ice cream."
+            ],
+            "target": "). The Decline And Fall Of Ice Cream.",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Every period should be followed by a space.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "60",
+            "hlEndChar": "68",
+            "suggestions": [
+                "ntence. T"
+            ],
+            "target": "ntence.T",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Every period should be followed by a space.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "745",
+            "hlEndChar": "753",
+            "suggestions": [
+                " state. E"
+            ],
+            "target": " state.E",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Every period should be followed by a space.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "886",
+            "hlEndChar": "894",
+            "suggestions": [
+                "rourke. o"
+            ],
+            "target": "rourke.o",
+            "toolName": "APA Check",
+            "type": "style"
+        },
+        {
+            "feedback": "Multiple parentheticals should combined using a semicolon.",
+            "filename": "../../../../../pyapa/test.txt",
+            "hlBeginChar": "379",
+            "hlEndChar": "408",
+            "suggestions": [
+                "quat (Lucas 2000; Ruiz 1990)"
+            ],
+            "target": "quat (Lucas 2000) (Ruiz 1990)",
+            "toolName": "APA Check",
+            "type": "style"
+        }
+    ]
+}

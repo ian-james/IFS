@@ -1,0 +1,20 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container.uk-container-expand
+        h1 #{title}
+
+        div(class="col-md-10 col-md-offset-1")
+            div.uk-section#studentProfile
+                h2 Student Profile
+                p #{JSON.stringify(data)}
+    
+                table.uk-table
+                    thead
+                        tr
+                            td Session Related
+                    tbody
+                        each val,key in data
+                            tr
+                                td #{key}
+                                td #{val}

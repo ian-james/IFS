@@ -5,7 +5,7 @@
 var router = require('express').Router();
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
-var maxCookieAge = 1000*60*5; //TODO: Moves this to sessionConfig
+var maxCookieAge = 1000*60*30; //TODO: Moves this to sessionConfig
 
 var Logger = require( __configs + "loggingConfig");
 
@@ -14,10 +14,12 @@ var _ = require('lodash');
 module.exports = function( app, passport ) {
 
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/about', '/about/data', '/user/data'];
+        var nonSecurePaths = ['/', '/login', '/register', '/about','/about/data'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
 
         if(result >= 0 || (req.user) ) {
+            if(req.user)
+                res.locals.user = req.user;
             next();
         }
         else {
@@ -25,20 +27,12 @@ module.exports = function( app, passport ) {
         }
     }
 
-    // This function ensure the user in or returns them to main navigation point.+
-    function isLoggedIn( req, res, next ) {
-        if( req.user )
-            return next();
-        res.redirect('/');
-    }
-
     // Call Authenticate before every function
     app.use( isAuthenticated );
 
-
     // Function to provide login Information to Angular
     app.get("/user/data", function(req,res) {
-        if( req &&  req.user  )
+        if( req && req.user  )
             return res.status(200).json( {user: req.user.username} );
         return res.status(400);
     });
@@ -47,7 +41,7 @@ module.exports = function( app, passport ) {
         if( req &&  req.user  )
             res.redirect('/tool');
         else
-            res.render(viewPath + "login", { title: 'Login  TESTER Screen'});
+            res.render(viewPath + "login", { title: 'Login TESTER Screen'});
     });
 
     // Load the login page
@@ -69,27 +63,26 @@ module.exports = function( app, passport ) {
             else {
                 req.session.cookie.expires = false;
             }
-        res.redirect('/');
-    });
+            res.redirect('/');
+        }
+    );
 
     app.get('/register', function ( req,res ) {
         res.render(viewPath + 'register', { title: "Signup Screen", message:"ok"});
     });
 
+    /*
+     * TODO: pass first and last name information to the SQL database
+     *
+     */
     app.post('/register', passport.authenticate('local-signup', {
-            //TODO: Change /tool to a preference selection page.
-            successRedirect : '/tool',
+            successRedirect : '/preferences',
             failureRedirect : '/register',
             failureFlash : true,
             badRequestMessage: "Failed to login"
     }));
 
-    app.get('/profile', function( req,res ) {
-        res.render(viewPath + "profile", { title: "Profile Screen", message:"ok"});
-    });
-
     app.get('/logout', function (req, res ){
-        
         req.logOut();
         res.redirect('/');
     });

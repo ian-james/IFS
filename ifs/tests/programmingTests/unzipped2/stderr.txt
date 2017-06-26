@@ -1,0 +1,28 @@
+In file included from ../../../tests/programmingTests/unzipped2/src/testMain.c:10:0:
+../../../tests/programmingTests/unzipped2/include/test.h:46:8: warning: extra tokens at end of #endif directive [-Wendif-labels]
+In file included from ../../../tests/programmingTests/unzipped2/src/testMain.c:11:0:
+../../../tests/programmingTests/unzipped2/include/array.h:78:8: warning: extra tokens at end of #endif directive [-Wendif-labels]
+../../../tests/programmingTests/unzipped2/src/testMain.c: In function ‘main’:
+../../../tests/programmingTests/unzipped2/src/testMain.c:22:2: error: C++ style comments are not allowed in ISO C90
+../../../tests/programmingTests/unzipped2/src/testMain.c:22:2: error: (this will be reported only once per input file)
+../../../tests/programmingTests/unzipped2/src/errorFile.c:3:11: warning: incompatible implicit declaration of built-in function ‘malloc’
+../../../tests/programmingTests/unzipped2/src/errorFile.c:3:11: note: include ‘<stdlib.h>’ or provide a declaration of ‘malloc’
+../../../tests/programmingTests/unzipped2/src/errorFile.c:3:18: error: expected expression before ‘int’
+../../../tests/programmingTests/unzipped2/src/errorFile.c:7:1: warning: data definition has no type or storage class
+../../../tests/programmingTests/unzipped2/src/errorFile.c:7:9: error: invalid initializer
+../../../tests/programmingTests/unzipped2/src/errorFile.c:9:1: error: expected identifier or ‘(’ before ‘return’
+In file included from ../../../tests/programmingTests/unzipped2/src/test.c:10:0:
+../../../tests/programmingTests/unzipped2/include/test.h:46:8: warning: extra tokens at end of #endif directive [-Wendif-labels]
+In file included from ../../../tests/programmingTests/unzipped2/src/main.c:11:0:
+../../../tests/programmingTests/unzipped2/include/array.h:78:8: warning: extra tokens at end of #endif directive [-Wendif-labels]
+../../../tests/programmingTests/unzipped2/src/main.c: In function ‘main’:
+../../../tests/programmingTests/unzipped2/src/main.c:16:2: error: C++ style comments are not allowed in ISO C90
+../../../tests/programmingTests/unzipped2/src/main.c:16:2: error: (this will be reported only once per input file)
+In file included from ../../../tests/programmingTests/unzipped2/src/array.c:10:0:
+../../../tests/programmingTests/unzipped2/include/array.h:78:8: warning: extra tokens at end of #endif directive [-Wendif-labels]
+../../../tests/programmingTests/unzipped2/src/array.c: In function ‘getFirstValue’:
+../../../tests/programmingTests/unzipped2/src/array.c:42:2: error: C++ style comments are not allowed in ISO C90
+../../../tests/programmingTests/unzipped2/src/array.c:42:2: error: (this will be reported only once per input file)
+../../../tests/programmingTests/unzipped2/src/array.c: In function ‘printArray’:
+../../../tests/programmingTests/unzipped2/src/array.c:67:2: error: ‘for’ loop initial declarations are only allowed in C99 or C11 mode
+../../../tests/programmingTests/unzipped2/src/array.c:67:2: note: use option -std=c99, -std=gnu99, -std=c11 or -std=gnu11 to compile your code

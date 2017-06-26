@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 #
-# This script uses Hunspell to process arbitrary text strings and provide
-# suggestions for spelling correction.
+# This script calculates word frequency and organizes results for wordcloud2.js
 #
 # Copyright (c) 2017 James Fraser jfrase09@uoguelph.ca
 #
@@ -16,8 +15,7 @@
 # LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-# 
-# 
+#
 # Usage notes: You'll have to install stopwords from nltk.download('stopwords')
 
 import sys, getopt, os
@@ -31,12 +29,18 @@ def decorateData( result, options ):
     json_string = ""
     json_string += '{\n'
     json_string += '"feedback": [\n'
-    json_string += '{\n'
-    json_string += '"type": "wordCloud",\n'
-    json_string += '"wordCount":' + str(options['termLimit']) + ',\n'
-    j_array = json.dumps( result );
-    json_string += '"wordFreq": ' + j_array + '\n'
-    json_string += '}\n'
+    for i in range(len(result)):
+        json_string += '{\n'
+        json_string += '"type": "wordCloud",\n'
+        json_string += '"toolName": "wordCloud",\n'
+        json_string += '"wordCount":' + str(options['termLimit']) + ',\n'
+        json_string += '"filename": "' + str(options['file']) + '",\n'
+        json_string += '"feedback": ' + json.dumps(result[i][0]) + ',\n'
+        # Hack putting frequency in charPos since visual tools don't use charPos  or most columns in table.
+        json_string += '"charPos": ' + str(result[i][1]) + '\n'
+        json_string += '}\n'
+        if i != (len(result) - 1):
+            json_string += ','
     json_string += ']\n'
     json_string += '}\n'
 
@@ -70,10 +74,10 @@ def main(argv):
     for opt, arg in opts:
         if opt in ('--terms', '-t'):
            options['termLimit'] = int(arg)
-            
+
         elif opt in ('--file', '-f'):
             ifile = arg
-            if not (os.path.isfile(ifile)): 
+            if not (os.path.isfile(ifile)):
                 sys.stderr.write( 'Error. File ' + ifile + ' does not exist.' )
                 sys.exit()
         elif opt in ('--ifsOff', '-i'):

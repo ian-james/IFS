@@ -3,6 +3,8 @@ var viewPath = path.join( __dirname + "/");
 var fs = require('fs');
 var _ = require('lodash');
 
+var db = require( __configs + 'database');
+
 module.exports = function( app ) {
 
     function normalizeWordArray( words, maxWords, scale )
@@ -22,54 +24,34 @@ module.exports = function( app ) {
     }
 
 
-    app.get('/cloud', function(req, res, next ){
-    
-        var arr = [];
-        var msg = "";
-        if( req.session.allFeedbackFile ) {
-            // Could read feedback file here or read it directly
-            // req.wordsTerm;
-            try {
-                var file = req.session.allFeedbackFile;
-                var feedback = fs.readFileSync( file , 'utf-8');
-                var jdata = JSON.parse( feedback );
+    app.get('/cloud', function(req, res ){
 
-                if(jdata && jdata.feedback.visual) {
-                    
-                    var hasData = false;
-                    for( var i= 0; i < jdata.feedback.visual.length; i++ )
-                    {
-                        if( jdata.feedback.visual[i].type  == "wordCloud" ) {
-                         arr = arr.concat( jdata.feedback.visual[i].wordFreq );
-                        }
-                    }
+        // Only query required for wordCloud so just leaving it here.
+        var q = "select feedback,charPos from feedback where userId = ? and runType = ? and type = ? and " +
+                    "submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1)";
+
+        db.query(q, [req.user.id,"visual","wordCloud",req.user.id], function(err,data) {
+            
+            var msg = "";
+            var files = [];
+            if( data ) 
+            {
+                var arr = [];
+                
+                var result = {};
+                for( var i = 0; i< data.length; i++ ) {
+                    var subarr = [ data[i].feedback, data[i].charPos ];
+                    arr.push(subarr);
                 }
             }
-            catch( e ) {
-                // This is handles by pre-filled array.
-            }
-        }
+            else
+                msg =  "Unable to produce a text summary";
 
-            // Defaults for fun.
-        if( arr.length == 0) {
-            arr = [
-                    ['Help',12],
-                    ['Failure',20],
-                    ['What',5],
-                    ['Now',15],
-                    ['Cloud',24],
-                    ['Refresh',17],
-                    ['Browser',17],
-                    ['Not',5],
-                    ['Working',15]
-            ];
-            msg = "Unable to produce a file cloud for your submission."
-        }
-        
-        var scale = 12;
-        var maxWords = 40;
-        var normed = normalizeWordArray(arr, maxWords, scale );
+            var scale = 12;
+            var maxWords = 40;
+            var normed = normalizeWordArray(arr, maxWords, scale );
 
-        res.render( viewPath + "wordCloud", { "words": normed, "msg": msg });
+            res.render( viewPath + "wordCloud", { "words": normed, "msg": msg });
+        });
     });
-};
+}

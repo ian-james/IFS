@@ -1,0 +1,28 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container.uk-container-expand
+        h1 #{title}
+
+        h2 Welcome #{studentProfile.name}
+        h3 BIO About You: #{studentProfile.bio }
+        h4 Your Filename: #{studentProfile.avatarFilename }
+
+        div(class="col-md-3 col-md-offset-1")
+            ul
+                each val,index in courses
+                    li= val.code + "->" + val.courseName
+                        p= val.description
+                        p Major: #{val.disciplineType}
+
+        div(class="col-md-2 col-md-offset-1")
+            ul
+                each val,index in upcomingEvents
+                    li= val.title + "->"
+                        p= val.description
+                        p Event Date: #{val.closedDate}
+
+        div(class="col-md-3 col-md-offset-1")
+            ul
+                each val,index in studentStats
+                    li= val.name + "->" + val.value

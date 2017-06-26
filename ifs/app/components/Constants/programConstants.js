@@ -49,7 +49,7 @@ function getRoutes() {
 function getDirectories() {
     return {
         "ZipDir": "unzipped",
-        "UploadDir": "./uploads",
+        "UploadDir": "./users",
     };
 }
 

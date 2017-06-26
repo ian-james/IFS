@@ -24,17 +24,15 @@ var natural = require('natural');
 var sentTok = new natural.SentenceTokenizer();
 var wordTok = new natural.WordTokenizer();
 
-function Position()
-{
+function Position() {
     this.charNum = 0; //Global
     this.wordNum = 0; //Global
     this.lineNum = 0; //Global
     this.charPos = 0; //Relative Character position per line.
     this.wordPos = 0; // Relative
-} 
+}
 
-function FileInfo()
-{
+function FileInfo() {
     this.numLines = 0;
     this.charCount = [];
     this.wordCount = [];
@@ -46,7 +44,6 @@ function FileInfo()
 }
 
 function FileParser() {
-
     this.senTokenizer = sentTok;
     this.wordTokenizer =  wordTok;
     this.file = "";
@@ -144,7 +141,6 @@ function FileParser() {
     };
 
     this.getLine = function( position, is0Based = true ) {
-        
         if( this.validLineNum(position ) ) {
                 if(position.lineNum - 1 < 0)
                     return "";
@@ -155,7 +151,6 @@ function FileParser() {
     };
 
     this.getLineI = function( i, is0Based = true ) {
-        
         if( i < this.fileInfo.numLines && i >= 0 ) {
             var ni = is0Based ? i-1 : i;
             return this.sentences[ ni ];
@@ -169,7 +164,6 @@ function FileParser() {
      * @return {[string]}          empty or a section of a line of text
      */
     this.getLineSection = function( position ) {
-
         var line = this.getLine(position);
         if( line != "" && this.hasCharPos(position) ) {
             return this.getLineSectionEnd(line, position.charPos);
@@ -186,14 +180,14 @@ function FileParser() {
     }
 
     this.getRange = function( position ) {
-
-        if( position.hasOwnProperty('hlBegin') && position.hasOwnProperty('hlEnd') ) {
+        if( position.hasOwnProperty('hlBeginChar') && position.hasOwnProperty('hlEndChar') &&
+            position.hasOwnProperty('hlBeginLine') && position.hasOwnProperty('hlEndLine') ) {
 
             // IF one same line, just return substr
             // else add until finishe
-            
-            var [bch, bline] = position.hlBegin;
-            var [ech, eline] = position.hlEnd;
+
+            var bch = position.hlBeginChar, bline = position.hlBeginLine;
+            var ech = position.hlEndChar, eline = position.hlEndLine;
 
             var line = this.getLine(position);
             // If errors is on the same line, get the section of code
@@ -202,12 +196,12 @@ function FileParser() {
             }
             else {
                 // Errors spans multiple lines.
-                
+
                 var target = this.getLineSectionEnd(line, bch);
-                
+
                 for( var i = bline+1; i<=eline; i++) {
                     line = this.getLineI(i);
-                    
+
                     if( i == ech) {
                         target += this.getLineSectionEnd(line,0,ech);
                     }

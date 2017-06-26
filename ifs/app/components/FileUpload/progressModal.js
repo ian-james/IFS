@@ -56,9 +56,16 @@ $(function() {
                 return xhr;
             }
         }).done( function(data) {
-            button.toggleClass("uk-hidden");
+            if( data.err ){
+                // HACK: Only necessary because fileUploadRoutes.js isn't sending HTTP codes.
+                // So we're separating a couple errors here instead.
+                title.text("Assessment failed, unabled to process files.");
+            }
+            else {
+                button.toggleClass("uk-hidden");
+                title.text("Files successfully assessed");
+            }
             
-            title.text("Files successfully assessed");
         }).fail(function(xhr,error) {
             div.toggleClass("uk-hidden",false);
             div.first().text(JSON.parse(xhr.responseText).msg);

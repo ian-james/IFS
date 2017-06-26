@@ -1,59 +1,57 @@
 extends ../../shared/views/pageLayout.pug
 include ../../shared/UI_components/formSubmit.pug
 
-block content
+block scripts
     //link(rel="stylesheet" href="/prettyifyTheme/doxy.css")
     //link(rel="stylesheet" href="/prettyifyTheme/sons-of-obsidian.css")
-    
-    link(rel="stylesheet" href="components/Feedback/feedback.css")
-    link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
+    link(rel="stylesheet" href="/prettyifyTheme/desert.css")
+    //link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
+
     link(rel="stylesheet" href="components/Feedback/errors.css")
     link(rel="stylesheet" href="components/Feedback/feedbackMini.css")
     script(src="/prettyify/run_prettify.js")
     script(src="/socket.io/socket.io.js")
-    script(src="/components/InteractionEvents/feedbackEvents.js")
 
-    div(ng-controller="feedbackCtrl")
-        div.row
-            div(class="col-md-2 col-md-offset-5")
-                form(id="toolSelectionFrm" action="/feedback" method="post")
-                    label(class="text-center") View feedback from specific tool:
-                    select(id="toolSelectorId" onchange="this.form.submit()" name="toolSelector")
-                        option( selected= "All"==selectedTool ) All
-                        each tool in toolsUsed
-                            option( selected= tool.toolName==selectedTool) #{ tool.toolName }
-        div.row
-            div(class="col-md-10 col-md-offset-1")
-                uib-tabset( active="active")
-                    each file, findex in files
-                        uib-tab( index=findex heading= file.originalname disable="{{tab.disabled}}")
-                            div.row
-                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")
-                                    if toolType == 'programming'
-                                        /// pre(class="markedTextArea2 prettyprint linenums") !{file.markedUp}
-                                        pre(class="markedTextArea2 prettyprint") !{file.markedUp}
-                                    else
-                                        pre(class="markedTextArea2")
-                                            code !{file.markedUp}
+block content
+    div(ng-controller="feedbackCtrl").uk-container
+        div.toolSelection
+            form(action="/feedback" method="post")#toolSelectionFrm.uk-form-horizontal
+                div
+                    label(for="toolSelector").uk-form-label View feedback from tool:
+                    div.uk-form-controls
+                        select(onchange="this.form.submit()" name="toolSelector")#toolSelectorId.uk-select
+                            option(selected="All"==selectedTool ) All
+                            each tool in toolsUsed
+                                option(selected=tool==selectedTool) #{ tool }
+            div.generalErrorsSection
+                if feedbackItems && feedbackItems.length > 0
+                    hr
+                    ul(uk-accordion)
+                        li
+                            h3.uk-accordion-title
+                                | #{feedbackItems.length} Feedback Messages 
+                                span(class="uk-visible@l") (click to expand)
+                            div.uk-accordion-content
+                                include feedbackErrorTable.pug
+                else
+                    h4 No errors were found!
+
+        hr
+        div.filesSection
+            uib-tabset(active="active")
+                each file, findex in files
+                    uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
+                        div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
+                            if toolType == 'programming'
+                                pre.prettyprint
+                                    code !{file.markedUp}
+                            else
+                                pre
+                                    code !{file.markedUp}
+                        br
 
             div(class="uk-offcanvas-content")
-                include popover.html
-
-        div.row.generalErrorsSection
-            div(class="col-md-10 col-md-offset-1")
-                uib-accordion
-                    div(uib-accordion-group class="panel-primary" is-open="status.closed" )
-                        uib-accordion-heading Feedback Table
-                            <i class="glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
-                        include feedbackErrorTable.pug
-
-
-        div.row.summarySection
-            div(class="col-md-10 col-md-offset-1")
-                if feedbackItems && feedbackItems.length > 0
-                    h4 Feedback Messsages #{feedbackItems.length}
-                else
-                    h4 No Errors where found
+                include popover.pug
 
     script(src="components/Feedback/feedbackController.js")
-
+    script(src="/components/InteractionEvents/browserFeedbackEvents.js")

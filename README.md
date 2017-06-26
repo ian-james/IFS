@@ -5,9 +5,9 @@ writing
 This projects allows students to receive formative feedback for C/C++
 assignments and written works.
 
-The project provides a website for students to upload their assignments or work
-and select assessment tools, formative feedback will be generated based on
-tools and the student's work.
+The project provides a website for students to upload their assignments or
+work and select assessment tools, formative feedback will be generated based
+on tools and the student's work.
 
 ## Getting started
 
@@ -44,7 +44,7 @@ Ensure the following ports are allowed through your firewall:
 
 Start the Redis server by executing `redis-server`
 
-Modify `ifs/config/databaseConfig.js` with your local mySQL parameters
+Modify `ifs/config/databaseConfig.js` with your local mySQL credentials.
 
 Install all required node\_modules (from `ifs/` folder) :
 ```
@@ -52,9 +52,9 @@ cd ifs/
 sudo npm install
 ```
 
-Start your localServer:
+Start your local server:
 ```
-npm test
+npm start
 ```
 
 In your browser go to localhost:3000/ to see the web interface
@@ -64,11 +64,11 @@ In your browser go to localhost:3000/ to see the web interface
  * NLTK &rarr; http://www.nltk.org/install.html
  * cppCheck &rarr; `sudo apt install cppcheck`
  * valgrind &rarr; `sudo apt install valgrid`
- * Hunspell &rarr; `sudo apt install hunspell`
+ * Hunspell &rarr; `sudo apt install hunspell libhunspell-dev`
    + pyHunspell &rarr; `sudo -H pip install hunspell`
  * LanguageTool
-   + language-check &rarr; `sudo -H pip install 3to2 && sudo -H pip install
-                        language-check`
+   + language-check &rarr; `sudo -H pip3 install language-check`
+ * APA Check &rarr; `sudo -H pip3 install pyapa`
  * ProseLint
    + ProseLint &rarr; `sudo pip3 install proselint
 

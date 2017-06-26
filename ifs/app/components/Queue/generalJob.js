@@ -56,7 +56,7 @@ function makeJob(  toolOptions, jobOpts )
         });
     })
     .on('failed', function( errorMessage ) {
-        Logger.error("Error job failed", job);
+        //console.log("JOB FAILED\n\n",job.data);
         deferred.reject({
             done: true,
             job: job.data,

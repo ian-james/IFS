@@ -1,6 +1,4 @@
-
 module.exports = function (app, iosocket) {
-
     // Paths and requirements
     var appPath = __appPath;
     var path = require('path');
@@ -9,8 +7,10 @@ module.exports = function (app, iosocket) {
 
     // i18n Translation routes
     require( path.join( __dirname, "/i18nRoutes"))(app);
+    require( componentsPath + "/InteractionEvents/eventRoutes")(app, iosocket);
 
-    require( componentsPath + "/InteractionEvents/EventRoutes")(app,iosocket);
+    require(componentsPath + "/Admin/adminRoutes")(app);
+    require(componentsPath + "/Admin/adminRemoveRoutes")(app);
 
     // Dev Team Controllers
     require(componentsPath + "/Login/loginRoutes")(app, passport);
@@ -21,8 +21,8 @@ module.exports = function (app, iosocket) {
     // About page routes
     require(componentsPath + "/About/aboutRoutes")(app);
 
-    //File Upload routes
-    require(componentsPath + "/FileUpload/fileUploadRoutes")(app,iosocket);
+    // File Upload routes
+    require(componentsPath + "/FileUpload/fileUploadRoutes")(app, iosocket);
 
     // Preferences page routes
     require(componentsPath + "/Preferences/preferencesRoutes")(app, iosocket);
@@ -33,16 +33,23 @@ module.exports = function (app, iosocket) {
     // Testing Routes, leave commented out in commits
     require(componentsPath + '/Survey/surveyBuildRoutes')(app);
 
-    //Feedback pages routes
-    require(componentsPath + '/Feedback/feedbackRoutes')(app,iosocket);
+    // Feedback pages routes
+    require(componentsPath + '/Feedback/feedbackRoutes')(app, iosocket);
 
-    //Word Cloud
-    require(componentsPath + '/WordCloud/wordCloudRoutes')(app, iosocket);
+    // Word Cloud
+    require(componentsPath + '/WordCloud/wordCloudRoutes')(app);
 
-    //Text Summarization
-    require(componentsPath + '/TextSummarization/textSummaryRoutes')(app,iosocket);
+    // Text Summarization
+    require(componentsPath + '/TextSummarization/textSummaryRoutes')(app);
 
-    require(componentsPath + '/Dashboard/dashboardRoutes')(app,iosocket);
+    // DashBoard
+    require(componentsPath + '/Dashboard/dashboardRoutes')(app, iosocket);
+
+    // Student Profile page routes
+    require(componentsPath + "/StudentProfile/profileRoutes")(app, iosocket);
+
+    // Event Tracking
+    require(componentsPath + '/InteractionEvents/trackedEventRoutes')(app, iosocket);
 
     // Test features can be placed here.
     require(componentsPath + "/Test/testRoutes")(app);

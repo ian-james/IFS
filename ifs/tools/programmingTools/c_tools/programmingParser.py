@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
-# This script parses gcc based output into JSON. 
-# Works for GCC -fno-diagnostics-show-caret  and cppcheck (template=gcc) and 
+# This script parses gcc based output into JSON.
+# Works for GCC -fno-diagnostics-show-caret  and cppcheck (template=gcc) and
 # Copyright (c) 2017 James Fraser jfrase09@uoguelph.ca
 #
 # Permission to use, copy, modify, and/or distribute this software for any
@@ -15,8 +15,8 @@
 # LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-# 
-# 
+#
+#
 # Usage notes: You'll have to install stopwords from nltk.download('stopwords')
 
 import sys, getopt, os
@@ -47,7 +47,9 @@ def decorateData( result, options ):
 def getProcessInfo( cmd, outFile, errorFile ):
     # Executing an external command, to retrieve the output
     # This funciton is supported by several answers on StackOverflow
-    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308     
+    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
+
+    #print("cmd is", cmd )
 
     with open(outFile, 'w') as fout:
         with open(errorFile,'w') as ferr:
@@ -60,7 +62,7 @@ def getProcessInfo( cmd, outFile, errorFile ):
             proc = Popen(args, stdout=fout, stderr=ferr)
             out, err = proc.communicate();
             exitcode = proc.returncode
-            
+
             return exitcode, out, err
 
 # Parsing the output of a couple simple formats
@@ -75,7 +77,7 @@ def parse( text, options ):
         feedback = {}
         feedback['toolName'] = options['tool']
         sections = line.split( options['splitSeq'])
-        
+
         # Check that we can put each parsed section into an expect tag type.
         if( len(sections) == len(types) ):
             for section in sections:
@@ -122,11 +124,11 @@ def createCmd( options ):
 
     cmdStr = ""
     if( options['tool'] == 'cppcheck'):
-        cmdStr = " ".join( [ options['tool'], 
-                        getNKV(options,'enable','errorLevel'), 
+        cmdStr = " ".join( [ options['tool'],
+                        getNKV(options,'enable','errorLevel'),
                         getKV(options,'language'),
-                        getKV(options,'std'), 
-                        getKV(options,'suppress'), 
+                        getKV(options,'std'),
+                        getKV(options,'suppress'),
                         '--template="{file}##{line}##{severity}##{id}##{message}"',
                         " " + srcDir  if iDir == "" else "-I " + iDir + " " + srcDir
                     ])
@@ -134,23 +136,23 @@ def createCmd( options ):
     elif options['tool'] == 'gcc':
         options['initP'] = '-'
         options['splitSeq'] = ':'
-        options['flags'] = ' -Wall -Wextra -fno-diagnostics-show-caret -fsyntax-only'
+        options['flags'].append(' -fno-diagnostics-show-caret -fsyntax-only')
         options['splitTypes'] = [ "filename", "lineNum", "charPos", "type", "feedback"]
         cmdStr = " ".join( [
                         options['tool'],
                         getKV(options,'std'),
-                        options['flags'],
+                        " ".join(options['flags']),
                         " " + srcDir if iDir == "" else "-iquote " + iDir + " " + srcDir
                     ])
     elif options['tool'] == 'clang':
         options['initP'] = '-'
         options['splitSeq'] = ':'
-        options['flags'] = ' -Wall -Wextra -fno-caret-diagnostics -fsyntax-only'
+        options['flags'].append(' -fno-caret-diagnostics -fsyntax-only')
         options['splitTypes'] = [ "filename", "lineNum", "charPos", "type", "feedback"]
         cmdStr = " ".join( [
                         options['tool'],
                         getKV(options,'std'),
-                        options['flags'],
+                        " ".join(options['flags']),
                         " " + srcDir  if iDir == "" else "-iquote " + iDir + " " + srcDir
                     ])
     else:
@@ -168,18 +170,18 @@ def main(argv):
     idirectory =''
     # Many default options set for cppCheck, most of which will be used in gcc and ctags
     # outFiles are temporary files
-    
-    options = { 'tool': 'cppcheck', 
-                'ifs': True,  
-                'language':'c', 
-                'errorLevel':'all', 
-                'flags': '--inconclusive', 
-                'std': 'c99',
+
+    options = { 'tool': 'cppcheck',
+                'ifs': True,
+                'language':'c',
+                'errorLevel':'all',
+                'flags': [],
+                'std': 'c89',
                 'suppress':'',
-                'dir':'', 
+                'dir':'',
                 'splitSeq': "##",
                 'splitTypes': [ "filename", "lineNum", "type", "category", "feedback"],
-                'outFile':'stdout.txt', 
+                'outFile':'stdout.txt',
                 'outErrFile':'stderr.txt',
                 'initP': "--",
                 'includeDir': "./include",
@@ -200,14 +202,14 @@ def main(argv):
         elif opt in ('--errorLevel', '-e'):
             options['errorLevel'] = arg
         elif opt in ('--flags=', '-f'):
-            options['flags'] = arg
+            options['flags'].append(arg)
         elif opt in ('--std=', '-s'):
             options['std'] = arg
         elif opt in ('--suppress', '-u'):
             options['suppress'] = arg
         elif opt in ('directory', '-d'):
             idirectory = arg
-            if not (os.path.isdir(idirectory)): 
+            if not (os.path.isdir(idirectory)):
                 sys.stderr.write( 'Error. Directory ' + idirectory + ' does not exist.\n' )
                 sys.exit()
         else:
@@ -223,10 +225,10 @@ def main(argv):
         if( cmd ):
             try:
                 outFile = os.path.normpath( os.path.join( idirectory, options['outFile']) )
-                
+
                 outErrFile = os.path.normpath( os.path.join( idirectory, options['outErrFile']) )
                 code, out, err = getProcessInfo( cmd, outFile, outErrFile )
-                
+
                 with open(outErrFile, 'r') as errFile:
                     errors = errFile.read()
                     result = parse( errors, options )
@@ -239,7 +241,7 @@ def main(argv):
         else:
             sys.stderr.write( 'Invalid tool selected, please select a valid tool name.\n')
     else:
-        sys.stderr.write( 'Please a project directory to evaluate.\n')
+        sys.stderr.write( 'Please rovide a project directory to evaluate using -d <dir>.\n')
         sys.exit()
 
 if __name__ == '__main__':

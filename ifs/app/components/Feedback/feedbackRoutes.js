@@ -4,14 +4,16 @@ var viewPath = path.join( __dirname + "/");
 var fs = require('fs');
 var Feedback = require('./feedbackSetup');
 
-
+var db = require( __configs + 'database');
 var Logger = require( __configs + "loggingConfig");
 var _ = require('lodash');
+
+var feedbackEvents = require(__components + "InteractionEvents/feedbackEvents");
 
 module.exports = function( app ) {
 
 
-/**************************************************************  Values Controller *************************/
+/**************************  Values Controller *************************/
     /**
      * Read the feedback information file
      *  and process and highlight
@@ -21,38 +23,52 @@ module.exports = function( app ) {
      * @return {[type]}     [description]
      */
     function  showFeedback( req,res, opt ) {
+        var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
+        db.query(r.request,r.data, function(err,data){
+            if(err)
+                console.log(err);
+            else {
+                var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
+                var feedbackFile = "{" + 
+                    '"files": ' + filesContent + ",\n" +
+                    '"feedback":' + JSON.stringify(data) + '\n'
+                    +"}\n";
+                var page = { title: 'Feedback Test page' };
+                var feedback = Feedback.setupFeedback(feedbackFile, opt);
+                var result = _.assign(page,feedback);
+                res.render( viewPath + "feedback", result );
+            }
+        });
+    };
 
-        var page = { title: 'Feedback Test page' };
-        var feedbackFile = req.session.allFeedbackFile
-        var feedback = Feedback.setupFeedback(feedbackFile, opt);
-        var result = _.assign(page,feedback);
-        res.render( viewPath + "feedback", result );
-    }
-
-    app.get('/feedback', function(req,res ){
+    app.get('/feedback', function(req, res) {
        showFeedback(req,res);
     });
 
-    app.post('/feedback', function(req,res,next){
+    app.post('/feedback', function(req, res, next) {
         var opt = { 'tool': req.body.toolSelector };
         req.session.activeTool = req.body.toolSelector;
         showFeedback(req,res,opt);
     });
 
     app.get('/feedback/data', function( req,res, next ){
-        var supportedToolsFile = req.session.allFeedbackFile;
-        fs.readFile( supportedToolsFile, 'utf-8'  , function( err, data ) {
-            if( err ) {
-                //Unable to get support tools file, larger problem here.
-                Logger.error("Error unable to load feedbackFiles");
-            }
+
+        var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
+        db.query(r.request,r.data, function(err,data){
+            if(err)
+                console.log(err);
             else {
-                //Load JSON tool file and send back to UI to create inputs
+                var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
+                var feedbackFile = "{" + 
+                    '"files": ' + filesContent + ",\n" +
+                    '"feedback":' + JSON.stringify(data) + '\n'
+                    +"}\n";
+
                 var opt = {};
                 if( req.session.activeTool ) {
                     opt['tool'] = req.session.activeTool;
                 }
-                var result = Feedback.readFeedbackFormat( data, opt );
+                var result = Feedback.setupFeedback( feedbackFile, opt );
                 res.json( result );
             }
         });

@@ -4,7 +4,6 @@ var he = require('he');
 var path = require('path');
 
 var fbHighlighter = require('./feedbackHighlighter');
-var buttonMaker = require('./createTextButton');
 var Logger = require( __configs + "loggingConfig");
 
 var Helpers = require( __components+ "FileUpload/fileUploadHelpers");
@@ -41,7 +40,7 @@ function readFeedbackFormat( feedback , options)
 {
     var feedbackFormat = JSON.parse(feedback);
 
-    var feedbackItems = feedbackFormat.feedback.writing || feedbackFormat.feedback.programming;
+    var feedbackItems = feedbackFormat.feedback;
     var files = feedbackFormat.files;
 
     // setup Project and organize.
@@ -55,34 +54,38 @@ function readFeedbackFormat( feedback , options)
         files = _.sortBy(files, ['filename']);
 
     // A Unique list of tools used for UI
-    var toolsUsed = _.uniqBy(feedbackItems,'toolName');
+    var toolsUsed = _.uniq(_.map(feedbackItems,'toolName'));
+
+    // Suggestions are stringified json, convert back to array.
+    for(var i = 0; i < feedbackItems.length;i++){
+        feedbackItems[i]['suggestions'] = JSON.parse(feedbackItems[i]['suggestions']);
+    }
 
     // Tool should always be selected unless it's defaulted too.
-    var selectedTool = (options && options['tool'] || toolsUsed.length >= 1 && toolsUsed[0].toolName);
+    var toolIsSelected = ( options && options['tool'] || toolsUsed.length >= 1);
+    var selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
     // For each file, read in the content and mark it up for display.
     for( var i = 0; i < files.length; i++ )
     {
         var file = files[i];
-        file.content = he.encode( fs.readFileSync( file.filename, 'utf-8') );
+        file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
 
         //TODO: Positional setup information should be moved to the feedback filtering and organization
         // This decopules the task of highlights and positioning.
-
-        if( selectedTool ) {
+        if( toolIsSelected ) {
             setupFilePositionInformation(file, selectedTool,feedbackItems);
-
-            var sortedOrder = [ 'charNum', 'filename', 'toolName'];
-            feedbackItems = _.sortBy( feedbackItems, sortedOrder );
-
             file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
-        else 
+        else
             file.markedUp = file.content;
     }
 
     var result =  { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
-    if(selectedTool)
-        result['toolType'] = toolsUsed[0].runType;
+    if(selectedTool){
+        var i =  selectedTool == "All" ? 0 : _.findIndex(feedbackItems,['toolName',selectedTool]);
+        if( i >= 0 && feedbackItems.length > i)
+            result['toolType'] = feedbackItems[i]['runType'];
+    }
     return result;
 }
 
@@ -101,7 +104,8 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
     for( var i = 0; i < feedbackItems.length; i++ ) {
 
         var feedbackItem = feedbackItems[i];
-        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool) )
+
+        if( filesMatch(file.originalname, feedbackItem.filename) && toolsMatch(feedbackItem.toolName,selectedTool) )
         {
             if( !feedbackItem.filename || !feedbackItem.lineNum )
             {
@@ -109,24 +113,37 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                 continue;
             }
 
-            // Try to fill out positional information first.
-            if( !feedbackItem.charNum ) {
-                feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
-            }
+            if (!feedbackItem.target) {
+                // Try to fill out positional information first.
+                if( !feedbackItem.charNum ) {
+                    feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
+                }
 
-            // Without a target you have to use the line or a range
-            if( !feedbackItem.target ) {
-                if( feedbackItem.hlBegin ) {
-                    // Section to highlight
-                    feedbackItem.target = fileParser.getRange( feedbackItem );
+                // Without a target you have to use the line or a range
+                if( !feedbackItem.target ) {
+
+                    // if we are marking up a programming file, then only get the line
+                    if (feedbackItem.runType == "programming") {
+                        feedbackItem.target = fileParser.getLine(feedbackItem, false);
+                    }
+                    else if( feedbackItem.hlBeginChar ) {
+
+                        // Section to highlight
+                        feedbackItem.target = fileParser.getRange( feedbackItem );
+                    }
+                    else if( feedbackItem.charPos ) {
+                        // You can get a target better than the line.
+                        feedbackItem.target = fileParser.getLineSection( feedbackItem );
+                    }
+                    else {
+                        feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                    }
                 }
-                else if( feedbackItem.charPos ) {
-                    // You can get a target better than the line.
-                    feedbackItem.target = fileParser.getLineSection( feedbackItem );
-                }
-                if(!feedbackItem.target) {
-                    feedbackItem.target = fileParser.getLine(feedbackItem,false);
-                }
+            }
+            // Set up a decoded target for Bootstrap UI Popover
+            // This is probably a bad temporary fix
+            if ( !feedbackItem.decodedTarget ) {
+                feedbackItem.decodedTarget = he.decode(feedbackItem.target);
             }
         }
     }
@@ -145,5 +162,5 @@ function toolsMatch( toolName, selectedToolName ) {
     return ( selectedToolName == "All" || toolName == selectedToolName );
 }
 
-module.exports.readFeedbackFormat = readFeedbackFormat;
-module.exports.setupFeedback = readFiles;
+module.exports.setupFeedback = readFeedbackFormat;
+module.exports.readFileAndSetupFeedback = readFiles;

@@ -1,0 +1,37 @@
+{
+    "page" : {
+        "displayName": "Add/Edit Class",
+        "name": "class",
+        "table": "class",
+        "options": [
+            {
+                "displayName":"Class Name",
+                "name": "class-name",
+                "type": "text",
+                "values": "",
+                "value": "Trying something"
+            },
+            {
+                "displayName":"Class Code",
+                "name": "class-code",
+                "type": "text",
+                "values": "",
+                "value": "Student"
+            },
+            {
+                "displayName":"Description",
+                "name": "class-description",
+                "type": "text",
+                "values": "",
+                "value": "Describe your class here"
+            },
+            {
+                "displayName":"Class Type",
+                "name": "class-disciplineType",
+                "type": "select",
+                "values": [  "computer science","psychology", "other" ],
+                "value": "computer science"
+            }
+        ]
+    }
+}

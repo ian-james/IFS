@@ -1,25 +1,60 @@
+// TODO user.avatar and user.name are dummy variables for now; they do not do
+// anything. They should be replaced with actual variables containing student
+// profile information from the SQL DB.
+// ex. user.avatar -> path/to/file/avatar.png
+//     user.name   -> student profile name, such as "First Last"
+
 nav(uk-navbar).uk-background-secondary.uk-margin
     div.uk-navbar-left
         a(href="/").uk-navbar-item.uk-logo.uk-light IFS
     div.uk-navbar-right
         ul.uk-navbar-nav
-            li
-                a(href="/")
-                    span(uk-icon="icon: home").uk-margin-small-right
-                    span(class="uk-visible@m") Home
-            li(ng-show="!isLoggedIn")
-                a(href="/register")
-                    span(uk-icon="icon: plus-circle").uk-margin-small-right
-                    | Sign-up
-            li(ng-show="!isLoggedIn")
-                a(href="/login")
-                    span(uk-icon="icon: sign-in").uk-margin-small-right
-                    | Login
-            li(ng-show="isLoggedIn")
-                a(href="/preferences")
-                    span(uk-icon="icon: cog").uk-margin-small-right
-                    span(class="uk-visible@m") Preferences
-            li(ng-show="isLoggedIn")
-                a(href="/logout")
-                    span(uk-icon="icon: sign-out").uk-margin-small-right
-                    span(class="uk-visible@m") Logout
+            if !user
+                li
+                    a(href="/register")
+                        span(uk-icon="icon: plus-circle").uk-margin-small-right
+                        | Sign-up
+                li
+                    a(href="/login")
+                        span(uk-icon="icon: sign-in").uk-margin-small-right
+                        | Login
+            else
+                li
+                    a(href="/feedback")
+                        span(uk-icon="icon: commenting").uk-margin-small-right
+                        span(class="uk-visible@m") Feedback
+                li
+                    a(href="/")
+                        span(uk-icon="icon: push").uk-margin-small-right
+                        span(class="uk-visible@m") Upload
+                // Drop down menu
+                li.uk-inline
+                    a(href="#")
+                        // user's avatar if any
+                        img(src="../../shared/img/user/" + user.id + "/avatar.png").nav-avatar
+                        span(uk-icon="icon: triangle-down")
+                    div(uk-dropdown="mode: click; pos: bottom-right").uk-dropdown
+                        ul(uk-nav).uk-nav-default
+                            // greeting for the user, displaying their name
+                            p
+                                | Signed in as:
+                                br
+                                //| #{studentProfile.name}
+                            hr
+                            // navigation options
+                            li
+                                a(href="/profile")
+                                    span(uk-icon="icon: user").uk-margin-small-right
+                                    | Profile
+                            li
+                                a(href="/dashboard")
+                                    span(uk-icon="icon: thumbnails").uk-margin-small-right
+                                    | Dashboard
+                            li
+                                a(href="/preferences")
+                                    span(uk-icon="icon: cog").uk-margin-small-right
+                                    | Preferences
+                            li
+                                a(href="/logout")
+                                    span(uk-icon="icon: sign-out").uk-margin-small-right
+                                    | Logout

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
-# This script uses Hunspell to process arbitrary text strings and provide
-# suggestions for spelling correction.
+# This script identifies the most prevalent sentences in writing based on term
+# frequency
 #
 # Copyright (c) 2017 James Fraser jfrase09@uoguelph.ca
 #
@@ -16,17 +16,17 @@
 # LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-# 
-# 
+#
+#
 # Usage notes: You'll have to install stopwords from nltk.download('stopwords')
-# 
+#
 # Inspired by:
 # http://glowingpython.blogspot.ca/2014/09/text-summarization-with-nltk.html
 # Optimiziationa and Customization performed to suit our own academic needs.
-# 
-# 
-# Required is nltk punckt and stopwords
-# 
+#
+#
+# Required is nltk punkt and stopwords
+#
 # This file reads in a text file and summarizes the text.
 # It does this by selecting sentences with the high total score based on
 # the frequency of terms in the sentences. So it estimates that reoccuring
@@ -93,7 +93,7 @@ class FrequencySummarizer:
         # Process of taking words tokenization and frequency counting.
     def summarize(self, text, numSentences ):
 
-        # Tokensize sentences        
+        # Tokensize sentences
         # Term Frequency and Cut words
         words= self.cleanWords( text )
         termFreq = self.termFreq( words )
@@ -118,14 +118,18 @@ def decorateData( result, options ):
     json_string = ""
     json_string += '{\n'
     json_string += '"feedback": [\n'
-    json_string += '{\n'
-    json_string += '"tool": "textSummarization",\n'
-    json_string += '"filename": "' + str(options['file']) + '",\n'
-    json_string += '"originalname": "' + str( os.path.basename( options['file']) ) + '",\n'
-    json_string += '"senCount":' + str(options['sentences']) + ',\n'
-    j_array = json.dumps( result );
-    json_string += '"sentences": ' + j_array + '\n'
-    json_string += '}\n'
+    for i in range(len(result)):
+        json_string += '{\n'
+        json_string += '"toolName": "textSummarization",\n'
+        json_string += '"type": "textSummarization",\n'
+        json_string += '"filename": "' + str(options['file']) + '",\n'
+        json_string += '"originalname": "' + str( os.path.basename( options['file']) ) + '",\n'
+        json_string += '"senCount":' + str(options['sentences']) + ',\n'
+        json_string += '"feedback": ' + json.dumps(result[i].strip()) + '\n'
+        json_string += '}\n'
+        if i != (len(result) - 1):
+            json_string += ','
+
     json_string += ']\n'
     json_string += '}\n'
 
@@ -138,14 +142,14 @@ def main(argv):
     ifile = ""
     options = { 'ifs': True, 'sentences': 2 }
     fileContents = ""
-        # define command line arguments and check if the script call is valid
-    
+    # define command line arguments and check if the script call is valid
+
     opts, args = getopt.getopt(argv,'i:s:f:h',['ifsOff=','sentences=', 'file=', 'help'])
 
     for opt, arg in opts:
         if opt in ('--file', '-f'):
             ifile = arg
-            if not (os.path.isfile(ifile)): 
+            if not (os.path.isfile(ifile)):
                 sys.stderr.write( 'Error. File ' + ifile + ' does not exist.' )
                 sys.exit()
         elif opt in ('--sentences', '-s'):

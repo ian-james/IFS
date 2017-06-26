@@ -12,47 +12,46 @@ var pool = mysql.createPool( {
     debug: false
 });
 
-
-
 // Common functionality to handle releasing connection on error
-// throw error 
-function handleConnectionError( err,connection){
+// throw error
+function handleConnectionError(err, connection){
     Errors.ifErrLog(err)
-    if( connection )
+    if(connection)
       connection.release();
 }
 
 /* This is a generic query that get information from the database.clear
-
-   It uses a pool to create the connection and disconnects after.
-*/
-function query( queryStr, args, callback) {
+ * It uses a pool to create the connection and disconnects after.
+ */
+function query(queryStr, args, callback) {
    //Logger.info("Database query started");
-   pool.getConnection( function(err,connection) {
+   pool.getConnection(function(err,connection) {
 
         //console.log("IN QUERY ");
-        if( connection ){
-            //console.log(" querSTr", queryStr, JSON.stringify(args));
+        if(connection){
+            //console.log("QUERY: ", queryStr, JSON.stringify(args));
             connection.query( queryStr, args, function(err,data) {
-                if(err)
-                  console.log("ERROR ", err);
+                if(err) {
+                    console.log("ERROR FOR STRING: ", queryStr);
+                    console.log("ERROR ", err);
+                }
                 Errors.ifErrLog(err);
-                
+
+                //console.log("QUERY RETURNED DATA:\n", JSON.stringify( data ));
                 callback(err, data);
                 connection.release();
             });
         }
         else {
-          //console.log("ERR IN QUERY");
-          handleConnectionError(err);
-          callback(err,null);
+            //console.log("ERR IN QUERY");
+            handleConnectionError(err);
+            callback(err,null);
         }
 
         connection.on('error', function(err) {
-          console.log("DB Connection error handled");
-          handleConnectionError(err,connection);
+            console.log("DB Connection error handled");
+            handleConnectionError(err,connection);
         });
-
    });
 }
 

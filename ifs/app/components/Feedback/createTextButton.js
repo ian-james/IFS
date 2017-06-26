@@ -1,11 +1,13 @@
-
 /* This should make card in the error container that demonstrates more information about the error. */
-
 function createTextButton( feedbackItem, options )
 {
     options = options || {};
     var buttonStr = "<a"
                         + " data-feedback=\'" +  options.data  + "'"
+                        + " data-feedbackId=\'" +  feedbackItem.id + "'"
+                        + " data-submissionId=\'" +  feedbackItem.submissionId + "'"
+                        + " id=\'" +  options.id + "'"
+                        + " data-html=\"true\""
                         + " popover-trigger=\"'outsideClick'\""
                         + " ng-click=\"setSelectedItem( $event )\""
                         + " uib-popover-template=" + ( options['template-file'] || "\"'components/Feedback/popoverMini.html'\"" )
