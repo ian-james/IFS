@@ -69,6 +69,8 @@ def build_json(filename, lang, matches):
     json_string += '{ '
     json_string += '"feedback": ['
     for i in range(num_matches):
+        # ensure that the context string is properly escaped
+        matches[i].context = matches[i].context.replace('\\', '\\\\');
         json_string += ('{ '
                         + '"context": "' + str(matches[i].context) + '", ')
         # a grammatical issue may span multiple words and lines, so it's best
