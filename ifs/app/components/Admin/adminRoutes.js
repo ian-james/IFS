@@ -33,17 +33,19 @@ module.exports = function( app ) {
         }
     }
 
-    app.all('/admin/*', requiresAdmin );
-
+    app.all('/admin*', requiresAdmin );
 
     /**
      * Simple redirect to set as admin page finalizes.
      * @param  {[type]} res [description]
      * @return {[type]}     [description]
      */
-    function directTo(res) {
-        res.location( "/tool");
-        res.redirect( "/tool" );
+    function directTo(res, path) {
+        if( !path )
+            path = "/tool";
+
+        res.location( path );
+        res.redirect( path );
     }
 
     /**
@@ -61,7 +63,7 @@ module.exports = function( app ) {
                 var jsonObj = JSON.parse(data);
                 var menuOptions = jsonObj['page'];
                 updateJsonWithDbValues(menuOptions.options, options.dynamicData)
-                res.render(viewPath + "adminForm", { title: 'ADMIN TESTER', page: menuOptions, formAction: options.formAction });
+                res.render(viewPath + options.adminForm, { title: 'Admin Page', page: menuOptions, formAction: options.formAction });
             }
         });
     }
@@ -88,11 +90,14 @@ module.exports = function( app ) {
     }
 
     /**************************************************************ADMIN Add CLASS**/
-    app.route('/admin/addClass')
+    app.route('/adminAddCourse')
     .get(function(req,res) {
-        addAdminPage( req,res,{adminPage:'./data/admin/class.json', formAction:"/admin/addClass"});
+        addAdminPage( req,res,{
+            adminForm: 'adminForm',
+            adminPage:'./data/admin/class.json',
+            formAction:"/adminAddCourse"
+        });
     })
-
     .post( function(req,res,next ){
         console.log(req.body);
         var courseKeys = ["class-name","class-code","class-description","class-disciplineType"];
@@ -106,14 +111,14 @@ module.exports = function( app ) {
     });
 
     /*************************************************************ADMIN Add Event**/
-    app.route('/admin/addEvent')
+    app.route('/adminAddEvent')
     .get(function(req,res){
         adminDB.getAllClasses( function(err,data) {
             var result = _.map( data, obj => obj['code']);
-
             addAdminPage( req,res,{
-                adminPage:'./data/admin/upcomingEvent.json', 
-                formAction:"/admin/addEvent", 
+                adminForm: 'adminForm',
+                adminPage:'./data/admin/upcomingEvent.json',
+                formAction:"/adminAddEvent",
                 dynamicData: [{
                     "target":"class-name",
                     "values": result,
@@ -129,7 +134,7 @@ module.exports = function( app ) {
         console.log("Submission is ", submission);
         // Find the class id then insert event for class
         adminDB.getClassByCode(req.body['class-name'], function(err,data){
-            
+
             var values = _.values(submission);
             values.unshift(data[0].id);
             console.log(values);
@@ -141,13 +146,14 @@ module.exports = function( app ) {
     });
 
      /**************************************************************ADMIN Add Assignment**/
-    app.route('/admin/addAssignment')
+    app.route('/adminAddAssignment')
     .get(function(req,res){
         adminDB.getAllClasses( function(err,data) {
             var result = _.map( data, obj => obj['code']);
             addAdminPage( req,res,{
-                adminPage:'./data/admin/assignment.json', 
-                formAction:"/admin/addAssignment", 
+                adminForm: 'adminForm',
+                adminPage:'./data/admin/assignment.json',
+                formAction:"/adminAddAssignment",
                 dynamicData: [{
                     "target":"class-name",
                     "values": result,
@@ -164,7 +170,7 @@ module.exports = function( app ) {
         console.log("Submission is ", submission);
         // Find the class id then insert event for class
         adminDB.getClassByCode(req.body['class-name'], function(err,data){
-            
+
             var values = _.values(submission);
             values.unshift(data[0].id);
             console.log(values);
@@ -176,7 +182,7 @@ module.exports = function( app ) {
     });
 
      /******************************************************************ADMIN Add Skill**/
-    app.route('/admin/addSkill')
+    app.route('/adminAddSkill')
     .get(function(req,res){
         adminDB.getAllClasses( function(err,classes) {
             var result = _.map( classes, obj => obj['code']);
@@ -185,8 +191,9 @@ module.exports = function( app ) {
                 var assignmentNames = _.map( assignments, obj => obj['name'] );
                 assignmentNames.unshift( null );
                 addAdminPage( req,res,{
-                    adminPage:'./data/admin/class_skill.json', 
-                    formAction:"/admin/addSkill", 
+                    adminForm: 'adminForm',
+                    adminPage:'./data/admin/class_skill.json',
+                    formAction:"/adminAddSkill",
                     dynamicData: [{
                         "target":"class-name",
                         "values": result,

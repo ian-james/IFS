@@ -1,0 +1,22 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container.uk-container-expand
+        h1 #{page.displayName}
+        div(uk-alert).uk-alert-danger
+            p.errorMessage #{messages.errorMessage}
+
+        div(class="col-md-10 col-md-offset-1")
+            form(class='uk-form' method="post" action="" + formAction )#uploadForm
+                div.uk-clearfix
+                    h2.uk-float-left #{title}
+
+                div(class="uk-child-width-1-3  uk-grid-match" uk-grid)
+                    each option, index in values
+                        div
+                            label
+                                input(name="adminControl", value= option.id, type="checkbox" uk-toggle="target: #" + option.id + "; cls: uk-alert-danger" class="uk-float-right" uk-close)
+                            div(id=option.id class="uk-card uk-card-hover uk-card-default uk-text-center")
+                                h3.uk-card-title #{option.name}
+                                p.uk-card-body #{option.description}
+                button(class="uk-align-center" type="submit").uk-button.uk-button-primary Apply

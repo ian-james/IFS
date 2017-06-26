@@ -45,6 +45,21 @@ module.exports = {
         db.query(q,[],callback);
     },
 
+    getAllEvents: function(callback) {
+        var q = dbHelpers.buildSelect( config.upcoming_event_table );
+        db.query(q,[],callback);
+    },
+
+    /**
+     * Get all skills for any course.
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    getAllSkills: function(callback) {
+        var q = dbHelpers.buildSelect( config.class_skill_table);
+        db.query(q,[],callback);
+    },
+
     /**
      * Get a class by it's code name
      * @param  {[type]}   classCodeName [description]
@@ -78,14 +93,43 @@ module.exports = {
         console.log("assignmentN", assignmentName)
         if(assignmentName) {
             var q = "select c.id as classId, a.id as aId from class c, assignment a where c.id = a.classId and c.code= ? and a.name = ?";
-            console.log(q);
             db.query(q,[classCode, assignmentName],callback);
         }
         else {
             var q = "select c.id as classId from class c where c.code= ?";
-            console.log(q);
             db.query(q,[classCode],callback);
         }
-    }
+    },
 
+    /*********************************************************************************/
+    deleteById: function( table, id, callback ){
+        var q = dbHelpers.buildDelete(table) + dbHelpers.buildWS("id")
+        db.query(q,[id],callback);
+    },
+
+    deleteByIds: function( table, ids, callback ){
+        var q = dbHelpers.buildDelete(table) + " where id in (?)"
+        db.query(q,ids,callback);
+    },
+
+    /*********************************************************************************/
+    deleteCourse: function(courseId, callback){
+        module.exports.deleteById(config.class_table,courseid,callback);
+    },
+
+    deleteCourses: function(ids, callback){
+        module.exports.deleteByIds(config.class_table,ids,callback);
+    },
+
+    deleteEvents: function(ids, callback){
+        module.exports.deleteByIds(config.upcoming_event_table,ids,callback);
+    },
+
+    deleteSkills: function(ids, callback){
+        module.exports.deleteByIds(config.class_skill_table,ids,callback);
+    },
+
+    deleteAssignments: function(ids, callback){
+        module.exports.deleteByIds(config.assignment_table,ids,callback);
+    },
 }

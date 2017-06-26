@@ -3,6 +3,8 @@ extends ../../shared/views/pageLayout.pug
 block content
     div.uk-container.uk-container-expand
         h1 #{page.displayName}
+        div(uk-alert).uk-alert-danger
+            p.errorMessage #{messages.errorMessage}
 
         div(class="col-md-10 col-md-offset-1")
             - var faction = formAction;
@@ -32,7 +34,7 @@ block content
                         label(for="{option.displayName}").uk-form-label
                             | #{option.displayName}
                         div.uk-form-controls
-                            input(type="date" name="" + opt.name, id="" + opt.name, value="" + opt.value, data-optionId="" + opt.dbId, required).uk-input
+                            input(type="date" name="" + opt.name, id="" + opt.name, value="" + opt.value, required).uk-input
                     else
                         p= option.type
                 br
