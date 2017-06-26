@@ -36,7 +36,7 @@ module.exports = function(app) {
         var userId = req.user.id;
         studentProfile.getStudentProfileAndClasses(userId, function(err, studentData) {
             if (studentData) {
-                var studentKeys = ["id", "name", "bio", "avatarFileName"];
+                var studentKeys = ["id", "name", "bio", "avatar"];
                 //Note courseName is alias tag to differentiate between student and course.
                 var courseKeys = ["code","courseName","description","disciplineType"];
                 var studentProfile = _.pick(studentData[0], studentKeys );

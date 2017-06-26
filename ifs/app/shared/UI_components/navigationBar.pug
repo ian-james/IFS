@@ -35,12 +35,6 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                         span(uk-icon="icon: triangle-down")
                     div(uk-dropdown="mode: click; pos: bottom-right").uk-dropdown
                         ul(uk-nav).uk-nav-default
-                            // greeting for the user, displaying their name
-                            p
-                                | Signed in as:
-                                br
-                                //| #{studentProfile.name}
-                            hr
                             // navigation options
                             li
                                 a(href="/profile")
@@ -54,6 +48,7 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                                 a(href="/preferences")
                                     span(uk-icon="icon: cog").uk-margin-small-right
                                     | Preferences
+                            hr
                             li
                                 a(href="/logout")
                                     span(uk-icon="icon: sign-out").uk-margin-small-right

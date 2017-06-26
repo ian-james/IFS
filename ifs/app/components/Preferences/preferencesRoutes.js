@@ -22,7 +22,7 @@ module.exports = function( app ) {
         var pref = req.body["pref-toolSelect"];
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
-        var studentAvatar = req.body['student-avatarFileName'];
+        var studentAvatar = req.body['student-avatar'];
 
         preferencesDB.setStudentPreferences(req.user.id,"Option", "pref-toolSelect", pref , function(err,result){
 

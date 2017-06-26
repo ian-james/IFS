@@ -4,25 +4,25 @@
         "name": "preferencesOptions",
         "options": [
             {
-                "displayName":"Student Name",
+                "displayName":"Full Name",
                 "name": "student-name",
                 "type": "text",
                 "values": "",
-                "value": "Student"
+                "value": "First Last"
             },
             {
-                "displayName":"Student Avatar",
-                "name": "student-avatarFileName",
-                "type": "text",
+                "displayName":"Profile Avatar",
+                "name": "student-avatar",
+                "type": "file",
                 "values": "",
-                "value": "Student"
+                "value": ""
             },
             {
-                "displayName":"Bio blurb",
+                "displayName":"Profile Bio",
                 "name": "student-bio",
                 "type": "text",
                 "values": "",
-                "value": "A Great student"
+                "value": "Write about yourself!"
             },
             {
                 "displayName":"Preferred Assessment Tools",
