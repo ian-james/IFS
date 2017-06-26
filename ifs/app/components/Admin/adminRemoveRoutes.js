@@ -16,7 +16,7 @@ module.exports = function( app ) {
      */
     function directTo(res, path) {
         if( !path )
-            path = "/tool";
+            path = "/adminDashboard";
 
         res.location( path );
         res.redirect( path );

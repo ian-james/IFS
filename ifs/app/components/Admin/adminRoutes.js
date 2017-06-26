@@ -5,6 +5,8 @@ var viewPath = path.join( __dirname + "/");
 var Logger = require( __configs + "loggingConfig");
 var fs = require('fs');
 
+var async = require('async');
+
 var adminDB = require(__components + "Admin/adminDB.js");
 
 module.exports = function( app ) {
@@ -42,7 +44,7 @@ module.exports = function( app ) {
      */
     function directTo(res, path) {
         if( !path )
-            path = "/tool";
+            path = "/adminDashboard";
 
         res.location( path );
         res.redirect( path );
@@ -88,6 +90,40 @@ module.exports = function( app ) {
             }
         }
     }
+
+    /**
+     * This function collects a small number of IFS usage stats
+     * and presents the admin dashboard.
+     */
+    app.route('/adminDashboard')
+    .get( function(req,res) {
+        // Total Students
+        // Active Students this week
+        // Students per Discipline
+        // Submission This week
+        async.parallel(
+            [adminDB.countTotalStudents,
+             adminDB.countStudentsOnlineThisWeek,
+             adminDB.countStudentPerDisciplineThisWeek,
+             adminDB.countWeeklySubmission
+            ],
+            function(err,results) {
+                var stats ={};
+                for(var i = 0; i < results.length; i++ ) {
+
+                    if( results[i].length > 1 ) {
+                        var disciplineType = [];
+                        for(var y = 0; y < results[i].length;y++ )
+                            disciplineType.push( results[i][y]);
+                        _.extend(stats,{'disciplineType': disciplineType} );
+                    }
+                    else
+                        _.extend(stats,results[i][0]);
+                }
+                res.render(viewPath + "adminDashboard", { title: 'Welcome to IFS', stats: stats });
+            }
+        );
+    });
 
     /**************************************************************ADMIN Add CLASS**/
     app.route('/adminAddCourse')
