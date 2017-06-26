@@ -19,12 +19,14 @@ What actually happened?
 You can find this in the bottom-right of the footer on any page in IFS.
 
 #### Browser
- - [] Chrome/Chromium-based
- - [] Firefox
- - [] Safari
- - [] Internet Explorer 11
- - [] Microsoft Edge
- - [] Other (Please write below)
+Please tick the affected browsers.
+
+ - [ ] Chrome/Chromium-based
+ - [ ] Firefox
+ - [ ] Safari
+ - [ ] Internet Explorer 11
+ - [ ] Microsoft Edge
+ - [ ] Other (Please write below)
 
 
 ## Feature Request
