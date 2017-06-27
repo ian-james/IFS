@@ -51,7 +51,7 @@ module.exports = function( app ) {
     });
 
     app.get('/feedback/data', function( req,res, next ){
-        var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
+        var r = feedbackEvents.getMostRecentFeedback( req.user.id );
         db.query(r.request,r.data, function(err,data){
             if(err)
                 console.log(err);

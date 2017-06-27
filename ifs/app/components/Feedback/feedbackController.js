@@ -64,5 +64,7 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
         $scope.feedbackItems = res.data.feedbackItems;
         $scope.files = res.data.files;
         $scope.toolsUsed = res.data.toolsUsed;
+        console.log(res.data.toolsUsed.indexOf('wordCloud'));
+        console.log(res.data.toolsUsed);
     });
 });
