@@ -1,5 +1,3 @@
-
-
 // Files upload Information
 // Middleware for uploading multipart files and form data
 // Include this once we need to upload the files.
@@ -19,13 +17,14 @@ var limits = {
 var Helpers = require('./fileUploadHelpers');
 
 function acceptableFileTypes() {
-    return { 'Programming':['json', 'cpp', 'c','h','zip','tar'],
-           'Writing': ['txt', 'text', 'doc', 'docx', 'odt' ]
+    return {
+        'Programming':['md', 'json', 'cpp', 'c', 'h', 'zip', 'tar'],
+        'Writing': ['txt', 'text', 'doc', 'docx', 'odt' ]
     };
 }
 
 function acceptableMimeType() {
-    return { 
+    return {
         'Writing':[
             'text/plain',
             'text/markdown',
@@ -39,7 +38,7 @@ function acceptableMimeType() {
             'text/markdown',
             'text/x-csrc',
             'text/x-chdr',
-            'application/json', 
+            'application/json',
             'application/zip',
             'application/x-compressed-zip',
             'application/x-tar',
@@ -48,9 +47,8 @@ function acceptableMimeType() {
     };
 }
 
-  /* Setup a file filter for upload*/
-var fileFilter = function(req,file,cb)
-{    
+/* Setup a file filter for upload*/
+var fileFilter = function(req,file,cb) {
     if( req.session.toolSelect) {
         var allowMimeTypes = acceptableMimeType();
         var mimetype = file.mimetype;
@@ -68,15 +66,13 @@ var fileFilter = function(req,file,cb)
 // Setup properties of storage of the file
 var storage = multer.diskStorage({
     destination: function( req, file, callback ){
-
         // Check if a folder exists and make it if necessary.
         // Folder structure is upload/user/date/submissionTime
         // date will be year-month-date
-        // submissionTime will need to include minutes and seconds.        
+        // submissionTime will need to include minutes and seconds.
         var dest = "./users";
-        console.log('USER OBJECT\n' + JSON.stringify(req.user));
 
-        // LIttle Time Hack to keep all the submission files in the same output folder but also timebased.
+        // Little Time Hack to keep all the submission files in the same output folder but also timebased.
         var submissionTime = Date.now();
         submissionTime = Math.floor( submissionTime / 100 );
         var userID = req.user.id;

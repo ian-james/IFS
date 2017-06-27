@@ -1,40 +1,46 @@
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
-
 var fs = require('fs');
+var multer = require('multer');
+
 var _ = require('lodash');
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 var profileDB = require( __components + 'StudentProfile/studentProfileDB.js');
 var defaultTool = require( __components + 'Preferences/setupDefaultToolType.js');
 
+var limits = { fileSize: 51200 };
+var fileFilter = function(req, file, cb) {
+    var filetype = /png/;
+    var mimetype = filetype.test(file.mimetype);
+    var extension = filetype.text(path.extname(file.originalname).toLowerCase());
+    if (mimetype && extension) {
+        return cb(null, true);
+    } else {
+        cb("Error: Only " + filetype + "files are allowed.", false);
+    }
+};
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        var userId = req.user.id;
+        var basepath = './app/shared/img/users/';
+        cb(null, basepath + userID + '/');
+    },
+    filename: function(req, file, callback) {
+        cb(null, 'avatar.png');
+    },
+});
+var upload = multer({
+    storage: storage,
+    limits: limits,
+    fileFilter: fileFilter
+});
+
 module.exports = function( app ) {
     app.route("/preferences")
 
-    .get( function(req,res,next){
+    .get( function(req,res,next) {
         res.render( viewPath + "preferences", { title: 'Preferences', message:'ok'})
-    })
-
-    .post(function(req,res,next) {
-
-        console.log("RECEIVEd", req.body);
-
-        var pref = req.body["pref-toolSelect"];
-        var studentName = req.body['student-name'];
-        var studentBio = req.body['student-bio'];
-        var studentAvatar = req.body['student-avatar'];
-
-        preferencesDB.setStudentPreferences(req.user.id,"Option", "pref-toolSelect", pref , function(err,result){
-
-            if(!err)
-                defaultTool.setupDefaultTool(req, pref);
-
-            profileDB.setStudentProfile(req.user.id, studentName,studentBio, studentAvatar, function(err, presult) {
-                 //TODO pop or message
-                res.location( "/tool");
-                res.redirect( "/tool" );
-            });
-        });
     });
 
     app.get('/preferences/data.json', function(req,res) {
@@ -62,6 +68,36 @@ module.exports = function( app ) {
         });
     });
 
+    app.post('/preferences', upload.single('student-avatar'), function(req, res, next) {
+        console.log("RECEIVED", req.body);
+        var userId = req.user.id;
+        var pref = req.body["pref-toolSelect"];
+        var studentName = req.body['student-name'];
+        var studentBio = req.body['student-bio'];
+        var studentAvatar = req.file;
+
+        /*
+        upload(req, res, function(err) {
+            if (err) {
+                console.log("Error uploading file: " + err);
+                return res.end("Error uploading file: ", err);
+            }
+            console.log('uploaded new avatar');
+        });
+        */
+
+        preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
+
+            if(!err)
+                defaultTool.setupDefaultTool(req, pref);
+
+            profileDB.setStudentProfile(userId, studentName,studentBio, studentAvatar, function(err, presult) {
+                 //TODO pop or message
+                res.location( "/tool");
+                res.redirect( "/tool" );
+            });
+        });
+    });
 
     /**
      * Update default preferences with DB values for specific user.
@@ -94,12 +130,11 @@ module.exports = function( app ) {
      * @return {[type]}                   [description]
      */
     function setupProfile( preferenceOptions, profile ) {
-
         if( profile && profile.length > 0) {
             var prefix = "student-"
             var keys = ['name', 'avatarFileName','bio'];
             for( var i = 0; i < keys.length; i++ ){
-                var r = _.find(preferenceOptions,_.matchesProperty('name',prefix+keys[i])); 
+                var r = _.find(preferenceOptions,_.matchesProperty('name',prefix+keys[i]));
                 if( r && r.type == "text") {
                     r['prefValue'] =  profile[0][keys[i]] ? profile[0][keys[i]] : "";
                 }
@@ -107,3 +142,4 @@ module.exports = function( app ) {
         }
     }
 }
+

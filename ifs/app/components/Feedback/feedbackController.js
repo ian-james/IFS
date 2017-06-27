@@ -1,6 +1,6 @@
 /* Feedback -
-        Tool Controller includes a 2nd route /tool/data for collecting information in this controller
-        The main route /tool is server side in toolRoutes.js
+    Tool Controller includes a 2nd route /tool/data for collecting information in this controller
+    The main route /tool is server side in toolRoutes.js
 
     This Controller mostly works with popovers (inc mini)
 */
@@ -19,7 +19,6 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.test = function() {
         $scope.showSideBar = !$scope.showSideBar;
     }
-
 
     $scope.setSelectedItem = function(event) {
         // Array of items matching this error are passed

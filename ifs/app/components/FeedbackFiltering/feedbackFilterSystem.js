@@ -13,8 +13,7 @@ var async = require('async');
  * @return {[type]}            [description]
  */
 /*
-function organizeResults( fileInfo, fullData, callback )
-{
+function organizeResults( fileInfo, fullData, callback ) {
     var obj = {};
 
     // Create File objects for each file
@@ -33,7 +32,7 @@ function organizeResults( fileInfo, fullData, callback )
 
     Logger.info("Write feedback Files");
     async.eachOf( fdbTypes, function(value, key, acallback) {
-        
+
         var filename = key + "FeedbackFile.json";
         var file = path.join(dest,filename);
         obj['feedbackFiles'][key] = file;
@@ -48,15 +47,14 @@ function organizeResults( fileInfo, fullData, callback )
     }, function(err){
         if(err)
             Logger.error("Failed to write feedback files");
-        
+
         var allFeedbackFile =  path.join( dest , "allFeedbackFile.json");
         obj['allFeedbackFile'] = allFeedbackFile;
         fs.writeFile( allFeedbackFile, JSON.stringify(obj), (err) => {
             callback(obj);
             Logger.info("Finish Write feedback Files");
-        });        
+        });
     });
-
 }
 */
 
@@ -69,19 +67,15 @@ function organizeResults( fileInfo, fullData, callback )
  * @return {[type]}               [description]
  */
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
-
     var fileParser = new FileParser();
     fileParser.setupContent( file.content );
     fileParser.tokenize();
 
     // Setup positionsal information for all
     for( var i = 0; i < feedbackItems.length; i++ ) {
-
         var feedbackItem = feedbackItems[i];
-        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool) )
-        {
-            if( !feedbackItem.filename || !feedbackItem.lineNum )
-            {
+        if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool) ) {
+            if( !feedbackItem.filename || !feedbackItem.lineNum ) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
             }
