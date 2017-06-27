@@ -27,16 +27,23 @@ block content
                         th Statistics
                         th Value
                 tbody
-                    tr
-                        td Total Students
-                        td= stats.totalStudents
-                    tr
-                        td Students Online This week
-                        td= stats.studentsOnlineThisWeek
-                    tr
-                        td Total Weekly Submissions
-                        td= stats.weeklySubmissions
-                    each s, index in stats.disciplineType
+                    if stats
                         tr
-                            td= s.disciplineType + " users"
-                            td= s.countDiscipline
+                            td Total Students
+                            td= stats.totalStudents
+                        tr
+                            td Students Online This week
+                            td= stats.studentsOnlineThisWeek
+                        tr
+                            td Total Weekly Submissions
+                            td= stats.weeklySubmissions
+                        if stats.disciplineType
+                            if typeof(stats.disciplineType) == "string"
+                                tr
+                                    td= stats.disciplineType + " users"
+                                    td= stats.countDiscipline
+                            else
+                                each s, index in stats.disciplineType
+                                    tr
+                                        td= s.disciplineType + " users"
+                                        td= s.countDiscipline
