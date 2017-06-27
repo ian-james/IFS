@@ -15,18 +15,6 @@ module.exports = function( app ) {
         var langToolsFile = './tools/toolList.json';
         var progToolsFile = './tools/toolListProgramming.json';
 
-        console.log("ACTUALLY CALLING app.get ");
-
-        // Callbacks in Node are slightly differnt that every other language (probalby?!)
-        // They aren't good for returning values, they are mostly good for accomplishing something
-        //
-        // So in English, it's read langToolsFile finished
-        // Read progToolsFile
-        // When Done
-        // Check for an error in either (Note...nothing really handled there)
-        // If everything was ok, we should have file data for both.
-        // Pase the data and send to Angular controlller
-        // res.json actually finishes teh request, i believe.
         fs.readFile(langToolsFile, 'utf-8', function(errLang, langToolData) {
 
             fs.readFile(progToolsFile, 'utf-8', function(errProg, progToolData) {
@@ -49,10 +37,6 @@ module.exports = function( app ) {
                 }
             });
         });
-
-        // This will log before readFile has finished in most cases.
-        console.log('This logs to server command window');
-        //Logger.info("Could also work here if Logger is included via require");
     })
 }
 

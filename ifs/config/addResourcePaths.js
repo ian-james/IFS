@@ -14,6 +14,9 @@ module.exports = function (app) {
     // Static Files
     app.use(express.static(path.join( __dirname, "/../app/")));
 
+    // IFS version
+    app.use("/version.js", express.static(path.join(__dirname, "/../config/version.js")));
+
     // Survey JS information
     app.use("/surveyjs",express.static(nodeModulesPath + "/survey-jquery/"));
 
@@ -47,6 +50,6 @@ module.exports = function (app) {
      * Resource paths for core tools
      */
     // wordcloud
-    app.use("/wordcloud", express.static( nodeModulesPath + "/wordcloud/src/"));
-    app.use("/socketIO", express.static( nodeModulesPath + "/wordcloud/src/"));
+    app.use("/wordcloud", express.static(nodeModulesPath + "/wordcloud/src/"));
+    app.use("/socketIO", express.static(nodeModulesPath + "/wordcloud/src/"));
 }

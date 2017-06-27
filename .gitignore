@@ -1,5 +1,4 @@
 # IFS stuff
-
 ifs.sublime-project
 ifs.sublime-workspace
 ifs/node_modules/
@@ -8,7 +7,7 @@ ifs/errorFile.pop
 npm-debug.log
 ifs/logs/
 ifs/config/databaseConfig.js
-ifs/app/shared/img/usr
+ifs/app/shared/img/user/*
 
 # vim swap files
 *.sw[a-p]
