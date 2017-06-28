@@ -14,6 +14,7 @@ var fileFilter = function(req, file, cb) {
     var filetype = /png/;
     var mimetype = filetype.test(file.mimetype);
     var extension = filetype.test(path.extname(file.originalname).toLowerCase());
+    console.log(extension);
     if (mimetype && extension) {
         return cb(null, true);
     } else {
@@ -23,10 +24,12 @@ var fileFilter = function(req, file, cb) {
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         var userId = req.user.id;
-        var basepath = './app/shared/img/users/';
-        cb(null, basepath + req.user.id + '/');
+        var basepath = 'app/shared/img/user/';
+        var submissionFolder = path.join(basepath, req.user.id.toString());
+        cb(null, submissionFolder);
     },
     filename: function(req, file, cb) {
+        console.log("FILE:",file)
         cb(null, 'avatar.png');
     },
 });
@@ -35,6 +38,8 @@ var upload = multer({
     limits: limits,
     fileFilter: fileFilter
 });
+
+//var upload = multer({ dest: 'app/shared/img/users/' })
 
 module.exports = function( app ) {
     app.route("/preferences")
@@ -68,43 +73,36 @@ module.exports = function( app ) {
         });
     });
 
-    app.post('/preferences', function(req, res, next) {
+    app.post('/preferences', upload.single('student-avatar'), function(req, res, next) {
         console.log("RECEIVED", req.body);
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
 
-        console.log(pref);
+        if( studentName && studentBio && pref) {
 
-        if (req.file)
-            upload.single('student-avatar');
+            preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
+                if(!err)
+                    defaultTool.setupDefaultTool(req, pref);
+                else
+                    console.log("ERROR SETTING DEFAULT TOOLS");
 
-        /*
-        upload(req, res, function(err) {
-            if (err) {
-                console.log("Error uploading file: " + err);
-                return res.end("Error uploading file: ", err);
-            }
-            console.log('uploaded new avatar');
-        });
-        */
+                profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
+                    if(err)
+                        console.log("ERROR SETTING STUDENT PROFILE");
 
-        preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
-            if(!err)
-                defaultTool.setupDefaultTool(req, pref);
-            else
-                console.log("ERROR SETTING DEFAULT TOOLS");
-
-            profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
-                if(err)
-                    console.log("ERROR SETTING STUDENT PROFILE");
-
-                 //TODO pop or message
-                res.location( "/");
-                res.redirect( "/" );
+                     //TODO pop or message
+                    res.location( "/");
+                    res.redirect( "/" );
+                });
             });
-        });
+        }
+        else {
+            console.log("ERROR ERROR");
+            res.end();
+        }
+
     });
 
     /**
@@ -150,4 +148,3 @@ module.exports = function( app ) {
         }
     }
 }
-
