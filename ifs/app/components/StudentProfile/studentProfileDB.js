@@ -15,10 +15,9 @@ module.exports = {
      * @param {[type]}   userId   [description]
      * @param {[type]}   name     [description]
      * @param {[type]}   bio      [description]
-     * @param {[type]}   filename [description]
      * @param {Function} callback [description]
      */
-    insertStudentProfile: function( userId, name, bio, filename, callback ) {
+    insertStudentProfile: function( userId, name, bio, callback ) {
         var q = dbHelpers.buildInsert(config.student_table) + "( userId, name, bio) VALUES (?,?,?) ";
         db.query(q,[userId,name,bio],callback);
     },
@@ -29,7 +28,6 @@ module.exports = {
      * @param {[type]}   userId   [description]
      * @param {[type]}   name     [description]
      * @param {[type]}   bio      [description]
-     * @param {[type]}   filename [description]
      * @param {Function} callback [description]
      */
     setStudentProfile: function( userId, name, bio, callback ) {

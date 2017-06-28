@@ -13,7 +13,7 @@ var limits = { fileSize: 51200 };
 var fileFilter = function(req, file, cb) {
     var filetype = /png/;
     var mimetype = filetype.test(file.mimetype);
-    var extension = filetype.text(path.extname(file.originalname).toLowerCase());
+    var extension = filetype.test(path.extname(file.originalname).toLowerCase());
     if (mimetype && extension) {
         return cb(null, true);
     } else {
@@ -24,9 +24,9 @@ var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         var userId = req.user.id;
         var basepath = './app/shared/img/users/';
-        cb(null, basepath + userID + '/');
+        cb(null, basepath + req.user.id + '/');
     },
-    filename: function(req, file, callback) {
+    filename: function(req, file, cb) {
         cb(null, 'avatar.png');
     },
 });
@@ -68,13 +68,17 @@ module.exports = function( app ) {
         });
     });
 
-    app.post('/preferences', upload.single('student-avatar'), function(req, res, next) {
+    app.post('/preferences', function(req, res, next) {
         console.log("RECEIVED", req.body);
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
-        var studentAvatar = req.file;
+
+        console.log(pref);
+
+        if (req.file)
+            upload.single('student-avatar');
 
         /*
         upload(req, res, function(err) {
@@ -87,14 +91,18 @@ module.exports = function( app ) {
         */
 
         preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
-
             if(!err)
                 defaultTool.setupDefaultTool(req, pref);
+            else
+                console.log("ERROR SETTING DEFAULT TOOLS");
 
-            profileDB.setStudentProfile(userId, studentName,studentBio, studentAvatar, function(err, presult) {
+            profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
+                if(err)
+                    console.log("ERROR SETTING STUDENT PROFILE");
+
                  //TODO pop or message
-                res.location( "/tool");
-                res.redirect( "/tool" );
+                res.location( "/");
+                res.redirect( "/" );
             });
         });
     });

@@ -1,4 +1,3 @@
-{
     "preferences" : {
         "displayName": "Preferences",
         "name": "preferencesOptions",
@@ -28,7 +27,7 @@
                 "displayName":"Preferred Assessment Tools",
                 "name": "pref-toolSelect",
                 "type": "select",
-                "values": [  "Programming","Writing" ],
+                "values": [ "Programming","Writing" ],
                 "value": "Programming"
             }
         ]
