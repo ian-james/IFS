@@ -74,7 +74,9 @@ module.exports = function (app, iosocket) {
             if(data) {
                 var feedbackItemData = JSON.parse(data);
                 var feedbackItems = feedbackItemData['feedback'];
+                var feedbackStatsItems = feedbackItemData['feedbackStats'];
 
+                // Feedback Items in Feedback Deb
                 async.each(feedbackItems, function( fi, _callback ) {
 
                     // Add displayName and runType before inserting into DB
@@ -85,6 +87,41 @@ module.exports = function (app, iosocket) {
 
                     dbHelpers.insertEventC( config.feedback_table, fe, function(err,d){
                         // Empty Callback if feedback fails to save, we aren't too concerned.
+                        _callback();
+                    });
+
+                }, function(err){
+                    if(err)
+                        Logger.error(err);
+                    else
+                        Logger.log("Finished writing feedback to DB.");
+
+                    callback();
+                });
+            }
+            else
+                callback("Failed to read file");
+        });
+    }
+
+    function writeFeedbackStatsFile( sessionId, userId, submissionId, feedbackFileObj, callback ) {
+        fs.readFile( feedbackFileObj.file, function(err,data){
+            if(data) {
+                var feedbackItemData = JSON.parse(data);
+                var feedbackStatsItems = feedbackItemData['feedbackStats'];
+
+                async.each(feedbackStatsItems, function( fi, _callback ) {
+
+                    // Add displayName and runType before inserting into DB
+                    var toolAdd = {"displayName": feedbackFileObj.displayName, "runType": feedbackFileObj.runType };
+                    _.extend(fi,toolAdd);
+
+                    var fs =  eventDB.makeFeedbackStatsEvent( sessionId, userId, submissionId, fi );
+
+                    dbHelpers.insertEventC( config.feedback_stats_table, fs, function(err,d){
+                        // Empty Callback if feedback fails to save, we aren't too concerned.
+                        //if(err)
+                        //   console.log("\n***************************\n", err, "\n<<<<<<<<<<<>>>>>>>>>>>>>>>>>>", fs);
                         _callback();
                     });
 
@@ -114,6 +151,15 @@ module.exports = function (app, iosocket) {
 
         async.each(feedbackItemFiles, function( feedbackFile, callback) {
             writeFeedbackFile(sessionId, userId, submissionId,feedbackFile, callback );
+        }, function(err) {
+            if(err)
+                Logger.error(err);
+            else
+                Logger.log("Finished writing  all feedback to DB.");
+        });
+
+        async.each(feedbackItemFiles, function( feedbackFile, callback) {
+            writeFeedbackStatsFile(sessionId, userId, submissionId,feedbackFile, callback );
         }, function(err) {
             if(err)
                 Logger.error(err);

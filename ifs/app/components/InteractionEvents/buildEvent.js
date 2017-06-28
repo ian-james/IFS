@@ -113,6 +113,30 @@ module.exports = {
         return e;
     },
 
+    makeFeedbackStatsEvent: function( sessionId, userId, submissionId, toolFeedbackItem){
+        var e = {};
+        try {
+            e['userId'] = userId;
+            e['sessionId'] = sessionId;
+            e['submissionId'] = submissionId;
+
+            var requiredKeys = [
+                'filename',
+                'toolName',
+                'type',
+                'statName',
+                'statValue'
+            ];
+
+            var rk =  _.pick(toolFeedbackItem,requiredKeys);
+            e = _.assign(e, rk);
+        }
+        catch( e ){
+            Logger.error("Error Making feedback interaction event");
+        }
+        return e;
+    },
+
     submissionEvent: function( sessionId, userId, name, data ){
         return this.makeEvent( sessionId, userId, "submission", name,  data );
     },

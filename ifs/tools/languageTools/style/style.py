@@ -179,7 +179,7 @@ def decorateData( result, options ):
         json_string += '"filename": "' + options['file'] + '",\n'
 
         json_string += '"statName": "' + key + '",\n'
-        json_string += '"statValue": "' + str(value) + '"\n'
+        json_string += '"statValue": ' + value + '\n'
         json_string += "}"
 
         if( addedFeedback ):
