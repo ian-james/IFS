@@ -31,7 +31,7 @@ module.exports = {
      * @param {Function} callback [description]
      */
     setStudentProfile: function( userId, name, bio, callback ) {
-        var q = dbHelpers.buildUpdate(config.student_table) + " SET name = ?, bio = ? where userId = ? ";
+        var q = dbHelpers.buildUpdate(config.student_table) + " SET name = ?, bio = ? WHERE userId = ? ";
         db.query(q,[name,bio,userId],callback);
     },
 
@@ -43,8 +43,8 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getStudentProfileAndClasses: function(userId, callback) {
-        var q = "select s.id,s.name,s.bio, c.code,c.name as courseName ,c.description,c.disciplineType from student s, student_class sc, class c where s.id = sc.studentId and sc.classId = c.id and s.userId =?";
-        // console.log("QUERYING STUDENT PROFILE AND CLASSES");
+        var q = "SELECT s.id,s.name,s.bio, c.code,c.name as courseName, c.description,c.disciplineType FROM student s, student_class sc, class c WHERE s.id = sc.studentId AND sc.classId = c.id AND s.userId =?";
+        //console.log("QUERYING STUDENT PROFILE AND CLASSES");
         db.query(q,userId,callback);
     }
 }

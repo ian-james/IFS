@@ -1,0 +1,10 @@
+div(class="uk-width-1-2@m")
+    div.uk-card.uk-card-default
+        div.uk-card-header
+            h3.uk-card-title.uk-margin-remove-bottom #{ event.title }
+            p.uk-text-meta.uk-margin-remove-top
+                span(uk-icon="icon: clock").uk-icon.uk-margin-small-right
+                // this date format is very verbose, can we make it simpler?
+                time(datetime=event.closedDate) #{ event.closedDate }
+        div.uk-card-body
+            p #{ event.description }
