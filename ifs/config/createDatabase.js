@@ -5,13 +5,13 @@
 var mysql = require('mysql');
 var config = require('./databaseConfig');
 
-var Logger = require( "./loggingConfig") ;
+var Logger = require('./loggingConfig') ;
 
-try  {
+try {
     var connection = mysql.createConnection( config.connection );
 
     // Tell mysql to use the database
-    if( connection ) {
+    if(connection) {
         Logger.info("Create the database now");
 
         connection.query ('CREATE DATABASE IF NOT EXISTS ' + config.database );
@@ -155,7 +155,6 @@ try  {
             userId INT UNSIGNED NOT NULL, \
             name TEXT, \
             bio TEXT, \
-            avatarFileName VARCHAR(80), \
             PRIMARY KEY(id), \
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
@@ -233,7 +232,6 @@ try  {
             FOREIGN Key (assignmentId) REFERENCES " + config.database + "." + config.assignment_table + "(id) \
         )");
 
-
         /// Skills as rated by the student
         Logger.info("Create the Table:", config.student_skill_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_skill_table + " ( \
@@ -255,7 +253,6 @@ try  {
             PRIMARY KEY(id) \
         )");
 
-
         Logger.info("Create the Table:", config.user_role_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.user_role_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -267,15 +264,11 @@ try  {
         )");
 
         Logger.info("Success: Database created.");
-
-    }
-    else
+    } else {
         Logger.error("Error, Unable to make connection to database")
-}
-catch( e )
-{
+    }
+} catch(e) {
     Logger.error("Error: Unable to load database.");
 }
-
 
 connection.end();

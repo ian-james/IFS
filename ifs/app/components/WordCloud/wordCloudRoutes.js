@@ -6,9 +6,7 @@ var _ = require('lodash');
 var db = require( __configs + 'database');
 
 module.exports = function( app ) {
-
-    function normalizeWordArray( words, maxWords, scale )
-    {
+    function normalizeWordArray( words, maxWords, scale ) {
         // Assuming Sorted
         var sum = 0;
         for( var i = 0; i < words.length; i++ ) {
@@ -23,21 +21,17 @@ module.exports = function( app ) {
         return res;
     }
 
-
     app.get('/cloud', function(req, res ){
-
         // Only query required for wordCloud so just leaving it here.
         var q = "select feedback,charPos from feedback where userId = ? and runType = ? and type = ? and " +
                     "submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1)";
 
         db.query(q, [req.user.id,"visual","wordCloud",req.user.id], function(err,data) {
-            
+
             var msg = "";
             var files = [];
-            if( data ) 
-            {
+            if( data ) {
                 var arr = [];
-                
                 var result = {};
                 for( var i = 0; i< data.length; i++ ) {
                     var subarr = [ data[i].feedback, data[i].charPos ];
@@ -51,7 +45,7 @@ module.exports = function( app ) {
             var maxWords = 40;
             var normed = normalizeWordArray(arr, maxWords, scale );
 
-            res.render( viewPath + "wordCloud", { "words": normed, "msg": msg });
+            res.render( viewPath + "cloud", { "words": normed, "msg": msg });
         });
     });
 }

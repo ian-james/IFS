@@ -4,11 +4,12 @@ include ../../shared/UI_components/formSubmit.pug
 block content
     div(ng-controller="prefCtrl").uk-container.uk-container-small
         h2 {{ prefsList.displayName }}
-        form(name="preferences" method="post" action="/preferences")#preferencesFrm
+        form(name="preferences" enctype="multipart/form-data" method="post" action="/preferences")#preferencesFrm.uk-margin
             div(ng-repeat="option in prefsList.options")
                 include ../Tool/toolInput.pug
 
             br
             button(type="submit").uk-button.uk-button-primary Save
+    br
 
     script(src="components/Preferences/preferencesController.js")

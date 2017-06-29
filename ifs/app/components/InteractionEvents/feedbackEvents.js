@@ -17,7 +17,7 @@ module.exports = {
     },
 
     getMostRecentFeedback: function(userId ){
-        return { 
+        return {
             'name': "mostRecentFeedback",
             'data':[userId,userId],
             'request': "select * from feedback where userId = ? and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos,toolName"
@@ -26,15 +26,23 @@ module.exports = {
 
     /* IGNORES visual feedback information */
     getMostRecentFeedbackNonVisual: function(userId ){
-        return { 
+        return {
             'name': "mostRecentFeedbackNonVisual",
             'data':[userId,userId],
             'request': "select * from feedback where userId = ? and runType in (\"writing\",\"programming\") and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos,toolName"
         }
     },
 
+    getMostRecentFeedbackVisualOnly: function(userId) {
+        return {
+            'name': "mostRecentFeedbackVisualOnly",
+            'data':[userId,userId],
+            'request': "select * from feedback where userId = ? and runType in (\"visual\") and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos,toolName"
+        }
+    },
+
     getMostRecentFeedbackPerTool: function(userId, toolName ){
-         return { 
+         return {
             'name': "mostRecentFeedbackPerTool",
             'data':[userId,toolName,userId],
             'request': "select * from feedback where userId = ? and toolName = ? and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos, toolName"

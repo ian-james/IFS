@@ -39,7 +39,7 @@ module.exports = function (app, iosocket) {
      * @return {[type]}             [description]
      */
     function emitJobRequests( req, iosocket, jobRequests ) {
-        _.forEach(jobRequests, function(job){
+        _.forEach(jobRequests, function(job) {
             tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id ,"info", { "displayName": job.displayName, "runCmd": job.runCmd }));
         });
 
@@ -151,7 +151,7 @@ module.exports = function (app, iosocket) {
         var user = eventDB.eventID(req);
         saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
 
-        console.log("HERE");
+        //console.log("HERE");
 
         submissionEvent.addSubmission( user, function(subErr, succSubmission) {
 
@@ -198,7 +198,6 @@ module.exports = function (app, iosocket) {
 
                 // Add the jobs to the queue, results are return in object passed:[], failed:[]
                 manager.makeJob(tools).then( function( jobResults ) {
-
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "success", {}) );
                     emitFeedbackResults(user.sessionId, user.userId, submissionId, jobResults.result.passed);
                     var data = { "msg":"Awesome"};
@@ -216,7 +215,6 @@ module.exports = function (app, iosocket) {
                     res.end();
 
                 }, function(prog) {
-
                     if(prog.tool == "Manager" && prog.msg == "Progress")
                         iosocket.emit("ifsProgress", prog);
                     Logger.log("Manager's progress is ", prog.progress, "%");
