@@ -16,7 +16,7 @@ div(uk-offcanvas="flip:true; overlay: true")#popOver
             dd {{ selectedFeedback.feedback }}
             br
 
-            dt
+            dt(ng-if="selectedFeedback.suggestions.length > 0")
                 | Suggestions for:
                 br
                 em {{ selectedFeedback.decodedTarget }}
