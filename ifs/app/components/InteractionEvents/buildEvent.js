@@ -123,7 +123,10 @@ module.exports = {
             var requiredKeys = [
                 'filename',
                 'toolName',
+                'name',
                 'type',
+                'level',
+                'category',
                 'statName',
                 'statValue'
             ];

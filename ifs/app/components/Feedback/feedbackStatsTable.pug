@@ -1,0 +1,8 @@
+h3 Writing and Readability Statistics
+if feedbackStats  && feedbackStats.length != 0
+    div.uk-grid.uk-grid-small.uk-grid-divider.uk-grid-match
+        div(ng-repeat="s in inDisplayStats(feedbackStats[files[active].originalname])").uk-width-1-3.uk-margin-bottom
+            p.uk-text-center.uk-margin-remove-bottom.uk-button-primary {{ s.statName }}
+            p.uk-text-center.uk-text-large.uk-margin-remove-top {{ s.statValue}}
+else
+    p No Statistics included!

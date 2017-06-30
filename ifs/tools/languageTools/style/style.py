@@ -40,12 +40,12 @@ def findArr(arr, target):
 
 # setupSectionTargets - identifies the sections by the following titles
 def setupSectionTargets():
-    targets = [];
+    targets = []
     targets.append("readability grades:")
     targets.append("sentence info:")
     targets.append("word usage:")
     targets.append("sentence beginnings:")
-    return targets;
+    return targets
 
 # separate and clean data of white space
 def cleanData(line, splitter):
@@ -67,8 +67,11 @@ def countSections(line, options, keys):
 # retrieves all values in a sentence with a specific structure, ie all numbers
 def countStructure(line, options, keys):
     sections = re.findall(options['regex'],line)
-    ##print("COUNT SECT", sections)
-    return keyValues(keys, sections)
+    res = {}
+    for i in range(len(keys)):
+        res[keys[i]['key']] = { 'score':sections[i], 'level': options['level'], 'category': options['category'] }
+        res[keys[i]['key']].update( keys[i] )
+    return res
 
 # parse for readability scores
 def findReadabilityScore(line, values):
@@ -89,7 +92,8 @@ def countChars(line):
     wordCount = 0
     if res:
         wordCount = res.group(1)
-    return {'character count':wordCount }
+    return { 'chCount':{'displayName':'Character Count', 'key':'chCount', 'score': wordCount,
+                     'level':'basic', 'category':'commonStats' }}
 
 # readGrades - parses the readability scores test names and values
 def readGrades( file ):
@@ -101,35 +105,50 @@ def readGrades( file ):
     #Lix
     #SMOG
     grades = {}
-    scores = ["Kincaid", "ARI","Coleman-Liau","Flesch Index", "Fog Index", "Lix","SMOG-Grading"]
-    for score in scores:
+    keys = ["Kincaid", "ARI","Coleman-Liau","FleschIndex", "FogIndex", "Lix","SMOG-Grading"]
+    for key in keys:
         obj = findReadabilityScore(file.readline().strip(), ['Name', 'Value'])
-        grades[score] = numericValue(obj['Value'])
+        grades[key] = { 'key': key, 'displayName': obj['Name'], 'score': numericValue(obj['Value']), 'level': 'adv', 'category':'Readability' }
     return grades
 
 # readSentence - parses the sentence info from (Diction tool)
 # Severall lines are skipped due to lack of information and clarity.
 def readSentenceInfo(file):
     # chars
-    option = {'regex':r"[-+]?\d*\.\d+|[-+]?\d+"}
+    optionBasic = {'regex':r"[-+]?\d*\.\d+|[-+]?\d+",'level':'basic','category':'commonStats' }
+    optionAdv = {'regex':r"[-+]?\d*\.\d+|[-+]?\d+",'level':'adv','category':'percentages' }
+
     line = file.readline().strip()
     result = countChars(line)
+
     # 3 num, words
     line = file.readline().strip()
-    result.update( countStructure(line, option, ["words count","avg characters per word","avg syllables"]) )    
+    result.update( countStructure(line, optionBasic, [{ 'displayName': "Words Count", 'key': 'wordCount' },
+              { 'displayName':"Avg characters per Word", 'key':'avgChPerW' },
+              { 'displayName':"avg syllables", 'key': "avgSyllables" }]))
+
     # 2 nums sentences
     line = file.readline().strip()
-    result.update( countStructure(line, option, ["number of sentences","average words per sentence"]) )
-    
+    result.update( countStructure(line, optionBasic, [{ 'displayName':"Number of Sentences", 'key': "nSens" },
+                            { 'displayName':"Average Words per Sentence", 'key': "avgWrdPerSen" }]) )
+
     # % Short Sentences
     line = file.readline().strip()
-    result.update( countStructure(line, option, ["short sentences percentage","shortNum","at most N words"]) )
+    result.update( countStructure(line, optionAdv, [{ 'displayName':"Percentage Short Sentences", 'key': "percShSen"},
+                                                    { 'displayName':"Short Sentences", 'key': "shortNum"},
+                                                    { 'displayName':"N words in Short Sentence", 'key': "shortNWords" }]) )
+
     # % Long Sentences
     line = file.readline().strip()
-    result.update( countStructure(line, option, ["long sentences percentage","longNum","at least N words"]) )
+    result.update( countStructure(line, optionAdv, [{ 'displayName':"Percentange Long Sentences", 'key': "percLglong"} ,
+                                                    { 'displayName':"Long Sentences", 'key': "longNum" },
+                                                    { 'displayName':"N words in Long Sentence", 'key': "longNWords" }]) )
+
     # 2 num, Paragraphs
     line = file.readline().strip()
-    result.update( countStructure(line, option, ["number of paragraphs","average sentences per paragraph"]) )
+    result.update( countStructure(line, optionBasic, [{ 'displayName':"Number of Paragraphs", 'key': "nPar" },
+                                                     { 'displayName':"Average Sentences per Paragraph", 'key': "avgSenPerPar" }]) )
+
     # % Questions
     line = file.readline().strip()
     # % Passive Sentences
@@ -163,23 +182,24 @@ def parseData( file, options ):
 
 # Put this into IFS format.
 def decorateData( result, options ):
-    
+
     json_string = ''
     json_string += '{ '
     json_string += '"feedback": [],\n'
     json_string += '"feedbackStats": [\n'
-    
+
     addedFeedback = False
     for key,value in result.items():
         addedFeedback = True
         json_string += "{"
-        json_string += '"type": "statistics",\n'
+        json_string += '"type": "stat",\n'
         json_string += '"toolName": "style",\n'
-
-        json_string += '"filename": "' + options['file'] + '",\n'
-
-        json_string += '"statName": "' + key + '",\n'
-        json_string += '"statValue": ' + value + '\n'
+        json_string += '"name": "' + value['key'] + '",\n'
+        json_string += '"level": "' + value['level'] + '",\n'
+        json_string += '"category": "' + value['category'] + '",\n'
+        json_string += '"filename": "' + os.path.basename(options['file']) + '",\n'
+        json_string += '"statName": "' + value['displayName'] + '",\n'
+        json_string += '"statValue": ' + value['score'] + '\n'
         json_string += "}"
 
         if( addedFeedback ):

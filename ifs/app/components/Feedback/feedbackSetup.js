@@ -162,5 +162,17 @@ function toolsMatch( toolName, selectedToolName ) {
     return ( selectedToolName == "All" || toolName == selectedToolName );
 }
 
+function setupFeedbackStats(feedbackStats) {
+
+    var resStats = {};
+    for(var i = 0; i< feedbackStats.length;i++) {
+        if( !resStats[feedbackStats[i].filename] )
+            resStats[feedbackStats[i].filename] = {};
+        resStats[feedbackStats[i].filename][feedbackStats[i].name] = feedbackStats[i];
+    }
+    return {'feedbackStats': resStats };
+}
+
 module.exports.setupFeedback = readFeedbackFormat;
 module.exports.readFileAndSetupFeedback = readFiles;
+module.exports.setupFeedbackStats = setupFeedbackStats;

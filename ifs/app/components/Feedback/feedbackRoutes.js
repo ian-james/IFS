@@ -29,17 +29,30 @@ module.exports = function( app ) {
                 console.log(err);
             else {
                 var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
-                var feedbackFile = "{" + 
+                var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +
                     '"feedback":' + JSON.stringify(data) + '\n'
                     +"}\n";
-                var page = { title: 'Feedback Test page' };
+
+                var page = { title: 'Feedback page' };
                 var feedback = Feedback.setupFeedback(feedbackFile, opt);
                 var result = _.assign(page,feedback);
-                res.render( viewPath + "feedback", result );
+
+                var rstats = feedbackEvents.getMostRecentFeedbackStats( req.user.id );
+                db.query(rstats.request,r.data, function(err, statData) {
+
+                    var stats = Feedback.setupFeedbackStats(statData);
+                    result = _.assign(result,stats);
+                    var viewFile = opt && opt.viewPathFile ? opt.viewPathFile: "feedback";
+                    res.render( viewPath + viewFile, result );
+                });
             }
         });
     };
+
+    app.get('/feedbackStatsTable', function(req,res) {
+        showFeedback(req,res,{viewPathFile:'feedbackStatsFullTable.pug'});
+    });
 
     app.get('/feedback', function(req, res) {
        showFeedback(req,res);
@@ -59,7 +72,7 @@ module.exports = function( app ) {
                 console.log(err);
             else {
                 var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
-                var feedbackFile = "{" + 
+                var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +
                     '"feedback":' + JSON.stringify(data) + '\n'
                     +"}\n";
@@ -69,7 +82,14 @@ module.exports = function( app ) {
                     opt['tool'] = req.session.activeTool;
                 }
                 var result = Feedback.setupFeedback( feedbackFile, opt );
-                res.json( result );
+
+                var rstats = feedbackEvents.getMostRecentFeedbackStats( req.user.id );
+                db.query(rstats.request,r.data, function(err, statData) {
+
+                    var stats = Feedback.setupFeedbackStats(statData);
+                    result = _.assign(result,stats);
+                    res.json( result );
+                });
             }
         });
     });

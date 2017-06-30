@@ -23,13 +23,23 @@ block content
                             option(selected="All"==selectedTool ) All
                             each tool in toolsUsed
                                 option(selected=tool==selectedTool) #{ tool }
+            if feedbackStats && feedbackStats.length > 0
+                div.feedbackStatsSection
+                    hr
+                    ul(uk-accordion)
+                        li
+                            h3.uk-accordion-title
+                                | Feedback Stats
+                                span(class="uk-visible@l") (click to expand)
+                            div.uk-accordion-content
+                                include feedbackStatsTable.pug
             div.generalErrorsSection
                 if feedbackItems && feedbackItems.length > 0
                     hr
                     ul(uk-accordion)
                         li
                             h3.uk-accordion-title
-                                | #{feedbackItems.length} Feedback Messages 
+                                | #{feedbackItems.length} Feedback Messages
                                 span(class="uk-visible@l") (click to expand)
                             div.uk-accordion-content
                                 include feedbackErrorTable.pug

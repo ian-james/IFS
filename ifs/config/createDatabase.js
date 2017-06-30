@@ -141,8 +141,11 @@ try  {
             submissionId INT UNSIGNED NOT NULL, \
             filename TEXT NOT NULL, \
             toolName TEXT NOT NULL, \
+            name TEXT NOT NULL, \
             type TEXT NOT NULL, \
-            statName TEXT, \
+            level TEXT NOT NULL, \
+            category TEXT NOT NULL, \
+            statName TEXT NOT NULL, \
             statValue DECIMAL(8,3), \
             date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
             PRIMARY KEY(id), \
@@ -249,7 +252,6 @@ try  {
             FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id), \
             FOREIGN Key (assignmentId) REFERENCES " + config.database + "." + config.assignment_table + "(id) \
         )");
-
 
         /// Skills as rated by the student
         Logger.info("Create the Table:", config.student_skill_table);
