@@ -7,6 +7,5 @@ block content
     div.uk-container
         uib-tabset(active="active")
             each file, findex in files
-                - console.log('files', file);
                 uib-tab(index=findex heading= file.originalname disable="{{tab.disabled}}")
-                div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsTest.form-control.markedTextArea !{file.summary}
+                    div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsTest.form-control.markedTextArea !{file.summary}

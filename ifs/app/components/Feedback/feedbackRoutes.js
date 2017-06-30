@@ -42,8 +42,17 @@ module.exports = function( app ) {
 
                     var stats = Feedback.setupFeedbackStats(statData);
                     result = _.assign(result,stats);
-                    var viewFile = opt && opt.viewPathFile ? opt.viewPathFile: "feedback";
-                    res.render( viewPath + viewFile, result );
+
+                    // Will fix this later/soon
+                    var rvisualTools = feedbackEvents.getMostRecentVisualTools( req.user.id );
+                    db.query(rvisualTools.request,rvisualTools.data, function(errTools,visualTools) {
+
+                        var visualTools = Feedback.setupVisualFeedback(visualTools);
+                        results = _.assign(result,visualTools);
+                        console.log("visualTools", visualTools);
+                        var viewFile = opt && opt.viewPathFile ? opt.viewPathFile: "feedback";
+                        res.render( viewPath + viewFile, result );
+                    });
                 });
             }
         });
@@ -64,7 +73,7 @@ module.exports = function( app ) {
     });
 
     app.get('/feedback/data', function( req,res, next ){
-        var r = feedbackEvents.getMostRecentFeedback( req.user.id );
+        var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
         db.query(r.request,r.data, function(err,data){
             if(err)
                 console.log(err);

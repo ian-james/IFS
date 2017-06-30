@@ -58,6 +58,14 @@ module.exports = {
         }
     },
 
+    getMostRecentVisualTools: function( userId ) {
+      return {
+            'name': "mostRecentFeedbackVisualOnly",
+            'data':[userId,userId],
+            'request': "select toolName as value, COUNT(*) from feedback where userId = ? and runType in (\"visual\") and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) GROUP BY toolName"
+        }  
+    },
+
     getMostRecentFeedbackPerTool: function( userId, toolName ) {
          return {
             'name': "mostRecentFeedbackPerTool",
