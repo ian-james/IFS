@@ -23,6 +23,14 @@ block content
                             option(selected="All"==selectedTool ) All
                             each tool in toolsUsed
                                 option(selected=tool==selectedTool) #{ tool }
+                // this is hardcoded, because after hours of trying to make
+                // the callbacks work, I couldn't get a visualToolsUsed array
+                // into here
+                div
+                    span(ng-if = "toolsUsed.indexOf('wordCloud') >= 0")
+                        a(href="/cloud").uk-button.uk-button-default Word Cloud
+                    span(ng-if = "toolsUsed.indexOf('textSummarization') >= 0")
+                        a(href="/summary").uk-button.uk-button-default Text Summary
             if feedbackStats && feedbackStats.length > 0
                 div.feedbackStatsSection
                     hr
@@ -33,6 +41,7 @@ block content
                                 span(class="uk-visible@l") (click to expand)
                             div.uk-accordion-content
                                 include feedbackStatsTable.pug
+
             div.generalErrorsSection
                 if feedbackItems && feedbackItems.length > 0
                     hr

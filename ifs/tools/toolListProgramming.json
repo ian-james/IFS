@@ -14,46 +14,46 @@
             "parseCmd": "",
             "defaultArg": "-t gcc",
             "fileArgs": "-d",
-            "options" :  [
+            "options":  [
                 {
-                    "displayName" : "Language Standard",
-                    "type" : "select",
-                    "name" : "opt-gccLanguageStd",
+                    "displayName": "Language standard",
+                    "type": "select",
+                    "name": "opt-gccLanguageStd",
                     "values": [ "c89", "c99","c11"],
                     "arg": "-s",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Standard Warnings ",
-                    "type" : "checkbox",
-                    "name" : "opt-gccLanguageWarningAll",
-                    "values":"",
+                    "displayName": "Standard warnings ",
+                    "type": "checkbox",
+                    "name": "opt-gccLanguageWarningAll",
+                    "values": "",
                     "arg": "-f -Wall ",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Extra Warnings",
-                    "type" : "checkbox",
-                    "name" : "opt-gccLanguageExtraWarning",
-                    "values":"",
+                    "displayName": "Extra warnings",
+                    "type": "checkbox",
+                    "name": "opt-gccLanguageExtraWarning",
+                    "values": "",
                     "arg": "-f -Wextra",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Use strict Pedantic Warning",
-                    "type" : "checkbox",
-                    "name" : "opt-gccLanguagePendantic",
-                    "values":"",
+                    "displayName": "Use strict pedantic warning",
+                    "type": "checkbox",
+                    "name": "opt-gccLanguagePendantic",
+                    "values": "",
                     "arg": "-f -pedantic",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Convert Warnings to Errors",
-                    "type" : "checkbox",
-                    "name" : "opt-gccLanguagePendanticToError",
-                    "values":"",
+                    "displayName": "Treat warnings as errors",
+                    "type": "checkbox",
+                    "name": "opt-gccLanguagePendanticToError",
+                    "values": "",
                     "arg": "-f -pedantic-errors",
-                    "params":""
+                    "params": ""
                 }
             ]
         },
@@ -71,46 +71,46 @@
             "parseCmd": "",
             "defaultArg": "-t clang",
             "fileArgs": "-d",
-            "options" :  [
+            "options":  [
                 {
-                    "displayName" : "Language Standard",
-                    "type" : "select",
-                    "name" : "opt-clangLanguageStd",
+                    "displayName": "Language standard",
+                    "type": "select",
+                    "name": "opt-clangLanguageStd",
                     "values": [ "c89", "c99","c11"],
                     "arg": "-s",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Standard Warnings ",
-                    "type" : "checkbox",
-                    "name" : "opt-clangLanguageWarningAll",
-                    "values":"",
+                    "displayName": "Standard warnings ",
+                    "type": "checkbox",
+                    "name": "opt-clangLanguageWarningAll",
+                    "values": "",
                     "arg": "-f -Wall ",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Extra Warnings",
-                    "type" : "checkbox",
-                    "name" : "opt-clangLanguageExtraWarning",
-                    "values":"",
+                    "displayName": "Extra warnings",
+                    "type": "checkbox",
+                    "name": "opt-clangLanguageExtraWarning",
+                    "values": "",
                     "arg": "-f -Wextra",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Use strict Pedantic Warning",
-                    "type" : "checkbox",
-                    "name" : "opt-clangLanguagePendantic",
-                    "values":"",
+                    "displayName": "Use strict pedantic warnings",
+                    "type": "checkbox",
+                    "name": "opt-clangLanguagePendantic",
+                    "values": "",
                     "arg": "-f -pedantic",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Convert Warnings to Errors",
-                    "type" : "checkbox",
-                    "name" : "opt-clangLanguagePendanticToError",
-                    "values":"",
+                    "displayName": "Treat warnings as errors",
+                    "type": "checkbox",
+                    "name": "opt-clangLanguagePendanticToError",
+                    "values": "",
                     "arg": "-f -pedantic-errors",
-                    "params":""
+                    "params": ""
                 }
             ]
         },
@@ -128,30 +128,46 @@
             "parseCmd": "",
             "defaultArg": "-t cppcheck",
             "fileArgs": "-d",
-            "options" :  [
+            "options":  [
                 {
-                    "displayName" : "Error Severity Level",
-                    "type" : "select",
-                    "name" : "opt-cppCheckErrorLevel",
+                    "displayName": "Error types",
+                    "type": "select",
+                    "name": "opt-cppCheckErrorLevel",
                     "values": [ "all", "error", "warning", "style","performance"],
                     "arg": "-e",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "CppCheck Language Standard",
-                    "type" : "select",
-                    "name" : "opt-cppCheckLanguageStd",
+                    "displayName": "CppCheck language standard",
+                    "type": "select",
+                    "name": "opt-cppCheckLanguageStd",
                     "values": [ "c89", "c99","c11"],
                     "arg": "-s",
-                    "params":""
+                    "params": ""
                 },
                 {
-                    "displayName" : "Inconclusive",
-                    "type" : "checkbox",
-                    "name" : "opt-cppCheckUseInconclusive",
-                    "values":"",
+                    "displayName": "Inconclusive warnings",
+                    "type": "checkbox",
+                    "name": "opt-cppCheckUseInconclusive",
+                    "values": "",
                     "arg": "-f --inconclusive",
-                    "params":""
+                    "params": ""
+                },
+                {
+                    "displayName": "Suppress missing include warnings",
+                    "type": "checkbox",
+                    "name": "opt-cppCheckSuppressMissingInclude",
+                    "values": "",
+                    "arg": "-f --suppress=missingInclude",
+                    "params": ""
+                },
+                {
+                    "displayName": "Suppress unused function warnings",
+                    "type": "checkbox",
+                    "name": "opt-cppCheckSuppressUnusedFunction",
+                    "values": "",
+                    "arg": "-f --suppress=unusedFunction",
+                    "params": ""
                 }
             ]
         }

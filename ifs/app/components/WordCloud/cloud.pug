@@ -1,0 +1,21 @@
+extends ../../shared/views/pageLayout.pug
+
+block scripts
+    script(src="/wordcloud/wordcloud2.js")
+    link(rel="stylesheet" href="components/WordCloud/wordCloud.css")
+
+block content
+    div(ng-controller="wordCloudCtrl").uk-container
+        div.uk-align-center
+            p#NotSupported
+            p= msg
+            canvas#canvas.canvas.uk-align-center
+            script.
+                if( WordCloud.isSupported ) {
+                    WordCloud(document.getElementById('canvas'), { 'list': !{JSON.stringify(words)},shuffle:"{{shuffle}}", 'minSize':8, 'weightFactor': 25, 'minRotation':'45', 'shape':"circle"});
+                }
+                else
+                    document.getElementById('NotSupported').innerHTML = "Word Cloud is not supported";
+
+
+    script(src="components/WordCloud/wordCloudController.js")

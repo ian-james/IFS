@@ -13,15 +13,13 @@ module.exports = function (app) {
                     "submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1)";
 
         db.query(q, [req.user.id,"visual","textSummarization",req.user.id], function(err,data) {
-            
             var msg = "";
             var files = [];
-            if( data ) {
-                
+            if(data) {
                 var result = {};
                 for( var i = 0; i< data.length; i++ ) {
                     var filename = path.basename(data[i].filename);
-                    if(!_.has(result,filename)) 
+                    if(!_.has(result,filename))
                         result[filename] = "";
                     result[filename] += data[i].feedback;
                 }

@@ -16,6 +16,7 @@ module.exports = {
         };
     },
 
+
     getMostRecentFeedback: function( userId ){
         return {
             'name': "mostRecentFeedback",
@@ -25,6 +26,7 @@ module.exports = {
     },
 
     /* IGNORES visual feedback information */
+
     getMostRecentFeedbackNonVisual: function( userId ){
         return {
             'name': "mostRecentFeedbackNonVisual",
@@ -48,7 +50,15 @@ module.exports = {
         }
     },
 
-    getMostRecentFeedbackPerTool: function( userId, toolName ){
+    getMostRecentFeedbackVisualOnly: function(userId) {
+        return {
+            'name': "mostRecentFeedbackVisualOnly",
+            'data':[userId,userId],
+            'request': "select * from feedback where userId = ? and runType in (\"visual\") and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos,toolName"
+        }
+    },
+
+    getMostRecentFeedbackPerTool: function( userId, toolName ) {
          return {
             'name': "mostRecentFeedbackPerTool",
             'data':[userId,toolName,userId],

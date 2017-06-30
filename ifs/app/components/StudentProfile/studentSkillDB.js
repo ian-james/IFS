@@ -6,7 +6,7 @@ var dbHelpers = require(__components + "Databases/dbHelpers");
 module.exports = {
 
     getStudentSkills: function( studentId, callback ) {
-        var q = "SELECT cs.name, cs.description, ss.value FROM student_skill ss, class_skill cs WHERE ss.studentId = ? AND cs.id = ss.classSkillId";
+        var q = "SELECT cs.name, cs.description, ss.value FROM student_skill ss, class_skill cs WHERE ss.studentId = ? AND cs.id = ss.classSkillId;";
         db.query(q,studentId,callback);
     },
 

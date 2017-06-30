@@ -1,40 +1,51 @@
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
-
 var fs = require('fs');
+var multer = require('multer');
+
 var _ = require('lodash');
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 var profileDB = require( __components + 'StudentProfile/studentProfileDB.js');
 var defaultTool = require( __components + 'Preferences/setupDefaultToolType.js');
 
+var limits = { fileSize: 51200 };
+var fileFilter = function(req, file, cb) {
+    var filetype = /png/;
+    var mimetype = filetype.test(file.mimetype);
+    var extension = filetype.test(path.extname(file.originalname).toLowerCase());
+    console.log(extension);
+    if (mimetype && extension) {
+        return cb(null, true);
+    } else {
+        cb("Error: Only " + filetype + "files are allowed.", false);
+    }
+};
+var storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        var userId = req.user.id;
+        var basepath = 'app/shared/img/user/';
+        var submissionFolder = path.join(basepath, req.user.id.toString());
+        cb(null, submissionFolder);
+    },
+    filename: function(req, file, cb) {
+        console.log("FILE:",file)
+        cb(null, 'avatar.png');
+    },
+});
+var upload = multer({
+    storage: storage,
+    limits: limits,
+    fileFilter: fileFilter
+});
+
+//var upload = multer({ dest: 'app/shared/img/users/' })
+
 module.exports = function( app ) {
     app.route("/preferences")
 
-    .get( function(req,res,next){
+    .get( function(req,res,next) {
         res.render( viewPath + "preferences", { title: 'Preferences', message:'ok'})
-    })
-
-    .post(function(req,res,next) {
-
-        console.log("RECEIVEd", req.body);
-
-        var pref = req.body["pref-toolSelect"];
-        var studentName = req.body['student-name'];
-        var studentBio = req.body['student-bio'];
-        var studentAvatar = req.body['student-avatarFileName'];
-
-        preferencesDB.setStudentPreferences(req.user.id,"Option", "pref-toolSelect", pref , function(err,result){
-
-            if(!err)
-                defaultTool.setupDefaultTool(req, pref);
-
-            profileDB.setStudentProfile(req.user.id, studentName,studentBio, studentAvatar, function(err, presult) {
-                 //TODO pop or message
-                res.location( "/tool");
-                res.redirect( "/tool" );
-            });
-        });
     });
 
     app.get('/preferences/data.json', function(req,res) {
@@ -62,6 +73,37 @@ module.exports = function( app ) {
         });
     });
 
+    app.post('/preferences', upload.single('student-avatar'), function(req, res, next) {
+        console.log("RECEIVED", req.body);
+        var userId = req.user.id;
+        var pref = req.body["pref-toolSelect"];
+        var studentName = req.body['student-name'];
+        var studentBio = req.body['student-bio'];
+
+        if( studentName && studentBio && pref) {
+
+            preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
+                if(!err)
+                    defaultTool.setupDefaultTool(req, pref);
+                else
+                    console.log("ERROR SETTING DEFAULT TOOLS");
+
+                profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
+                    if(err)
+                        console.log("ERROR SETTING STUDENT PROFILE");
+
+                     //TODO pop or message
+                    res.location( "/");
+                    res.redirect( "/" );
+                });
+            });
+        }
+        else {
+            console.log("ERROR ERROR");
+            res.end();
+        }
+
+    });
 
     /**
      * Update default preferences with DB values for specific user.
@@ -94,12 +136,11 @@ module.exports = function( app ) {
      * @return {[type]}                   [description]
      */
     function setupProfile( preferenceOptions, profile ) {
-
         if( profile && profile.length > 0) {
             var prefix = "student-"
             var keys = ['name', 'avatarFileName','bio'];
             for( var i = 0; i < keys.length; i++ ){
-                var r = _.find(preferenceOptions,_.matchesProperty('name',prefix+keys[i])); 
+                var r = _.find(preferenceOptions,_.matchesProperty('name',prefix+keys[i]));
                 if( r && r.type == "text") {
                     r['prefValue'] =  profile[0][keys[i]] ? profile[0][keys[i]] : "";
                 }

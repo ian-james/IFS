@@ -283,8 +283,8 @@ module.exports =  {
         return res;
     },
 
-    /* Function will un-archieve a zip or gz file
-        By Default: will create a new folder unzipped and extract to it.
+    /* Function will un-archive a zip or gz file
+       By Default: will create a new folder unzipped and extract to it.
     */
     unarchieve: function ( file, options ) {
         options = options || {};
@@ -322,7 +322,6 @@ module.exports =  {
 
     // Minor validation of the project, including checking for a makefile, *c and *.h files
     validateProjectStructure: function ( zipDir, groupedFiles ) {
-
         var res = {};
         if( groupedFiles ) {
             var noExts = _.get(groupedFiles, "");

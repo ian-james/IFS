@@ -99,9 +99,9 @@ img.profile-avatar {
     max-height: 100%;
 }
 img.nav-avatar {
-    height: 2em;
-    width: 2em;
-    border-radius: 50%;
+    height: 2em !important;
+    width: 2em !important;
+    border-radius: 50% !important;
     border: #f8f8f8 2px solid;
 }
 

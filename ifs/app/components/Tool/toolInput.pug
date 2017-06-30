@@ -3,13 +3,22 @@ div(ng-if="option.type == 'checkbox'")
     input(type="checkbox" name="{{option.name}}" id="{{option.name}}" ng-checked="{{option.prefValue}}").uk-checkbox.uk-float-right
 
 div(ng-if="option.type == 'text'")
-    label(for="{{ option.displayName }}").uk-form-label
+    label(for="{{ option.name }}").uk-form-label
         | {{ option.displayName }}
     div.uk-form-controls
         input(type="text" name="{{option.name}}" id="{{option.name}}" value="{{option.prefValue}}").uk-input
 
+div(ng-if="option.type == 'file'")
+    label(for="{{ option.name }}").uk-form-label
+        | {{ option.displayName }}
+    br
+    div(uk-form-custom="target: true")
+        input(type="file" name="{{option.name}}" id="{{option.name}}" accept="image/png")
+        input(type="text" placeholder="Select an image" disabled).uk-input.uk-form-width-medium
+        button.uk-button.uk-button-default Select
+
 div(ng-if="option.type == 'select'")
-    label(for="{{ option.displayName }}").uk-form-label
+    label(for="{{ option.name }}").uk-form-label
         | {{ option.displayName }}
     div.uk-form-controls
         select(id="{{option.name}}" name="{{option.name}}").uk-select

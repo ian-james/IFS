@@ -11,4 +11,11 @@ div(class="row" ng-if="option.type == 'text'")
 div(class="row" ng-if="option.type == 'select'")
     p {{ option.displayName }}
     select
-      option( ng-repeat='val in option.values') {{ val }}
+      option(ng-repeat='val in option.values') {{ val }}
+
+div(class="row" ng-if="option.type == 'file'")
+    p {{ option.displayName }}
+    div(uk-form-custom="target: true")
+        input(type="file")
+        input(type="text" placeholder="Select file" disabled).uk-input.uk-form-width-medium
+    button.uk-button.uk-button-default Submit
