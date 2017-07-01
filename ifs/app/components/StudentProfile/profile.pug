@@ -38,11 +38,19 @@ block content
             // achievements and upcoming events
             div(class="uk-width-expand").info-section.uk-align-right
                 div.achievements
+                    h2 Achievement Progress
                     if studentStats.length > 0
-                        h2 Achievement Progress
                         div.uk-panel.uk-background-muted.uk-padding-small
                             each skill in studentStats
                                 include achievement-progress.pug
+                    else
+                        p.uk-text-lead.uk-text-muted
+                            | You're currently not working on any skills.
+                            br
+                            | Why not visit 
+                            a(href="/dashboard") the Dashboard
+                            | ?
+
                     br
                 div.events
                     h2 Upcoming Events 
@@ -52,6 +60,6 @@ block content
                             each event in upcomingEvents
                                 include event-card.pug
                     else
-                        p
+                        p.uk-text-lead.uk-text-muted
                             | No upcoming events. You can relax 
                             span(uk-icon="icon: happy").uk-icon
