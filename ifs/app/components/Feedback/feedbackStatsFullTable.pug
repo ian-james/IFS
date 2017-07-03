@@ -1,0 +1,19 @@
+h3 Writing and Readability Statistics
+table.uk-table
+    if feedbackStats  && feedbackStats.length != 0
+        thead
+            tr
+                th Filename
+                th Statistics Name
+                th Statistics Value
+            tbody
+                each f in feedbackStats
+                    each s in f
+                        tr
+                            td #{s.filename}
+                            td #{s.statName}
+                            td #{s.statValue}
+    else
+        tbody
+            tr
+                td No Statistics included!

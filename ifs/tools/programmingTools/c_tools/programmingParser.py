@@ -128,6 +128,7 @@ def createCmd( options ):
                         getNKV(options,'enable','errorLevel'),
                         getKV(options,'language'),
                         getKV(options,'std'),
+                        " ".join(options['flags']),
                         getKV(options,'suppress'),
                         '--template="{file}##{line}##{severity}##{id}##{message}"',
                         " " + srcDir  if iDir == "" else "-I " + iDir + " " + srcDir

@@ -41,10 +41,10 @@ module.exports = {
     },
 
 
-    setStudentPreferences: function( userId, toolType, toolName, toolValue, callback ) {
+    setStudentPreferences: function(userId, toolType, toolName, toolValue, callback ) {
         var q = dbHelpers.buildInsert(config.preferences_table) + dbHelpers.buildValues(["userId","toolType", "toolName","toolValue"]) +
                 " ON DUPLICATE KEY UPDATE toolValue = ?";
-        db.query(q,[userId,toolType, toolName, toolValue,toolValue],callback);
+        db.query(q,[userId,toolType, toolName, toolValue, toolValue], callback);
     },
 
     /**

@@ -1,18 +1,11 @@
 extends ../../shared/views/pageLayout.pug
 
-block content    
-    
+block scripts
     link(rel="stylesheet" href="components/TextSummarization/textSummary.css")
-    
-    div(class="fluid-container")
-        div.row
-            div(class="col-md-11 col-md-offset-1")
-                
-        div.row
-            div(class="col-md-10 col-md-offset-1")
-                uib-tabset( active="active")
-                    each file, findex in files
-                        - console.log('files', file);
-                        uib-tab( index=findex heading= file.originalname disable="{{tab.disabled}}")
-                            div.row
-                                div(id="ifsText" class="form-control markedTextArea container-fluid" autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false") !{file.summary}
+
+block content
+    div.uk-container
+        uib-tabset(active="active")
+            each file, findex in files
+                uib-tab(index=findex heading= file.originalname disable="{{tab.disabled}}")
+                    div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsTest.form-control.markedTextArea !{file.summary}

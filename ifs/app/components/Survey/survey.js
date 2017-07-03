@@ -9,7 +9,6 @@ function getSurveys( callback ) {
 
     var req = "SELECT * FROM " + config.survey_table;
      db.query(req,[], function(err,data){
-        console.log(err,data);
         callback(err,data);
     });
 }

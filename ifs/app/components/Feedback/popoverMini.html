@@ -9,13 +9,15 @@
         <span class="{{ selectedFeedback.type }}-display">
             {{ selectedFeedback.target }}
         </span>
-        <div>
-            <span uk-icon="icon: arrow-up"></span>
-            <span uk-icon="icon: arrow-down"></span>
+        <div ng-if="selectedFeedback.suggestions.length > 0">
+            <div>
+                <span uk-icon="icon: arrow-up"></span>
+                <span uk-icon="icon: arrow-down"></span>
+            </div>
+            <span class="suggestion">
+                {{ selectedFeedback.suggestions[0]}}
+            </span>
         </div>
-        <span class="suggestion">
-            {{ selectedFeedback.suggestions[0]}}
-        </span>
     </div>
     <div class="uk-card-body" ng-if="selectedFeedback.runType === 'programming'">
         <span class="{{ selectedFeedback.type }}-display">
@@ -24,7 +26,7 @@
     </div>
 
     <div class="uk-card-footer">
-            <a href="#" class="uk-button uk-button-text readMoreEvent"  
+            <a href="#" class="uk-button uk-button-text readMoreEvent"
                 data-feedbackId={{selectedFeedback.id}}
                 data-sessionId={{selectedFeedback.sessionId}}
                 data-submissionId={{selectedFeedback.submissionId}} uk-toggle="target: #popOver">Read More

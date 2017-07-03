@@ -23,7 +23,6 @@ block content
                             div.uk-clearfix
                                 span.profile-h2.uk-float-left Bio
                                 span(uk-icon="icon: quote-right").uk-float-right
-                            br
                             p.profile-text
                                 | #{studentProfile.bio}
                         div.classes
@@ -36,19 +35,31 @@ block content
                                     dd= val.description
 
 
-                // achievements and upcoming events
-            div(class="uk-width-expand").event-info.uk-align-right
-                div.acheivements
+            // achievements and upcoming events
+            div(class="uk-width-expand").info-section.uk-align-right
+                div.achievements
                     h2 Achievement Progress
-                    //
-                    // Hardcoded values for now; will need to actually
-                    // populate from top three skills at some point;
-                    // need to display progress bars as well!
-                    //
-                    div.uk-panel.uk-background-muted.uk-padding-small
-                        p SKILL ONE
-                        p SKILL TWO
-                        p SKILL THREE
+                    if studentStats.length > 0
+                        div.uk-panel.uk-background-muted.uk-padding-small
+                            each skill in studentStats
+                                include achievement-progress.pug
+                    else
+                        p.uk-text-lead.uk-text-muted
+                            | You're currently not working on any skills.
+                            br
+                            | Why not visit 
+                            a(href="/dashboard") the Dashboard
+                            | ?
+
+                    br
                 div.events
-                    h2 Upcoming 
+                    h2 Upcoming Events 
                         span(uk-icon="icon: calendar; ratio: 1.5")
+                    if upcomingEvents.length > 0
+                        div(uk-grid).uk-grid-small.uk-grid-match
+                            each event in upcomingEvents
+                                include event-card.pug
+                    else
+                        p.uk-text-lead.uk-text-muted
+                            | No upcoming events. You can relax 
+                            span(uk-icon="icon: happy").uk-icon

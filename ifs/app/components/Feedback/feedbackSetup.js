@@ -14,7 +14,6 @@ var FileParser = require('./feedbackParser').FileParser;
    It assumes this is a programming project folder and will create File Objects
 */
 function loadFiles( directory, options ) {
-
     if( fs.lstatSync(directory).isDirectory() ) {
 
         // TODO: How should this be handled
@@ -35,17 +34,16 @@ function loadFiles( directory, options ) {
 }
 
 
-/* This function loads the selected tool, loads file content and requests highlight*/
-function readFeedbackFormat( feedback , options)
-{
+/* This function loads the selected tool, loads file content and requests highlight */
+function readFeedbackFormat( feedback , options) {
     var feedbackFormat = JSON.parse(feedback);
 
     var feedbackItems = feedbackFormat.feedback;
     var files = feedbackFormat.files;
 
     // setup Project and organize.
-    if( files && fs.lstatSync(files[0].filename).isDirectory()) {
-        var r =  loadFiles(files[0].filename);
+    if(files && fs.lstatSync(files[0].filename).isDirectory()) {
+        var r = loadFiles(files[0].filename);
         if( r.length > 0 ) {
             files = _.sortBy(r, ['originalname']);
         }
@@ -57,7 +55,7 @@ function readFeedbackFormat( feedback , options)
     var toolsUsed = _.uniq(_.map(feedbackItems,'toolName'));
 
     // Suggestions are stringified json, convert back to array.
-    for(var i = 0; i < feedbackItems.length;i++){
+    for(var i = 0; i < feedbackItems.length; i++){
         feedbackItems[i]['suggestions'] = JSON.parse(feedbackItems[i]['suggestions']);
     }
 
@@ -95,20 +93,16 @@ function readFiles( filename , options) {
 }
 
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
-
     var fileParser = new FileParser();
     fileParser.setupContent( file.content );
     fileParser.tokenize();
 
     // Setup positionsal information for all
     for( var i = 0; i < feedbackItems.length; i++ ) {
-
         var feedbackItem = feedbackItems[i];
 
-        if( filesMatch(file.originalname, feedbackItem.filename) && toolsMatch(feedbackItem.toolName,selectedTool) )
-        {
-            if( !feedbackItem.filename || !feedbackItem.lineNum )
-            {
+        if( filesMatch(file.originalname, feedbackItem.filename) && toolsMatch(feedbackItem.toolName,selectedTool) ) {
+            if( !feedbackItem.filename || !feedbackItem.lineNum ) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
             }
@@ -121,7 +115,6 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 
                 // Without a target you have to use the line or a range
                 if( !feedbackItem.target ) {
-
                     // if we are marking up a programming file, then only get the line
                     if (feedbackItem.runType == "programming") {
                         feedbackItem.target = fileParser.getLine(feedbackItem, false);
@@ -150,17 +143,50 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 }
 
 function filesMatch( filename, feedbackFilename, usePath = false) {
-
     if( usePath )
         return filename == feedbackFilename;
 
     return path.basename(filename) == path.basename(feedbackFilename);
-
 }
 
 function toolsMatch( toolName, selectedToolName ) {
     return ( selectedToolName == "All" || toolName == selectedToolName );
 }
 
+function setupFeedbackStats(feedbackStats) {
+
+    var resStats = {};
+    if(!(feedbackStats && feedbackStats.length > 0))
+        return resStats;
+
+    for(var i = 0; i< feedbackStats.length;i++) {
+        if( !resStats[feedbackStats[i].filename] )
+            resStats[feedbackStats[i].filename] = {};
+        resStats[feedbackStats[i].filename][feedbackStats[i].name] = feedbackStats[i];
+    }
+    return {'feedbackStats': resStats };
+}
+
+/**
+ * Converting visualTools parameter from mysqlDB to easy display format.
+ * If visual tools is empty pass back empty object, otherwise object has array.
+ * @param  {[type]} visualTools [description]
+ * @return {[type]}             [description]
+ */
+function setupVisualFeedback(visualTools) {
+    var res = {};
+    if( visualTools && visualTools.length > 0) {
+        res = [];
+        for(var i = 0; i< visualTools.length;i++) {
+            var tool = visualTools[i].value;
+            res.push( {'value':tool} );
+        }
+        return {'visualTools': res };
+    }
+    return res;
+}
+
 module.exports.setupFeedback = readFeedbackFormat;
 module.exports.readFileAndSetupFeedback = readFiles;
+module.exports.setupFeedbackStats = setupFeedbackStats;
+module.exports.setupVisualFeedback = setupVisualFeedback;
