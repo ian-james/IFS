@@ -64,11 +64,13 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.inDisplayStats = function(feedbackItem) {
         var result = [];
         if( feedbackItem ) {
-            var displayStats = [ 'chCount','wordCount','nSens', 'avgWrdPerSen', 'nPar','avgSenPerPar'];
+            var displayStats = [ 'chCount','wordCount','nSens', 'avgWrdPerSen', 'nPar',
+                                'avgSenPerPar', 'correctWordCount', 'misspelledWordCount'];
 
             angular.forEach(displayStats, function(value){
-                if(feedbackItem.hasOwnProperty(value))
+                if(feedbackItem.hasOwnProperty(value)) {
                     result.push( feedbackItem[value] );
+                }
             });
         }
         return result;

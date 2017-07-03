@@ -102,12 +102,43 @@ def spcheck(to_check, lang, hun):
         line_num +=1
         char_num += len(line)
 
-    return misspelled, correct_words
+    feedback_stats = []
+    # Note Key value shouldn't be changed unless changing in IFS
+    # Storing Counts for correct and incorrect
+    feedback_stats.append( { 'displayName': "Correct Word Count", 'key': 'correctWordCount', 'score': len(correct_words), 'level': 'basic' } )
+    feedback_stats.append( { 'displayName': "Misspelled Word Count", 'key': 'misspelledWordCount', 'score': len(misspelled), 'level': 'basic' } )
+
+    return misspelled, correct_words, feedback_stats
+
+# build_feedbackStats_json(string filename, array of objects results)
+# Results contains multiple items with key,level
+# These attributes align with IFS Feedback_Mysql table
+def build_feedbackStats_json(filename, results):
+    shortFile = os.path.basename(filename)
+    json_string = '"feedbackStats": [\n'
+    for value in results:
+        json_string += "{"
+        json_string += '"type": "stat",\n'
+        json_string += '"toolName": "hunspell",\n'
+        json_string += '"name": "' + value['key'] + '",\n'
+        json_string += '"level": "' + value['level'] + '",\n'
+        json_string += '"category": "spelling",\n'
+        json_string += '"filename": "' + shortFile + '",\n'
+        json_string += '"statName": "' + value['displayName'] + '",\n'
+        json_string += '"statValue": "' + str(value['score']) + '"\n'
+        json_string += "}"
+        json_string += ','
+
+    # Remove the last ,
+    json_string = json_string[:-1]
+    json_string += ']\n'
+
+    return json_string
 
 
 # build_json(list misspelled, string filename, list correct=[])
 # note that the correct list is optional
-def build_json(misspelled, filename, lang, correct=[]):
+def build_json(misspelled, feedback_stats, filename, lang, correct=[]):
     filename = os.path.basename(filename)
     json_string = ''
 
@@ -148,7 +179,9 @@ def build_json(misspelled, filename, lang, correct=[]):
 
         if i != (len(misspelled) - 1):
             json_string += ','
-    json_string += ' ] }'
+    json_string += ' ],\n'
+    json_string += build_feedbackStats_json(filename, feedback_stats) + "\n"
+    json_string += ' }'
 
     # make formatting prettier
     json_obj = json.loads(json_string)
@@ -213,6 +246,7 @@ def main(argv):
 
     misspelled = []
     correct_words = []
+    feedback_stats = []
 
     # define command line arguments and check if the script call is valid
     try:
@@ -289,14 +323,14 @@ def main(argv):
 
     # perform the spell check
     f_in = open(infile, 'r', encoding="utf-8")
-    misspelled, correct_words = spcheck(f_in, lang, hun)
+    misspelled, correct_words,feedback_stats = spcheck(f_in, lang, hun)
     f_in.close()
 
     # build json string
     if with_correct is True:
-        json_data = build_json(misspelled, infile, lang, correct_words)
+        json_data = build_json(misspelled, feedback_stats, infile, lang, correct_words)
     else:
-        json_data = build_json(misspelled, infile, lang)
+        json_data = build_json(misspelled, feedback_stats, infile, lang)
 
     # print(to console)
     if not quiet:
