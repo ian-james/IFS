@@ -5,14 +5,14 @@ block scripts
     link(rel="stylesheet" href="components/WordCloud/wordCloud.css")
 
 block content
-    div(ng-controller="wordCloudCtrl").uk-container
+    div.uk-container
         div.uk-align-center
             p#NotSupported
             p= msg
             canvas#canvas.canvas.uk-align-center
             script.
                 if( WordCloud.isSupported ) {
-                    WordCloud(document.getElementById('canvas'), { 'list': !{JSON.stringify(words)},shuffle:"{{shuffle}}", 'minSize':8, 'weightFactor': 25, 'minRotation':'45', 'shape':"circle"});
+                    WordCloud(document.getElementById('canvas'), { 'list': !{JSON.stringify(words)},shuffle:false, 'minSize':8, 'weightFactor': 25, 'minRotation':'45', 'shape':"circle"});
                 }
                 else
                     document.getElementById('NotSupported').innerHTML = "Word Cloud is not supported";

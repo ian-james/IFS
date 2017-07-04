@@ -28,17 +28,39 @@ module.exports = function( app ) {
                 console.log(err);
             else {
                 var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
-                var feedbackFile = "{" + 
+                var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +
                     '"feedback":' + JSON.stringify(data) + '\n'
                     +"}\n";
-                var page = { title: 'Feedback Test page' };
+
+                var page = { title: 'Feedback page' };
                 var feedback = Feedback.setupFeedback(feedbackFile, opt);
                 var result = _.assign(page,feedback);
-                res.render( viewPath + "feedback", result );
+
+                var rstats = feedbackEvents.getMostRecentFeedbackStats( req.user.id );
+                db.query(rstats.request,r.data, function(err, statData) {
+
+                    var stats = Feedback.setupFeedbackStats(statData);
+                    result = _.assign(result,stats);
+                    
+                    // Will fix this later/soon
+                    var rvisualTools = feedbackEvents.getMostRecentVisualTools( req.user.id );
+                    db.query(rvisualTools.request,rvisualTools.data, function(errTools,visualTools) {
+
+                        var visualTools = Feedback.setupVisualFeedback(visualTools);
+                        results = _.assign(result,visualTools);
+                        console.log("visualTools", visualTools);
+                        var viewFile = opt && opt.viewPathFile ? opt.viewPathFile: "feedback";
+                        res.render( viewPath + viewFile, result );
+                    });
+                });
             }
         });
     };
+
+    app.get('/feedbackStatsTable', function(req,res) {
+        showFeedback(req,res,{viewPathFile:'feedbackStatsFullTable.pug'});
+    });
 
     app.get('/feedback', function(req, res) {
        showFeedback(req,res);
@@ -51,13 +73,13 @@ module.exports = function( app ) {
     });
 
     app.get('/feedback/data', function( req,res, next ){
-        var r = feedbackEvents.getMostRecentFeedback( req.user.id );
+        var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
         db.query(r.request,r.data, function(err,data){
             if(err)
                 console.log(err);
             else {
                 var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
-                var feedbackFile = "{" + 
+                var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +
                     '"feedback":' + JSON.stringify(data) + '\n'
                     +"}\n";
@@ -67,7 +89,14 @@ module.exports = function( app ) {
                     opt['tool'] = req.session.activeTool;
                 }
                 var result = Feedback.setupFeedback( feedbackFile, opt );
-                res.json( result );
+
+                var rstats = feedbackEvents.getMostRecentFeedbackStats( req.user.id );
+                db.query(rstats.request,r.data, function(err, statData) {
+
+                    var stats = Feedback.setupFeedbackStats(statData);
+                    result = _.assign(result,stats);
+                    res.json( result );
+                });
             }
         });
     });

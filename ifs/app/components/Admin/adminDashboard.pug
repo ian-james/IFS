@@ -1,0 +1,49 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container.uk-container-expand
+        h1 #{title}
+        div(uk-alert).uk-alert-danger
+            p.errorMessage #{messages.errorMessage}
+
+        div(class="col-md-10 col-md-offset-1")
+            form(class='uk-form' method="post" action="adminDashboard" )#uploadForm
+                div.uk-marin-medium
+                    div.uk-button-group
+                        a(href="/adminAddCourse").uk-button.uk-button-primary Add Course
+                        a(href="/adminAddEvent").uk-button.uk-button-primary Add Event
+                        a(href="/adminAddAssignment").uk-button.uk-button-primary Add Assignment
+                        a(href="/adminAddSkill").uk-button.uk-button-primary Add Skill
+                        a(href="/adminRemoveCourses").uk-button.uk-button-secondary Remove Course
+                        a(href="/adminRemoveEvents").uk-button.uk-button-secondary Remove Event
+                        a(href="/adminRemoveAssignments").uk-button.uk-button-secondary Remove Assignment
+                        a(href="/adminRemoveSkills").uk-button.uk-button-secondary Remove Skill
+
+        div(class="col-md-10 col-md-offset-1")
+            table.uk-table
+                caption IFS Summary Stats
+                thead
+                    tr
+                        th Statistics
+                        th Value
+                tbody
+                    if stats
+                        tr
+                            td Total Students
+                            td= stats.totalStudents
+                        tr
+                            td Students Online This week
+                            td= stats.studentsOnlineThisWeek
+                        tr
+                            td Total Weekly Submissions
+                            td= stats.weeklySubmissions
+                        if stats.disciplineType
+                            if typeof(stats.disciplineType) == "string"
+                                tr
+                                    td= stats.disciplineType + " users"
+                                    td= stats.countDiscipline
+                            else
+                                each s, index in stats.disciplineType
+                                    tr
+                                        td= s.disciplineType + " users"
+                                        td= s.countDiscipline

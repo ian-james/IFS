@@ -67,8 +67,7 @@ def findSection( target, sch, ech, begin ):
 def getStartLineCharPosition( content, lineNum ):
     res = 0
     for i in range(min(len(content),lineNum)):
-        res += len(content[i]);
-        #print("res",i, ":", res)
+        res += len(content[i])
     return res
 
 
@@ -145,7 +144,7 @@ def decorateData( result, options ):
                     json_string += '"severity": "' + "warning" + '",\n'
                     json_string += '"type": "recommendation",\n'
                     json_string += '"toolName": "dictionStyle",\n'
-                    json_string += '"filename": "' + filename + '",\n'
+                    json_string += '"filename": "' + os.path.basename(filename) + '",\n'
                     json_string += '"target": ' + json.dumps(target.strip()) + ',\n'
                     json_string += '"feedback": ' + json.dumps(feedback[2].strip()) + '\n'
                     json_string += "}"

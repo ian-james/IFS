@@ -22,7 +22,7 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
 
     $scope.setSelectedItem = function(event) {
         // Array of items matching this error are passed
-        
+
         if( event.target.getAttribute("data-feedback")){
             $scope.selectedArray = event.target.getAttribute("data-feedback");
             $scope.selectedArray = $scope.selectedArray.split(",");
@@ -59,12 +59,27 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.files = [];
     $scope.toolsUsed = [];
     $scope.feedbackItems=[];
+    $scope.feedbackStats=[];
+
+    $scope.inDisplayStats = function(feedbackItem) {
+        var result = [];
+        if( feedbackItem ) {
+            var displayStats = [ 'chCount','wordCount','nSens', 'avgWrdPerSen', 'nPar',
+                                'avgSenPerPar', 'correctWordCount', 'misspelledWordCount'];
+
+            angular.forEach(displayStats, function(value){
+                if(feedbackItem.hasOwnProperty(value)) {
+                    result.push( feedbackItem[value] );
+                }
+            });
+        }
+        return result;
+    };
 
     $http.get("/feedback/data").then(function(res) {
         $scope.feedbackItems = res.data.feedbackItems;
         $scope.files = res.data.files;
         $scope.toolsUsed = res.data.toolsUsed;
-        console.log(res.data.toolsUsed.indexOf('wordCloud'));
-        console.log(res.data.toolsUsed);
+        $scope.feedbackStats = res.data.feedbackStats;
     });
 });

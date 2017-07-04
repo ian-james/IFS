@@ -153,5 +153,40 @@ function toolsMatch( toolName, selectedToolName ) {
     return ( selectedToolName == "All" || toolName == selectedToolName );
 }
 
+function setupFeedbackStats(feedbackStats) {
+
+    var resStats = {};
+    if(!(feedbackStats && feedbackStats.length > 0))
+        return resStats;
+
+    for(var i = 0; i< feedbackStats.length;i++) {
+        if( !resStats[feedbackStats[i].filename] )
+            resStats[feedbackStats[i].filename] = {};
+        resStats[feedbackStats[i].filename][feedbackStats[i].name] = feedbackStats[i];
+    }
+    return {'feedbackStats': resStats };
+}
+
+/**
+ * Converting visualTools parameter from mysqlDB to easy display format.
+ * If visual tools is empty pass back empty object, otherwise object has array.
+ * @param  {[type]} visualTools [description]
+ * @return {[type]}             [description]
+ */
+function setupVisualFeedback(visualTools) {
+    var res = {};
+    if( visualTools && visualTools.length > 0) {
+        res = [];
+        for(var i = 0; i< visualTools.length;i++) {
+            var tool = visualTools[i].value;
+            res.push( {'value':tool} );
+        }
+        return {'visualTools': res };
+    }
+    return res;
+}
+
 module.exports.setupFeedback = readFeedbackFormat;
 module.exports.readFileAndSetupFeedback = readFiles;
+module.exports.setupFeedbackStats = setupFeedbackStats;
+module.exports.setupVisualFeedback = setupVisualFeedback;

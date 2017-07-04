@@ -16,7 +16,8 @@ module.exports = {
         };
     },
 
-    getMostRecentFeedback: function(userId ){
+
+    getMostRecentFeedback: function( userId ){
         return {
             'name': "mostRecentFeedback",
             'data':[userId,userId],
@@ -25,11 +26,27 @@ module.exports = {
     },
 
     /* IGNORES visual feedback information */
-    getMostRecentFeedbackNonVisual: function(userId ){
+
+    getMostRecentFeedbackNonVisual: function( userId ){
         return {
             'name': "mostRecentFeedbackNonVisual",
             'data':[userId,userId],
             'request': "select * from feedback where userId = ? and runType in (\"writing\",\"programming\") and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) ORDER BY filename,lineNum,charPos,toolName"
+        }
+    },
+
+    /**
+     * Get Most recent Feedback Stats
+     * @param  {[type]} userId [description]
+     * @return {[type]}        [description]
+     */
+    getMostRecentFeedbackStats: function( userId ){
+        return {
+            'name': "mostRecentFeedbackNonVisual",
+            'data':[userId,userId],
+            'request': "select * from feedback_stats "
+                        + " where userId = ? and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) "
+                        + " ORDER BY filename,statName"
         }
     },
 
@@ -41,7 +58,15 @@ module.exports = {
         }
     },
 
-    getMostRecentFeedbackPerTool: function(userId, toolName ){
+    getMostRecentVisualTools: function( userId ) {
+      return {
+            'name': "mostRecentFeedbackVisualOnly",
+            'data':[userId,userId],
+            'request': "select toolName as value, COUNT(*) from feedback where userId = ? and runType in (\"visual\") and submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1) GROUP BY toolName"
+        }  
+    },
+
+    getMostRecentFeedbackPerTool: function( userId, toolName ) {
          return {
             'name': "mostRecentFeedbackPerTool",
             'data':[userId,toolName,userId],

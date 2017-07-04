@@ -99,7 +99,7 @@ module.exports = function (passport) {
                              *
                              */
 
-                            studentProfile.insertStudentProfile( newUser.id, "Student", "Tell us about yourself", "defaultImg.png", function(profileErr, studentSet) {
+                            studentProfile.insertStudentProfile( newUser.id, req.body['firstname'], "Tell us about yourself", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
                                     SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
                                         return done(null, newUser);

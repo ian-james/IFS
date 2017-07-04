@@ -145,6 +145,23 @@
                     "params":""
                  }
             ]
+        },
+        {
+            "displayName": "Writing Statistics",
+            "description": "A Python script that uses Style to evaluate readability of written text.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/style/LICENSE.txt",
+            "progName": "./tools/languageTools/style/style.py",
+            "cmdToolName": "style.py",
+            "runType": "stats",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "hidden": true,
+            "options" : []
         }
     ]
 }

@@ -133,6 +133,26 @@ try {
             FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id) \
         )");
 
+        Logger.info("Create the Table:", config.feedback_stats_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_stats_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            sessionId INT UNSIGNED NOT NULL DEFAULT 0, \
+            submissionId INT UNSIGNED NOT NULL, \
+            filename TEXT NOT NULL, \
+            toolName TEXT NOT NULL, \
+            name TEXT NOT NULL, \
+            type TEXT NOT NULL, \
+            level TEXT NOT NULL, \
+            category TEXT NOT NULL, \
+            statName TEXT NOT NULL, \
+            statValue DECIMAL(8,3), \
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id) \
+        )");
+
         Logger.info("Create the Table:", config.feedback_interaction_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_interaction_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \

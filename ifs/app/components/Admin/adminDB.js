@@ -132,4 +132,25 @@ module.exports = {
     deleteAssignments: function(ids, callback){
         module.exports.deleteByIds(config.assignment_table,ids,callback);
     },
+
+    /***************************** Admin Stats *************************************/
+    countTotalStudents: function( callback ) {
+        var q = dbHelpers.buildSelect(config.student_table,"COUNT(*) as totalStudents");
+        db.query(q,[],callback);
+    },
+
+    countStudentsOnlineThisWeek: function( callback ){
+        var q = "select COUNT(DISTINCT userId) as studentsOnlineThisWeek from userInteractions where date >= Date(NOW()) - INTERVAL 7 DAY";
+        db.query(q,[],callback);
+    },
+
+    countStudentPerDisciplineThisWeek: function( callback ) {
+        var q = "select COUNT(sc.studentId) as countDiscipline, c.disciplineType from student_class sc, class c where sc.classId = c.id GROUP BY c.disciplineType";
+        db.query(q,[],callback);
+    },
+
+    countWeeklySubmission: function( callback ){
+        var q =  "select COUNT(*) as weeklySubmissions from "  + config.submission_table +  " where date >= Date(NOW()) - INTERVAL 7 DAY"
+        db.query(q,[],callback);
+    }
 }

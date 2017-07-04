@@ -11,8 +11,9 @@ on tools and the student's work.
 
 ## Getting started
 
-IFS project management is hosted is on the University of Guelph Redmine:
-https://redmine.socs.uoguelph.ca/projects/ifs
+IFS is a collaborative interdisciplinary project hosted by the University of Guelph.
+For collaborator contact information please see:
+https://sat.socs.uoguelph.ca/about
 
 ### Basic dependencies
 To get started you should install the following:

@@ -9,14 +9,14 @@
                 "name": "class-name",
                 "type": "text",
                 "values": "",
-                "value": "Trying something"
+                "value": "Course Name"
             },
             {
                 "displayName":"Class Code",
                 "name": "class-code",
                 "type": "text",
                 "values": "",
-                "value": "Student"
+                "value": "Class Code or shortform"
             },
             {
                 "displayName":"Description",
