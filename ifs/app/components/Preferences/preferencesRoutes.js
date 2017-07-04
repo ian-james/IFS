@@ -5,10 +5,12 @@ var multer = require('multer');
 
 var _ = require('lodash');
 
-var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
-var profileDB = require( __components + 'StudentProfile/studentProfileDB.js');
-var defaultTool = require( __components + 'Preferences/setupDefaultToolType.js');
+var preferencesDB = require(__components + 'Preferences/preferenceDB.js');
+var profileDB = require(__components + 'StudentProfile/studentProfileDB.js');
+var coursesDB = require(__components + 'StudentProfile/studentCoursesDB.js');
+var defaultTool = require(__components + 'Preferences/setupDefaultToolType.js');
 
+// multer config
 var limits = { fileSize: 51200 };
 var fileFilter = function(req, file, cb) {
     var filetype = /png/;
@@ -39,32 +41,30 @@ var upload = multer({
     fileFilter: fileFilter
 });
 
-//var upload = multer({ dest: 'app/shared/img/users/' })
-
-module.exports = function( app ) {
+// POST/GET requests
+module.exports = function(app) {
     app.route("/preferences")
 
-    .get( function(req,res,next) {
-        res.render( viewPath + "preferences", { title: 'Preferences', message:'ok'})
+    .get(function(req,res,next) {
+        res.render(viewPath + "preferences", { title: 'Preferences', message:'ok'})
     });
 
-    app.get('/preferences/data.json', function(req,res) {
+    app.get('/preferences/data.json', function(req, res) {
         var preferencesFile = './config/preferencesList.json';
-        fs.readFile( preferencesFile, 'utf-8', function( err, data ) {
-            if( err ) {
+        fs.readFile(preferencesFile, 'utf-8', function(err, data) {
+            if(err) {
                 //Unable to get support tools file, larger problem here.
                 Logger.error(err);
                 res.end();
-            }
-            else {
+            } else {
                 var jsonObj = JSON.parse(data);
                 var preferences = jsonObj['preferences'];
 
-                preferencesDB.getStudentPreferencesByToolType(req.user.id, "Option", function( err, preferencesDB ) {
+                preferencesDB.getStudentPreferencesByToolType(req.user.id, "Option", function(err, preferencesDB) {
                     if(!err)
-                        updateJsonWithDbValues(preferencesDB, preferences.options );
+                        updateJsonWithDbValues(preferencesDB, preferences.options);
 
-                    profileDB.getStudentProfile(req.user.id, function( perr, profile ) {
+                    profileDB.getStudentProfile(req.user.id, function(perr, profile ) {
                         setupProfile(preferences.options, profile);
                         res.json(preferences);
                     });
@@ -73,15 +73,87 @@ module.exports = function( app ) {
         });
     });
 
-    app.post('/preferences', upload.single('student-avatar'), function(req, res, next) {
+    app.get('/preferences/courses.json', function(req, res) {
+        coursesDB.getAllCourses(function(err, courses) {
+            res.json(courses);
+        });
+    });
+
+    app.get('/preferences/enrolled.json', function(req, res) {
+        profileDB.getStudentProfileAndClasses(req.user.id, function(err, enrolled) {
+            res.json(enrolled);
+        });
+    });
+
+    app.post('/preferences/courses', function(req, res, next) {
+        console.log("RECEIVED", req.body);
+        var userId = req.user.id;
+        // build array of courses and values for enrolment / unenrolment
+        // use the *-hidden form fields if no value was posted with the checkbox
+        var keys = [];
+        var enrol = [];
+        var unenrol = [];
+        for (var key in req.body)
+            keys.push(key);
+        // filter inputs; search for boxes that were not checked
+        for (var key in keys) {
+            var i = keys[key].indexOf("-hidden");
+            if (i >= 0) {
+                var keyname = keys[key].substr(0,keys[key].indexOf('-hidden'));
+                // if the course (without the '-hidden' suffix) was not in the form, but the hidden input was, then unenrol from the course
+                if (keys.indexOf(keyname) == -1)
+                    unenrol.push(keyname);
+                // if the course (without the '-hidden' suffix) was in the form, then it should be enrolled
+                else
+                    enrol.push(keyname);
+            }
+        }
+        console.log("UID", userId, "enrolled in", JSON.stringify(enrol));
+        console.log("UID", userId, "unenrolled from", JSON.stringify(unenrol));
+
+        // enrol in specified courses
+        for (var e in enrol) {
+            coursesDB.getCourse(enrol[e], function(err, course) {
+                if (err) {
+                    console.log("ERROR", err);
+                } else {
+                    coursesDB.enrolInCourse(userId, course[0].id, function(err, res) {
+                        if (err)
+                            console.log("ERROR", err);
+                        else
+                            console.log("Enrolled in course:", course[0].code, "(UID " + userId + ")");
+                    });
+                }
+            });
+        }
+        // unenrol from specified courses
+        for (var u in unenrol) {
+            coursesDB.getCourse(unenrol[u], function(err, course) {
+                if (err) {
+                    console.log("ERROR", err);
+                } else {
+                    coursesDB.unenrolFromCourse(userId, course[0].id, function(err, res) {
+                        if (err)
+                            console.log("ERROR", err);
+                        else
+                            console.log("Unenrolled from course:", course[0].code, "(UID " + userId + ")");
+                    });
+                }
+            });
+        }
+
+        res.location("/preferences");
+        res.redirect("/preferences");
+    });
+
+    app.post('/preferences/profile', upload.single('student-avatar'), function(req, res, next) {
         console.log("RECEIVED", req.body);
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
 
-        if( studentName && studentBio && pref) {
-
+        if(studentName && studentBio && pref) {
             preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
                 if(!err)
                     defaultTool.setupDefaultTool(req, pref);
@@ -92,18 +164,17 @@ module.exports = function( app ) {
                     if(err)
                         console.log("ERROR SETTING STUDENT PROFILE");
 
-                     //TODO pop or message
-                    res.location( "/");
-                    res.redirect( "/" );
+                    //TODO pop or message
+                    res.location("/preferences");
+                    res.redirect("/preferences");
                 });
             });
-        }
-        else {
+        } else {
             console.log("ERROR ERROR");
             res.end();
         }
-
     });
+
 
     /**
      * Update default preferences with DB values for specific user.
@@ -113,13 +184,12 @@ module.exports = function( app ) {
      */
     function updateJsonWithDbValues( preferencesDB, preferencesOptions) {
         var prefPrefix = "pref-"
-        for( var i = 0; i < preferencesDB.length; i++ ) {
-
+        for(var i = 0; i < preferencesDB.length; i++) {
             var optionName = preferencesDB[i].toolName;
 
-            if( _.startsWith(optionName,prefPrefix) ) {
+            if(_.startsWith(optionName,prefPrefix)) {
                 var r = _.find(preferencesOptions,_.matchesProperty('name',optionName));
-                 if( r ){
+                 if(r){
                     if(r.type == "checkbox")
                         r['prefValue'] = preferencesDB[i].toolValue == "on";
                     else if(r.type == "select")
@@ -135,13 +205,13 @@ module.exports = function( app ) {
      * @param  {[type]} profile           [description]
      * @return {[type]}                   [description]
      */
-    function setupProfile( preferenceOptions, profile ) {
-        if( profile && profile.length > 0) {
+    function setupProfile(preferenceOptions, profile) {
+        if(profile && profile.length > 0) {
             var prefix = "student-"
             var keys = ['name', 'avatarFileName','bio'];
-            for( var i = 0; i < keys.length; i++ ){
+            for(var i = 0; i < keys.length; i++) {
                 var r = _.find(preferenceOptions,_.matchesProperty('name',prefix+keys[i]));
-                if( r && r.type == "text") {
+                if(r && r.type == "text") {
                     r['prefValue'] =  profile[0][keys[i]] ? profile[0][keys[i]] : "";
                 }
             }

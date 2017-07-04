@@ -4,7 +4,7 @@
         "name": "preferencesOptions",
         "options": [
             {
-                "displayName":"Alias",
+                "displayName":"Preferred Name",
                 "name": "student-name",
                 "type": "text",
                 "values": "",
