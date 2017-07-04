@@ -4,7 +4,8 @@
         "name": "preferencesOptions",
         "options": [
             {
-                "displayName":"Preferred Name",
+                "displayName": "Preferred Name",
+                "info": "Your profile display name.",
                 "name": "student-name",
                 "type": "text",
                 "values": "",
@@ -12,6 +13,7 @@
             },
             {
                 "displayName":"Profile Avatar",
+                "info": "Your profile avatar. Choose a square PNG image.",
                 "name": "student-avatar",
                 "type": "file",
                 "values": "",
@@ -19,6 +21,7 @@
             },
             {
                 "displayName":"Profile Bio",
+                "info": "Write something short about yourself.",
                 "name": "student-bio",
                 "type": "text",
                 "values": "",
@@ -26,6 +29,7 @@
             },
             {
                 "displayName":"Preferred Assessment Tools",
+                "info": "The default toolset. Writing tools analyze written texts. Programming tools analyze C/C++ source code.",
                 "name": "pref-toolSelect",
                 "type": "select",
                 "values": [  "Programming","Writing" ],
