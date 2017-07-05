@@ -83,6 +83,11 @@ input:checked + .switch:before {
   border-radius: 50%;
 }
 
+/* modifier for coloured switches */
+input:checked + .switch.switch-danger {
+    background-color: #f0506e !important; /* UI Kit danger colour */
+}
+
 /***
  * Rounded avatar images
  ***/

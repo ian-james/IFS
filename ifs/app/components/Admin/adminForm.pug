@@ -1,17 +1,15 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
-    div.uk-container.uk-container-expand
-        h1 #{page.displayName}
+    div.uk-container
         div(uk-alert).uk-alert-danger
             p.errorMessage #{messages.errorMessage}
 
-        div(class="col-md-10 col-md-offset-1")
-            - var faction = formAction;
+        h1.uk-text-left.uk-margin-remove-top #{title}
+
+        div.uk-margin
             form(class='uk-form' method="post" action="" + formAction )#uploadForm
-                div.uk-clearfix
-                    h2.uk-float-left #{title}
-                    
+                h2 #{page.displayName}
                 each option, index in page.options
                     p= JSON.stringify(widget)
                     - var opt = option;
