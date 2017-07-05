@@ -8,18 +8,17 @@ var fs = require('fs');
 var adminDB = require(__components + "Admin/adminDB.js");
 
 module.exports = function( app ) {
-
     /**
      * Simple redirect to set as admin page finalizes.
      * @param  {[type]} res [description]
      * @return {[type]}     [description]
      */
     function directTo(res, path) {
-        if( !path )
-            path = "/adminDashboard";
+        if(!path)
+            path = "/admin";
 
-        res.location( path );
-        res.redirect( path );
+        res.location(path);
+        res.redirect(path);
     }
 
     /**
@@ -30,9 +29,10 @@ module.exports = function( app ) {
      * @param  {Function} callback Database callback(currently no options)
      * @return {[type]}            [description]
      */
-    function getAdminRemove( req,res, options, callback ) {
-         callback( function(err,data) {
-            res.render(viewPath + options.removeForm, { title: options.title,
+    function getAdminRemove(req, res, options, callback) {
+         callback(function(err, data) {
+            res.render(viewPath + options.removeForm, {
+                title: options.title,
                 page: {
                     displayName:options.displayName
                 },
@@ -50,14 +50,14 @@ module.exports = function( app ) {
      * @param  {Function} callback [description]
      * @return {[type]}            [description]
      */
-    function postAdminRemove(req,res, options, callback ) {
+    function postAdminRemove(req, res, options, callback) {
         var controlValues = req.body['adminControl'];
         controlValues = _.each(controlValues, x => parseInt(x) );
         console.log(controlValues);
-        callback( controlValues,  function(err,data){
-            if( err ) {
+        callback(controlValues, function(err,data) {
+            if(err) {
                 req.flash('errorMessage', "Unable to remove " + options.removeType + " data is still linked to other student information");
-                directTo(res,"/adminRemove" + options.removeType);
+                directTo(res, "/admin-remove-" + options.removeType);
             } else {
                 directTo(res);
             }
@@ -66,80 +66,80 @@ module.exports = function( app ) {
 
     /********************************** Remove Classes ******************************/
 
-    app.route('/adminRemoveCourses')
-    .get(function(req,res){
-        getAdminRemove(req,res, {
+    app.route('/admin-remove-course')
+    .get(function(req, res) {
+        getAdminRemove(req, res, {
                 removeForm: 'adminRemoveForm',
                 title: 'Admin Page',
-                displayName:"Remove Courses",
-                formAction: "/adminRemoveCourses"
+                displayName:"Remove Course",
+                formAction: "/admin-remove-course"
             },
             adminDB.getAllClasses
         );
     })
-    .post(function(req,res){
-        postAdminRemove(req,res, { 
-                removeType: "Courses"
+    .post(function(req, res) {
+        postAdminRemove(req,res, {
+                removeType: "course"
             },
             adminDB.deleteCourses
         );
     });
 
     /********************************** Remove Events ******************************/
-    app.route('/adminRemoveEvents')
-    .get(function(req,res){
-        getAdminRemove(req,res, {
+    app.route('/admin-remove-event')
+    .get(function(req, res) {
+        getAdminRemove(req, res, {
                 removeForm: 'adminRemoveForm',
                 title: 'Admin Page',
                 displayName:"Remove Event",
-                formAction: "/adminRemoveEvents"
+                formAction: "/admin-remove-event"
             },
             adminDB.getAllEvents
         );
     })
-    .post(function(req,res){
-        postAdminRemove(req,res, { 
-                removeType: "Events"
+    .post(function(req, res) {
+        postAdminRemove(req, res, {
+                removeType: "event"
             },
             adminDB.deleteEvents
         );
     });
 
     /********************************** Remove Skill ******************************/
-    app.route('/adminRemoveSkills')
-    .get(function(req,res){
-        getAdminRemove(req,res, {
+    app.route('/admin-remove-skill')
+    .get(function(req, res) {
+        getAdminRemove(req, res, {
                 removeForm: 'adminRemoveForm',
                 title: 'Admin Page',
                 displayName:"Remove Skill",
-                formAction: "/adminRemoveSkills"
+                formAction: "/admin-remove-skill"
             },
             adminDB.getAllSkills
         );
     })
-    .post(function(req,res){
-        postAdminRemove(req,res, { 
-                removeType: "Skills"
+    .post(function(req, res) {
+        postAdminRemove(req, res, {
+                removeType: "skill"
             },
             adminDB.deleteSkills
         );
     });
 
     /********************************** Remove Assignments ******************************/
-    app.route('/adminRemoveAssignments')
+    app.route('/admin-remove-assignment')
     .get(function(req,res){
         getAdminRemove(req,res, {
                 removeForm: 'adminRemoveForm',
                 title: 'Admin Page',
                 displayName:"Remove Assignments",
-                formAction: "/adminRemoveAssignments"
+                formAction: "/admin-remove-assignment"
             },
             adminDB.getAllAssignments
         );
     })
     .post(function(req,res){
-        postAdminRemove(req,res, { 
-                removeType: "Assignemts"
+        postAdminRemove(req,res, {
+                removeType: "assignment"
             },
             adminDB.deleteAssignments
         );

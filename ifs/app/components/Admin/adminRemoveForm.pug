@@ -1,22 +1,28 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
-    div.uk-container.uk-container-expand
-        h1 #{page.displayName}
+    div.uk-container
         div(uk-alert).uk-alert-danger
             p.errorMessage #{messages.errorMessage}
 
-        div(class="col-md-10 col-md-offset-1")
-            form(class='uk-form' method="post" action="" + formAction )#uploadForm
-                div.uk-clearfix
-                    h2.uk-float-left #{title}
+        h1.uk-text-left.uk-margin-remove-top #{title}
 
-                div(class="uk-child-width-1-3  uk-grid-match" uk-grid)
+        div.uk-margin
+            form(class='uk-form' method="post" action="" + formAction )#uploadForm
+                h2.uk-text-left #{page.displayName}
+                p Click the toggles to select items to be removed. Warning: these actions cannot be undone.
+
+                div(uk-grid).uk-grid-match.uk-child-width-1-3
                     each option, index in values
                         div
-                            label
-                                input(name="adminControl", value= option.id, type="checkbox" uk-toggle="target: #" + option.id + "; cls: uk-alert-danger" class="uk-float-right" uk-close)
-                            div(id=option.id class="uk-card uk-card-hover uk-card-default uk-text-center")
-                                h3.uk-card-title #{option.name}
-                                p.uk-card-body #{option.description}
-                button(class="uk-align-center" type="submit").uk-button.uk-button-primary Apply
+                            div(id=option.id).uk-card.uk-card-hover.uk-card-default
+                                div.uk-card-header
+                                    div.uk-clearfix
+                                        span.uk-text-meta.uk-float-left Remove item?
+                                        label.switch-wrapper.uk-float-right
+                                            input(name="adminControl", value=option.id, type="checkbox" uk-toggle="target: #" + option.id + "; cls: uk-alert-danger")
+                                            div.switch.switch-round.switch-danger
+                                div.uk-card-body
+                                    h3.uk-card-title #{option.name}
+                                    p #{option.description}
+                button(type="submit").uk-button.uk-button-danger.uk-align-center Remove Selected
