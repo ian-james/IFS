@@ -5,31 +5,31 @@
         "table": "class",
         "options": [
             {
-                "displayName":"Class Name",
+                "displayName": "Class Name",
                 "name": "class-name",
                 "type": "text",
                 "values": "",
                 "value": "Course Name"
             },
             {
-                "displayName":"Class Code",
+                "displayName": "Class Code",
                 "name": "class-code",
                 "type": "text",
                 "values": "",
                 "value": "Class Code or shortform"
             },
             {
-                "displayName":"Description",
+                "displayName": "Description",
                 "name": "class-description",
                 "type": "text",
                 "values": "",
                 "value": "Describe your class here"
             },
             {
-                "displayName":"Class Type",
+                "displayName": "Class Type",
                 "name": "class-disciplineType",
                 "type": "select",
-                "values": [  "computer science","psychology", "other" ],
+                "values": [ "computer science", "psychology", "other" ],
                 "value": "computer science"
             }
         ]

@@ -22,7 +22,6 @@ module.exports = {
         db.query(q,[userId,name,bio],callback);
     },
 
-
     /**
      * Update student profile as version should exists already.
      * @param {[type]}   userId   [description]

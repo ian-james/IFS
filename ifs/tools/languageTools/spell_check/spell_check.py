@@ -59,12 +59,8 @@ def spcheck(to_check, lang, hun):
     correct_words = []  # each element is (line_num, word_num, word)
     json_string = ''
 
-
-    #
     #    *_num is the global position ( line, word, char )
     #    *_pos relative position on the line ( word, char )
-    #
-
     char_num = 0
     line_num = 0
     word_num = 0
@@ -74,17 +70,12 @@ def spcheck(to_check, lang, hun):
     for line in to_check:
         char_pos= 0
         word_pos = 0
-        for chunk in line.split():  # tokenize by whitespace delimeters?
+        for chunk in line.split():
             # simple regex to ensure that punctuation at the end of a word is
             # not passed to hunspell i.e. prevents false alarms
             res = regex.match(chunk)
             if res:
                 word = res.group(0)
-
-                # note that hunspell will think that cat!dog is not a word, but
-                # hyphenated words such as cat-dog may pass, even though they
-                # aren't in the English lexicon
-
                 char_pos = line.find(word, char_pos)
 
                 if not hun.spell(word):
@@ -103,12 +94,23 @@ def spcheck(to_check, lang, hun):
         char_num += len(line)
 
     feedback_stats = []
-    # Note Key value shouldn't be changed unless changing in IFS
+    # Note 'key' value shouldn't be changed unless changing in IFS
     # Storing Counts for correct and incorrect
-    feedback_stats.append( { 'displayName': "Correct Word Count", 'key': 'correctWordCount', 'score': len(correct_words), 'level': 'basic' } )
-    feedback_stats.append( { 'displayName': "Misspelled Word Count", 'key': 'misspelledWordCount', 'score': len(misspelled), 'level': 'basic' } )
+    feedback_stats.append({
+        'displayName': "Correct Word Count",
+        'key': 'correctWordCount',
+        'level': 'basic',
+        'score': len(correct_words),
+    })
+    feedback_stats.append({
+        'displayName': "Misspelled Word Count",
+        'key': 'misspelledWordCount',
+        'level': 'basic',
+        'score': len(misspelled),
+    })
 
     return misspelled, correct_words, feedback_stats
+
 
 # build_feedbackStats_json(string filename, array of objects results)
 # Results contains multiple items with key,level

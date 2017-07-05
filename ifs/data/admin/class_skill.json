@@ -5,7 +5,7 @@
         "table": "class_skill",
         "options": [
             {
-                "displayName":"Class Name",
+                "displayName": "Class Name",
                 "name": "class-name",
                 "type": "select",
                 "values": [],
@@ -13,7 +13,7 @@
                 "dynamic": true
             },
             {
-                "displayName":"Assignment Name",
+                "displayName": "Assignment Name",
                 "name": "assignment-name",
                 "type": "select",
                 "values": [],
@@ -21,14 +21,14 @@
                 "dynamic": true
             },
             {
-                "displayName":"Skill Name",
+                "displayName": "Skill Name",
                 "name": "skill-name",
                 "type": "text",
                 "values": "",
                 "value": ""
             },
             {
-                "displayName":"Skill Description",
+                "displayName": "Skill Description",
                 "name": "skill-description",
                 "type": "text",
                 "values": "",
