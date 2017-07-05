@@ -1,0 +1,16 @@
+div(class="uk-visible@s").avatar-section
+    div.uk-align-center
+        img(src="../../shared/img/user/" + user.id + "/avatar.png").profile-avatar
+        div.user
+            span.profile-name #{studentProfile.name}
+            br
+            span.profile-username #{user.username}
+        hr
+        div.classes
+            span.profile-h2 Classes
+            br
+            dl.uk-description-list.uk-description-list-divider
+                each val,index in courses
+                    dt
+                        strong= val.code + ": " + val.courseName
+                    dd= val.description

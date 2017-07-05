@@ -110,9 +110,6 @@ module.exports = function( app ) {
             function(err,results) {
                 var stats ={};
                 for(var i = 0; i < results.length; i++ ) {
-
-                    console.log("Results ", i, " len ", results[i].length, " values= ", results[i]);
-
                     if( results[i].length > 1 ) {
                         
                         var disciplineType = [];
@@ -123,7 +120,6 @@ module.exports = function( app ) {
                     else
                         _.extend(stats,results[i][0]);
                 }
-                console.log("ROUTES RESULTS", stats);
                 res.render(viewPath + "adminDashboard", { title: 'Welcome to IFS', stats: stats });
             }
         );

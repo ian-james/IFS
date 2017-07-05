@@ -212,6 +212,16 @@ try {
             FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id) \
         )");
 
+        Logger.info("Create the Table:", config.assignment_task_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.assignment_task_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            assignmentId INT UNSIGNED NOT NULL, \
+            name TEXT, \
+            description TEXT, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (assignmentId) REFERENCES " + config.database + "." + config.assignment_table + "(id) \
+        )");
+
         /* Stores only current value of preferences, interactions and changes are captured else where */
         Logger.info("Create the Table:", config.preferences_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.preferences_table + " ( \

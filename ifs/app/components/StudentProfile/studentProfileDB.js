@@ -43,8 +43,9 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getStudentProfileAndClasses: function(userId, callback) {
-        var q = "SELECT s.id,s.name,s.bio, c.code,c.name as courseName, c.description,c.disciplineType FROM student s, student_class sc, class c WHERE s.id = sc.studentId AND sc.classId = c.id AND s.userId =?";
+        var q = "SELECT s.id,s.name,s.bio, c.id, c.code,c.name as courseName, c.description,c.disciplineType FROM student s, student_class sc, class c WHERE s.id = sc.studentId AND sc.classId = c.id AND s.userId =?";
         //console.log("QUERYING STUDENT PROFILE AND CLASSES");
         db.query(q,userId,callback);
     }
+
 }
