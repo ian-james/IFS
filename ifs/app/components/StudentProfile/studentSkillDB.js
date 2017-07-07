@@ -10,6 +10,11 @@ module.exports = {
         db.query(q,studentId,callback);
     },
 
+    getUserSkills: function( userId, callback ) {
+        var q = "select ss.value, cs.name from student_skill ss, class_skill cs, student s where ss.classSkillId = cs.id and s.id = ss.studentId and s.userId = ?";
+        db.query(q,userId,callback);
+    },
+
     getStudentTop3Skills: function( studentId,callback ) {
         var q = "SELECT cs.name, cs.description, ss.value from student_skill ss, class_skill cs WHERE ss.studentId = ? AND cs.id = ss.classSkillId ORDER BY value LIMIT 3"
         db.query(q,studentId,callback)

@@ -122,6 +122,14 @@ module.exports = {
         };
     },
 
+    getToolsWithMostFeedback: function( userId , limitN  = 1) {
+        return {
+            'name': "topFeedbackTools",
+            'data':[userId],
+            'request':"select toolName as value from ( select toolName, COUNT(*) as val from feedback where  userId = ? GROUP BY toolName) a ORDER BY a.val desc LIMIT " + limitN.toString()
+        };
+    },
+
     getToolWithLeastFeedback: function( userId ) {
         return {
             'name': "leastFeedbackTool",
@@ -130,13 +138,22 @@ module.exports = {
         };
     },
 
-     getMostCommonFeedbackType: function( userId ) {
+    getMostCommonFeedbackType: function( userId ) {
         return {
             'name': "mostCommonFeedbackType",
             'data':[userId],
             'request':"select type as value from ( select type, COUNT(*) as val from feedback where  userId = ? GROUP BY type) a ORDER BY a.val desc LIMIT 1"
         };
     },
+
+    getMostCommonFeedbackTypes: function( userId, limitN ) {
+        return {
+            'name': "mostCommonFeedbackType",
+            'data':[userId],
+            'request':"select type as value from ( select type, COUNT(*) as val from feedback where  userId = ? GROUP BY type) a ORDER BY a.val desc LIMIT " + limitN.toString()
+        };
+    },
+
 
     getLeastCommonFeedbackType: function( userId ) {
         return {

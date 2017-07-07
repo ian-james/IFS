@@ -8,7 +8,7 @@ div#studentFocus
     div#selectAssignment.uk-card(ng-show="activeStudentFocus==1")
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
-            h2(style="display:inline") Set your focus:
+            h2.uk-display-inline Set your focus:
         div.uk-card-body.uk-padding-remove-top
             div.uk-form-controls
                 div.uk-grid
@@ -23,7 +23,7 @@ div#studentFocus
     div#studentSelectedFocus.uk-card(ng-show="activeStudentFocus==2")
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
-            h2(style="display:inline") Daily Focus:
+            h2.uk-display-inline Daily Focus:
         div.uk-card-body.uk-padding-remove-top
             h3 {{courseSelect.courseName}} {{assignmentSelect.assignmentName}} Tasks
             div.uk-grid.uk-grid-small.uk-grid-divider.uk-grid-match
@@ -34,6 +34,6 @@ div#studentFocus
     div#assignmentAccomplished.uk-card(ng-show="activeStudentFocus==3")
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
-            h2(style="display:inline")  Congrats, you've recently completed {{assignmentSelect.assignmentName}}
+            h2.uk-display-inline  Congrats, you've recently completed {{assignmentSelect.assignmentName}}
         div.uk-card-body.uk-padding-remove-top
             button(type="button" ng-click="resetSelectedFocus( $event )" ).uk-button.uk-button-default.uk-align-center  Set New Focus?

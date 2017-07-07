@@ -222,6 +222,18 @@ try {
             FOREIGN Key (assignmentId) REFERENCES " + config.database + "." + config.assignment_table + "(id) \
         )");
 
+        /// Student Assignment Task is student's own rating of tasks completed.
+        Logger.info("Create the Table:", config.student_assignment_task_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_assignment_task_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            studentId INT UNSIGNED NOT NULL, \
+            assignmentTaskId INT UNSIGNED NOT NULL, \
+            isComplete BOOL NOT NULL DEFAULT 0, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (studentId) REFERENCES " + config.database + "." + config.student_table + "(id), \
+            FOREIGN Key (assignmentTaskId) REFERENCES " + config.database + "." + config.assignment_task_table + "(id) \
+        )");
+
         /* Stores only current value of preferences, interactions and changes are captured else where */
         Logger.info("Create the Table:", config.preferences_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.preferences_table + " ( \
