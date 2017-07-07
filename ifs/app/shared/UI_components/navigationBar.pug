@@ -6,7 +6,7 @@
 
 nav(uk-navbar).uk-background-secondary.uk-margin
     div.uk-navbar-left
-        a(href="/").uk-navbar-item.uk-logo.uk-light IFS
+        a(href="/dashboard").uk-navbar-item.uk-logo.uk-light IFS
     div.uk-navbar-right
         ul.uk-navbar-nav
             if !user
@@ -20,13 +20,13 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                         | Login
             else
                 li
-                    a(href="/feedback")
-                        span(uk-icon="icon: commenting").uk-margin-small-right
-                        span(class="uk-visible@m") Feedback
-                li
                     a(href="/")
                         span(uk-icon="icon: push").uk-margin-small-right
                         span(class="uk-visible@m") Upload
+                li
+                    a(href="/feedback")
+                        span(uk-icon="icon: commenting").uk-margin-small-right
+                        span(class="uk-visible@m") Feedback
                 // Drop down menu
                 li.uk-inline
                     a(href="#")

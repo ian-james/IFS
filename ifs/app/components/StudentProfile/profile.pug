@@ -28,11 +28,14 @@ block content
                         div.classes
                             span.profile-h2 Classes
                             br
-                            dl.uk-description-list.uk-description-list-divider
-                                each val,index in courses
-                                    dt
-                                        strong= val.code + ": " + val.courseName
-                                    dd= val.description
+                            if courses && courses.length != 0
+                                dl.uk-description-list.uk-description-list-divider
+                                    each val,index in courses
+                                        dt
+                                            strong= val.code + ": " + val.courseName
+                                        dd= val.description
+                            else
+                                p You haven't enrolled in a class yet. Please enrol on the profile page.
 
 
             // achievements and upcoming events

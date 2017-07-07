@@ -9,14 +9,14 @@ div(class="uk-visible@s").avatar-section
         div.classes
             span.profile-h2 Classes
             br
-            if course && course.length != 0
+            if courses && courses.length != 0
                 dl.uk-description-list.uk-description-list-divider
                     each val,index in courses
                         dt
                             strong= val.code + ": " + val.courseName
                         dd= val.description
             else
-                p You haven't enrolled in a class yet. Please enrol on profile page.
+                p You haven't enrolled in a class yet. Please enrol on the profile page.
         hr
         div.skills
             span.profile-h2 Skills
@@ -26,4 +26,4 @@ div(class="uk-visible@s").avatar-section
                     p #{ skill.name }
                     progress(value=skill.value*100 max="100" title=skill.value*100 +"%", uk-tooltip).uk-progress
             else
-                p You haven't rated your skill level yet. Please see student skill page.
+                p You haven't rated your skill level yet. Please see the student skill page.
