@@ -144,4 +144,24 @@ module.exports = function( app ) {
             adminDB.deleteAssignments
         );
     });
+
+      /********************************** Assignment Task ******************************/
+    app.route('/admin-remove-assignment-task')
+    .get(function(req, res) {
+        getAdminRemove(req, res, {
+                removeForm: 'adminRemoveForm',
+                title: 'Admin Page',
+                displayName:"Remove Task",
+                formAction: '/admin-remove-assignment-task'
+            },
+            adminDB.getAllTasks
+        );
+    })
+    .post(function(req, res) {
+        postAdminRemove(req, res, {
+                removeType: "skill"
+            },
+            adminDB.deleteTasks
+        );
+    });
 };

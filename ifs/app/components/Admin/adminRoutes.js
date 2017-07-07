@@ -212,6 +212,54 @@ module.exports = function( app ) {
         });
     });
 
+      /******************************************************************ADMIN Add Assignment Task**/
+    app.route('/admin-add-assignment-task')
+    .get(function(req,res) {
+        adminDB.getAllClasses(function(err,classes) {
+            var result = _.map(classes, obj => obj['code']);
+            adminDB.getAllAssignments( function(err,assignments) {
+                var assignmentNames = _.map(assignments, obj => obj['name']);
+                assignmentNames.unshift(null);
+                addAdminPage(req, res, {
+                    adminForm: 'adminForm',
+                    adminPage:'./data/admin/assignment_task.json',
+                    formAction:"/admin-add-assignment-task",
+                    dynamicData: [{
+                        "target":"class-name",
+                        "values": result,
+                        "value": ""
+                    },{
+                        "target":"assignment-name",
+                        "values": assignmentNames,
+                        "value": ""
+                    }]
+                });
+            });
+        });
+    })
+    .post(function(req,res,next) {
+        var keys = ['assignment-task-name','assignment-task-description'];
+
+        console.log("BODY:", req.body);
+        var submission = _.pick(req.body, keys);
+        console.log("Submission is ", submission);
+        var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
+        // Find the class id then insert event for class
+        adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
+            if(data && data.length > 0) {
+                var values = _.values(submission);
+                values.unshift(data[0].aId);
+                console.log("Values", values);
+                adminDB.insertTask(values, function(err,result) {
+                    directTo(res);
+                });
+            } else {
+                req.flash('errorMessage', 'Unable to add task, please check assignment belongs to class.');
+                res.end();
+            }
+        });
+    });
+
      /******************************************************************ADMIN Add Skill**/
     app.route('/admin-add-skill')
     .get(function(req,res) {

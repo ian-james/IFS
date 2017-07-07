@@ -34,6 +34,11 @@ module.exports = {
         db.query(q,skill,callback);
     },
 
+    insertTask: function(skill, callback){
+        var q = dbHelpers.buildInsert(config.assignment_task_table) + dbHelpers.buildValues(["assignmentId","name","description"])
+        db.query(q,skill,callback);
+    },
+
 
     /**
      * Get all courses in the database.
@@ -56,7 +61,17 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAllSkills: function(callback) {
-        var q = dbHelpers.buildSelect( config.class_skill_table);
+        var q = dbHelpers.buildSelect( config.class_skill_table );
+        db.query(q,[],callback);
+    },
+
+     /**
+     * Get all Tasks for any course and assigment pair.
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    getAllTasks: function(callback) {
+        var q = dbHelpers.buildSelect( config.assignment_task_table );
         db.query(q,[],callback);
     },
 
@@ -131,6 +146,10 @@ module.exports = {
 
     deleteAssignments: function(ids, callback){
         module.exports.deleteByIds(config.assignment_table,ids,callback);
+    },
+
+    deleteTasks: function(ids, callback){
+        module.exports.deleteByIds(config.assignment_task_table,ids,callback);
     },
 
     /***************************** Admin Stats *************************************/

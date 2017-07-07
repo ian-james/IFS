@@ -1,0 +1,39 @@
+{
+    "page" : {
+        "displayName": "Add Assignment Task",
+        "name": "assignment_task",
+        "table": "assignment_task",
+        "options": [
+            {
+                "displayName": "Class Name",
+                "name": "class-name",
+                "type": "select",
+                "values": [],
+                "value": "",
+                "dynamic": true
+            },
+            {
+                "displayName": "Assignment Name",
+                "name": "assignment-name",
+                "type": "select",
+                "values": [],
+                "value": "",
+                "dynamic": true
+            },
+            {
+                "displayName": "Task Name",
+                "name": "assignment-task-name",
+                "type": "text",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName": "Task Description",
+                "name": "assignment-task-description",
+                "type": "text",
+                "values": "",
+                "value": ""
+            }
+        ]
+    }
+}
