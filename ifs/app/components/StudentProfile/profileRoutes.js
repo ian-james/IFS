@@ -34,36 +34,46 @@ module.exports = function(app) {
      */
     app.get('/profile', function( req, res, next ) {
         var userId = req.user.id;
-        studentProfile.getStudentProfileAndClasses(userId, function(err, studentData) {
-            if (studentData) {
-                var studentKeys = ["id", "name", "bio"];
-                //Note courseName is alias tag to differentiate between student and course.
-                var courseKeys = ["code","courseName","description","disciplineType"];
-                var studentProfile = _.pick(studentData[0], studentKeys );
-                console.log("STUDENT PROFILE:\n");
-                console.log(JSON.stringify(studentData));
-                console.log("STUDENT DATA:\n");
-                console.log(studentProfile);
 
-                // Select Courses/class data
-                var courses = _.map(studentData, obj => _.pick(obj,courseKeys));
-                console.log("COURSE DATA:\n");
-                console.log(courses);
+         /** NOTE:
+                The new addition of a student not being in a class was not designed for and thus this database queries breaks.
+                getStudentProfileAndClasses mixes together a copule calls/tables student/courses.
+                GetStudentProfile is now used (quick fix) instead of studentProfileAndClasses for studentProfile.
+                This new design  of classless students will have to be considered in other places too.
+                This message can self-destruct after 1 read.
+         */
 
-                // Retrieve the upcoming events.
-                upcomingEvents.getStudentUpcomingEvents( req.user.id , function( errEvents, upcomingEventsData ) {
-                    var studentStats = [];
-                    var eventsKeys = ['title','description','closedDate'];
-                    var upEvents = _.map(upcomingEventsData, obj => _.pick(obj,eventsKeys));
+        studentProfile.getStudentProfile(userId, function(err, studentProfileData) {
+            studentProfile.getStudentProfileAndClasses(userId, function(err, studentData) {
+                if (studentData) {
+                    var studentKeys = ["id", "name", "bio"];
+                    //Note courseName is alias tag to differentiate between student and course.
+                    var courseKeys = ["code","courseName","description","disciplineType"];
+                    var studentProfile = _.pick(studentProfileData[0], studentKeys );
+                    console.log("STUDENT PROFILE:\n");
+                    console.log(JSON.stringify(studentData));
+                    console.log("STUDENT DATA:\n");
+                    console.log(studentProfile);
 
-                    studentSkill.getStudentTop3Skills( studentProfile.id , function(errSkill, skillsData) {
-                        var skillsKeys = ['name','value'];
-                        studentStats = _.map(skillsData, obj => _.pick(obj,skillsKeys));
-                        res.render( viewPath + "profile", { "title":"Profile for " + studentProfile.name, "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 'studentStats': studentStats });
+                    // Select Courses/class data
+                    var courses = _.map(studentData, obj => _.pick(obj,courseKeys));
+                    console.log("COURSE DATA:\n");
+                    console.log(courses);
+                    // Retrieve the upcoming events.
+                    upcomingEvents.getStudentUpcomingEvents( req.user.id , function( errEvents, upcomingEventsData ) {
+                        var studentStats = [];
+                        var eventsKeys = ['title','description','closedDate'];
+                        var upEvents = _.map(upcomingEventsData, obj => _.pick(obj,eventsKeys));
+
+                        studentSkill.getStudentTop3Skills( studentProfile.id , function(errSkill, skillsData) {
+                            var skillsKeys = ['name','value'];
+                            studentStats = _.map(skillsData, obj => _.pick(obj,skillsKeys));
+                            res.render( viewPath + "profile", { "title":"Profile for " + studentProfile.name, "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 'studentStats': studentStats });
+                        });
                     });
-                });
-            } else
-                res.status(500).end();
+                } else
+                    res.status(500).end();
+            });
         });
 
     });

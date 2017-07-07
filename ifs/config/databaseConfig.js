@@ -15,7 +15,6 @@ module.exports = {
         'password' :                'mysqlRootPassword',
         'connectionLimit':          500
     },
-
     // database name
     'database':                     'IFS',
 
@@ -41,4 +40,6 @@ module.exports = {
     'role_table':                   'roles',
     'user_role_table':              'user_role',
     'feedback_stats_table':         'feedback_stats',
+    'assignment_task_table': 'assignment_task',
+    'student_assignment_task_table': 'student_assignment_task'
 };

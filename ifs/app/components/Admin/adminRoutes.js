@@ -105,10 +105,8 @@ module.exports = function( app ) {
             ],
             function(err,results) {
                 var stats ={};
+
                 for(var i = 0; i < results.length; i++) {
-
-                    console.log("Results ", i, " len ", results[i].length, " values= ", results[i]);
-
                     if(results[i].length > 1) {
                         var disciplineType = [];
                         for(var y = 0; y < results[i].length;y++)
@@ -118,8 +116,7 @@ module.exports = function( app ) {
                     else
                         _.extend(stats,results[i][0]);
                 }
-                console.log("ROUTES RESULTS", stats);
-                res.render(viewPath + "admin", {title: 'IFS Admin Dashboard', stats: stats});
+                res.render(viewPath + "adminDashboard", { title: 'Welcome to IFS', stats: stats });
             }
         );
     });
@@ -249,7 +246,6 @@ module.exports = function( app ) {
         var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
         // Find the class id then insert event for class
         adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
-            console.log("Data", data );
             if(data && data.length > 0) {
                 var values = _.values(submission);
                 values.unshift(data[0].aId);
@@ -259,7 +255,6 @@ module.exports = function( app ) {
                     directTo(res);
                 });
             } else {
-                console.log("Error");
                 req.flash('errorMessage', 'Unable to add skill, please check assignment belongs to class.');
                 res.end();
             }

@@ -143,7 +143,7 @@ def decorateData( result, options ):
                     json_string += '"charNum": ' + str( globalFilePosition + cidx + len(key) ) + ',\n'
                     json_string += '"severity": "' + "warning" + '",\n'
                     json_string += '"type": "recommendation",\n'
-                    json_string += '"toolName": "dictionStyle",\n'
+                    json_string += '"toolName": "Diction Checker",\n'
                     json_string += '"filename": "' + os.path.basename(filename) + '",\n'
                     json_string += '"target": ' + json.dumps(target.strip()) + ',\n'
                     json_string += '"feedback": ' + json.dumps(feedback[2].strip()) + '\n'

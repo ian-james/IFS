@@ -79,7 +79,7 @@ def decorateData( result, options ):
         json_string += '"charPos": ' + str(obj["column"]) + ',\n'
         json_string += '"severity": "' + str(obj["severity"]) + '",\n'
         json_string += '"type": "recommendation",\n'
-        json_string += '"toolName": "proseLinter",\n'
+        json_string += '"toolName": "Prose Linter",\n'
         json_string += '"filename": "' + filename + '",\n'
         json_string += '"feedback":' + json.dumps(obj["message"]) + ',\n'
 

@@ -22,11 +22,28 @@ module.exports = function( app ) {
      * @return {[type]}     [description]
      */
     function  showFeedback( req,res, opt ) {
+
+        if(!req.session.uploadFilesFile) {
+            req.flash('errorMessage', "Feedback is not currently available, please upload again.");
+            res.location("/tool");
+            res.redirect("/tool");
+            res.end();
+            return;
+        }
+
         var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
         db.query(r.request,r.data, function(err,data){
-            if(err)
+            if(err) {
                 console.log(err);
+                console.log("*******************************************************");
+                console.log("*******************************************************");
+                console.log("*******************************************************");
+                res.end();
+            }
             else {
+                console.log("*******************************************************");
+                console.log(req.session.uploadFilesFile)
+                console.log("*******************************************************");
                 var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
                 var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +
@@ -73,6 +90,11 @@ module.exports = function( app ) {
     });
 
     app.get('/feedback/data', function( req,res, next ){
+        if(!req.session.uploadFilesFile) {
+            req.flash('errorMessage', "Feedback is not currently available, please upload again.");
+            res.json({});
+            res.end();
+        }
         var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
         db.query(r.request,r.data, function(err,data){
             if(err)

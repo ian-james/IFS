@@ -193,7 +193,7 @@ def decorateData( result, options ):
         addedFeedback = True
         json_string += "{"
         json_string += '"type": "stat",\n'
-        json_string += '"toolName": "style",\n'
+        json_string += '"toolName": "Style",\n'
         json_string += '"name": "' + value['key'] + '",\n'
         json_string += '"level": "' + value['level'] + '",\n'
         json_string += '"category": "' + value['category'] + '",\n'

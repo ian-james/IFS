@@ -1,28 +1,25 @@
 extends ../../shared/views/pageLayout.pug
 
+block scripts
+    script(src="/socket.io/socket.io.js")
+    script(src="components/Dashboard/dashboard.js")
+
 block content
-    div.uk-container.uk-container-expand
-        h1 #{title}
+    div(ng-controller="dashboardCtrl").uk-container
+        div(uk-alert).uk-alert-danger
+            p.uk-align-center.errorMessage #{messages.errorMessage}
 
-        h2 Welcome #{studentProfile.name}
-        h3 BIO About You: #{studentProfile.bio }
-        h4 Your Filename: #{studentProfile.avatarFilename }
+        div(uk-grid).uk-grid
+            // profile info
+            div(class="uk-width-1-5@s uk-width-1-4@m").profile.uk-align-left
+               include dashboardStudentProfile.pug
+            div(class="uk-width-expand").uk-section
+                include dashboardSkillFocus.pug
+                if toolType == "writing"
+                    include dashboardStats.pug
+                else
+                    include dashboardProgrammingStats.pug
 
-        div(class="col-md-3 col-md-offset-1")
-            ul
-                each val,index in courses
-                    li= val.code + "->" + val.courseName
-                        p= val.description
-                        p Major: #{val.disciplineType}
-
-        div(class="col-md-2 col-md-offset-1")
-            ul
-                each val,index in upcomingEvents
-                    li= val.title + "->"
-                        p= val.description
-                        p Event Date: #{val.closedDate}
-
-        div(class="col-md-3 col-md-offset-1")
-            ul
-                each val,index in studentStats
-                    li= val.name + "->" + val.value
+    script(src="components/Dashboard/dashboardController.js")
+    link(rel="stylesheet" href="components/Dashboard/dashboard.css")
+    link(rel="stylesheet" href="components/Feedback/errors.css")
