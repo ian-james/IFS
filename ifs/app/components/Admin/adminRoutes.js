@@ -116,7 +116,7 @@ module.exports = function( app ) {
                     else
                         _.extend(stats,results[i][0]);
                 }
-                res.render(viewPath + "adminDashboard", { title: 'Welcome to IFS', stats: stats });
+                res.render(viewPath + "admin", { title: 'Welcome to IFS', stats: stats });
             }
         );
     });
