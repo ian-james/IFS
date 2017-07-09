@@ -7,7 +7,6 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     $scope.assignmentSelect = null;
     $scope.assignmentTasks = [];
     $scope.activeStudentFocus = 0;
-    
     /**
      * Selects the next active DIV for student focus.
      * @return {[type]} [description]

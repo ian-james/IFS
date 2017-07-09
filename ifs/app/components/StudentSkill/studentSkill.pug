@@ -1,0 +1,64 @@
+extends ../../shared/views/pageLayout.pug
+
+block scripts
+    script(src="/socket.io/socket.io.js")
+
+block content
+    div(ng-controller="studentSkillCtrl").uk-container
+        div(uk-alert).uk-alert-danger
+            p.uk-align-center.errorMessage #{messages.errorMessage}
+
+        form(class='uk-form' method="post" action="/studentSkill")
+            div.studentSkills
+                h2 Student Skills
+                if userRatedSkills && userRatedSkills.length > 0
+                    div
+                        - var title = "";
+                        each skill in userRatedSkills
+                            div.uk-clearfix.uk-margin-remove-bottom
+                                if title != skill.title
+                                    h3.uk-clearfix.uk-margin-remove-bottom #{skill.title}
+                                div.uk-grid.uk-margin-top.uk-margin-remove-bottom
+                                    div.uk-width-1-3
+                                    div.uk-width-2-3
+                                        h4 #{ skill.skillName }
+
+                                div.uk-grid.uk-margin-remove-top
+                                    div.uk-width-1-3
+                                    div.uk-width-2-3
+                                        input(id="numeric"+skill.classSkillId, type="number" min="0" max="100" value=skill.value*100).uk-text-center.uk-display-inline.studentInput
+                                        progress(value=skill.value*100, max="100").uk-margin-left.studentSlider
+                                - title = skill.title;
+                else
+                    h4 You've yet to rate your skill level in any course skills.
+            hr
+
+            div.courseSkills
+                h2.uk-margin-remove-bottom Course Skills
+                if classSkills && classSkills.length > 0
+                   div
+                        - var title = "";
+                        each skill in classSkills
+                            div.uk-clearfix
+                                if title != skill.title
+                                    h3.uk-clearfix.uk-margin-top.uk-margin-remove-bottom #{skill.title}
+                                div.uk-grid.uk-margin-top.uk-margin-remove-bottom
+                                    div.uk-width-1-3
+                                    div.uk-width-2-3
+                                        h4 #{ skill.skillName }
+
+                                div.uk-grid.uk-margin-remove-top
+                                    div.uk-width-1-3
+                                    div.uk-width-2-3
+                                        input(id="numeric"+skill.classSkillId, type="number" min="0" max="100" value=0).uk-text-center.uk-display-inline.studentInput
+                                        progress(value=0, max="100").uk-margin-left.studentSlider
+                                - title = skill.title;
+                else
+                    h4 No course skills are available.
+
+            div.uk-width-1-1.uk-margin-top
+            button(type="submit").uk-button.uk-button-default.uk-align-center Save
+            div.uk-width-1-1.uk-margin-top
+
+    script(src="components/StudentSkill/studentSkillController.js")
+    script(src="components/StudentSkill/studentSkillSliders.js")

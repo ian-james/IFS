@@ -5,13 +5,13 @@ var dbHelpers = require(__components + "Databases/dbHelpers");
 
 module.exports = {
 
-    getStudentSkills: function( studentId, callback ) {
-        var q = "SELECT cs.name, cs.description, ss.value FROM student_skill ss, class_skill cs WHERE ss.studentId = ? AND cs.id = ss.classSkillId";
-        db.query(q,studentId,callback);
+    getStudentClassSkills: function( userId, callback ) {
+        var q = "SELECT sc.classId, cs.assignmentId, a.name as assignmentName, a.title, cs.id as classSkillId, cs.name as skillName, cs.description FROM class_skill cs, student_class sc, assignment a, student s WHERE sc.classId = cs.classId AND sc.studentId = s.id and s.userId = ? AND cs.assignmentId = a.id ORDER by classId, assignmentId, classSkillId"
+        db.query( q, userId, callback );
     },
 
     getUserSkills: function( userId, callback ) {
-        var q = "select ss.value, cs.name from student_skill ss, class_skill cs, student s where ss.classSkillId = cs.id and s.id = ss.studentId and s.userId = ?";
+        var q = "SELECT cs.id as classSkillId, a.id as assignmentId, a.name as assignmentName, a.title, cs.name as skillName, cs.description as classDescription, ss.value FROM student_skill ss, class_skill cs, assignment a WHERE ss.studentId = ? AND cs.id = ss.classSkillId and cs.assignmentId = a.id";
         db.query(q,userId,callback);
     },
 
@@ -33,7 +33,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAssigmentAndTaskList: function( userId, callback ) {
-        var q = "select a.id as assignmentId, a.name as assignmentName, c.id as courseId, at.name as taskName, at.id as taskId from assignment a, assignment_task at, class c, student s where s.userId = 1 and a.classId = c.id and at.assignmentId = a.id";
+        var q = "select a.id as assignmentId, a.name as assignmentName, c.id as courseId, at.name as taskName, at.id as taskId from assignment a, assignment_task at, class c, student s where s.userId = ? and a.classId = c.id and at.assignmentId = a.id";
         db.query(q,userId,callback);
     }
 }

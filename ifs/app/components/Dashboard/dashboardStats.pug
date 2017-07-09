@@ -38,7 +38,7 @@ div#statsSection
 
                     div.uk-width-1-3
                         if stats.userStats && stats.userStats.accuracy  && stats.userStats.accuracy.length > 1
-                            h4.uk-padding-remove.uk-margin-remove My Accuracy
+                            h4.uk-padding-remove.uk-margin-remove My Totals
                             ul.uk-list.uk-list-striped
                                 li 
                                     p.uk-display-inline Total Words Used #{ stats.userStats.accuracy[0].value + stats.userStats.accuracy[1].value }
@@ -71,15 +71,15 @@ div#statsSection
                                 each suggest in stats.socialStats.suggestions
                                     li
                                         p.uk-display-inline #{suggest.target}
-                                            span(uk-icon="icon: arrow-left")
                                             span(uk-icon="icon: arrow-right")
+                                            span(uk-icon="icon: arrow-left")
                                         p.uk-display-inline #{suggest.suggestions}
                         else
                             p Unable to show class spelling mistakes.
                    
                     div.uk-width-1-3
                         if stats.socialStats && stats.socialStats.accuracy  && stats.socialStats.accuracy.length > 1
-                            h4.uk-padding-remove.uk-margin-remove Class Accuracy
+                            h4.uk-padding-remove.uk-margin-remove Class Totals
                             ul.uk-list.uk-list-striped
                                 li 
                                     p.uk-display-inline Total Words Used #{ stats.socialStats.accuracy[0].value + stats.socialStats.accuracy[1].value }

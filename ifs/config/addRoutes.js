@@ -48,6 +48,9 @@ module.exports = function (app, iosocket) {
     // Student Profile page routes
     require(componentsPath + "/StudentProfile/profileRoutes")(app, iosocket);
 
+    // Student Skill routes
+    require(componentsPath + "/StudentSkill/studentSkillRoutes")(app, iosocket);
+
     // Event Tracking
     require(componentsPath + '/InteractionEvents/trackedEventRoutes')(app, iosocket);
 

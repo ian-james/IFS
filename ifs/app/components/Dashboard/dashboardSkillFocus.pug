@@ -17,7 +17,7 @@ div#studentFocus
                         select(ng-model="courseSelect" ng-options="c.courseName for c in courses track by c.id" name="courseSelection").uk-select
                     div.uk-width-1-2
                         label(for="assignmentSelect").uk-padding-small Select Assignment:
-                        select(ng-model="assignmentSelect" ng-options="a.assignmentName for a in assignments track by a.assignmentId").uk-select
+                        select(ng-model="assignmentSelect" ng-options="a.assignmentName for a in ( assignments | filter:{courseId: courseSelect.id}) track by a.assignmentId").uk-select
                 button(type="button" ng-disabled="!hasFocusItem($event)" ng-click="getNextSelected( $event )" ).uk-button.uk-button-default.uk-align-center Set Focus
 
     div#studentSelectedFocus.uk-card(ng-show="activeStudentFocus==2")
@@ -27,8 +27,11 @@ div#studentFocus
         div.uk-card-body.uk-padding-remove-top
             h3 {{courseSelect.courseName}} {{assignmentSelect.assignmentName}} Tasks
             div.uk-grid.uk-grid-small.uk-grid-divider.uk-grid-match
-                div(ng-repeat="assignTask in assignmentTasks | filter:{assignmentId:assignmentSelect.assignmentId}").uk-width-1-2.uk-margin-bottom
+                div(ng-repeat="assignTask in ( filteredArray =  (assignmentTasks | filter:{assignmentId:assignmentSelect.assignmentId} ))").uk-width-1-2.uk-margin-bottom
                     include dashboardFocus.pug
+            div
+                a(href="#" class="uk-button").uk-align-center View Assignment Details 
+                    span(uk-icon="icon: info")
             button(id="assignmentCompleteId" type="button" ng-click="assignmentComplete()").uk-button.uk-button-default.uk-align-center.uk-hidden Finish Assignment
 
     div#assignmentAccomplished.uk-card(ng-show="activeStudentFocus==3")

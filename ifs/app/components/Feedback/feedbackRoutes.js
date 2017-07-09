@@ -35,15 +35,9 @@ module.exports = function( app ) {
         db.query(r.request,r.data, function(err,data){
             if(err) {
                 console.log(err);
-                console.log("*******************************************************");
-                console.log("*******************************************************");
-                console.log("*******************************************************");
                 res.end();
             }
             else {
-                console.log("*******************************************************");
-                console.log(req.session.uploadFilesFile)
-                console.log("*******************************************************");
                 var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
                 var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +
