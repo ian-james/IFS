@@ -43,7 +43,6 @@ function query(queryStr, args, callback) {
             });
         }
         else {
-            //console.log("ERR IN QUERY");
             handleConnectionError(err);
             callback(err,null);
         }

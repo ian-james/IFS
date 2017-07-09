@@ -53,7 +53,7 @@ module.exports = function( app ) {
     function postAdminRemove(req, res, options, callback) {
         var controlValues = req.body['adminControl'];
         controlValues = _.each(controlValues, x => parseInt(x) );
-        console.log(controlValues);
+        
         callback(controlValues, function(err,data) {
             if(err) {
                 req.flash('errorMessage', "Unable to remove " + options.removeType + " data is still linked to other student information");

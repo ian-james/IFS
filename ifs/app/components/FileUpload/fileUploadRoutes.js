@@ -120,8 +120,6 @@ module.exports = function (app, iosocket) {
 
                     dbHelpers.insertEventC( config.feedback_stats_table, fs, function(err,d){
                         // Empty Callback if feedback fails to save, we aren't too concerned.
-                        //if(err)
-                        //   console.log("\n***************************\n", err, "\n<<<<<<<<<<<>>>>>>>>>>>>>>>>>>", fs);
                         _callback();
                     });
 

@@ -2,7 +2,6 @@ app.controller( "prefCtrl", function($scope, $http) {
     $scope.prefsList = [];
     $http.get('/preferences/data.json').then(function(res) {
         $scope.prefsList = res.data;
-        console.log(res.data);
     });
     $scope.courses = [];
     $http.get('/preferences/courses.json').then(function(res) {

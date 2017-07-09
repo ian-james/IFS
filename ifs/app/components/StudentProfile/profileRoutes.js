@@ -50,15 +50,8 @@ module.exports = function(app) {
                     //Note courseName is alias tag to differentiate between student and course.
                     var courseKeys = ["code","courseName","description","disciplineType"];
                     var studentProfile = _.pick(studentProfileData[0], studentKeys );
-                    console.log("STUDENT PROFILE:\n");
-                    console.log(JSON.stringify(studentData));
-                    console.log("STUDENT DATA:\n");
-                    console.log(studentProfile);
-
                     // Select Courses/class data
                     var courses = _.map(studentData, obj => _.pick(obj,courseKeys));
-                    console.log("COURSE DATA:\n");
-                    console.log(courses);
                     // Retrieve the upcoming events.
                     upcomingEvents.getStudentUpcomingEvents( req.user.id , function( errEvents, upcomingEventsData ) {
                         var studentStats = [];

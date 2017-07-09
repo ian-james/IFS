@@ -38,11 +38,8 @@ module.exports = function(app, iosocket) {
     app.post('/studentSkills', function(req,res) {
 
         studentProfile.getStudentProfile(req.user.id, function(err, profileData) {
-            console.log("HERE******************************", profileData);
             if( profileData && profileData.length > 0) {
                 var studentId = profileData[0].id;
-                console.log(studentId);
-                console.log("*************************************8STUDENT SKILL VALUES", req.body);
                 var skills = req.body;
 
                 var userKey = 'userRatedSkills';

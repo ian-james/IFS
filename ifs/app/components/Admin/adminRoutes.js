@@ -79,7 +79,6 @@ module.exports = function( app ) {
 
                 var r = _.find(pageOptions,_.matchesProperty('name',dynamicData[i].target));
                 if (r) {
-                    console.log("FOUND r->",r);
                     r['values'] = dynamicData[i].values;
                     r['value'] = dynamicData[i].value;
                 }
@@ -131,7 +130,6 @@ module.exports = function( app ) {
         });
     })
     .post(function(req,res,next){
-        console.log(req.body);
         var courseKeys = ["class-code","class-name","class-description","class-disciplineType"];
 
         var submission = _.pick(req.body, courseKeys);
@@ -163,13 +161,11 @@ module.exports = function( app ) {
         var keys = ["event-name","event-title","event-description","event-startDate","event-endDate"];
 
         var submission = _.pick(req.body, keys);
-        console.log("Submission is ", submission);
         // Find the class id then insert event for class
         adminDB.getClassByCode(req.body['class-name'], function(err,data){
 
             var values = _.values(submission);
             values.unshift(data[0].id);
-            console.log(values);
 
             adminDB.insertUpcomingEvent( values, function(err,result ){
                 directTo(res);
@@ -199,12 +195,11 @@ module.exports = function( app ) {
                     "assignment-dueDate"];
 
         var submission = _.pick(req.body, keys);
-        console.log("Submission is ", submission);
+
         // Find the class id then insert event for class
         adminDB.getClassByCode(req.body['class-name'], function(err,data) {
             var values = _.values(submission);
             values.unshift(data[0].id);
-            console.log(values);
 
             adminDB.insertAssignment(values, function(err,result) {
                 directTo(res);
@@ -240,16 +235,14 @@ module.exports = function( app ) {
     .post(function(req,res,next) {
         var keys = ['assignment-task-name','assignment-task-description'];
 
-        console.log("BODY:", req.body);
         var submission = _.pick(req.body, keys);
-        console.log("Submission is ", submission);
         var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
         // Find the class id then insert event for class
         adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
             if(data && data.length > 0) {
                 var values = _.values(submission);
                 values.unshift(data[0].aId);
-                console.log("Values", values);
+
                 adminDB.insertTask(values, function(err,result) {
                     directTo(res);
                 });
@@ -287,10 +280,7 @@ module.exports = function( app ) {
     })
     .post(function(req,res,next) {
         var keys = ['skill-name','skill-description'];
-
-        console.log("BODY:", req.body);
         var submission = _.pick(req.body, keys);
-        console.log("Submission is ", submission);
         var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
         // Find the class id then insert event for class
         adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
@@ -298,7 +288,7 @@ module.exports = function( app ) {
                 var values = _.values(submission);
                 values.unshift(data[0].aId);
                 values.unshift(data[0].classId);
-                console.log("Values", values);
+
                 adminDB.insertSkill(values, function(err,result) {
                     directTo(res);
                 });

@@ -34,7 +34,7 @@ module.exports = function( app ) {
         var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
         db.query(r.request,r.data, function(err,data){
             if(err) {
-                console.log(err);
+                Logger.error(err);
                 res.end();
             }
             else {
@@ -60,7 +60,6 @@ module.exports = function( app ) {
 
                         var visualTools = Feedback.setupVisualFeedback(visualTools);
                         results = _.assign(result,visualTools);
-                        console.log("visualTools", visualTools);
                         var viewFile = opt && opt.viewPathFile ? opt.viewPathFile: "feedback";
                         res.render( viewPath + viewFile, result );
                     });
@@ -91,8 +90,10 @@ module.exports = function( app ) {
         }
         var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
         db.query(r.request,r.data, function(err,data){
-            if(err)
-                console.log(err);
+            if(err) {
+                Logger.error.log(err);
+                res.end();
+            }
             else {
                 var filesContent = fs.readFileSync( req.session.uploadFilesFile, 'utf-8');
                 var feedbackFile = "{" +

@@ -2,6 +2,7 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var fs = require('fs');
 var multer = require('multer');
+var Logger = require( __configs + "loggingConfig");
 
 var _ = require('lodash');
 
@@ -16,7 +17,6 @@ var fileFilter = function(req, file, cb) {
     var filetype = /png/;
     var mimetype = filetype.test(file.mimetype);
     var extension = filetype.test(path.extname(file.originalname).toLowerCase());
-    console.log(extension);
     if (mimetype && extension) {
         return cb(null, true);
     } else {
@@ -31,7 +31,6 @@ var storage = multer.diskStorage({
         cb(null, submissionFolder);
     },
     filename: function(req, file, cb) {
-        console.log("FILE:",file)
         cb(null, 'avatar.png');
     },
 });
@@ -86,7 +85,6 @@ module.exports = function(app) {
     });
 
     app.post('/preferences/courses', function(req, res, next) {
-        console.log("RECEIVED", req.body);
         var userId = req.user.id;
         // build array of courses and values for enrolment / unenrolment
         // use the *-hidden form fields if no value was posted with the checkbox
@@ -108,20 +106,18 @@ module.exports = function(app) {
                     enrol.push(keyname);
             }
         }
-        console.log("UID", userId, "enrolled in", JSON.stringify(enrol));
-        console.log("UID", userId, "unenrolled from", JSON.stringify(unenrol));
 
         // enrol in specified courses
         for (var e in enrol) {
             coursesDB.getCourse(enrol[e], function(err, course) {
                 if (err) {
-                    console.log("ERROR", err);
+                    Logger.error("ERROR", err);
                 } else {
                     coursesDB.enrolInCourse(userId, course[0].id, function(err, res) {
                         if (err)
-                            console.log("ERROR", err);
+                            Logger.error("ERROR", err);
                         else
-                            console.log("Enrolled in course:", course[0].code, "(UID " + userId + ")");
+                            Logger.log("Enrolled in course:", course[0].code, "(UID " + userId + ")");
                     });
                 }
             });
@@ -130,13 +126,13 @@ module.exports = function(app) {
         for (var u in unenrol) {
             coursesDB.getCourse(unenrol[u], function(err, course) {
                 if (err) {
-                    console.log("ERROR", err);
+                    Logger.log("ERROR", err);
                 } else {
                     coursesDB.unenrolFromCourse(userId, course[0].id, function(err, res) {
                         if (err)
-                            console.log("ERROR", err);
+                            Logger.log("ERROR", err);
                         else
-                            console.log("Unenrolled from course:", course[0].code, "(UID " + userId + ")");
+                            Logger.log("Unenrolled from course:", course[0].code, "(UID " + userId + ")");
                     });
                 }
             });
@@ -147,7 +143,7 @@ module.exports = function(app) {
     });
 
     app.post('/preferences/profile', upload.single('student-avatar'), function(req, res, next) {
-        console.log("RECEIVED", req.body);
+
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
         var studentName = req.body['student-name'];
@@ -157,12 +153,10 @@ module.exports = function(app) {
             preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
                 if(!err)
                     defaultTool.setupDefaultTool(req, pref);
-                else
-                    console.log("ERROR SETTING DEFAULT TOOLS");
 
                 profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
                     if(err)
-                        console.log("ERROR SETTING STUDENT PROFILE");
+                        Logger.log("ERROR SETTING STUDENT PROFILE");
 
                     //TODO pop or message
                     res.location("/preferences");
@@ -170,7 +164,7 @@ module.exports = function(app) {
                 });
             });
         } else {
-            console.log("ERROR ERROR");
+            Logger.log("ERROR ERROR");
             res.end();
         }
     });

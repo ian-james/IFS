@@ -105,7 +105,6 @@ module.exports = {
      * @return {[type]}                  [description]
      */
     getAssignmentByClassCodeAndName( classCode, assignmentName, callback ) {
-        console.log("assignmentN", assignmentName)
         if(assignmentName) {
             var q = "select c.id as classId, a.id as aId from class c, assignment a where c.id = a.classId and c.code= ? and a.name = ?";
             db.query(q,[classCode, assignmentName],callback);

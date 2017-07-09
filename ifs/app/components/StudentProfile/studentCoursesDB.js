@@ -44,7 +44,6 @@ module.exports = {
             }
             // otherwise, update database
             else {
-                console.log("RET", ret);
                 var q = dbHelpers.buildInsert(config.student_class_table) + "(studentId, classId) VALUES (?, ?);";
                 db.query(q, [userId, classId], callback);
             }
