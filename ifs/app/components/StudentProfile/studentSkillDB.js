@@ -35,5 +35,19 @@ module.exports = {
     getAssigmentAndTaskList: function( userId, callback ) {
         var q = "select a.id as assignmentId, a.name as assignmentName, c.id as courseId, at.name as taskName, at.id as taskId from assignment a, assignment_task at, class c, student s where s.userId = ? and a.classId = c.id and at.assignmentId = a.id";
         db.query(q,userId,callback);
-    }
+    },
+
+    setStudentSkills: function( studentId, classSkillId, skillValue , callback ) {
+        var q =  "UPDATE student_skill  SET value = ? where  studentId = ? and classSkillId = ?";
+        console.log(q);
+        console.log(classSkillId, " ", skillValue);
+        db.query(q,[skillValue,studentId,classSkillId], callback);
+    },
+
+    insertStudentSkills: function( studentId, classSkillId, skillValue , callback ) {
+        var q = dbHelpers.buildInsert(config.student_skill_table) + dbHelpers.buildValues(["studentId","classSkillId", "value"]);
+        console.log("QQ=",q);
+        console.log(studentId + " " +  classSkillId + " " + skillValue );
+        db.query(q,[studentId, classSkillId, skillValue], callback);
+    },
 }

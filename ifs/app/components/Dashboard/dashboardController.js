@@ -37,7 +37,6 @@ app.controller( "dashboardCtrl", function($scope, $http) {
         $scope.upcomingEvents = res.data.upcomingEvents;
         $scope.assignments = res.data.assignments;
         $scope.stats = res.data.stats;
-        console.log(res.data);
         $scope.courses = res.data.courses;
         $scope.assignmentTasks = res.data.assignmentTasks;
     });

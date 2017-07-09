@@ -97,11 +97,9 @@ module.exports = function (app, iosocket )
                         'tools': stools
                     };
                     callback(stats);
-
                 }
                 else
                     callback([]);
-
             }
         );
     }
@@ -162,22 +160,18 @@ module.exports = function (app, iosocket )
     function collectDashboardData( req, res, callback ) {
 
         studentProfile.getStudentProfileAndClasses(req.user.id, function(err, studentData){
-            console.log(studentData);
 
             if(studentData) {
                 var studentProfile = _.pick(studentData[0],  ["id","name", "bio", "avatarFileName"]);
                 var courses = _.map(studentData, obj => _.pick(obj,["id","code","courseName","description","disciplineType"]));
-                console.log("Course,", courses);
+
                 // Retrieve the upcoming events.
                 upcomingEvents.getStudentUpcomingEvents(req.user.id , function( errEvents, upcomingEventsData) {
                     var upEvents = _.map(upcomingEventsData, obj => _.pick(obj,['title','description','closedDate']));
 
                     studentSkill.getAssigmentAndTaskList(studentProfile.id, function(errTask, taskData) {
-                        console.log( taskData );
 
                         var assignmentTasks = _.map(taskData, obj => _.pick(obj, ['assignmentId','assignmentName','courseId','courseName','courseCode','taskName','taskId']));
-
-                        console.log( assignmentTasks );
 
                         studentSkill.getUserSkills( req.user.id, function(skillErr, skills) {
                             var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 

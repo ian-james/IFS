@@ -2,6 +2,7 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var fs = require("fs");
 var _ = require('lodash');
+var async = require('async');
 
 var Errors = require(__components + "Errors/errors");
 var Logger = require( __configs + "loggingConfig");
@@ -23,14 +24,7 @@ module.exports = function(app, iosocket) {
         var userId = req.user.id;
         studentSkill.getUserSkills( userId, function( errUserSkills, userSkills ) {
             studentSkill.getStudentClassSkills( userId, function( err,classSkills ) {
-                console.log(userSkills);
-                console.log(classSkills);
-
-                //TODO: FIlter the results from classSkills
-                // Organize the display.
-                
                 classSkills = _.differenceBy(classSkills,userSkills,'classSkillId');
-
                 var page = {
                     'title': "Student Skill Set",
                     'userRatedSkills': userSkills,
@@ -41,8 +35,43 @@ module.exports = function(app, iosocket) {
         });
     });
 
-    app.post('/studentSkill', function(req,res) {
-        console.log("STUDENT SKILL VALUES", req.body);
-        res.render(viewPath + "../Dashboard/dashboard");
+    app.post('/studentSkills', function(req,res) {
+
+        studentProfile.getStudentProfile(req.user.id, function(err, profileData) {
+            console.log("HERE******************************", profileData);
+            if( profileData && profileData.length > 0) {
+                var studentId = profileData[0].id;
+                console.log(studentId);
+                console.log("*************************************8STUDENT SKILL VALUES", req.body);
+                var skills = req.body;
+
+                var userKey = 'userRatedSkills';
+                var classKey = 'classSkills';
+                var idx = -1;
+
+                async.eachOf(skills, function( value,key, callback ) {
+
+                        if( value[1] == 'yes' ) {
+                            var m = key.toString().match( /[a-zA-Z]*(\d*)/);
+                            if( m && m.length > 1 ) {
+                                idx = parseInt(m[1]);
+                                if( _.startsWith(key, userKey) )
+                                    studentSkill.setStudentSkills(studentId, idx, parseInt(value[0])/100, callback);
+                                else if( _.startsWith(key, classKey) )
+                                    studentSkill.insertStudentSkills( studentId, idx, parseInt(value[0])/100, callback );
+                            }
+                        }
+                    }, function(err){
+                        if(err)
+                            Logger.error(err);
+                        else
+                            Logger.log("Finished setting up.");
+                    }
+                );
+            }
+
+            res.location('/dashboard');
+            res.redirect("/dashboard");
+        });
     });
 }

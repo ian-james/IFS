@@ -8,7 +8,7 @@ block content
         div(uk-alert).uk-alert-danger
             p.uk-align-center.errorMessage #{messages.errorMessage}
 
-        form(class='uk-form' method="post" action="/studentSkill")
+        form(id="studentSkillForm" class='uk-form' method="post" action="/studentSkills")
             div.studentSkills
                 h2 Student Skills
                 if userRatedSkills && userRatedSkills.length > 0
@@ -26,8 +26,9 @@ block content
                                 div.uk-grid.uk-margin-remove-top
                                     div.uk-width-1-3
                                     div.uk-width-2-3
-                                        input(id="numeric"+skill.classSkillId, type="number" min="0" max="100" value=skill.value*100).uk-text-center.uk-display-inline.studentInput
+                                        input(id="numeric"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]", type="number" min="0" max="100" value=skill.value*100).uk-text-center.uk-display-inline.studentInput
                                         progress(value=skill.value*100, max="100").uk-margin-left.studentSlider
+                                        input(id="userHidden"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
                                 - title = skill.title;
                 else
                     h4 You've yet to rate your skill level in any course skills.
@@ -50,14 +51,15 @@ block content
                                 div.uk-grid.uk-margin-remove-top
                                     div.uk-width-1-3
                                     div.uk-width-2-3
-                                        input(id="numeric"+skill.classSkillId, type="number" min="0" max="100" value=0).uk-text-center.uk-display-inline.studentInput
-                                        progress(value=0, max="100").uk-margin-left.studentSlider
+                                        input(id="numeric"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]", type="number" min="0" max="100" value=0).uk-text-center.uk-display-inline.studentInput
+                                        progress(value=0 max="100").uk-margin-left.studentSlider
+                                        input(id="userHidden"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
                                 - title = skill.title;
                 else
                     h4 No course skills are available.
 
-            div.uk-width-1-1.uk-margin-top
-            button(type="submit").uk-button.uk-button-default.uk-align-center Save
+            input(type="submit" value="Save").uk-button.uk-button-default.uk-align-center
+
             div.uk-width-1-1.uk-margin-top
 
     script(src="components/StudentSkill/studentSkillController.js")
