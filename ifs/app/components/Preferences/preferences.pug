@@ -7,23 +7,14 @@ block content
             h2.uk-margin-remove-bottom {{ prefsList.displayName }}
             p.uk-text-meta.uk-margin-remove-top Change settings for your account and choose assessment tools.
             div(ng-repeat="option in prefsList.options")
-                include prefsInput.pug
+                include prefsItem.pug
             br
             button(type="submit").uk-button.uk-button-primary Save
         form(name="course-enrolment" method="post" action="/preferences/courses")#coursesForm.uk-margin
             h2.uk-margin-remove-bottom Course Enrolment
             p.uk-text-meta.uk-margin-remove-top Enrol in courses to subscribe to class events and track class skills.
             div(ng-repeat="course in courses")
-                div.uk-clearfix.uk-margin-remove-bottom
-                    h4.uk-float-left {{ course.name }} ( {{ course.code }} )
-                    label.switch-wrapper.uk-float-right
-                        // this is to submit data even if a checkbox is unchecked
-                        input(type="hidden" name="{{ course.code }}-hidden" id="{{course.code}}-hidden" value="false" ng-model="auto")
-                        input(type="checkbox" name="{{ course.code }}" id="{{course.code}}" value="true" ng-model="auto" ng-checked="isEnrolled(course.code) >= 0")
-                        div.switch.switch-round
-                div.course-desc
-                    p.uk-margin-remove-top {{ course.description }}
-                hr
+                include courseItem.pug
             button(type="submit").uk-button.uk-button-primary Save
 
     br

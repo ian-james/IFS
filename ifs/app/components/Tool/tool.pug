@@ -17,17 +17,7 @@ block content
                     div(hidden)#toolSelection
                         ul(uk-accordion)
                             li(ng-repeat="tool in toolList").toolsView
-                                input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
-                                h3.uk-accordion-title {{tool.displayName}}
-                                div.uk-accordion-content.uk-background-muted
-                                    ul.uk-list.uk-list-divider
-                                        li.uk-padding-small
-                                            span.uk-float-left Enable {{ tool.displayName }}
-                                            label.switch-wrapper.uk-float-right
-                                                input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true" ng-checked="{{tool.prefValue}}")
-                                                div.switch.switch-round
-                                        li(ng-repeat="option in tool.options").uk-padding-small
-                                            include toolInput.pug
+                                include toolItem.pug
                     include ../FileUpload/fileUploadPanel.pug
 
         script(src="components/Tool/toolController.js")

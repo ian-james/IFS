@@ -1,0 +1,10 @@
+div.uk-clearfix.uk-margin-remove-bottom
+    h4.uk-float-left {{ course.name }} ( {{ course.code }} )
+    label.switch-wrapper.uk-float-right
+        // this is to submit data even if a checkbox is unchecked
+        input(type="hidden" name="{{ course.code }}-hidden" id="{{course.code}}-hidden" value="false" ng-model="auto")
+        input(type="checkbox" name="{{ course.code }}" id="{{course.code}}" value="true" ng-model="auto" ng-checked="isEnrolled(course.code) >= 0")
+        div.switch.switch-round
+div.course-desc
+    p.uk-margin-remove-top {{ course.description }}
+hr
