@@ -30,7 +30,7 @@ module.exports = function (app, iosocket )
      * @return {[type]}                [description]
      */
     function getAssignments( assignmentData ) {
-        var keys = ['assignmentId','assignmentName','courseId'];
+        var keys = ['assignmentId','assignmentName','courseId','description'];
         var assignments = _.map(assignmentData, obj =>_.pick(obj,keys) );
         assignments = _.uniqBy(assignments,'assignmentId');
         return assignments;
@@ -171,11 +171,10 @@ module.exports = function (app, iosocket )
 
                     studentSkill.getAssigmentAndTaskList(studentProfile.id, function(errTask, taskData) {
 
-                        var assignmentTasks = _.map(taskData, obj => _.pick(obj, ['assignmentId','assignmentName','courseId','courseName','courseCode','taskName','taskId']));
+                        var assignmentTasks = _.map(taskData, obj => _.pick(obj, ['assignmentId','assignmentName', 'description','courseId','courseName','courseCode','taskName','taskId']));
 
                         studentSkill.getUserSkills( req.user.id, function(skillErr, skills) {
-                            console.log(skills);
-                            
+
                             var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 
                                 'assignments': getAssignments(assignmentTasks), 'assignmentTasks':assignmentTasks, 'skills': skills };
 

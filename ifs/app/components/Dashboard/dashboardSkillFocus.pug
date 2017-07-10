@@ -25,13 +25,22 @@ div#studentFocus
         div.uk-card-header
             h2.uk-display-inline Daily Focus:
         div.uk-card-body.uk-padding-remove-top
-            h3 {{courseSelect.courseName}} {{assignmentSelect.assignmentName}} Tasks
+            h3 {{courseSelect.courseName}} {{assignmentSelect.assignmentName}} Tasks 
+                a(href="#myModal" uk-toggle="target: #myModal").uk-text-center
+                    span(uk-icon="icon: info")
+
             div.uk-grid.uk-grid-small.uk-grid-divider.uk-grid-match
                 div(ng-repeat="assignTask in ( filteredArray =  (assignmentTasks | filter:{assignmentId:assignmentSelect.assignmentId} ))").uk-width-1-2.uk-margin-bottom
                     include dashboardFocus.pug
-            div
-                a(href="#" class="uk-button").uk-align-center View Assignment Details 
-                    span(uk-icon="icon: info")
+
+                div(id="myModal" uk-modal)
+                    div.uk-modal-dialog
+                        button(type="button" uk-close).uk-modal-close-default
+                        div.uk-modal-header
+                            h3.uk-modal-title {{assignmentSelect.assignmentName}}
+                        div.uk-modal-body
+                            p {{assignmentSelect.description}}
+
             button(id="assignmentCompleteId" type="button" ng-click="assignmentComplete()").uk-button.uk-button-default.uk-align-center.uk-hidden Finish Assignment
 
     div#assignmentAccomplished.uk-card(ng-show="activeStudentFocus==3")
