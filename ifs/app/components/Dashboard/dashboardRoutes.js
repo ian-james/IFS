@@ -174,6 +174,8 @@ module.exports = function (app, iosocket )
                         var assignmentTasks = _.map(taskData, obj => _.pick(obj, ['assignmentId','assignmentName','courseId','courseName','courseCode','taskName','taskId']));
 
                         studentSkill.getUserSkills( req.user.id, function(skillErr, skills) {
+                            console.log(skills);
+                            
                             var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 
                                 'assignments': getAssignments(assignmentTasks), 'assignmentTasks':assignmentTasks, 'skills': skills };
 

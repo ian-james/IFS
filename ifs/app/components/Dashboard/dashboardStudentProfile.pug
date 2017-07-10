@@ -20,10 +20,11 @@ div(class="uk-visible@s").avatar-section
         div.skills
             span.profile-h2 Skills
             br
-            if skill && skills.length != 0
-                each skill in skills
-                    p #{ skill.name }
-                    progress(value=skill.value*100 max="100" title=skill.value*100 +"%", uk-tooltip).uk-progress
+            if skills && skills.length > 0
+                - for(var i = 0; i < skills.length && i < 3; i++) {
+                    p= skills[i].skillName
+                    progress(value=skills[i].value*100 max="100" title=skills[i].value*100 +"%", uk-tooltip).uk-progress
+                - }
             else
                 p You haven't rated your skill level yet. Please see the student skill page.
 
