@@ -20,6 +20,9 @@ var socialModel = require(__components + "SocialModel/socialStatsDB");
 
 var feedbackModel = require(__components + "InteractionEvents/feedbackEvents");
 
+
+
+
 module.exports = function (app, iosocket )
 {    /**
      * [focusOptions description]
@@ -49,7 +52,6 @@ module.exports = function (app, iosocket )
         }
         return suggestions;
     }
-
 
     /**
      * This function retrieves writing stats from the database and prepares them for display on dashboard.
@@ -104,9 +106,8 @@ module.exports = function (app, iosocket )
         );
     }
 
-
      function programmingStats( req, res, callback ) {
- 
+
         var toolSelect = req.session.toolSelect.toLowerCase();
         var topN = 1;
         var id = req.user.id;
@@ -159,8 +160,7 @@ module.exports = function (app, iosocket )
 
     function collectDashboardData( req, res, callback ) {
 
-        studentProfile.getStudentProfileAndClasses(req.user.id, function(err, studentData){
-
+        studentProfile.getStudentProfileAndClasses(req.user.id, function(err, studentData) {
             if(studentData) {
                 var studentProfile = _.pick(studentData[0],  ["id","name", "bio", "avatarFileName"]);
                 var courses = _.map(studentData, obj => _.pick(obj,["id","code","courseName","description","disciplineType"]));
@@ -217,7 +217,7 @@ module.exports = function (app, iosocket )
     /**
      * Dashboard data setups up the controller to have the same data as the backend expects.
      * @param  {[type]} req  [description]
-     * @param  {[type]} res) {                   collectDashboardData(req,res, function(req,res,data) {            res.json(data);        });    } [description]
+     * @param  {[type]} res) 
      * @return {[type]}      [description]
      */
     app.get('/dashboard/data', function(req,res) {
@@ -225,5 +225,4 @@ module.exports = function (app, iosocket )
             res.json(data);
         });
     });
-
 }
