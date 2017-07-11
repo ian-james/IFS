@@ -2,7 +2,8 @@
     "tools": [
          {
             "displayName": "Spell Checker",
-            "description": "A simple Python script that uses Hunspell to process text and provide suggestions for spelling correction.",
+            "description": "Checks for spelling errors in a text.",
+            "technicalDesc": "A simple Python script that uses Hunspell to process text and provide suggestions for spelling correction.",
             "author": "Keefer Rourke",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -27,7 +28,8 @@
         },
         {
             "displayName": "Grammar Checker",
-            "description": "A simple Python script that uses LanguageTool to process text and provide suggestions for grammar correction.",
+            "description": "Checks for grammatical errors in a text.",
+            "technicalDesc": "A simple Python script that uses LanguageTool to process text and provide suggestions for grammar correction.",
             "author": "Keefer Rourke",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -52,7 +54,8 @@
         },
         {
             "displayName": "APA Style Checker",
-            "description": "A simple Python script that uses regular expressions to check for common errors in APA style writing.",
+            "description": "Checks for common errors in APA-formatted papers.",
+            "technicalDesc": "A simple Python script that uses regular expressions to check for common errors in APA style writing.",
             "author": "Keefer Rourke",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -67,8 +70,9 @@
             "options" : []
         },
         {
-            "displayName": "Prose",
-            "description": "A Python script that uses proselint to process text and provides suggestions for strengthening language and tone.",
+            "displayName": "Language Tone Checker",
+            "description": "Provides suggestions for strengthening language and tone.",
+            "technicalDesc": "A Python script that uses python3-proselint to process text and provides suggestions for strengthening language and tone.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -83,8 +87,9 @@
             "options" : []
         },
         {
-            "displayName": "Diction",
-            "description": "A Python script that uses Diction to process text and provides suggestions for strengthening language and tone.",
+            "displayName": "Word Use Checker",
+            "description": "Highlights commonly misused words in phrases.",
+            "technicalDesc": "A Python script that uses the Unix tool diction to flag commonly misused words in phrases.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -100,7 +105,8 @@
         },
         {
             "displayName": "Word Cloud",
-            "description": "A Python script that calculates word frequency and organizes results for wordcloud2.js.",
+            "description": "Produces a word-frequency cloud.",
+            "technicalDesc": "A Python script that calculates word frequency and organizes results for wordcloud2.js.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -124,7 +130,8 @@
         },
         {
             "displayName": "Text Summary",
-            "description": "A Python script that identifies the most prevalent sentences in your writing based on term frequency.",
+            "description": "Attempts to summarize text to 10 or fewer sentences.",
+            "technicalDesc": "A Python script that identifies the most prevalent sentences in your writing based on term frequency.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -148,7 +155,8 @@
         },
         {
             "displayName": "Writing Statistics",
-            "description": "A Python script that uses Style to evaluate readability of written text.",
+            "description": "Generates readability statistics for a text.",
+            "technicalDesc": "A Python script that uses Style to evaluate readability of written text.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",

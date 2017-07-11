@@ -7,4 +7,8 @@ div.uk-card.uk-card-default
             div.uk-float-right
                 span.uk-text-meta {{ tool.license }}
     div.uk-card-body
-        p.uk-text-meta {{ tool.description }}
+        dl.uk-description-list
+            dt Function
+            dd {{ tool.description }}
+            dt Technical description
+            dd {{ tool.technicalDesc }}
