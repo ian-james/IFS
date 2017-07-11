@@ -45,6 +45,8 @@ module.exports = function (app, iosocket) {
     // DashBoard
     require(componentsPath + '/Dashboard/dashboardRoutes')(app, iosocket);
 
+    // Courses routes
+    require(componentsPath + '/Courses/coursesRoutes')(app, iosocket);
     // Student Profile page routes
     require(componentsPath + "/StudentProfile/profileRoutes")(app, iosocket);
 
@@ -53,6 +55,9 @@ module.exports = function (app, iosocket) {
 
     // Event Tracking
     require(componentsPath + '/InteractionEvents/trackedEventRoutes')(app, iosocket);
+
+    // Post Registration Setup
+    require(componentsPath + '/Setup/setupRoutes')(app, iosocket)
 
     // Test features can be placed here.
     require(componentsPath + "/Test/testRoutes")(app);

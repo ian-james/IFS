@@ -35,7 +35,10 @@ block content
                                             strong= val.code + ": " + val.courseName
                                         dd= val.description
                             else
-                                p You haven't enrolled in a class yet. Please enrol on the profile page.
+                                p
+                                    | You haven't enrolled in a class yet. Visit the 
+                                    a(href="/setup") setup page
+                                    |  to enrol.
 
 
             // achievements and upcoming events

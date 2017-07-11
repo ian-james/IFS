@@ -57,7 +57,7 @@ module.exports = function( app, passport ) {
             failureRedirect : '/login'
         }),
         function(req,res) {
-            if( req.body.remember) {
+            if(req.body.remember) {
                 req.session.cookie.maxAge = maxCookieAge;
             }
             else {
@@ -76,7 +76,7 @@ module.exports = function( app, passport ) {
      *
      */
     app.post('/register', passport.authenticate('local-signup', {
-            successRedirect : '/preferences',
+            successRedirect : '/setup',
             failureRedirect : '/register',
             failureFlash : true,
             badRequestMessage: "Failed to login"

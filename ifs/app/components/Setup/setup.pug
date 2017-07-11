@@ -1,0 +1,26 @@
+extends ../../shared/views/pageLayout.pug
+include ../../shared/UI_components/formSubmit.pug
+
+block content
+    div(ng-controller="setupCtrl").uk-container
+        h1 #{title}
+        p.uk-text-muted {{setup.description}}
+        div
+            form(name="setup" method="post" action="/setup")#setupForm.uk-margin
+                h2 {{setup.displayName}}
+                div(ng-repeat="option in setup.options")
+                    include setupItem.pug
+                button(type="submit").uk-button.uk-button-primary Save
+
+        div(ng-controller="coursesCtrl")
+            form(name="course-enrolment" method="post" action="/courses")#coursesForm.uk-margin
+                h2.uk-margin-remove-bottom Course Enrolment
+                p.uk-text-meta.uk-margin-remove-top Enrol in courses to subscribe to class events and track class skills.
+                div(ng-repeat="course in courses")
+                    include ../Courses/courseItem.pug
+                button(type="submit").uk-button.uk-button-primary Save
+
+        br
+
+    script(src="components/Setup/setupController.js")
+    script(src="components/Courses/coursesController.js")
