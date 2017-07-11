@@ -72,7 +72,7 @@ module.exports = function (passport) {
                         };
 
                         var insertQuery = "INSERT INTO users (username, password) values (?,?)";
-                        db.query( insertQuery,[newUser.username, newUser.password], function(err,rows) {
+                        db.query(insertQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
 
                             // copy the default avatar to the user avatar
@@ -133,7 +133,7 @@ module.exports = function (passport) {
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
-                    if( !bcrypt.compareSync(password, rows[0].password)){
+                    if(!bcrypt.compareSync(password, rows[0].password)){
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }

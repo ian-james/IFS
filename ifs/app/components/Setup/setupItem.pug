@@ -1,0 +1,17 @@
+div
+    div.uk-clearfix
+        div.uk-float-left
+            div.uk-inline.uk-margin-top-small
+                strong {{option.displayName}}
+        div.uk-float-right
+            div.uk-inline.uk-margin-small-right
+                div(uk-dropdown="pos: right; delay-hide: 100")
+                    span {{option.info}}
+            div.uk-inline
+                // setup items will always be checkboxes
+                input(type="hidden" name="{{option.name}}-hidden" id="{{option.name}}" value="false")
+                label.switch-wrapper
+                    input(type="checkbox" name="{{option.name}}" id="{{option.name}}" value="true" ng-checked="isEnabled(option.name) > 0")
+                    div.switch.switch-round
+    p.uk-text-meta {{option.description}}
+    hr

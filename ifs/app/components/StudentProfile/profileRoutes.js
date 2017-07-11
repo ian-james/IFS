@@ -61,7 +61,13 @@ module.exports = function(app) {
                         studentSkill.getStudentTop3Skills( studentProfile.id , function(errSkill, skillsData) {
                             var skillsKeys = ['name','value'];
                             studentStats = _.map(skillsData, obj => _.pick(obj,skillsKeys));
-                            res.render( viewPath + "profile", { "title":"Profile for " + studentProfile.name, "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 'studentStats': studentStats });
+                            res.render( viewPath + "profile", {
+                                "title": "Profile for " + studentProfile.name,
+                                "studentProfile": studentProfile,
+                                "courses": courses,
+                                "upcomingEvents": upEvents,
+                                'studentStats': studentStats
+                            });
                         });
                     });
                 } else
