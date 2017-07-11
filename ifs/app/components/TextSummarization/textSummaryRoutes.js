@@ -9,10 +9,10 @@ module.exports = function (app) {
 
     app.get('/summary', function( req, res ) {
 
-         var q = "select filename,runType,type,feedback from feedback where userId = ? and runType = ? and type = ? and " +
+         var q = "select filename,runType,type,feedback from feedback where userId = ? and runType = ? and toolName = ? and " +
                     "submissionId = (select id from submission where userId = ? ORDER By date DESC Limit 1)";
 
-        db.query(q, [req.user.id,"visual","textSummarization",req.user.id], function(err,data) {
+        db.query(q, [req.user.id,"visual","Text Summary",req.user.id], function(err,data) {
             var msg = "";
             var files = [];
             if(data) {

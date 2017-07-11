@@ -120,8 +120,9 @@ def decorateData( result, options ):
     json_string += '"feedback": [\n'
     for i in range(len(result)):
         json_string += '{\n'
-        json_string += '"toolName": "textSummarization",\n'
-        json_string += '"type": "textSummarization",\n'
+        json_string += '"toolName": "Text Summary",\n'
+        json_string += '"type": "visual",\n'
+        json_string += '"route": "/summary",\n'
         json_string += '"filename": "' + str(options['file']) + '",\n'
         json_string += '"originalname": "' + str( os.path.basename( options['file']) ) + '",\n'
         json_string += '"senCount":' + str(options['sentences']) + ',\n'

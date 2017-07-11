@@ -116,6 +116,7 @@ try {
             filename TEXT NOT NULL, \
             runType TEXT NOT NULL, \
             type TEXT NOT NULL, \
+            route TEXT, \
             charPos INT UNSIGNED, \
             charNum INT UNSIGNED, \
             lineNum INT UNSIGNED, \

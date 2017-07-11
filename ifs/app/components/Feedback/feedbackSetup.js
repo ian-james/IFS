@@ -178,8 +178,12 @@ function setupVisualFeedback(visualTools) {
     if( visualTools && visualTools.length > 0) {
         res = [];
         for(var i = 0; i< visualTools.length;i++) {
-            var tool = visualTools[i].value;
-            res.push( {'value':tool} );
+            var name = visualTools[i].name;
+            var route = visualTools[i].route;
+            res.push({
+                'name': name,
+                'route': route
+            });
         }
         return {'visualTools': res };
     }
