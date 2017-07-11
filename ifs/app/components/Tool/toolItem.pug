@@ -5,15 +5,16 @@ div.uk-accordion-content.uk-background-muted
         li
             div.uk-clearfix
                 div.uk-float-left
-                    div.uk-inline.uk-margin-small-right
+                    div.uk-inline.uk-margin-small-right.uk-remove-margin-top
                         strong Enable {{ tool.displayName }}
                     div.uk-inline
                         a(href="#" uk-icon="icon: info").uk-icon-button
                         div(uk-dropdown="pos: right; delay-hide: 100").uk-width-large
                             span {{ tool.description }}
-                div.uk-float-right.uk-inline
-                    label.switch-wrapper
-                        input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true" ng-checked="{{tool.prefValue}}")
-                        div.switch.switch-round
+                div.uk-float-right
+                    div.uk-inline
+                        label.switch-wrapper
+                            input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true" ng-checked="{{tool.prefValue}}")
+                            div.switch.switch-round
         li(ng-repeat="option in tool.options")
             include toolInput.pug
