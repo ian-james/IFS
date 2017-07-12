@@ -29,12 +29,8 @@ block content
                 if visualTools && visualTools.length > 0
                     div
                     each vtool in visualTools
-                        if vtool.value == 'wordCloud'
-                            span
-                                a(href="/cloud").uk-button.uk-button-default Word Cloud
-                        if vtool.value == 'textSummarization'
-                            span
-                                a(href="/summary").uk-button.uk-button-default Text Summary
+                        a(href=vtool.route).uk-button.uk-button-default #{ vtool.name }
+
             if feedbackStats
                 div.feedbackStatsSection
                     hr

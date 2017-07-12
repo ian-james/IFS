@@ -1,0 +1,18 @@
+{
+    "setup" : {
+        "displayName": "Post Registration Setup",
+        "description": "If this is your first time signing into the IFS, you need to complete your registration. You can re-visit this page at any time to change your options.",
+        "name": "setupOptions",
+        "options": [
+            {
+                "displayName": "Experiment opt-in",
+                "info": "Toggle the switch left if you would like to opt-out.",
+                "description": "The IFS is an experiment in student learning. To be part of this experiment, we need to collect some data on general use and behaviour, as well as some metrics on your improvement over time. Opting out of the experiment will turn off this tracking, as well as most of the features of this web application.",
+                "name": "optin",
+                "type": "checkbox",
+                "values": "",
+                "value": "true"
+            }
+        ]
+    }
+}

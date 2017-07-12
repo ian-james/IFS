@@ -20,6 +20,13 @@ body {
     flex: 1;
 }
 
+/**
+ * text class overrides
+ **/
+.text-normal {
+    font-weight: normal;
+}
+
 /***
  * CSS toggle switch, since UI Kit does not include this UI element
  * Based on UI Kit styles; usage requires a checkbox element with a wrapper
@@ -31,6 +38,7 @@ body {
   display: inline-block;
   width: 3em;
   height: 1.5em;
+  margin-top: 0.3em;
 }
 
 /* Hide default HTML checkbox */

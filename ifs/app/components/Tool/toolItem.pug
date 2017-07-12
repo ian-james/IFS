@@ -1,21 +1,20 @@
-div(class="row" ng-if="option.type == 'checkbox'")
-    .checkbox
-        label
-        input(type="checkbox").uk-checkbox
-        |   {{ option.displayName }}
-
-div(class="row" ng-if="option.type == 'text'")
-    p {{ option.displayName }}
-    input(type="text")
-
-div(class="row" ng-if="option.type == 'select'")
-    p {{ option.displayName }}
-    select
-      option(ng-repeat='val in option.values') {{ val }}
-
-div(class="row" ng-if="option.type == 'file'")
-    p {{ option.displayName }}
-    div(uk-form-custom="target: true")
-        input(type="file")
-        input(type="text" placeholder="Select file" disabled).uk-input.uk-form-width-medium
-    button.uk-button.uk-button-default Submit
+input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
+h3.uk-accordion-title {{tool.displayName}}
+div.uk-accordion-content.uk-background-muted
+    ul.uk-list.uk-list-divider.uk-padding-small
+        li
+            div.uk-clearfix
+                div.uk-float-left
+                    div.uk-inline.uk-margin-small-right
+                        strong Enable {{ tool.displayName }}
+                    div.uk-inline
+                        a(href="#" uk-icon="icon: info").uk-icon-button
+                        div(uk-dropdown="pos: right; delay-hide: 100").uk-width-large
+                            span {{ tool.description }}
+                div.uk-float-right
+                    div.uk-inline
+                        label.switch-wrapper
+                            input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true" ng-checked="{{tool.prefValue}}")
+                            div.switch.switch-round
+        li(ng-repeat="option in tool.options")
+            include toolInput.pug

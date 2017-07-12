@@ -1,15 +1,18 @@
+// checkbox
 div(ng-if="option.type == 'checkbox'")
     span {{ option.displayName }}
     input(type="checkbox" name="{{option.name}}" id="{{option.name}}" ng-checked="{{option.prefValue}}").uk-checkbox.uk-float-right
 
+// text input
 div(ng-if="option.type == 'text'")
-    label(for="{{ option.name }}").uk-form-label
+    label(for="{{ option.name }}").uk-form-label.text-normal
         | {{ option.displayName }}
     div.uk-form-controls
         input(type="text" name="{{option.name}}" id="{{option.name}}" value="{{option.prefValue}}").uk-input
 
+// file input
 div(ng-if="option.type == 'file'")
-    label(for="{{ option.name }}").uk-form-label
+    label(for="{{ option.name }}").uk-form-label.text-normal
         | {{ option.displayName }}
     br
     div(uk-form-custom="target: true")
@@ -17,8 +20,9 @@ div(ng-if="option.type == 'file'")
         input(type="text" placeholder="Select an image" disabled).uk-input.uk-form-width-medium
         button.uk-button.uk-button-default Select
 
+// select input
 div(ng-if="option.type == 'select'")
-    label(for="{{ option.name }}").uk-form-label
+    label(for="{{ option.name }}").uk-form-label.text-normal
         | {{ option.displayName }}
     div.uk-form-controls
         select(id="{{option.name}}" name="{{option.name}}").uk-select

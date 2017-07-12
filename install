@@ -331,9 +331,12 @@ echo ""
 
 # install IFS Tool dependencies
 echo 'Installing IFS Tool dependencies...'
-apt-get install hunspell libhunspell-dev python3 python3-pip cppcheck valgrind
+apt-get install python3 python3-pip cppcheck valgrind \
+        hunspell libhunspell-dev \
+        diction
+
 pip3 install --upgrade pip
-pip3 install hunspell language-check pyapa nltk numpy
+pip3 install hunspell language-check proselint pyapa nltk numpy
 python3 -m nltk.downloader --dir=/usr/share/nltk_data stopwords punkt # all
 echo ""
 

@@ -30,10 +30,10 @@ import shlex
 import glob
 
 def createCmd( options ):
-
     cmdStr = ""
     cmdStr = " ".join( [ options['tool'], options['arg'], options['file']])
     return cmdStr
+
 
 # Finds target in word from start position or returns -1
 def find( word, target, start ):
@@ -44,12 +44,12 @@ def find( word, target, start ):
     except:
         return -1
 
+
 # searches target for start and end characters, first index begin
 # Designed to find subsections of strings between set characters
 # If end char is not find the remained of the target is used.
 # (suggestion ) [error]
 def findSection( target, sch, ech, begin ):
-
     fid = find( target, sch, begin )
     if( fid >= 0 ):
         sid = find( target, ech, fid+1 )
@@ -72,7 +72,6 @@ def getStartLineCharPosition( content, lineNum ):
 
 
 def decorateData( result, options ):
-
     i = 0
     divCh = "->"
     json_string = ''
@@ -85,7 +84,6 @@ def decorateData( result, options ):
 
     lines = result.splitlines()
     for line in lines:
-
         if( len(line) == 0 ):
             continue
 
@@ -142,7 +140,7 @@ def decorateData( result, options ):
                     json_string += '"charPos": ' + str( cidx + len(key) ) + ',\n'
                     json_string += '"charNum": ' + str( globalFilePosition + cidx + len(key) ) + ',\n'
                     json_string += '"severity": "' + "warning" + '",\n'
-                    json_string += '"type": "recommendation",\n'
+                    json_string += '"type": "word-use",\n'
                     json_string += '"toolName": "Diction Checker",\n'
                     json_string += '"filename": "' + os.path.basename(filename) + '",\n'
                     json_string += '"target": ' + json.dumps(target.strip()) + ',\n'
@@ -152,24 +150,23 @@ def decorateData( result, options ):
                 fid = error[1]+1
                 if( addedFeedback ):
                     json_string += ','
-
         except:
             # find will throw exceptions when not found, no need to report as errors
             pass
 
-    # Remove the last ,
+    # Remove the last comma (,)
     json_string = json_string[:-1]
     json_string += ']\n'
     json_string += '}\n'
 
     return json_string
 
-    # This function runs a command output results to two files
+
+# This function runs a command output results to two files
 def getProcessInfo( cmd, outFile, errorFile ):
     # Executing an external command, to retrieve the output
     # This funciton is supported by several answers on StackOverflow
     # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
-
     with open(outFile, 'w', encoding='utf-8') as fout:
         with open(errorFile,'w', encoding='utf-8') as ferr:
             args = shlex.split(cmd)
@@ -182,13 +179,14 @@ def getProcessInfo( cmd, outFile, errorFile ):
 
             return exitcode, out, err
 
+
 # main program that takes arguments
 def main(argv):
     ifile = ''
     options = { 'tool': 'diction',
                 'ifs': True,
-                'outFile':'stdout.txt',
-                'outErrFile':'stderr.txt',
+                'outFile': 'stdout.txt',
+                'outErrFile': 'stderr.txt',
                 'arg': '-s'
               }
 
@@ -226,9 +224,9 @@ def main(argv):
             except:
                 sys.stderr.write("Unable to successfully retrieve assessment information.\n")
         else:
-            sys.stderr.write( 'Invalid tool selected, please select a valid tool name.\n')
+            sys.stderr.write('Invalid tool selected, please select a valid tool name.\n')
     else:
-        sys.stderr.write( 'Please provide a text file for evaluation.\n')
+        sys.stderr.write('Please provide a text file for evaluation.\n')
         sys.exit()
 
 if __name__ == '__main__':

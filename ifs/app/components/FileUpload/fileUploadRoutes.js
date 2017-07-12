@@ -84,6 +84,7 @@ module.exports = function (app, iosocket) {
                     _.extend(fi,toolAdd);
 
                     var fe =  eventDB.makeFeedbackEvent( sessionId, userId, submissionId, fi );
+                    console.log("FEEDBACKEVENT", fe);
 
                     dbHelpers.insertEventC( config.feedback_table, fe, function(err,d){
                         // Empty Callback if feedback fails to save, we aren't too concerned.

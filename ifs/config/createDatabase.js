@@ -16,12 +16,14 @@ try {
 
         connection.query ('CREATE DATABASE IF NOT EXISTS ' + config.database );
 
+        // create the users table, opt new users into data tracking by default
         Logger.info("Create the Table:", config.users_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.users_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             username VARCHAR(20) NOT NULL, \
             password CHAR(60) NOT NULL, \
             sessionId INT NOT NULL DEFAULT 0, \
+            optedIn BOOL DEFAULT TRUE, \
             PRIMARY KEY(id) \
         )");
 
@@ -116,6 +118,7 @@ try {
             filename TEXT NOT NULL, \
             runType TEXT NOT NULL, \
             type TEXT NOT NULL, \
+            route TEXT, \
             charPos INT UNSIGNED, \
             charNum INT UNSIGNED, \
             lineNum INT UNSIGNED, \

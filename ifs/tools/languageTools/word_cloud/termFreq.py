@@ -21,6 +21,7 @@
 import sys, getopt, os
 import io, json
 import re
+import string
 from nltk.probability import FreqDist
 from nltk.corpus import stopwords
 from nltk.tokenize import wordpunct_tokenize
@@ -31,7 +32,8 @@ def decorateData( result, options ):
     json_string += '"feedback": [\n'
     for i in range(len(result)):
         json_string += '{\n'
-        json_string += '"type": "wordCloud",\n'
+        json_string += '"type": "visual",\n'
+        json_string += '"route": "/cloud",\n'
         json_string += '"toolName": "Word Cloud",\n'
         json_string += '"wordCount":' + str(options['termLimit']) + ',\n'
         json_string += '"filename": "' + str(options['file']) + '",\n'
@@ -51,10 +53,12 @@ def decorateData( result, options ):
 def termFreq( text, options ):
     # Stop Words
     swords = set(stopwords.words( options['language'] ) )
-    swords.update(['.', ',', '"', "'", '?', '!', ':', ';', '(', ')', '[', ']', '{', '}'])
+
+    table = str.maketrans( dict.fromkeys(string.punctuation) )
+    cleanText = text.translate( table )
 
     # Change to lower case and tokenize, exclude punctuation and stopwords
-    words = [ i.lower() for i in wordpunct_tokenize(text) if i.lower() not in swords]
+    words = [ i.lower() for i in wordpunct_tokenize(cleanText) if i.lower() not in swords]
 
     fdist = FreqDist(words)
     result = [ list(i) for i in fdist.most_common( options['termLimit'] ) ]

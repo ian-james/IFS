@@ -9,7 +9,6 @@ var eventDB = require(__components + "InteractionEvents/event.js" );
 var _ = require('lodash');
 
 module.exports = {
-
     eventID: function(req){
         return {
             "userId": req.user.id,
@@ -19,7 +18,6 @@ module.exports = {
 
     // Note: sessionId is unique only to userId
     makeEvent: function(sessionId, userId, et, name, data ) {
-
         return {
             "userId": userId,
             "sessionId": sessionId,
@@ -39,10 +37,8 @@ module.exports = {
      * @return {[type]}                  [description]
      */
     makeFeedbackEvent: function( sessionId, userId, submissionId, toolFeedbackItem ){
-
         var e = {};
         try {
-
             e['userId'] = userId;
             e['sessionId'] = sessionId;
             e['submissionId'] = submissionId;
@@ -54,9 +50,10 @@ module.exports = {
                 'type'
             ];
 
-             var rk =  _.pick(toolFeedbackItem,requiredKeys);
+            var rk =  _.pick(toolFeedbackItem,requiredKeys);
 
             var keys = [
+                'route',
                 'charPos',
                 'charNum',
                 'lineNum',
@@ -77,14 +74,12 @@ module.exports = {
             e = _.assign(e, rk, k);
 
             e['suggestions'] = JSON.stringify(e['suggestions']);
-        }
-        catch( e ){
+        } catch(e) {
             Logger.error("Error Making feedback");
         }
 
         return e;
     },
-
 
     /**
      * Make feedback interaction events from object for DB.
@@ -92,7 +87,6 @@ module.exports = {
      * @return {[type]}           [description]
      */
     makeFeedbackInteractionEvent: function( sessionId, userId, eventData ) {
-
         var e = {};
         try {
             e['userId'] = userId;
@@ -106,8 +100,7 @@ module.exports = {
 
             var rk =  _.pick(eventData,requiredKeys);
             e = _.assign(e, rk);
-        }
-        catch( e ){
+        } catch(e) {
             Logger.error("Error Making feedback interaction event");
         }
         return e;
@@ -133,22 +126,21 @@ module.exports = {
 
             var rk =  _.pick(toolFeedbackItem,requiredKeys);
             e = _.assign(e, rk);
-        }
-        catch( e ){
+        } catch(e) {
             Logger.error("Error Making feedback interaction event");
         }
         return e;
     },
 
-    submissionEvent: function( sessionId, userId, name, data ){
-        return this.makeEvent( sessionId, userId, "submission", name,  data );
+    submissionEvent: function(sessionId, userId, name, data){
+        return this.makeEvent(sessionId, userId, "submission", name,  data);
     },
 
-    surveyEvent: function (sessionId,userId, name, data ){
-        return this.makeEvent(sessionId, userId, "survey", name,  data );
+    surveyEvent: function (sessionId,userId, name, data){
+        return this.makeEvent(sessionId, userId, "survey", name,  data);
     },
 
-    viewEvent:  function (sessionId, userId, name, data ){
-        return this.makeEvent(sessionId, userId, "view", name,  data );
+    viewEvent:  function (sessionId, userId, name, data){
+        return this.makeEvent(sessionId, userId, "view", name,  data);
     },
 };

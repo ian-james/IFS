@@ -2,7 +2,8 @@
     "tools": [
          {
             "displayName": "GCC Diagnostics",
-            "description": "A Python script that checks C/C++ compilation with the GNU Compiler Collection",
+            "description": "Identifies errors and warnings from the GNU Compiler Collection.",
+            "technicalDesc": "A Python script that checks C/C++ compilation with the GNU Compiler Collection",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -10,6 +11,7 @@
             "progName": "./tools/programmingTools/c_tools/programmingParser.py",
             "cmdToolName": "gcc",
             "runType": "programming",
+            "route": "",
             "filesAllowed": "zipFile",
             "parseCmd": "",
             "defaultArg": "-t gcc",
@@ -59,7 +61,8 @@
         },
         {
             "displayName": "Clang Diagnostics",
-            "description": "A Python script that checks C/C++ compilation with the Clang compiler.",
+            "description": "Identifies errors and warnings from the Clang C compiler.",
+            "technicalDesc": "A Python script that checks C/C++ compilation with the Clang compiler.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -67,6 +70,7 @@
             "progName": "./tools/programmingTools/c_tools/programmingParser.py",
             "cmdToolName": "clang",
             "runType": "programming",
+            "route": "",
             "filesAllowed": "zipFile",
             "parseCmd": "",
             "defaultArg": "-t clang",
@@ -115,8 +119,9 @@
             ]
         },
         {
-            "displayName": "CppCheck",
-            "description": "A Python script that checks C/C++ syntax.",
+            "displayName": "Code Quality Checker",
+            "description": "Identifies potential problems with C code, beyond what the compiler is able to identify.",
+            "technicalDesc": "A Python script that checks C/C++ code for errors using Cppcheck.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
@@ -124,6 +129,7 @@
             "progName": "./tools/programmingTools/c_tools/programmingParser.py",
             "cmdToolName": "cppCheck",
             "runType": "programming",
+            "route": "",
             "filesAllowed": "zipFile",
             "parseCmd": "",
             "defaultArg": "-t cppcheck",
