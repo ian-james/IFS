@@ -20,9 +20,6 @@ var socialModel = require(__components + "SocialModel/socialStatsDB");
 
 var feedbackModel = require(__components + "InteractionEvents/feedbackEvents");
 
-
-
-
 module.exports = function (app, iosocket )
 {    /**
      * [focusOptions description]
@@ -36,6 +33,11 @@ module.exports = function (app, iosocket )
         return assignments;
     }
 
+    /**
+     * Get suggestion object from required keys.
+     * @param  {[type]} items [description]
+     * @return {[type]}       [description]
+     */
     function getSuggestion(items) {
         var sugKeys  = ['target','suggestions','value'];
         var suggestions = [];
@@ -54,6 +56,36 @@ module.exports = function (app, iosocket )
     }
 
     /**
+     * Retrieves several statics at a time in parallel and organizes them for display.
+     * @param  {[type]}   statsReq [description]
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    function genericStatsRequest( statsReq, callback ) {
+
+        var calls = _.map(statsReq,'request');
+        async.parallel( calls, function(err,results) {
+
+            // Match the length of parallel input.
+            if(results && results.length == calls.length ) {
+
+                var ret = {};
+                for( var i = 0; i < calls.length; i++ ){
+                    var r = results[i];
+                    if(statsReq[i]['process'])
+                        r = statsReq[i].process( r );
+
+                    if(statsReq[i].resultPath)
+                        _.set(ret, statsReq[i].resultPath, r);
+                }
+                callback(ret);
+            }
+            else
+                callback([]);
+        });
+    }
+
+    /**
      * This function retrieves writing stats from the database and prepares them for display on dashboard.
      *  Depending on the layout of the dashboard more stats can be retrieved via paralle method.
      * @param  {[type]}   req      [description]
@@ -65,97 +97,113 @@ module.exports = function (app, iosocket )
        
         var toolSelect = req.session.toolSelect.toLowerCase();
         var topN = 3;
-        async.parallel(
-            [studentModel.getMyMostCommonSpellingMistakes.bind( null,req.user.id, topN ),
-             studentModel.getMySpellingAccuracy.bind( null,req.user.id),
-             socialModel.getMostCommonSpellingMistakes.bind( null, topN ),
-             socialModel.getSpellingAccuracy,
-             studentModel.getMyMostUsedTools.bind( null,req.user.id, toolSelect, topN ),
-             socialModel.getMostUsedTools.bind( null, toolSelect, topN )
-            ],
-            function(err,results) {
+        var requests = [ 
+            {
+                'request': studentModel.getMyMostCommonSpellingMistakes.bind( null,req.user.id, topN ),
+                'process': getSuggestion,
+                'resultPath': 'userStats.suggestions'
+            },
+            {
+                'request': studentModel.getMySpellingAccuracy.bind( null,req.user.id),
+                'process': null,
+                'resultPath': 'userStats.accuracy'
+            },
+            {
+                'request': socialModel.getMostCommonSpellingMistakes.bind( null, topN ),
+                'process': getSuggestion,
+                'resultPath': 'socialStats.suggestions'
+            },
+            {
+                'request': socialModel.getSpellingAccuracy,
+                'process': null,
+                'resultPath': 'socialStats.accuracy'
+            },
 
-                // Match the length of parallel input.
-                if(results && results.length == 6 ) {
-                    var sugKeys  = ['target','suggestions','value'];
-                    var stats = {};
-                    var suggestions = getSuggestion(results[0]);
-                    var accuracy = results[1];
-
-                    var utools = results[4];
-                    var stools = results[5];
-
-                    stats['userStats'] = {
-                        'suggestions': suggestions,
-                        'accuracy': accuracy,
-                        'tools': utools
-                    };
-
-                    suggestions =  getSuggestion(results[2]);
-                    var accuracy = results[3];
-                    stats['socialStats'] = {
-                        'suggestions': suggestions,
-                        'accuracy': accuracy,
-                        'tools': stools
-                    };
-                    callback(stats);
-                }
-                else
-                    callback([]);
+            {
+                'request': studentModel.getMyMostUsedTools.bind( null,req.user.id, toolSelect, topN ),
+                'process': null,
+                'resultPath': 'userStats.tools'
+            },
+            {
+                'request': socialModel.getMostUsedTools.bind( null, toolSelect, topN ),
+                'process': null,
+                'resultPath': 'socialStats.tools'
             }
-        );
+        ];
+        genericStatsRequest(requests,callback);
     }
 
-     function programmingStats( req, res, callback ) {
+    /**
+     * Minimal function to process double wrapped arrays into single
+     * @param  {[type]} arr [description]
+     * @return {[type]}     [description]
+     */
+    function farr( arr ) {
+        return arr && arr.length > 0 ? arr[0] : arr;
+    }
+
+    /**
+     * Setup Programming dashboard stats
+     * @param  {[type]}   req      [description]
+     * @param  {[type]}   res      [description]
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    function programmingStats( req, res, callback ) {
 
         var toolSelect = req.session.toolSelect.toLowerCase();
         var topN = 1;
         var id = req.user.id;
 
-        var tasks = [
-            studentModel.getMyMostUsedTools.bind( null, id, toolSelect, topN ),
-            studentModel.getMyCommonFeedbackTool.bind(null, id, toolSelect, topN),
-            studentModel.getMyCommonViewedMoreFeedbackTool.bind(null,id, toolSelect, topN ),
+        var requests = [ 
+            {
+                'request': studentModel.getMyMostUsedTools.bind( null, id, toolSelect, topN ),
+                'process': farr,
+                'resultPath': 'userStats.mostUsedTools'
+            },
+            {
+                'request': studentModel.getMyCommonFeedbackTool.bind(null, id, toolSelect, topN),
+                'process': null,
+                'resultPath': 'userStats.mostFeedbackTools'
+            },
+            {
+                'request': studentModel.getMyCommonViewedMoreFeedbackTool.bind(null,id, toolSelect, topN ),
+                'process': farr,
+                'resultPath': 'userStats.mostViewedMoreFeedbackTool'
+            },
+            {
+                'request': socialModel.getMostUsedTools.bind( null, toolSelect, topN ),
+                'process': farr,
+                'resultPath': 'socialStats.mostUsedTools'
+            },
+            {
+                'request': socialModel.getCommonFeedbackTool.bind(null,toolSelect, topN),
+                'process': null,
+                'resultPath': 'socialStats.mostFeedbackTools'
+            },
+            {
+                'request': socialModel.getCommonViewedMoreFeedbackTool.bind(null, toolSelect, topN),
+                'process': farr,
+                'resultPath': 'socialStats.mostViewedMoreFeedbackTool'
+            },
 
-            socialModel.getMostUsedTools.bind( null, toolSelect, topN ),
-            socialModel.getCommonFeedbackTool.bind(null,toolSelect, topN),
-            socialModel.getCommonViewedMoreFeedbackTool.bind(null, toolSelect, topN),
-
-            studentModel.getMyMostCommonFeedback.bind(null,id, toolSelect, 3),
-            studentModel.getSubmissionToErrorRate.bind(null,id, toolSelect),
-            socialModel.getOtherSubmissionToErrorRate.bind(null, id, toolSelect)
-        ];
-
-        async.parallel( tasks,
-            function(err,results) {
-                
-                // Match the length of parallel input.
-                if(results && results.length == tasks.length ) {
-                    var stats = {};
-                    var commonFeedback = results[6];
-                    var submissionError = results[7][0];
-
-                    stats['userStats'] = {
-                        'mostUsedTools': results[0][0],
-                        'mostFeedbackTool': results[1][0],
-                        'mostViewedMoreFeedbackTool': results[2][0],
-                        'commonFeedback': commonFeedback,
-                        'submissionErrorRate': submissionError
-                    };
-
-                    stats['socialStats'] = {
-                        'mostUsedTools': results[3][0],
-                        'mostFeedbackTool': results[4][0],
-                        'mostViewedMoreFeedbackTool': results[5][0],
-                        'submissionErrorRate': results[8][0]
-                    };
-                    callback(stats);
-                }
-                else
-                    callback([]);
-
+            {
+                'request': studentModel.getMyMostCommonFeedback.bind(null,id, toolSelect, 3),
+                'process': null,
+                'resultPath': 'userStats.commonFeedback'
+            },
+            {
+                'request': studentModel.getSubmissionToErrorRate.bind(null,id, toolSelect),
+                'process': farr,
+                'resultPath': 'userStats.submissionErrorRate'
+            },
+            {
+                'request': socialModel.getOtherSubmissionToErrorRate.bind(null, id, toolSelect),
+                'process': farr,
+                'resultPath': 'socialStats.submissionErrorRate'
             }
-        );
+        ];
+        genericStatsRequest(requests,callback);
     }
 
     function collectDashboardData( req, res, callback ) {
@@ -187,6 +235,7 @@ module.exports = function (app, iosocket )
                             }
                             else {
                                 writingStats(req,res,function(stats) {
+                                    console.log(stats);
                                     page['stats'] =  stats;
                                     page['toolType']  = "writing";
                                     callback(req,res,page);
