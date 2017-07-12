@@ -89,8 +89,8 @@ module.exports = function(app) {
                         Logger.log("ERROR SETTING STUDENT PROFILE");
 
                     //TODO pop or message
-                    res.location("/preferences");
-                    res.redirect("/preferences");
+                    res.location("/tool");
+                    res.redirect("/tool");
                 });
             });
         } else {
