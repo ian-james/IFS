@@ -98,16 +98,7 @@ module.exports = {
             'request': "select timediff(MAX(a.date),MIN(a.date)) as value from (SELECT DISTINCT date from submission  where userId = ? ORDER BY date desc limit 0,2) a"
         };
     },
-
-/*
-    getTimeBetweenMostRecentSubmissions: function( userId ) {
-        return {
-            'name': "timediffLastSubmissions",
-            'data':[userId],
-            'request': "select timediff(MAX(a.date),MIN(a.date)) as value from (SELECT DISTINCT date from submission  where userId = ? ORDER BY date desc limit 0,2) a"
-        };
-    },
-*/
+    
     getMostFeedbackPerSubmission: function( userId ) {
         return {
             'name': "mostFeedbackPerSubmission",
@@ -122,9 +113,5 @@ module.exports = {
             'data':[userId],
             'request': "select AVG(a.subFeedback) as value from (select COUNT(*) as subFeedback from feedback where userId = ? GROUP BY submissionId) a"
         };
-    },
-
-    /*
-    select MAX(a.date) as max_datetime, MIN(a.date) as min_datetime, TIMEDIFF(MAX(a.date),MIN(a.date)) FROM userInteractions a WHERE userId=4 and sessionId=16 GROUP BY DATE(a.date);
-     */
+    }
 }

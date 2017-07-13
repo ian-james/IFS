@@ -94,10 +94,10 @@ module.exports = function (app, iosocket )
      * @return {[type]}            [description]
      */
     function writingStats( req, res, callback ) {
-       
+
         var toolSelect = req.session.toolSelect.toLowerCase();
         var topN = 3;
-        var requests = [ 
+        var requests = [
             {
                 'request': studentModel.getMyMostCommonSpellingMistakes.bind( null,req.user.id, topN ),
                 'process': getSuggestion,
@@ -155,7 +155,7 @@ module.exports = function (app, iosocket )
         var topN = 1;
         var id = req.user.id;
 
-        var requests = [ 
+        var requests = [
             {
                 'request': studentModel.getMyMostUsedTools.bind( null, id, toolSelect, topN ),
                 'process': farr,
@@ -219,12 +219,16 @@ module.exports = function (app, iosocket )
 
                     studentSkill.getAssigmentAndTaskList(studentProfile.id, function(errTask, taskData) {
 
-                        var assignmentTasks = _.map(taskData, obj => _.pick(obj, ['assignmentId','assignmentName', 'description','courseId','courseName','courseCode','taskName','taskId']));
+                        var assignmentTasks = taskData;
 
                         studentSkill.getUserSkills( req.user.id, function(skillErr, skills) {
 
-                            var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents, 
-                                'assignments': getAssignments(assignmentTasks), 'assignmentTasks':assignmentTasks, 'skills': skills };
+                            var focus = null;
+                            if( req.session.dailyFocus )
+                                focus = req.session.dailyFocus;
+
+                            var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents,
+                                'assignments': getAssignments(assignmentTasks), 'assignmentTasks':assignmentTasks, 'skills': skills, 'focus': focus };
 
                             if( req.session.toolSelect == "Programming" ) {
                                 programmingStats(req,res,function(stats) {
@@ -235,7 +239,6 @@ module.exports = function (app, iosocket )
                             }
                             else {
                                 writingStats(req,res,function(stats) {
-                                    console.log(stats);
                                     page['stats'] =  stats;
                                     page['toolType']  = "writing";
                                     callback(req,res,page);
@@ -262,17 +265,31 @@ module.exports = function (app, iosocket )
         collectDashboardData(req,res, function(req,res,data ) {
             res.render( viewPath + "dashboard", data );
         });
-    });
-
+    })
+;
     /**
      * Dashboard data setups up the controller to have the same data as the backend expects.
      * @param  {[type]} req  [description]
-     * @param  {[type]} res) 
+     * @param  {[type]} res)
      * @return {[type]}      [description]
      */
     app.get('/dashboard/data', function(req,res) {
         collectDashboardData(req,res, function(req,res,data) {
             res.json(data);
         });
+    });
+
+    /**
+     * Post request from client-angular not a real form. Sending us select info on course/assignment focus data.
+     * @param  {[type]} req    [description]
+     * @param  {Object} res){                     req.session.dailyFocus [description]
+     * @return {[type]}        [description]
+     */
+    app.post('/dashboard/assignmentFocusData', function(req,res){
+        req.session.dailyFocus = {
+            courseId: req.body.focusCourseId,
+            assignmentId: req.body.focusAssignmentId
+        };
+        req.session.save();
     });
 }

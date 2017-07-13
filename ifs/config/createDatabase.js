@@ -234,7 +234,8 @@ try {
             isComplete BOOL NOT NULL DEFAULT 0, \
             PRIMARY KEY(id), \
             FOREIGN Key (studentId) REFERENCES " + config.database + "." + config.student_table + "(id), \
-            FOREIGN Key (assignmentTaskId) REFERENCES " + config.database + "." + config.assignment_task_table + "(id) \
+            FOREIGN Key (assignmentTaskId) REFERENCES " + config.database + "." + config.assignment_task_table + "(id), \
+            UNIQUE Key student_assignmentId (studentId,assignmentTaskId) \
         )");
 
         /* Stores only current value of preferences, interactions and changes are captured else where */

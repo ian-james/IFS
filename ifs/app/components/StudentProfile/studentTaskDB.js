@@ -27,16 +27,13 @@ module.exports = {
 
 
     /**
-     * Gets the classId,assignmentId, skills, tasks and taskComplete for all classes.
-     * Large ugly mysql functions... :(
-     * * @param  {[type]}   userId   [description]
+     * Gets the classId,assignmentId and skills for all classes. IE not user specific.
+     * @param  {[type]}   userId   [description]
      * @param  {Function} callback [description]
      * @return {[type]}            [description]
      */
     getAssigmentAndTaskList: function( userId, callback ) {
-        var q = "select a.id as assignmentId, a.name as assignmentName, a.description as description, c.id as courseId, d.id as assignmentTaskId, d.name as taskName, d.taskId as taskId, d.value as isComplete" +
-               " from class c, assignment a, student s, (select at.*,b.id as taskId, ifnull(b.isComplete, 0) as value from assignment_task at LEFT Join student_assignment_task b on at.id = b.assignmentTaskId) d " +
-               " where s.userId = ? and a.classId = c.id and a.id = d.assignmentId";
+        var q = "select a.id as assignmentId, a.name as assignmentName, a.description as description, c.id as courseId, at.name as taskName, at.id as taskId from assignment a, assignment_task at, class c, student s where s.userId = ? and a.classId = c.id and at.assignmentId = a.id";
         db.query(q,userId,callback);
     },
 
@@ -49,4 +46,32 @@ module.exports = {
         var q = dbHelpers.buildInsert(config.student_skill_table) + dbHelpers.buildValues(["studentId","classSkillId", "value"]);
         db.query(q,[studentId, classSkillId, skillValue], callback);
     },
+
+    /**
+     * This function inserts an assignment task as either complete or imcomplete.
+     * It will update if the value exists.
+     * @param  {[type]}   studentId        [description]
+     * @param  {[type]}   assignmentTaskId [description]
+     * @param  {Boolean}  isComplete       [description]
+     * @param  {Function} callback         [description]
+     * @return {[type]}                    [description]
+     */
+    insertStudentAssignmentTask: function( studentId, assignmentTaskId, isComplete, callback ) {
+        var q = dbHelpers.buildInsert(config.student_assignment_task_table) + dbHelpers.buildValues(["studentId","assignmentTaskId", "isComplete"]) + "ON Duplicate Key update isComplete=Values(isComplete)";
+        db.query(q,[studentId, assignmentTaskId, isComplete], callback);
+    },
+
+    /**
+     * Get all of a student's assignments and tasks.
+     * @param  {[type]}   studentId        [description]
+     * @param  {[type]}   assignmentTaskId [description]
+     * @param  {Boolean}  isComplete       [description]
+     * @param  {Function} callback         [description]
+     * @return {[type]}                    [description]
+     */
+    getStudentAssignmentsAndTasks: function( studentId, callback ) {
+        var q = dbHelpers.buildSelect(config.student_assignment_task_table) + dbHelpers.buildWS("studentId");
+        db.query(q,studentId, callback);
+    },
+    
 }

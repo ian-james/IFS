@@ -38,10 +38,14 @@ var mySession =  session({
         host:'localhost',
         port: redisOpts.kueOpts.redis.port,
         client: client,
-        ttl: redisOpts.ttl
+        ttl: redisOpts.ttl,
+        httpOnly: false
     }),
     saveUninitialized: true,
-    cookie: {maxAge:30*60*1000}
+    cookie: {
+        maxAge:30*60*1000,
+        httpOnly: false
+    }
 });
 
 // Add middleware 
@@ -54,6 +58,7 @@ const server = app.listen(app.get('port'), function() {
 
 var event = require(__components + "InteractionEvents/buildEvent.js" );
 var tracker = require(__components + "InteractionEvents/trackEvents.js" );
+var studentTask = require(__components + "StudentProfile/studentTaskDB.js");
 
 const socket_io = require('socket.io')(server).
                 use(function(socket,next) {
@@ -93,7 +98,15 @@ socket_io.on('connection', (socket) => {
         console.log("SERVER GOT TRACK EVENT", data);
     });
 
-    //console.log("emit event");
+    socket.on('studentAssignmentTaskEvent', function(data) {
+        // Track the event in user interactions
+        tracker.btrackEvent(socket, event.makeEvent(sessionId, id, data.eventType, data.name, data.data) );
+        // Save
+        studentTask.insertStudentAssignmentTask( data.studentId, data.assignmentTaskId , data.data, function(err,data){
+            //TODO: nothing to do here if failures.
+        });
+    });
+
     tracker.trackEvent(socket, event.makeEvent(sessionId, id, "connection", "Authorized", {}));
 });
 
