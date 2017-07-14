@@ -90,17 +90,9 @@ module.exports = function (passport) {
                             newUser.sessionId = 0;
                             req.flash('success', 'Successfully signed up.');
 
-                            //Load Preferences
-                            console.log("INSERTING DATA TO STUDENT PROFILE");
-
-                            /*
-                             *
-                             * TODO: pass firstname/lastname fields from sign up form to the studentProfile SQL DB
-                             *
-                             */
-
                             studentProfile.insertStudentProfile( newUser.id, req.body['firstname'], "Tell us about yourself", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
+                                    defaultTool.setupDefaultTool(req);
                                     SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
                                         return done(null, newUser);
                                     });
