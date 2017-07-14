@@ -1,6 +1,5 @@
 app.controller( "dashboardCtrl", function($scope, $http) {
     $scope.courses=[];
-    $scope.upcomingEvents = [];
     $scope.assignments = [];
     $scope.stats = [];
     $scope.courseSelect = null
@@ -56,7 +55,6 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     $http.get('/dashboard/data').then( function(res) {
         // NOTE: This uses a second route to load data into controller.
         // Main Layout information and more static information is loaded via Express routes.
-        $scope.upcomingEvents = res.data.upcomingEvents;
         $scope.assignments = res.data.assignments;
         $scope.stats = res.data.stats;
         $scope.courses = res.data.courses;

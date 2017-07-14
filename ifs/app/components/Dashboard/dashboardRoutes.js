@@ -209,14 +209,21 @@ module.exports = function (app, iosocket )
     function collectDashboardData( req, res, callback ) {
 
         studentProfile.getStudentProfileAndClasses(req.user.id, function(err, studentData) {
+            var toolType = req.session.toolSelect == "Programming" ? "programming" : "writing";
+            var toolFunc =  req.session.toolSelect == "Programming" ? programmingStats : writingStats;
             if(studentData) {
                 var studentProfile = _.pick(studentData[0],  ["id","name", "bio", "avatarFileName"]);
                 var courses = _.map(studentData, obj => _.pick(obj,["id","code","courseName","description","disciplineType"]));
-
-                // Retrieve the upcoming events.
-                upcomingEvents.getStudentUpcomingEvents(req.user.id , function( errEvents, upcomingEventsData) {
-                    var upEvents = _.map(upcomingEventsData, obj => _.pick(obj,['title','description','closedDate']));
-
+                if(courses.length == 0 ) {
+                    // NO courses
+                    var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses,'assignments': [],
+                                     'assignmentTasks':[], 'skills': [], 'focus': [], 'toolType': toolType};
+                    toolFunc(req,res,function(stats) {
+                        page['stats'] =  stats;
+                        callback(req,res,page);
+                    });
+                }
+                else {
                     studentSkill.getAssigmentAndTaskList(studentProfile.id, function(errTask, taskData) {
 
                         var assignmentTasks = taskData;
@@ -227,26 +234,16 @@ module.exports = function (app, iosocket )
                             if( req.session.dailyFocus )
                                 focus = req.session.dailyFocus;
 
-                            var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses, "upcomingEvents": upEvents,
-                                'assignments': getAssignments(assignmentTasks), 'assignmentTasks':assignmentTasks, 'skills': skills, 'focus': focus };
+                            var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses,'assignments': getAssignments(assignmentTasks),
+                                         'assignmentTasks':assignmentTasks, 'skills': skills, 'focus': focus, 'toolType': toolType };
 
-                            if( req.session.toolSelect == "Programming" ) {
-                                programmingStats(req,res,function(stats) {
-                                    page['stats'] =  stats;
-                                    page['toolType']  = "programming";
-                                    callback(req,res,page);
-                                });
-                            }
-                            else {
-                                writingStats(req,res,function(stats) {
-                                    page['stats'] =  stats;
-                                    page['toolType']  = "writing";
-                                    callback(req,res,page);
-                                });
-                            }
+                            toolFunc(req,res,function(stats) {
+                                page['stats'] =  stats;
+                                callback(req,res,page);
+                            });
                         });
                     });
-                });
+                }
             }
             else {
                 res.status(500).end();

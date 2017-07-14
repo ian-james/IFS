@@ -71,12 +71,11 @@ module.exports = function( app, passport ) {
     }));
 
     app.get('/logout', function (req, res ){
-        req.logOut();
-        res.redirect('/');
+        req.session.destroy(function(err){
+            res.redirect('/');
+        });
     });
-
-
-}; //Close Export module
+}; 
 
 
 

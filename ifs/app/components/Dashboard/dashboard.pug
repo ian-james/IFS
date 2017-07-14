@@ -14,7 +14,8 @@ block content
             div(class="uk-width-1-5@s uk-width-1-4@m").profile.uk-align-left
                include dashboardStudentProfile.pug
             div(class="uk-width-expand").uk-section
-                include dashboardSkillFocus.pug
+                if courses.length != 0
+                    include dashboardSkillFocus.pug
                 if toolType == "writing"
                     include dashboardStats.pug
                 else
