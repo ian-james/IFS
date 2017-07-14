@@ -85,7 +85,7 @@ module.exports = function(app) {
             }
             else {
                 SurveyManager.setupSurvey(req.session.toolSelect.toLowerCase(), surveyPrefData, function(err, selectedSurveyData) {
-                    if(err || !selectedSurveyData) {
+                    if( err || !selectedSurveyData ) {
                         res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
                     }
                     else {

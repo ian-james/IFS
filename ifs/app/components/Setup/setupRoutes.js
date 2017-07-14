@@ -8,6 +8,8 @@ var userOptDB = require(__components + "Setup/userOptDB.js");
 
 var _ = require('lodash');
 
+var surveyManager = require(__components + "Survey/surveyManager.js");
+
 // POST/GET requests
 module.exports = function(app) {
     app.route("/setup")
@@ -72,18 +74,22 @@ module.exports = function(app) {
         // handle setup options
         // deal with experiment opt-in / opt-out
         if (enabled.indexOf('optin') >= 0) {
-            userOptDB.toggleOptedIn(userId, 1, function(err, optin) {
-                if (err)
-                    Logger.log("ERROR", err);
-                else
-                    Logger.log("UID " + userId + " opted-in");
+            surveyManager.setAbleAllSurveyPreferences( req.user.id, 1, function(ableErr, ableResult) {
+                userOptDB.toggleOptedIn(userId, 1, function(err, optin) {
+                    if (err)
+                        Logger.log("ERROR", err);
+                    else
+                        Logger.log("UID " + userId + " opted-in");
+                });
             });
         } else {
-            userOptDB.toggleOptedIn(userId, 0, function(err, optin) {
-                if (err)
-                    Logger.log("ERROR", err);
-                else
-                    Logger.log("UID " + userId + " opted-out");
+            surveyManager.setAbleAllSurveyPreferences( req.user.id, 0, function(ableErr, ableResult) {
+                userOptDB.toggleOptedIn(userId, 0, function(err, optin) {
+                    if (err)
+                        Logger.log("ERROR", err);
+                    else
+                        Logger.log("UID " + userId + " opted-out");
+                });
             });
         }
 

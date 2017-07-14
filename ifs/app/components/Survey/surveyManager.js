@@ -25,7 +25,7 @@ module.exports = {
      * @return  Array of survey data from DB.
      */
     getUserSurveyProfile: function( userId, callback ) {
-        var q = dbHelpers.buildSelect(config.survey_preferences_table ) + dbHelpers.buildWS(userId);
+        var q = dbHelpers.buildSelect(config.survey_preferences_table ) + dbHelpers.buildWS("userId");
         db.query(req,userId,callback);
     },
 
@@ -38,6 +38,11 @@ module.exports = {
     getUserSurveyProfileAndSurveyType: function(userId, callback) {
         var q = "select sp.*, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
         db.query(q,userId,callback);
+    },
+
+    setAbleAllSurveyPreferences: function( userId, ableValue, callback ) {
+        var q = dbHelpers.buildUpdate(config.survey_preferences_table) + " set allowedToAsk = ? " + dbHelpers.buildWS("userId") 
+        db.query(q,[ableValue,userId], callback);
     },
 
     /**
@@ -170,7 +175,7 @@ module.exports = {
 
         survey = this.selectSurvey(surveyOptions);
         
-        if( survey ) {
+        if( survey  && survey.length != 0) {
             var opts = SurveyBuilder.setDisplaySurveyOptions(null,null,[survey.currentIndex, survey.lastIndex]);
             callback(null,{"data":survey, options:opts});
         }
