@@ -124,6 +124,8 @@ module.exports = function (passport) {
             },
             function (req, username, password, done ) {
 
+                console.log(req.session);
+
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     if(err) {
                         req.flash('errorMessage', 'Service currently unavailable');

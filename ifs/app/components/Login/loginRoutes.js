@@ -5,8 +5,6 @@
 var router = require('express').Router();
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
-var maxCookieAge = 1000*60*30; //TODO: Moves this to sessionConfig
-
 var Logger = require( __configs + "loggingConfig");
 
 var _ = require('lodash');
@@ -53,19 +51,9 @@ module.exports = function( app, passport ) {
 
     //Login request, pass off to the correct link, set coookie session info.
     app.post("/login", passport.authenticate('local-login', {
-            successRedirect : '/tool',
-            failureRedirect : '/login'
-        }),
-        function(req,res) {
-            if(req.body.remember) {
-                req.session.cookie.maxAge = maxCookieAge;
-            }
-            else {
-                req.session.cookie.expires = false;
-            }
-            res.redirect('/');
-        }
-    );
+        successRedirect : '/tool',
+        failureRedirect : '/login'
+    }));
 
     app.get('/register', function ( req,res ) {
         res.render(viewPath + 'register', { title: "Signup Screen", message:"ok"});
@@ -76,10 +64,10 @@ module.exports = function( app, passport ) {
      *
      */
     app.post('/register', passport.authenticate('local-signup', {
-            successRedirect : '/setup',
-            failureRedirect : '/register',
-            failureFlash : true,
-            badRequestMessage: "Failed to login"
+        successRedirect : '/setup',
+        failureRedirect : '/register',
+        failureFlash : true,
+        badRequestMessage: "Failed to login"
     }));
 
     app.get('/logout', function (req, res ){
