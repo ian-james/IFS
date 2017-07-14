@@ -2,6 +2,7 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var fs = require("fs");
 var _ = require('lodash');
+var Logger = require( __configs + "loggingConfig");
 
 var Constants = require( __components + "Constants/programConstants");
 var SurveyManager = require( __components + "Survey/surveyManager");
@@ -11,13 +12,19 @@ var Survey = require( __components + "Survey/survey");
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 
 module.exports = function(app) {
+
+    /**
+     * Takes the tool preferences and the tools and updates the curren default and preferred values.
+     * @param  {[type]} toolPreferences [description]
+     * @param  {[type]} tools           [description]
+     * @return {[type]}                 [description]
+     */
     function updateJsonWithDbValues( toolPreferences, tools ){
         var toolPrefix = "enabled-";
         var optionPrefix = "opt-";
         for( var i = 0; i < toolPreferences.length; i++ ) {
 
             var optionName = toolPreferences[i].toolName;
-            //console.log("TRying Name", optionName);
             if( _.startsWith(optionName,toolPrefix) ) {
                 //Enable the tool checkbox
                 optionName = _.replace(optionName,toolPrefix,"");
@@ -45,12 +52,11 @@ module.exports = function(app) {
         fs.readFile( req.session.toolFile, 'utf-8', function( err, toolData ) {
             if( err ) {
                 //Unable to get supported tools file, larger problem here.
-                console.log(err);
+                Logger.error(err);
                 res.end();
             }
             else {
                 //Load JSON tool file and send back to UI to create inputs
-
                 preferencesDB.getStudentPreferencesByToolType(req.user.id, req.session.toolSelect, function(err, toolPreferences){
 
                     var jsonObj = JSON.parse(toolData);
@@ -73,34 +79,31 @@ module.exports = function(app) {
      */
     app.get('/tool', function(req, res, next) {
         var userId = req.user.id || req.passport.user;
-        SurveyManager.getUserSurveyProfile(userId, function(err,surveyPrefData) {
-            //Array of preferences per survey.
-            SurveyManager.setupSurvey(surveyPrefData, function(err, selectedSurveyData) {
-                if(err || !selectedSurveyData) {
-                    res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
-                }
-                else {
-                    var opts = Constants.surveyDisplayDefaultOptions();
-                    var surveyId = selectedSurveyData.data.surveyId;
-                    var options = selectedSurveyData.options;
+        SurveyManager.getUserSurveyProfileAndSurveyType(userId, function(err,surveyPrefData) {
+            if( err ) {
+                res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
+            }
+            else {
+                SurveyManager.setupSurvey(req.session.toolSelect.toLowerCase(), surveyPrefData, function(err, selectedSurveyData) {
+                    if(err || !selectedSurveyData) {
+                        res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
+                    }
+                    else {
+                        var opts = Constants.surveyDisplayDefaultOptions();
+                        var surveyId = selectedSurveyData.data.surveyId;
+                        var options = selectedSurveyData.options;
 
-                    // Set pulse survey size
-                    options.range[1] = Math.min( options.range[0] + opts.pulseQuestions, options.range[1]);
-
-                    Survey.getSurveyId(surveyId, function(err, surveyData) {
-                        if(surveyData && surveyData.length >= 1) {
-                            SurveyBuilder.getSurveySection(surveyData[0], options, function( err, data ) {
-                                data = JSON.stringify(data);
-                                res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":data } );
-                            });
-                        }
-                        else {
-                            res.render(viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":[] });
-                            res.end();
-                        }
-                    });
-                }
-            });
+                        // Set pulse survey size
+                        options.range[1] = Math.min( options.range[0] + opts.pulseQuestions, options.range[1]);
+                        var surveyData = selectedSurveyData;
+                        
+                        SurveyBuilder.getSurveySection(surveyData.data, options, function( err, data ) {
+                            data = data ? JSON.stringify(data) : [];
+                            res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":data } );
+                        });
+                    }
+                });
+            }
         });
     });
 }

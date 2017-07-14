@@ -34,11 +34,13 @@ try {
             authorNames VARCHAR(60) NOT NULL, \
             title VARCHAR(60), \
             totalQuestions INT, \
+            surveyField VARCHAR(40) NOT NULL, \
+            surveyFreq VARCHAR(20) NOT NULL, \
             fullSurveyFile VARCHAR(80) NOT NULL, \
             PRIMARY KEY(id) \
         )");
 
-         Logger.info("Create the Table:", config.survey_results_table);
+        Logger.info("Create the Table:", config.survey_results_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_results_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             surveyId Int UNSIGNED NOT NULL, \

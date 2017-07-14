@@ -211,6 +211,7 @@ module.exports = function (app, iosocket )
         studentProfile.getStudentProfileAndClasses(req.user.id, function(err, studentData) {
             var toolType = req.session.toolSelect == "Programming" ? "programming" : "writing";
             var toolFunc =  req.session.toolSelect == "Programming" ? programmingStats : writingStats;
+
             if(studentData) {
                 var studentProfile = _.pick(studentData[0],  ["id","name", "bio", "avatarFileName"]);
                 var courses = _.map(studentData, obj => _.pick(obj,["id","code","courseName","description","disciplineType"]));

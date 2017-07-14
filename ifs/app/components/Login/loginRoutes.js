@@ -39,7 +39,7 @@ module.exports = function( app, passport ) {
         if( req &&  req.user  )
             res.redirect('/tool');
         else
-            res.render(viewPath + "login", { title: 'Login TESTER Screen'});
+            res.render(viewPath + "login", { title: 'Login Screen'});
     });
 
     // Load the login page

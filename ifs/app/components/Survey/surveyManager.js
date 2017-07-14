@@ -14,20 +14,30 @@ var Errors = require(__components + "Errors/errors");
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 var Survey = require( __components + "/Survey/survey");
 
+var dbHelpers = require(__components + "Databases/dbHelpers");
+
 module.exports = {
 
+    /**
+     * Retrieves all preference information for all surveys 
+     * @param  {[type]}   userId   [description]
+     * @param  {Function} callback [description]
+     * @return  Array of survey data from DB.
+     */
     getUserSurveyProfile: function( userId, callback ) {
-        // Call to the user's survey profiel data base
-        try
-        {            
-            var req = "SELECT * FROM " + config.survey_preferences_table + " where userId = ?";
-            db.query(req,userId, function(err,data){
-                callback(err,data);
-            });
-        }
-        catch (e) {
-            Errors.logErr( e );
-        }
+        var q = dbHelpers.buildSelect(config.survey_preferences_table ) + dbHelpers.buildWS(userId);
+        db.query(req,userId,callback);
+    },
+
+    /**
+     * Retrieve Survey preferences and survey information in one go for a specific user.
+     * @param  {[type]}   userId   [description]
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    getUserSurveyProfileAndSurveyType: function(userId, callback) {
+        var q = "select sp.*, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
+        db.query(q,userId,callback);
     },
 
     /**
@@ -55,6 +65,8 @@ module.exports = {
 
         if(surveyPrefData.length == 0 )
             return [];
+        if(surveyPrefData.length == 1)
+            return surveyPrefData[0];
 
         var active = this.organizeSurveyChoices(surveyPrefData);
 
@@ -66,14 +78,25 @@ module.exports = {
         return active[0];
     },
 
+    /**
+     * Organize survey selection options based on last revision data, start date and index.
+     * @param  {[type]} surveyPrefData [description]
+     * @return {[type]}                [description]
+     */
     organizeSurveyChoices: function(surveyPrefData) {
-        var prefsOrder = ['lastRevision','surveyStartData','currentIndex'];
+        var prefsOrder = ['lastRevision','surveyStartDate','currentIndex', 'currentSurveyIndex'];
         var active = this.getActiveSurveys(surveyPrefData);
-        active = _.sortBy(active,prefsOrder);
+        active = _.orderBy(active,prefsOrder, ["desc","asc","desc", "asc"]);
         return active;
     },
 
-    qstartNewSurvey: function(surveyPrefData ) {
+    /**
+     * This function searches the completed survey's to restart a new one.
+     * [startNewSurvey description]
+     * @param  {[type]} surveyPrefData [description]
+     * @return {[type]}                [description]
+     */
+    startNewSurvey: function(surveyPrefData ) {
        var completed = getCompletedSurveys(surveyPrefData);
 
         completed = _.sortBy(completed,['surveyStartData']);
@@ -94,21 +117,42 @@ module.exports = {
         });
     },
 
+    /**
+     * Retrieve surveys that have been completed.
+     * @param  {[type]} surveyPrefData [description]
+     * @return {[type]}                [description]
+     */
     getCompletedSurveys: function(surveyPrefData ) {
-        return _.filter(surveyData, function(s) {
+        return _.filter(surveyPrefData, function(s) {
             return s.currentIndex == s.lastIndex;
         });
     },
 
-    decideToSetupSurvey: function(surveyPrefData, callback) {
-        var shouldAsk = this.shouldAskQuestion(surveyPrefData);
-        if(shouldAsk)
-            this.setupSurvey(surveyPrefData,callback);
-        else
-            callback(null,[]);
+    /**
+     * Retrieve all survey's in field or general
+     * @param  {[type]} surveyPrefData [description]
+     * @param  {[type]} currentField   array of field potentials
+     * @return {[type]}                [description]
+     */
+    getSurveyInField: function( surveyPrefData, currentFields) {
+        return _.filter(surveyPrefData, function(s) {
+            return currentFields.includes(s.surveyField)
+        });
     },
 
+    getSurveyInFreq: function( surveyPrefData, currentFields) {
+        return _.filter(surveyPrefData, function(s) {
+            return currentFields.includes(s.surveyFreq)
+        });
+    },
 
+    getSurveyFieldMatches: function( surveyPrefData, field, matchingFields) {
+        return _.filter(surveyPrefData, function(s) {
+            if( !_.has(s,field) )
+                return false;
+            return matchingFields.includes(s[field]);
+        });
+    },
 
     /**
      * [setupSurvey description]
@@ -116,20 +160,16 @@ module.exports = {
      * @param  {Function} callback             [description]
      * @return SurveyDisplayOptions            Survey Information including the name and range of questions.
      */
-    setupSurvey: function( surveyPrefData, callback ) {
+    setupSurvey: function( surveyType, surveyPrefData, callback ) {
 
-        // Take the Survey Preferences
-        // Find if we're allowed to ask.
-        var allowedSurveys = this.getAllowedSurveys(surveyPrefData);
+        // Eliminate surveys we aren't allowed to asked or aren't the right type.
+        var surveyOptions = this.getSurveyFieldMatches(surveyPrefData,"surveyField",[surveyType,"general"]);
+        surveyOptions = this.getSurveyFieldMatches(surveyOptions,"surveyFreq",["reg"]);
+        surveyOptions = this.getAllowedSurveys(surveyOptions);
         var survey = null;
 
-        if( allowedSurveys.length == 1 ) {
-            survey = allowedSurveys;
-        }
-        else if( allowedSurveys.length > 1 ){
-            survey = this.selectSurvey(allowedSurveys);
-        }
-
+        survey = this.selectSurvey(surveyOptions);
+        
         if( survey ) {
             var opts = SurveyBuilder.setDisplaySurveyOptions(null,null,[survey.currentIndex, survey.lastIndex]);
             callback(null,{"data":survey, options:opts});

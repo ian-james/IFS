@@ -5,54 +5,42 @@ var db = require( __configs + 'database');
 var config = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
-function getSurveys( callback ) {
+var dbHelpers = require(__components + "Databases/dbHelpers");
 
-    var req = "SELECT * FROM " + config.survey_table;
-     db.query(req,[], function(err,data){
-        callback(err,data);
-    });
-}
+function getSurveys( callback ) {
+    var q = dbHelpers.buildSelect(config.survey_table);    
+    db.query(q,[],callback );
+ }
 
 function getSurvey( surveyName, callback ) {
-
-    var req = "SELECT * FROM " + config.survey_table + " WHERE surveyName = ?";
-     db.query(req,surveyName, function(err,data){
-        callback(err,data);
-    });
+    var q =  dbHelpers.buildSelect(config.survey_table) + dbHelpers.buildWS("surveyName"); 
+    db.query(q,surveyName, callback);
 }
 
 function getSurveyId( surveyId, callback ) {
 
-    var req = "SELECT * FROM " + config.survey_table + " WHERE id = ?";
-    db.query(req,surveyId, function(err,data){
-        callback(err,data);
-    });
+    var q = dbHelpers.buildSelect(config.survey_table) + dbHelpers.buildWS("id"); 
+    db.query(q,surveyId, callback);
 }
 
 function getSurveyByTitle( surveyTitle, callback ) {
-    var query = "SELECT * FROM " + config.survey_table + " WHERE title = ?";
-    db.query(query, surveyTitle, callback);
+    var q = dbHelpers.buildSelect(config.survey_table) + dbHelpers.buildWS("title"); 
+    db.query(q, surveyTitle, callback);
 }
 
 function insertSurvey( surveyData, callback ) {
-    var req = "INSERT INTO " + config.survey_table + " (surveyName, authorNames, title, fullSurveyFile, totalQuestions) values (?,?,?,?,?)";
-    db.query(req, surveyData, function(err,data){
-        callback(err,data);
-    });
+    var q = dbHelpers.buildInsert(config.survey_table) + dbHelpers.buildWhere( ["surveyName", "authorNames", "title", "fullSurveyFile","totalQuestions", "surveyField", "surveyFreq"] );
+    db.query(q, surveyData, callback);
 }
 
 function updateSurvey( surveyData, callback ) {
-    var req = "UPDATE " + config.survey_table + " (surveyData, authorNames, title, fullSurveyFile) values (?,?,?,?)";
-    db.query(req,[surveyData], function(err,data){
-        callback(err,data);
-    });
+    var q = dbHelpers.buildUpdate(config.survey_table) + dbHelpers.buildWhere( ["surveyData", "authorNames", "title", "fullSurveyFile"] );
+    db.query(q,[surveyData], callback);
 }
 
 function deleteSurvey( surveyData, callback ) {
-    var req = " DELETE FROM " + config.survey_table + " WHERE surveyName = ?";
-    db.query(req,surveyData, function(err,data){
-        callback(err,data);
-    });
+    var q = dbHelpers.buildDelete(config.survey_table)  + dbHelpers.buildWS("surveyName"); 
+    db.query(q,surveyData, callback );
 }
 
 module.exports.insertSurvey = insertSurvey;

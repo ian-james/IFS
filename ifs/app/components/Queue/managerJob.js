@@ -47,7 +47,7 @@ function loadAllTools(job, done)
                     if( res[i].state == 'fulfilled' ) {
 
                         var val = res[i].value;
-                        console.log("VALUE RETURNED IS ", val );
+                        //console.log("VALUE RETURNED IS ", val );
 
                         // Attach these two fields from job tool to the result.
                         var toolAdd = {"displayName": val.job.tool.displayName, "runType": val.job.tool.runType};

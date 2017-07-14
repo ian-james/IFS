@@ -56,11 +56,9 @@ module.exports = function( app ) {
 
                     // Will fix this later/soon
                     var rvisualTools = feedbackEvents.getMostRecentVisualTools( req.user.id );
-                    console.log(rvisualTools);
                     db.query(rvisualTools.request,rvisualTools.data, function(errTools,visualTools) {
 
                         var visualTools = Feedback.setupVisualFeedback(visualTools);
-                        console.log(visualTools);
                         results = _.assign(result,visualTools);
                         var viewFile = opt && opt.viewPathFile ? opt.viewPathFile: "feedback";
                         res.render( viewPath + viewFile, result );

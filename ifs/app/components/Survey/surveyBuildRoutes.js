@@ -33,7 +33,9 @@ module.exports = function (app) {
         var surveyQuestions = ["data/surveys/CPSEPS.json", "data/surveys/GSE.json",
                             "data/surveys/SEWS.json", "data/surveys/AGQ.json" ];
         var numQs = [28,10,16,12];
-        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles,numQs, surveyQuestions);
+        var field = ["programming", "general", "writing", "general"];
+        var freq = ['reg','reg','reg','set']
+        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles,numQs,field,freq,surveyQuestions);
         return allData;
     }
 
@@ -71,7 +73,7 @@ module.exports = function (app) {
         var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
 
         // Survey N becomes the default
-        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, numQuestions, surveyQuestionFile] = allSurveys[i];
+        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, numQuestions, surveyField, freq, surveyQuestionFile] = allSurveys[i];
 
         if(fs.existsSync(surveyFiles) ){
             console.log("SURVEY FILE EXISTS, will not overwrite, please remove the local file.");
@@ -123,7 +125,7 @@ module.exports = function (app) {
         var allSurveys = getStaticSurveyData();
         var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
 
-        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, numQs, surveyQuestionFile] = allSurveys[i];
+        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, numQs, surveyField, freq, surveyQuestionFile] = allSurveys[i];
 
         Survey.getSurvey(surveyName, function(err,data) {
              if( err )
