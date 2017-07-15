@@ -137,6 +137,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
             // This is probably a bad temporary fix
             if ( !feedbackItem.decodedTarget ) {
                 feedbackItem.decodedTarget = he.decode(feedbackItem.target);
+                console.log('DECODED', feedbackItem);
             }
         }
     }

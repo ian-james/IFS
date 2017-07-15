@@ -1,4 +1,4 @@
-h3 Generalized Feedback
+h4 Generalized Feedback
 table.uk-table
     if feedbackItems && feedbackItems.length != 0
         thead
@@ -8,30 +8,34 @@ table.uk-table
                 th Feedback
                 th File
                 th Line
-                th Character
+                th Char
                 th Target
+
+            // writing feeback
             tbody
                 each f in feedbackItems
                     if f.filename === ""
-                        tr 
+                        tr
                             td #{f.toolName}
                             td #{f.type}
                             td #{f.feedback}
                             td ""
                             td ""
                             td ""
-                            td #{f.target}
+                            td #{f.decodedTarget}
+
+            // programming feedback
             tbody
                  each f in feedbackItems
                     if f.filename !== ""
-                        tr 
+                        tr
                             td #{f.toolName}
                             td #{f.type}
                             td #{f.feedback}
                             td #{f.filename}
                             td #{f.lineNum}
                             td #{f.charPos}
-                            td #{f.target}
+                            td(style="font-family:monospace") #{f.decodedTarget}
     else
         tbody
             tr
