@@ -1,4 +1,4 @@
-h3 Generalized Feedback
+h4 Generalized Feedback
 table.uk-table
     if feedbackItems && feedbackItems.length != 0
         thead
@@ -8,19 +8,23 @@ table.uk-table
                 th Feedback
                 th File
                 th Line
-                th Character
+                th Char
                 th Target
+
+            // writing feeback
             tbody
                 each f in feedbackItems
                     if f.filename === ""
-                        tr 
+                        tr
                             td #{f.toolName}
                             td #{f.type}
                             td #{f.feedback}
                             td ""
                             td ""
                             td ""
-                            td #{f.target}
+                            td(style="font-family:monospace") #{f.decodedTarget}
+
+            // programming feedback
             tbody
                 tr(ng-repeat="f in feedbackItems | filter:allowFeedbackType")
                     td {{ f.toolName }}
@@ -30,6 +34,7 @@ table.uk-table
                     td {{ f.lineNum }}
                     td {{ f.charPos }}
                     td {{ f.target }}
+                    td(style="font-family:monospace") {{f.decodedTarget}}
     else
         tbody
             tr

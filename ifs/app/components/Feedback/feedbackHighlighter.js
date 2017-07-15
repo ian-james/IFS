@@ -20,7 +20,9 @@ function setupRegExp( targetOptions )
         'newText':      targetOptions.newText || ""
     };
 
-    if( targetOptions.toolType == "writing")
+    //TODO: CHecking word boundaries might cause problems for tools that are given us ranges that include
+    // partial words and spaces. However, word boundaries are more useful and cause less issues.
+    if( def.target.trim() != 0 && targetOptions.toolType == "writing")
         def.regex = new XRegExp( "\\b" + escapeRegExp(def.target) + "\\b" , def.flags );
     else
         def.regex = new XRegExp( escapeRegExp(def.target) , def.flags );
@@ -130,9 +132,7 @@ function checkErrorOverlap( feedbackItems, feedbackIndex ) {
     if(nextItem) {
         matches = checkErrorPositionOverlap(feedbackItem, nextItem );
         if( matches) {
-            Logger.info("Matching", feedbackItem.target, ":>", nextItem.target);
             if( feedbackItem.target != nextItem.target ) {
-                Logger.info("Targets don't match for feedback Items", feedbackItem.target, ":>", nextItem.target);
                 return false;
             }
         }
