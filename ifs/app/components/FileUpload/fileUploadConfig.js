@@ -19,7 +19,7 @@ var Helpers = require('./fileUploadHelpers');
 function acceptableFileTypes() {
     return {
         'Programming':['md', 'json', 'cpp', 'c', 'h', 'zip', 'tar'],
-        'Writing': ['txt', 'text', 'doc', 'docx', 'odt' ]
+        'Writing': ['txt', 'text', 'doc', 'docx', 'odt', 'pdf']
     };
 }
 
@@ -31,7 +31,8 @@ function acceptableMimeType() {
             'application/json',
             'application/msword',
             'application/vnd.oasis.opendocument.text',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/pdf'
         ],
         "Programming": [
             'text/plain',

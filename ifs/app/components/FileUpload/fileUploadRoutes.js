@@ -193,20 +193,14 @@ module.exports = function (app, iosocket) {
 
         var user = eventDB.eventID(req);
         saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
-
         submissionEvent.addSubmission( user, function(subErr, succSubmission) {
-
             var submissionRequest = submissionEvent.getLastSubmissionId(user.userId, user.sessoinId);
             db.query(submissionRequest.request,submissionRequest.data, function(err,submissionIdRes){
-
                 var submissionId = event.returnData( submissionIdRes[0] );
-
                 emitJobOptions( req, iosocket, req.body);
-
                 var uploadedFiles = Helpers.handleFileTypes( req, res );
 
-                if( Errors.hasErr(uploadedFiles) )
-                {
+                if( Errors.hasErr(uploadedFiles) ) {
                     var err = Errors.getErrMsg(uploadedFiles);
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId,"failed", err) ) ;
                     //req.flash('errorMessage', err );
