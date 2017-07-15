@@ -28,14 +28,14 @@ module.exports = function (app) {
         var surveyAuthors = ["Unknown", "Unknown","Unknown","Unknown"];
         var surveyTitle = ["Computer Programming Self-Efficacy Survey", "General Self-Efficacy Survey",
                             "Self-Efficacy Writing Scale", "Achievement Goal Questionnaire"];
-        var surveyFiles = [ "data/surveys/surveyCPSEPS.json", "data/surveys/surveyGSE.json",
-                            "data/surveys/surveySEWS.json", "data/surveys/surveyAGQ.json" ];
         var surveyQuestions = ["data/surveys/CPSEPS.json", "data/surveys/GSE.json",
                             "data/surveys/SEWS.json", "data/surveys/AGQ.json" ];
         var numQs = [28,10,16,12];
         var field = ["programming", "general", "writing", "general"];
-        var freq = ['reg','reg','reg','set']
-        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle, surveyFiles,numQs,field,freq,surveyQuestions);
+        var freq = ['reg','reg','reg','set'];
+         var surveyFiles = [ "data/surveys/surveyCPSEPS.json", "data/surveys/surveyGSE.json",
+                            "data/surveys/surveySEWS.json", "data/surveys/surveyAGQ.json" ];
+        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle,numQs,field,freq, surveyFiles);
         return allData;
     }
 
@@ -73,7 +73,7 @@ module.exports = function (app) {
         var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
 
         // Survey N becomes the default
-        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, numQuestions, surveyField, freq, surveyQuestionFile] = allSurveys[i];
+        var [ surveyName, surveyAuthors,surveyTitle, numQuestions, surveyField, freq, surveyFiles] = allSurveys[i];
 
         if(fs.existsSync(surveyFiles) ){
             console.log("SURVEY FILE EXISTS, will not overwrite, please remove the local file.");
@@ -120,12 +120,13 @@ module.exports = function (app) {
      * @param  {Array}  res) {                   var surveyNames [description]
      * @return {[type]}      [description]
      */
+/*
     app.get( '/buildDefaultSurvey:n', function(req,res) {
 
         var allSurveys = getStaticSurveyData();
         var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
 
-        var [ surveyName, surveyAuthors,surveyTitle, surveyFiles, numQs, surveyField, freq, surveyQuestionFile] = allSurveys[i];
+        var [ surveyName, surveyAuthors,surveyTitle, numQs, surveyField, freq, surveyFiles] = allSurveys[i];
 
         Survey.getSurvey(surveyName, function(err,data) {
              if( err )
@@ -133,7 +134,7 @@ module.exports = function (app) {
             else {
                 if( data.length >= 1){
                     var survey = data[0];
-                    var surveyFile = surveyQuestionFile;
+                    var surveyFile = surveyFile
                     
                     fs.readFile(surveyFile, "utf-8", function(err,fileData){
                         if(err)
@@ -172,7 +173,7 @@ module.exports = function (app) {
             res.end();
         });
     });
-
+*/
     /**
      * This route get a survey by name and specific section of questions.
      * Also allows options parameters to be set.
@@ -180,6 +181,7 @@ module.exports = function (app) {
      * @param  {[type]} res) {                   var surveyName [description]
      * @return {[type]}      [description]
      */
+/*
     app.get('/surveySec/:surveyName/:low/:high/:questionsPerPage?/:splitQuestionTypes?', function(req,res) {
         var surveyName = req.params.surveyName;
         var range = [Math.max(0,Math.min(req.params.low, req.params.high)),Math.max(req.params.low, req.params.high) ];
@@ -203,7 +205,7 @@ module.exports = function (app) {
             }
         });
     });
-
+*/
     //Helpful little route to create survey prefernces, not sure this will live on.
     app.get('/ips', function(req,res) {
         var userId = req.user.id || req.passport.user;

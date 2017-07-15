@@ -29,7 +29,7 @@ function getSurveyByTitle( surveyTitle, callback ) {
 }
 
 function insertSurvey( surveyData, callback ) {
-    var q = dbHelpers.buildInsert(config.survey_table) + dbHelpers.buildWhere( ["surveyName", "authorNames", "title", "fullSurveyFile","totalQuestions", "surveyField", "surveyFreq"] );
+    var q = dbHelpers.buildInsert(config.survey_table) + dbHelpers.buildValues( ["surveyName", "authorNames", "title", "totalQuestions", "surveyField", "surveyFreq","fullSurveyFile"] );
     db.query(q, surveyData, callback);
 }
 
