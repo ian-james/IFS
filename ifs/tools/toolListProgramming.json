@@ -18,7 +18,7 @@
             "fileArgs": "-d",
             "options":  [
                 {
-                    "displayName": "Language standard",
+                    "displayName": "Language standard (std)",
                     "type": "select",
                     "name": "opt-gccLanguageStd",
                     "values": [ "c89", "c99","c11"],
@@ -26,7 +26,7 @@
                     "params": ""
                 },
                 {
-                    "displayName": "Standard warnings ",
+                    "displayName": "Standard warnings (-Wall)",
                     "type": "checkbox",
                     "name": "opt-gccLanguageWarningAll",
                     "values": "",
@@ -34,7 +34,7 @@
                     "params": ""
                 },
                 {
-                    "displayName": "Extra warnings",
+                    "displayName": "Extra warnings (-Wextra)",
                     "type": "checkbox",
                     "name": "opt-gccLanguageExtraWarning",
                     "values": "",
@@ -42,7 +42,7 @@
                     "params": ""
                 },
                 {
-                    "displayName": "Use strict pedantic warning",
+                    "displayName": "Use strict pedantic warning (-pedantic)",
                     "type": "checkbox",
                     "name": "opt-gccLanguagePendantic",
                     "values": "",
@@ -50,7 +50,7 @@
                     "params": ""
                 },
                 {
-                    "displayName": "Treat warnings as errors",
+                    "displayName": "Treat warnings as errors (-pedantic-errors)",
                     "type": "checkbox",
                     "name": "opt-gccLanguagePendanticToError",
                     "values": "",
@@ -77,7 +77,7 @@
             "fileArgs": "-d",
             "options":  [
                 {
-                    "displayName": "Language standard",
+                    "displayName": "Language standard (std)",
                     "type": "select",
                     "name": "opt-clangLanguageStd",
                     "values": [ "c89", "c99","c11"],
@@ -85,7 +85,7 @@
                     "params": ""
                 },
                 {
-                    "displayName": "Standard warnings ",
+                    "displayName": "Standard warnings (-Wall)",
                     "type": "checkbox",
                     "name": "opt-clangLanguageWarningAll",
                     "values": "",
@@ -95,13 +95,13 @@
                 {
                     "displayName": "Extra warnings",
                     "type": "checkbox",
-                    "name": "opt-clangLanguageExtraWarning",
+                    "name": "opt-clangLanguageExtraWarning (-Wextra)",
                     "values": "",
                     "arg": "-f -Wextra",
                     "params": ""
                 },
                 {
-                    "displayName": "Use strict pedantic warnings",
+                    "displayName": "Use strict pedantic warnings (-pedantic)",
                     "type": "checkbox",
                     "name": "opt-clangLanguagePendantic",
                     "values": "",
@@ -109,7 +109,7 @@
                     "params": ""
                 },
                 {
-                    "displayName": "Treat warnings as errors",
+                    "displayName": "Treat warnings as errors (-pedantic-errors)",
                     "type": "checkbox",
                     "name": "opt-clangLanguagePendanticToError",
                     "values": "",
@@ -144,7 +144,7 @@
                     "params": ""
                 },
                 {
-                    "displayName": "CppCheck language standard",
+                    "displayName": "CppCheck language standard (std)",
                     "type": "select",
                     "name": "opt-cppCheckLanguageStd",
                     "values": [ "c89", "c99","c11"],
