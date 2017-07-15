@@ -1,6 +1,6 @@
 {
   "name": "ifs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Project to provide students formative feedback on C/C++ assignments or essays. Creates recommendations",
   "main": "index.js",
   "scripts": {
