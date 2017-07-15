@@ -95,6 +95,8 @@ def parse( text, options ):
                                 feedback[ types[sNum] ] = feed[0:fid-1]
                             else:
                                 feedback[ types[sNum] ] = feed
+                        else:
+                            feedback[ types[sNum] ] = feed
                     else:
                         feedback[ types[sNum] ] = section.strip()
                 else:
