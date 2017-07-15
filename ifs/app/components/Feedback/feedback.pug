@@ -24,8 +24,6 @@ block content
                             each tool in toolsUsed
                                 option(selected=tool==selectedTool) #{ tool }
 
-                // We could generalize the name of the button more but don't include the route info anywhere.
-                // So additional work needed to convert this into a simple generic statement.
                 if visualTools && visualTools.length > 0
                     div
                     each vtool in visualTools
@@ -48,7 +46,7 @@ block content
                     ul(uk-accordion)
                         li
                             h3.uk-accordion-title
-                                | #{feedbackItems.length} Feedback Messages
+                                |  {{(feedbackItems|filter:allowFeedbackType).length}} of #{feedbackItems.length} Feedback Messages
                                 span(class="uk-visible@l") (click to expand)
                             div.uk-accordion-content
                                 include feedbackErrorTable.pug

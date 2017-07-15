@@ -22,16 +22,14 @@ table.uk-table
                             td ""
                             td #{f.target}
             tbody
-                 each f in feedbackItems
-                    if f.filename !== ""
-                        tr 
-                            td #{f.toolName}
-                            td #{f.type}
-                            td #{f.feedback}
-                            td #{f.filename}
-                            td #{f.lineNum}
-                            td #{f.charPos}
-                            td #{f.target}
+                tr(ng-repeat="f in feedbackItems | filter:allowFeedbackType")
+                    td {{ f.toolName }}
+                    td {{ f.type }}
+                    td {{ f.feedback }}
+                    td {{ f.filename }}
+                    td {{ f.lineNum }}
+                    td {{ f.charPos }}
+                    td {{ f.target }}
     else
         tbody
             tr
