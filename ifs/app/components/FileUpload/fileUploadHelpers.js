@@ -128,7 +128,7 @@ module.exports = {
         console.log('FILES:', uploadedFiles);
 
         if (!uploadedFiles || uploadedFiles.length == 0) {
-            var e = Errors.cLogErr("Unable to process uploaded file(s). Only Microsoft Office, LibreOffice, and text documents are accepted.");
+            var e = Errors.cLogErr("Unable to process uploaded file(s). Only Office, PDF, and text documents are accepted.");
             if (req.session.toolSelect == "Programming") {
                 e = Errors.cLogErr("Unable to process uploaded file(s). Only tar/zipped projects and .c or .h files are accepted.");
             }
