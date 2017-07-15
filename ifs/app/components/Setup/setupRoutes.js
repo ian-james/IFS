@@ -30,7 +30,6 @@ module.exports = function(app) {
             } else {
                 var jsonObj = JSON.parse(data);
                 var setup = jsonObj['setup'];
-                console.log(JSON.stringify(setup));
                 res.json(setup);
             }
         });

@@ -60,7 +60,6 @@ function runSingleTool( job, done )
     child.stderr.on('data', function(data) {
         if(data) {
             error = true;
-            console.log("DD",job.data.tool.runCmd,"=>",data.toString());
             job.emit('failed');
             done({"code":-1, "response":new Error(data)});
             return;
