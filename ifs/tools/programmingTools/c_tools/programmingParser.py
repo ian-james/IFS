@@ -84,6 +84,17 @@ def parse( text, options ):
                 if( sNum < len(types) ):
                     if( types[sNum] == 'filename'):
                         feedback[ types[sNum] ] = os.path.basename(section)
+                    elif ( types[sNum] == "feedback"):
+                        feed = section.strip()
+                        feedtext = re.findall(r"\[([^[]*)]$",feed)
+                        # Find [section] and remove from feedback
+                        if( feedtext and len(feedtext) > 0 ):
+                            feedback[ 'severity' ] = feedtext[0]
+                            fid = feed.find(feedtext[0])
+                            if( fid >= 0 ):
+                                feedback[ types[sNum] ] = feed[0:fid-1]
+                            else:
+                                feedback[ types[sNum] ] = feed
                     else:
                         feedback[ types[sNum] ] = section.strip()
                 else:
@@ -148,7 +159,7 @@ def createCmd( options ):
     elif options['tool'] == 'clang':
         options['initP'] = '-'
         options['splitSeq'] = ':'
-        options['flags'].append(' -fno-caret-diagnostics -fsyntax-only')
+        options['flags'].append(' -fno-caret-diagnostics -fsyntax-only -fdiagnostics-show-category=name')
         options['splitTypes'] = [ "filename", "lineNum", "charPos", "type", "feedback"]
         cmdStr = " ".join( [
                         options['tool'],
