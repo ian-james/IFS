@@ -3,18 +3,25 @@ div(uk-offcanvas="flip:true; overlay: true")#popOver
         button(type="button" uk-close).uk-offcanvas-close
         h3 Additional Information
 
-        div(class="uk-grid" ng-if="selectedArray.length > 1")
-            span(class="uk-width-1-4" uk-icon="icon: arrow-left" ng-click="getPrevSelected()")
-            p(class="uk-display-inline") View Other Errors
-            span(class="uk-width-1-4" uk-icon="icon: arrow-right" ng-click="getNextSelected()")
+        div(ng-if="selectedArray.length > 1")
+            p.uk-text-meta This selection has multiple types of feedback items. Use the buttons below to scroll between items.
+            div.uk-align-center
+                a(href="" uk-icon="icon: arrow-left" ng-click="getPrevSelected()").uk-icon-button
+                span.uk-margin-left.uk-margin-right Prev/next feedback
+                a(href="" uk-icon="icon: arrow-right" ng-click="getNextSelected()").uk-icon-button
 
         dl.description-list
-            dt Error Type
+            dt Feedback Type
             dd {{ selectedFeedback.type }}
             br
 
+            dt Target
+            dd(ng-if="selectedFeedback.lineNum") Line: {{ selectedFeedback.lineNum }}
+            dd(ng-if="selectedFeedback.decodedTarget") {{ selectedFeedback.decodedTarget }}
+            br
+
             dt Tool
-            dd {{ selectedFeedback.displayName}} ({{ selectedFeedback.toolName }})
+            dd {{ selectedFeedback.displayName}} {{ selectedFeedback.toolName }}
             br
 
             dt Description
