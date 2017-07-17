@@ -19,7 +19,14 @@ function setupRegExp( targetOptions )
         'regex':        targetOptions.regex || null,
         'newText':      targetOptions.newText || ""
     };
-    def.regex = new XRegExp(escapeRegExp(def.target), def.flags );
+
+    //TODO: CHecking word boundaries might cause problems for tools that are given us ranges that include
+    // partial words and spaces. However, word boundaries are more useful and cause less issues.
+    if( def.target.trim() != 0 && targetOptions.toolType == "writing")
+        def.regex = new XRegExp( "\\b" + escapeRegExp(def.target) + "\\b" , def.flags );
+    else
+        def.regex = new XRegExp( escapeRegExp(def.target) , def.flags );
+        
     return def;
 }
 
@@ -103,15 +110,17 @@ function replaceText(str, targetOpt )
 }
 
 /* Function to compare two feedback items positional information
-   Currently exact lineNUm and word  or charNum is required.
+   Programming checks line otherwise lineNum and word or char Num
 */
 function checkErrorPositionOverlap( cItem, nItem ) {
     var r = false;
     if( cItem && nItem ){
-        r = (cItem.wordNum && nItem.wordNum && cItem.wordNum == cItem.wordNum) && cItem.lineNum == nItem.lineNum;
+        var requiresOnlyLine = cItem.runType == nItem.runType && cItem.runType == "programming";
+        r = requiresOnlyLine && cItem.lineNum == nItem.lineNum;
+        r = r || (cItem.wordNum && nItem.wordNum && cItem.lineNum == nItem.lineNum);
         r  = r || cItem.charNum == nItem.charNum;
     }
-    return false;
+    return r;
 }
 
 function checkErrorOverlap( feedbackItems, feedbackIndex ) {
@@ -122,8 +131,11 @@ function checkErrorOverlap( feedbackItems, feedbackIndex ) {
     var matches = false;
     if(nextItem) {
         matches = checkErrorPositionOverlap(feedbackItem, nextItem );
-        if( matches && feedbackItem.target != nextItem.target )
-            Logger.info("Targets don't match for feedback Items", feedbackItem.target, ":>", nextItem.target);
+        if( matches) {
+            if( feedbackItem.target != nextItem.target ) {
+                return false;
+            }
+        }
     }
     return matches;
 }
@@ -142,7 +154,6 @@ function markupFile( file, selectedTool, feedbackItems )
     for( var i = 0; i < feedbackItems.length; i++ )
     {
         var feedbackItem = feedbackItems[i];
-
         // Check for a specific tool and specific filename or all
         if( filesMatch(file.originalname, feedbackItem.filename)  &&  toolsMatch(feedbackItem.toolName,selectedTool ) )
         {
@@ -166,6 +177,7 @@ function markupFile( file, selectedTool, feedbackItems )
                 matchClasses = " multiError";
             }
 
+            idArr.push(i)
             if(!nextMatches)
             {
                 // Assign either the multiError or the specific error type.
@@ -176,15 +188,16 @@ function markupFile( file, selectedTool, feedbackItems )
                 //      Might be deprecated soon too. Essentially old method allows moving between errors on the readMore. This
                 //      fix remove that capability.
                 //OLD var options = { 'classes': matchClasses, 'data': idArr , 'id': idArr, 'feedbackId':feedbackItems[i].id};
-                var options = { 'classes': matchClasses, 'data': i , 'id': i, 'feedbackId':feedbackItems[i].id};
+                var options = { 'classes': matchClasses, 'data': idArr , 'id': i, 'feedbackId':feedbackItems[i].id};
 
                 // Create a popover button at position to highlight text and count the offset.
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);
                 var str = newStr.start + newStr.mid + newStr.end;
-                var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset } );
+                var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset, toolType: feedbackItem.runType } );
 
                 content = contentObj.content;
-                offset += ( (str.length  - newStr.mid.length + 1 ) + contentObj.offset);
+                offset += ( (str.length  - newStr.mid.length ) + contentObj.offset);
+                idArr = [];
 
                 // Reset data
                 matchClasses = "";

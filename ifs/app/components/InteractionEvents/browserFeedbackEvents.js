@@ -1,8 +1,6 @@
 var socket = io(); 
 $(function() {
     $("a").on('click', function(e) {
-        
-        console.log($(e.target) );
         // Check if link relates to nav-bar, ie changing viewing file.
         if($(e.target).hasClass('nav-link') ) {
 
@@ -30,7 +28,7 @@ $(function() {
             });
         }
         else {
-            console.log("else unknown clicker");
+            //console.log("else unknown clicker");
         }
     });
 });

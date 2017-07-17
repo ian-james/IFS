@@ -3,11 +3,14 @@
     <div class='uk-card-header'>
         <h3 class="uk-card-title">
             {{ selectedFeedback.type }}
+            <span ng-if="selectedArray.length > 1" title="Hello" uk-tooltip>
+                <i uk-icon="icon: star"></i>
+            </span>
         </h3>
     </div>
     <div class="uk-card-body" ng-if="selectedFeedback.runType == 'writing' && selectedFeedback.type != 'whitespace'">
         <span class="{{ selectedFeedback.type }}-display">
-            {{ selectedFeedback.target }}
+            {{ selectedFeedback.target }} 
         </span>
         <div ng-if="selectedFeedback.suggestions.length > 0">
             <div>

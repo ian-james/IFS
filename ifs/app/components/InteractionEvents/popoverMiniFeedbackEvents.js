@@ -7,7 +7,6 @@ $(function() {
     $("a.readMoreEvent").on('click', function(e) {
         if( $(e.target).attr("href") == "#") {
             // Read More has been clicked
-            console.log("read more", $(e.target)[0]);
             socket.emit("feedbackEvent",{
                     "feedbackId": $(e.target).attr('data-feedbackid'),
                     "submissionId":  $(e.target).attr('data-submissionId'),

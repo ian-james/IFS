@@ -44,7 +44,7 @@ module.exports = function( app ) {
                     '"feedback":' + JSON.stringify(data) + '\n'
                     +"}\n";
 
-                var page = { title: 'Feedback page' };
+                var page = { title: 'Submission Feedback' };
                 var feedback = Feedback.setupFeedback(feedbackFile, opt);
                 var result = _.assign(page,feedback);
 
@@ -54,7 +54,6 @@ module.exports = function( app ) {
                     var stats = Feedback.setupFeedbackStats(statData);
                     result = _.assign(result,stats);
 
-                    // Will fix this later/soon
                     var rvisualTools = feedbackEvents.getMostRecentVisualTools( req.user.id );
                     db.query(rvisualTools.request,rvisualTools.data, function(errTools,visualTools) {
 

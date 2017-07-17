@@ -22,20 +22,18 @@ table.uk-table
                             td ""
                             td ""
                             td ""
-                            td #{f.decodedTarget}
+                            td(style="font-family:monospace") #{f.decodedTarget}
 
             // programming feedback
             tbody
-                 each f in feedbackItems
-                    if f.filename !== ""
-                        tr
-                            td #{f.toolName}
-                            td #{f.type}
-                            td #{f.feedback}
-                            td #{f.filename}
-                            td #{f.lineNum}
-                            td #{f.charPos}
-                            td(style="font-family:monospace") #{f.decodedTarget}
+                tr(ng-repeat="f in feedbackItems | filter:allowFeedbackType")
+                    td {{ f.toolName }}
+                    td {{ f.type }}
+                    td {{ f.feedback }}
+                    td {{ f.filename }}
+                    td {{ f.lineNum }}
+                    td {{ f.charPos }}
+                    td(style="font-family:monospace") {{f.decodedTarget}}
     else
         tbody
             tr

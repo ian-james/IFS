@@ -3,6 +3,11 @@ div(uk-offcanvas="flip:true; overlay: true")#popOver
         button(type="button" uk-close).uk-offcanvas-close
         h3 Additional Information
 
+        div(class="uk-grid" ng-if="selectedArray.length > 1")
+            span(class="uk-width-1-4" uk-icon="icon: arrow-left" ng-click="getPrevSelected()")
+            p(class="uk-display-inline") View Other Errors
+            span(class="uk-width-1-4" uk-icon="icon: arrow-right" ng-click="getNextSelected()")
+
         dl.description-list
             dt Error Type
             dd {{ selectedFeedback.type }}

@@ -60,6 +60,11 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.toolsUsed = [];
     $scope.feedbackItems=[];
     $scope.feedbackStats=[];
+    $scope.filterByTool =null;
+
+    $scope.allowFeedbackType = function(feedbackItem) {
+        return ( $scope.filterByTool == "All" || feedbackItem.toolName == $scope.filterByTool);
+    }
 
     $scope.inDisplayStats = function(feedbackItem) {
         var result = [];
@@ -81,5 +86,6 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
         $scope.files = res.data.files;
         $scope.toolsUsed = res.data.toolsUsed;
         $scope.feedbackStats = res.data.feedbackStats;
+        $scope.filterByTool = res.data.selectedTool;
     });
 });
