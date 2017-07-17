@@ -109,7 +109,9 @@ fi
 # install dependencies and prefer distro packaged node/npm if possible
 echo 'Installing core dependencies...'
 apt-get -y update
-apt-get -y install redis-server nginx git libreoffice
+apt-get -y install redis-server nginx git tar zip unzip \
+           libreoffice poppler-utils
+
 if [ ! -f /usr/bin/node ]; then
     ln -s /usr/bin/nodejs /usr/bin/node
 fi
@@ -332,8 +334,7 @@ echo ""
 # install IFS Tool dependencies
 echo 'Installing IFS Tool dependencies...'
 apt-get install python3 python3-pip cppcheck valgrind \
-        hunspell libhunspell-dev \
-        diction
+        hunspell libhunspell-dev diction \
 
 pip3 install --upgrade pip
 pip3 install hunspell language-check proselint pyapa nltk numpy
@@ -344,9 +345,3 @@ echo 'Done installing IFS.'
 echo "You can now run IFS by typing 'npm start' from /var/www/$domain/ifs"
 echo "You many want to fork this to a background process, or run from a detachable session."
 echo 'If you encounter issues running IFS, consult the wiki at https://github.com/ian-james/IFS/wiki'
-
-# run IFS (install a system startup service file?)
-#if ! pgrep -x 'redis-server' > /dev/null; then
-#    redis-server &
-#fi
-#npm start
