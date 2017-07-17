@@ -9,7 +9,7 @@ Logger.info("Watching for stuck jobs: timeout: " + kOptions.options.watchStuckTi
 queue.watchStuckJobs(kOptions.options.watchStuckTime);
 
 
- //Help removing large number of jobs for debugging only
+//Help removing large number of jobs for debugging only
 /*
 kue.Job.rangeByState('complete',0, 5000, 'asc', function(err,jobs){
     jobs.forEach( function(job) {

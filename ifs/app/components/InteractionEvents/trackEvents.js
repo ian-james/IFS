@@ -6,7 +6,6 @@ var config = require(__configs + 'databaseConfig');
 var _ = require('lodash');
 
 module.exports = {
-
     /**
      * Track submissions events to submission DB.
      * @param  {[type]} iosocket  [description]
@@ -15,7 +14,6 @@ module.exports = {
      * @return {[type]}           [description]
      */
     trackSubmission: function( iosocket, userId, sessionId ){
-
        submissionEvent.addSubmission( {"userId": userId, "sessionId": sessionId } );
         //iosocket.emit("trackEvent", event);
     },
@@ -27,11 +25,9 @@ module.exports = {
      * @return {[type]}          [description]
      */
     trackEvent: function (iosocket, event ) {
-        //console.log("SEDNING EVENT", event );
         eventDB.insertInteractionEvent(event);
         iosocket.emit("trackEvent", event);
-    },  
-    
+    },
 
     /**
      * Track with broadcast, for client side
@@ -40,7 +36,6 @@ module.exports = {
      * @return {[type]}          [description]
      */
     btrackEvent: function(iosocket, event ) {
-        //console.log("SEDNING BROADCAST EVENT", event );
         eventDB.insertInteractionEvent(event);
         iosocket.broadcast.emit('trackEvent', event);
     },

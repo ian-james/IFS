@@ -4,10 +4,9 @@ var Logger = require( __configs + "loggingConfig" );
 
 var Q = require('q');
 
-function jobConfig(jobType, jobName)
-{
+function jobConfig(jobType, jobName) {
     // Default options, times are in milliseconds (1000)
-    return{ 
+    return {
         priority: 'normal',
         attempts:1,
         backoff: {delay:10*1000, type:'fixed'},
@@ -18,10 +17,9 @@ function jobConfig(jobType, jobName)
     };
 }
 
-function makeJob(  toolOptions, jobOpts )
-{
+function makeJob(toolOptions, jobOpts) {
     var deferred = Q.defer();
-    
+
     var job = queue.queue.create(jobOpts.jobType, {
             name:jobOpts.jobName,
             title:jobOpts.jobName,
@@ -33,20 +31,15 @@ function makeJob(  toolOptions, jobOpts )
         .ttl(jobOpts.timeOfLife);
 
     job.on('enqueue', function() {
-        //console.log( job.data.name + " has been enKued");
         deferred.notify({ msg:"Task Received", "tool": job.data.name, progress: 0});
     })
     .on('start', function() {
-        //console.log(job.data.name + " has been Started");
         deferred.notify({ msg:"Starting", "tool":job.data.name, progress: 0});
     })
     .on('progress', function(progress, data) {
         deferred.notify( { msg:"Progress", "tool": job.data.name, progress: progress} );
     })
     .on('complete', function(result) {
-        //console.log("*****1COMPLETE JOB IS ", JSON.stringify(job.data));
-        //console.log("*****2COMPLETE JOB IS ", JSON.stringify(job));
-        //console.log("*****3COMPLETE JOB IS ", "=>", JSON.stringify(result));
         deferred.notify({ msg:"Completed", "tool": job.data.name, progress: 100});
         deferred.resolve({
             done: true,
@@ -55,8 +48,7 @@ function makeJob(  toolOptions, jobOpts )
             result: result
         });
     })
-    .on('failed', function( errorMessage ) {
-        //console.log("JOB FAILED\n\n",job.data);
+    .on('failed', function(errorMessage) {
         deferred.reject({
             done: true,
             job: job.data,
@@ -71,6 +63,6 @@ function makeJob(  toolOptions, jobOpts )
     return deferred.promise;
 }
 
-// Exports 
+// Exports
 module.exports.buildJob = makeJob;
 module.exports.getDefaults = jobConfig;

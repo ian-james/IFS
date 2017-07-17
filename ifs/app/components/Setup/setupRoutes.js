@@ -30,7 +30,6 @@ module.exports = function(app) {
             } else {
                 var jsonObj = JSON.parse(data);
                 var setup = jsonObj['setup'];
-                console.log(JSON.stringify(setup));
                 res.json(setup);
             }
         });
@@ -39,7 +38,6 @@ module.exports = function(app) {
     app.get('/setup/values.json', function(req, res, next) {
         var values = [];
         userOptDB.getUserOptIn(req.user.id, function(err, optin) {
-            console.log(optin);
             var obj = {
                 "name": "optin",
                 "value": optin[0].optedIn
