@@ -14,7 +14,7 @@
     border-radius: 3px !important;
 }
 
-.grammar, .note {
+.grammar, .note, .uncategorized {
     display: inline-block;
     background-color: #6fc2ef !important;
     text-decoration: none !important;
@@ -28,7 +28,7 @@
     border-radius: 3px !important;
 }
 
-.whitespace {
+.whitespace, .typographical {
     display: inline-block;
     background-color: #a0a0a0 !important;
     text-decoration: underline dashed #ddd !important;
@@ -69,7 +69,7 @@
     color: #ee2e24!important;
 }
 
-.grammar-display, .note-display {
+.grammar-display, .note-display, .uncategorized-display {
     display: inline-block;
     color: #1e87f0 !important;
 }
