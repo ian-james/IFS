@@ -62,7 +62,7 @@ module.exports = {
     logErr: function( obj ) {
 
         var msg = this.getErrMsg( obj );
-        if( msg.length != 0 )
+        if( msg && msg.length != 0 )
             Logger.error(msg);
     },
 

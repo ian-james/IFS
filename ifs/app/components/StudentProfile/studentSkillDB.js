@@ -34,7 +34,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAssigmentAndTaskList: function( userId, callback ) {
-        var q = "select a.id as assignmentId, a.name as assignmentName, a.description as description, c.id as courseId, d.id as assignmentTaskId, d.name as taskName, d.taskId as taskId, d.value as isComplete" +
+        var q = "select a.id as assignmentId, a.name as assignmentName, a.description as description, c.id as courseId, d.id as assignmentTaskId, d.name as taskName, d.description as at_desc, d.taskId as taskId, d.value as isComplete" +
                " from class c, assignment a, student s, (select at.*,b.id as taskId, ifnull(b.isComplete, 0) as value from assignment_task at LEFT Join student_assignment_task b on at.id = b.assignmentTaskId) d " +
                " where s.userId = ? and a.classId = c.id and a.id = d.assignmentId";
         db.query(q,userId,callback);
