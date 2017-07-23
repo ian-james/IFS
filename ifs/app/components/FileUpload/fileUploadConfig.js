@@ -18,7 +18,7 @@ var Helpers = require('./fileUploadHelpers');
 
 function acceptableFileTypes() {
     return {
-        'Programming':['md', 'json', "c", "cpp", "cc", "cxx", "h", "hpp" 'zip', 'tar'],
+        'Programming':['md', 'json', "c", "cpp", "cc", "cxx", "h", "hpp", 'zip', 'tar'],
         'Writing': ['txt', 'text', 'doc', 'docx', 'odt', 'pdf']
     };
 }
