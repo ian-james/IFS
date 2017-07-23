@@ -312,6 +312,11 @@ try {
         )");
 
         Logger.info("Success: Database created.");
+
+        Logger.info("Set up roles in:", config.role_table);
+        connection.query("INSERT IGNORE INTO " + config.database + "." + config.role_table + "(id, role) VALUES (1, \"admin\");");
+        connection.query("INSERT IGNORE INTO " + config.database + "." + config.role_table + "(id, role) VALUES (2, \"developer\");");
+        connection.query("INSERT IGNORE INTO " + config.database + "." + config.role_table + "(id, role) VALUES (3, \"student\");");
     } else {
         Logger.error("Error, Unable to make connection to database")
     }
