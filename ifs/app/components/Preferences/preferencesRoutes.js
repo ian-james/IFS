@@ -73,18 +73,24 @@ module.exports = function(app) {
 
 
     app.post('/preferences/profile', upload.single('student-avatar'), function(req, res, next) {
+        console.log("H1");
 
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
 
-        if(studentName && studentBio && pref) {
+        console.log("PREF", studentName, " ", studentBio);
+
+        if(pref) {
+            console.log("H2"); 
             preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
+                console.log("H3");
                 if(!err)
                     defaultTool.setupDefaultTool(req, pref);
 
                 profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
+                    console.log("H4");
                     if(err)
                         Logger.log("ERROR SETTING STUDENT PROFILE");
 
