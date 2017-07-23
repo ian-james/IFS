@@ -17,7 +17,7 @@ function loadFiles( directory, options ) {
     if( fs.lstatSync(directory).isDirectory() ) {
 
         // TODO: How should this be handled
-        options = options || {'groups': ['c','h'] }
+        options = options || {'groups': ["c", "cpp", "cc", "cxx", "h", "hpp"] };
 
         var files = Helpers.findFilesSync(directory);
         var fileGroups = _.groupBy(files, Helpers.getExt);
