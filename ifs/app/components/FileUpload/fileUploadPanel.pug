@@ -3,20 +3,20 @@ div
     hr
 div
     p.uk-text-muted Please select files to upload
-    div#upload-panel.upload-panel.uk-placeholder.uk-text-center
-        span(uk-icon="icon: push; ratio: 2").uk-align-center
-        span.uk-text-middle
-            | Drag and drop files here or 
-        div(uk-form-custom)
-            input(id="submissionInput" type="file" name="file" multiple required)
-            span.uk-link
-                | select one or more 
-            | to upload
+    div(uk-form-custom).uk-width-1-1
+        input(id="submissionInput" type="file" name="file" multiple required)
+        div#upload-panel.upload-panel.uk-placeholder.uk-text-center
+            span(uk-icon="icon: push; ratio: 2").uk-align-center.uk-display-block
+            span.uk-text-center
+                | Drag and drop files here or 
+                span.uk-link
+                    | select one or more 
+                    | to upload
         input(type="hidden" name="time"  id="time" value=Date.now())
 
     div(id="processingModal" uk-modal="center: true; bg-close: false; esc-close: false;")
         div.uk-modal-dialog.uk-width-1-2
-            button(class="uk-modal-close-default" uk-close) 
+            button(class="uk-modal-close-default" uk-close)
             div.uk-modal-header
                 h2(id="modalTitle" uk-modal.title) Processing Files please wait...
                 progress(value="0" max="100" uk-hidden)#progressbar.uk-progress
@@ -24,13 +24,12 @@ div
                 div(id="modalAlert" class="uk-alert uk-alert-danger uk-hidden")
                     p Unable to load files
             div(class="uk-modal-body")
-                script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js")
                 script(src="surveyjs/survey.jquery.js")
                 script(src="components/Survey/surveyReady.js")
                 script(src="/socket.io/socket.io.js")
                 script(src="/components/FileUpload/fileUploadEvents.js")
                 script.
-                    // Due to the uglyinesses of multiple front-end languages (pugly and jquery)
+                    // Due to the uglyinesses of multiple front-end languages (pug and jquery)
                     $(document).ready( function() {
                         Survey.defaultBootstrapCss.navigationButton = "btn btn-primary";
                         Survey.Survey.cssType = "bootstrap";
