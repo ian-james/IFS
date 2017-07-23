@@ -29,6 +29,8 @@ function getFileTypes() {
                 'text/markdown',
                 'text/x-csrc',
                 'text/x-chdr',
+                'text/x-c++src',
+                'text/x-c++hdr',
                 'application/json', 
                 'application/zip',
                 'application/x-compressed-zip',

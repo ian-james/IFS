@@ -18,7 +18,7 @@ var Helpers = require('./fileUploadHelpers');
 
 function acceptableFileTypes() {
     return {
-        'Programming':['md', 'json', 'cpp', 'c', 'h', 'zip', 'tar'],
+        'Programming':['md', 'json', "c", "cpp", "cc", "cxx", "h", "hpp", 'zip', 'tar'],
         'Writing': ['txt', 'text', 'doc', 'docx', 'odt', 'pdf']
     };
 }
@@ -39,6 +39,8 @@ function acceptableMimeType() {
             'text/markdown',
             'text/x-csrc',
             'text/x-chdr',
+            'text/x-c++src',
+            'text/x-c++hdr',
             'application/json',
             'application/zip',
             'application/x-compressed-zip',

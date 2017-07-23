@@ -90,7 +90,7 @@ module.exports = function (passport) {
                             newUser.sessionId = 0;
                             req.flash('success', 'Successfully signed up.');
 
-                            studentProfile.insertStudentProfile( newUser.id, req.body['firstname'], "Tell us about yourself", function(profileErr, studentSet) {
+                            studentProfile.insertStudentProfile( newUser.id, req.body['firstname'], "", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
                                     defaultTool.setupDefaultTool(req);
                                     SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){

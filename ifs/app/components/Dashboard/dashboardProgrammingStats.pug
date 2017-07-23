@@ -11,7 +11,8 @@ div#statsSection
                                     p.uk-display-inline #{ stats.userStats.submissionErrorRate.feedbackItems } Feedback Items Total
                                 if stats.userStats.submissionErrorRate.feedbackItems && stats.userStats.submissionErrorRate.feedbackItems != 0
                                     li 
-                                        p.uk-display-inline #{stats.userStats.submissionErrorRate.feedbackItems/stats.userStats.submissionErrorRate.submissionCount } Feedback/Submission Ratio 
+                                        - var fr = Math.round(stats.userStats.submissionErrorRate.feedbackItems /stats.userStats.submissionErrorRate.submissionCount ); 
+                                        p.uk-display-inline #{fr} Feedback/Submission Ratio 
                                 else
                                     li
                                         p.uk-display-inline No student submissions
@@ -26,7 +27,8 @@ div#statsSection
                                     p.uk-display-inline #{ stats.socialStats.submissionErrorRate.feedbackItems } Feedback Items Total
                                 if stats.socialStats.submissionErrorRate.feedbackItems && stats.socialStats.submissionErrorRate.feedbackItems != 0
                                     li
-                                        p.uk-display-inline #{stats.socialStats.submissionErrorRate.feedbackItems/stats.socialStats.submissionErrorRate.submissionCount } Feedback/Submission Ratio
+                                        - var frc = Math.round(stats.socialStats.submissionErrorRate.feedbackItems /  stats.socialStats.submissionErrorRate.submissionCount ); 
+                                        p.uk-display-inline #{ frc } Feedback/Submission Ratio
                                 else
                                     li
                                         p.uk-display-inline No student submissions

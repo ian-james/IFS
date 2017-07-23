@@ -47,14 +47,13 @@ module.exports = {
     },
 
     isSrcExt: function(filename) {
-        var ext = ["c", "cpp", "cc", "cxx"];
+        var ext = ["c", "cpp", "cc", "cxx", "h", "hpp"];
         return _.includes(ext, this.getExt(filename));
     },
 
     validateProgrammingFiles: function(filesInfo) {
         // Check only one file for zip submission
-        var countZip = 0,
-            countSrc = 0;
+        var countZip = 0, countSrc = 0;
         for (var i = 0; i < filesInfo.length; i++) {
             if (this.isZip(filesInfo[i].filename))
                 countZip++;
@@ -350,26 +349,17 @@ module.exports = {
     },
 
     // Minor validation of the project, including checking for a makefile, *c and *.h files
+    // TODO: Evaluate if Makefile makes sense and c, cpp, 
     validateProjectStructure: function(zipDir, groupedFiles) {
-        var res = {};
         if (groupedFiles) {
-            var noExts = _.get(groupedFiles, "");
-            var makeFile = path.join(zipDir, 'Makefile');
-            var hasMakeFile = _.includes(noExts, makeFile) || _.includes(noExts, _.lowerCase(makeFile));
+            var programmingType = ["c", "cpp", "cc", "cxx", "h", "hpp"];
+            var sum = 0;
 
-            if (!noExts || !hasMakeFile) {
-                return Errors.cLogErr("Unable to identify project Makefile. Ensure file you've included a makefile at the top level of your project folder.");
+            for(var i = 0; i< programmingType.length; i++) {
+                sum += _.get(groupedFiles, programingType[i], 0 ).length;
             }
-
-            var cFiles = _.get(groupedFiles, "c");
-            var hFiles = _.get(groupedFiles, 'h');
-
-            if (!cFiles) {
-                return Errors.cLogErr("Unable to locate source (.c) files in project.");
-            }
-
-            if (!hFiles) {
-                return Errors.cLogErr("Unable to locate header (.h) files in project.");
+            if (!sum) {
+                return Errors.cLogErr("Unable to locate source and/or headers files in project.");
             }
         }
         //Everything looks ok.
