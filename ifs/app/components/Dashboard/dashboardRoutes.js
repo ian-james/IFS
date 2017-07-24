@@ -75,6 +75,9 @@ module.exports = function (app, iosocket )
                     if(statsReq[i]['process'])
                         r = statsReq[i].process( r );
 
+                    if( statsReq[i].displayName )
+                        _.set(r, "displayName", statsReq[i].displayName);
+                    
                     if(statsReq[i].resultPath)
                         _.set(ret, statsReq[i].resultPath, r);
                 }
@@ -101,33 +104,39 @@ module.exports = function (app, iosocket )
             {
                 'request': studentModel.getMyMostCommonSpellingMistakes.bind( null,req.user.id, topN ),
                 'process': getSuggestion,
-                'resultPath': 'userStats.suggestions'
+                'resultPath': 'userStats.suggestions',
+                'displayName': 'My Suggestions'
             },
             {
                 'request': studentModel.getMySpellingAccuracy.bind( null,req.user.id),
                 'process': null,
-                'resultPath': 'userStats.accuracy'
+                'resultPath': 'userStats.accuracy',
+                'displayName': 'Spelling Accuracy'
             },
             {
                 'request': socialModel.getMostCommonSpellingMistakes.bind( null, topN ),
                 'process': getSuggestion,
-                'resultPath': 'socialStats.suggestions'
+                'resultPath': 'socialStats.suggestions',
+                'displayName': 'Class Suggestions'
             },
             {
                 'request': socialModel.getSpellingAccuracy,
                 'process': null,
-                'resultPath': 'socialStats.accuracy'
+                'resultPath': 'socialStats.accuracy',
+                'displayName': 'Class Accuracy'
             },
 
             {
                 'request': studentModel.getMyMostUsedTools.bind( null,req.user.id, toolSelect, topN ),
                 'process': null,
-                'resultPath': 'userStats.tools'
+                'resultPath': 'userStats.tools',
+                'displayName': 'My Tools'
             },
             {
                 'request': socialModel.getMostUsedTools.bind( null, toolSelect, topN ),
                 'process': null,
-                'resultPath': 'socialStats.tools'
+                'resultPath': 'socialStats.tools',
+                'displayName': 'Class Tools'
             }
         ];
         genericStatsRequest(requests,callback);
@@ -140,6 +149,17 @@ module.exports = function (app, iosocket )
      */
     function farr( arr ) {
         return arr && arr.length > 0 ? arr[0] : arr;
+    }
+
+
+    /**
+     * Very specific function to make sure result is not set to array but to an object with arr as the value
+     * So that other key/value pairs aren't integrated into the array
+     * @param {[type]} arr [description]
+     * @param {[type]} obj [description]
+     */
+    function setArrayAsValueInObject( arr ){
+        return {'value': arr};
     }
 
     /**
@@ -159,48 +179,58 @@ module.exports = function (app, iosocket )
             {
                 'request': studentModel.getMyMostUsedTools.bind( null, id, toolSelect, topN ),
                 'process': farr,
-                'resultPath': 'userStats.mostUsedTools'
+                'resultPath': 'userStats.mostUsedTools',
+                'displayName': "Most Frequent Tool"
             },
             {
                 'request': studentModel.getMyCommonFeedbackTool.bind(null, id, toolSelect, topN),
-                'process': null,
-                'resultPath': 'userStats.mostFeedbackTools'
+                'process': farr,
+                'resultPath': 'userStats.mostFeedbackTools',
+                'displayName': "Most Feedback from Tool"
             },
             {
                 'request': studentModel.getMyCommonViewedMoreFeedbackTool.bind(null,id, toolSelect, topN ),
                 'process': farr,
-                'resultPath': 'userStats.mostViewedMoreFeedbackTool'
+                'resultPath': 'userStats.mostViewedMoreFeedbackTool',
+                'displayName': "Most Indepth Feedback Views"
             },
             {
                 'request': socialModel.getMostUsedTools.bind( null, toolSelect, topN ),
                 'process': farr,
-                'resultPath': 'socialStats.mostUsedTools'
+                'resultPath': 'socialStats.mostUsedTools',
+                'displayName': "Most Frequent Tool"
             },
             {
                 'request': socialModel.getCommonFeedbackTool.bind(null,toolSelect, topN),
-                'process': null,
-                'resultPath': 'socialStats.mostFeedbackTools'
+                'process': farr,
+                'resultPath': 'socialStats.mostFeedbackTools',
+                'displayName': "Most Feedback from Tool"
             },
             {
                 'request': socialModel.getCommonViewedMoreFeedbackTool.bind(null, toolSelect, topN),
                 'process': farr,
-                'resultPath': 'socialStats.mostViewedMoreFeedbackTool'
+                'resultPath': 'socialStats.mostViewedMoreFeedbackTool',
+                'displayName': "Most Indepth Feedback Views"
             },
 
             {
                 'request': studentModel.getMyMostCommonFeedback.bind(null,id, toolSelect, 3),
-                'process': null,
-                'resultPath': 'userStats.commonFeedback'
+                'process': setArrayAsValueInObject,
+                'resultPath': 'userStats.commonFeedback',
+                'displayName': "Most Common Feedback"
             },
             {
                 'request': studentModel.getSubmissionToErrorRate.bind(null,id, toolSelect),
                 'process': farr,
-                'resultPath': 'userStats.submissionErrorRate'
+                'resultPath': 'userStats.submissionErrorRate',
+                'displayName': "Submission Feedback Rate"
+
             },
             {
                 'request': socialModel.getOtherSubmissionToErrorRate.bind(null, id, toolSelect),
                 'process': farr,
-                'resultPath': 'socialStats.submissionErrorRate'
+                'resultPath': 'socialStats.submissionErrorRate',
+                'displayName': "Submission Feedback Rate"
             }
         ];
         genericStatsRequest(requests,callback);
@@ -260,11 +290,9 @@ module.exports = function (app, iosocket )
      * @return {[type]}      [description]
      */
     app.get('/dashboard', function( req, res, next ) {
-        collectDashboardData(req,res, function(req,res,data ) {
-            res.render( viewPath + "dashboard", data );
-        });
-    })
-;
+        res.render( viewPath + "dashboard", { "title":"Dashboard"});
+    });
+
     /**
      * Dashboard data setups up the controller to have the same data as the backend expects.
      * @param  {[type]} req  [description]
