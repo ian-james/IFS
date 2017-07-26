@@ -65,7 +65,7 @@ def spcheck(to_check, lang, hun):
     line_num = 0
     word_num = 0
     # use built in word matching pattern
-    regex = re.compile(r'(\w+)')
+    regex = re.compile(r'((?!\'.*\')\b[\w\']+\b)')
 
     for line in to_check:
         char_pos= 0
@@ -221,10 +221,10 @@ def print_data(json_data='', lang='', english=False, misspelled=[],
                 print('misspelled word:')
                 print('at word:', misspelled[i][1],)
                 print('on line:', misspelled[i][0],)
-                print('"' + misspelled[i][4][0] + '"')
+                print('"' + misspelled[i][5][0] + '"')
                 print('suggestions:',)
-                for j in range(len(misspelled[i][4][1])):
-                    print(misspelled[i][4][1][j],)
+                for j in range(len(misspelled[i][5][1])):
+                    print(misspelled[i][5][1][j],)
                 print('\n')
     else:
         if json_data:
