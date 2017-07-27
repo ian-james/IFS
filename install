@@ -319,10 +319,12 @@ mkdir -p /var/www/$domain
 git clone https://github.com/ian-james/IFS.git /var/www/$domain
 echo ""
 
-# automatically configure the site settings
+# automatically configure the database settings
 sed -i "s/'root'/'$ifs_sql_user'/;
         s/'mysqlRootPassword'/'$ifs_sql_passwd'/;
         s/'IFS'/'$ifs_sql_db'/;" /var/www/$domain/ifs/config/databaseConfig.js
+
+nodejs /var/www/$domain/ifs/config/createDatabase.js
 
 (crontab -l 2>/dev/null; echo '0 0 1 */2 * certbot-auto renew --quiet --no-self-upgrade') | crontab -
 
