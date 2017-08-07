@@ -349,7 +349,6 @@ module.exports = {
     },
 
     // Minor validation of the project, including checking for a makefile, *c and *.h files
-    // TODO: Evaluate if Makefile makes sense and c, cpp, 
     validateProjectStructure: function(zipDir, groupedFiles) {
         if (groupedFiles) {
             var programmingType = ["c", "cpp", "cc", "cxx", "h", "hpp"];

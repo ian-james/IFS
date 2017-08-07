@@ -93,9 +93,9 @@
                     "params": ""
                 },
                 {
-                    "displayName": "Extra warnings",
+                    "displayName": "Extra warnings (-Wextra)",
                     "type": "checkbox",
-                    "name": "opt-clangLanguageExtraWarning (-Wextra)",
+                    "name": "opt-clangLanguageExtraWarning",
                     "values": "",
                     "arg": "-f -Wextra",
                     "params": ""

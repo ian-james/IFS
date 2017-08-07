@@ -7,6 +7,9 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     $scope.assignmentTasks = [];
     $scope.activeStudentFocus = 0;
     $scope.focus =  null;
+    $scope.toolType = null;
+    $scope.skills = [];
+
     /**
      * Selects the next active DIV for student focus.
      * @return {[type]} [description]
@@ -60,6 +63,8 @@ app.controller( "dashboardCtrl", function($scope, $http) {
         $scope.courses = res.data.courses;
         $scope.assignmentTasks = res.data.assignmentTasks;
         $scope.focus = res.data.focus;
+        $scope.toolType = res.data.toolType;
+        $scope.skills = res.data.skills;
 
         if( $scope.focus ) {
 
@@ -68,13 +73,15 @@ app.controller( "dashboardCtrl", function($scope, $http) {
 
             // Attach course select and assignment select
             for( var i = 0; i < $scope.courses.length;i++ ) {
-                if( $scope.courses[i].id == $scope.focus.courseId)
+                if( $scope.courses[i].id == $scope.focus.courseId) {
                     $scope.courseSelect = $scope.courses[i];
+                }
             }
 
             for( var i = 0; i < $scope.assignments.length;i++ ) {
-                if( $scope.assignments[i].assignmentId == $scope.focus.assignmentId)
+                if( $scope.assignments[i].assignmentId == $scope.focus.assignmentId) {
                     $scope.assignmentSelect = $scope.assignments[i];
+                }
             }
 
             if($scope.hasFocusItem())

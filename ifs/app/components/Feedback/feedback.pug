@@ -14,61 +14,65 @@ block scripts
 
 block content
     div(ng-controller="feedbackCtrl").uk-container
-        div.toolSelection
-            form(action="/feedback" method="post")#toolSelectionFrm.uk-form-horizontal
-                div
-                    label(for="toolSelector").uk-form-label View feedback from tool:
-                    div.uk-form-controls
-                        select(onchange="this.form.submit()" name="toolSelector")#toolSelectorId.uk-select
-                            option(selected="All"==selectedTool ) All
-                            each tool in toolsUsed
-                                option(selected=tool==selectedTool) #{ tool }
-
-                if visualTools && visualTools.length > 0
+        if err
+            div(uk-alert).uk-alert-danger
+                p.errorMessage #{err}
+        else
+            div.toolSelection
+                form(action="/feedback" method="post")#toolSelectionFrm.uk-form-horizontal
                     div
-                    each vtool in visualTools
-                        a(href=vtool.route).uk-button.uk-button-default #{ vtool.name }
+                        label(for="toolSelector").uk-form-label View feedback from tool:
+                        div.uk-form-controls
+                            select(onchange="this.form.submit()" name="toolSelector")#toolSelectorId.uk-select
+                                option(selected="All"==selectedTool ) All
+                                each tool in toolsUsed
+                                    option(selected=tool==selectedTool) #{ tool }
 
-            if feedbackStats
-                div.feedbackStatsSection
-                    hr
-                    ul(uk-accordion)
-                        li
-                            h3.uk-accordion-title
-                                | Feedback Stats
-                                span(class="uk-visible@l") (click to expand)
-                            div.uk-accordion-content
-                                include feedbackStatsTable.pug
+                    if visualTools && visualTools.length > 0
+                        div
+                        each vtool in visualTools
+                            a(href=vtool.route).uk-button.uk-button-default #{ vtool.name }
 
-            div.generalErrorsSection
-                if feedbackItems && feedbackItems.length > 0
-                    hr
-                    ul(uk-accordion)
-                        li
-                            h3.uk-accordion-title
-                                |  {{(feedbackItems|filter:allowFeedbackType).length}} of #{feedbackItems.length} Feedback Messages
-                                span(class="uk-visible@l") (click to expand)
-                            div.uk-accordion-content
-                                include feedbackErrorTable.pug
-                else
-                    h4 No errors were found!
+                if feedbackStats
+                    div.feedbackStatsSection
+                        hr
+                        ul(uk-accordion)
+                            li
+                                h3.uk-accordion-title
+                                    | Feedback Stats
+                                    span(class="uk-visible@l") (click to expand)
+                                div.uk-accordion-content
+                                    include feedbackStatsTable.pug
 
-        hr
-        div.filesSection
-            uib-tabset(active="active")
-                each file, findex in files
-                    uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
-                        div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
-                            if toolType == 'programming'
-                                pre.prettyprint
-                                    code !{file.markedUp}
-                            else
-                                pre
-                                    code !{file.markedUp}
-                        br
+                div.generalErrorsSection
+                    if feedbackItems && feedbackItems.length > 0
+                        hr
+                        ul(uk-accordion)
+                            li
+                                h3.uk-accordion-title
+                                    |  {{(feedbackItems|filter:allowFeedbackType).length}} of #{feedbackItems.length} Feedback Messages
+                                    span(class="uk-visible@l") (click to expand)
+                                div.uk-accordion-content
+                                    include feedbackErrorTable.pug
+                    else
+                        h4 No errors were found!
 
-            div(class="uk-offcanvas-content")
-                include popover.pug
+            hr
+            div.filesSection
+                uib-tabset(active="active")
+                    each file, findex in files
+                        uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
+                            div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
+                                if toolType == 'programming'
+                                    pre.prettyprint
+                                        code !{file.markedUp}
+                                else
+                                    pre
+                                        code !{file.markedUp}
+                            br
+
+                div(class="uk-offcanvas-content")
+                    include popover.pug
 
     script(src="components/Feedback/feedbackController.js")
     script(src="/components/InteractionEvents/browserFeedbackEvents.js")
