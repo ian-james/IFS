@@ -6,6 +6,7 @@ const path= require('path');
 
 // Identify if we're in development mode or production mode
 const env = process.env.NODE_ENV || 'dev';
+console.log("ENV HERE IS ", env);
 
 //Loggin directory.
 const logDir = "logs";
@@ -34,14 +35,14 @@ const tsFormat = () => (new Date()).toLocaleTimeString();
 const logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({
-            level: 'info',
+            level: env == 'production' ?  'debug' : 'info',
             //timestamp: tsFormat(),
             handleExceptions: true,
             colorize:true,
             json:true
         }),
         new (winston.transports.DailyRotateFile)({
-            level:  env === 'dev' ? 'info' : 'debug',
+            level:  env == 'production' ? 'debug'  :'info' ,
             filename: path.join( logDir, '-logFile.log'),
             handleExceptions: true,
             json: true,

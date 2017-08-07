@@ -2,6 +2,10 @@
 var express = require('express');
 var app = express();
 
+if(app.get('env') === 'production'){
+    console.log("In PRODUCTION");
+}
+
 // Set our paths for finding our code.
 var path = require('path');
 //var appPath = path.join( __dirname + "/../app/");
