@@ -36,55 +36,69 @@ function loadFiles( directory, options ) {
 
 /* This function loads the selected tool, loads file content and requests highlight */
 function readFeedbackFormat( feedback , options) {
-    var feedbackFormat = JSON.parse(feedback);
 
-    var feedbackItems = feedbackFormat.feedback;
-    var files = feedbackFormat.files;
+    try {
+        var feedbackFormat = JSON.parse(feedback);
 
-    // setup Project and organize.
-    if(files && fs.lstatSync(files[0].filename).isDirectory()) {
-        var r = loadFiles(files[0].filename);
-        if( r.length > 0 ) {
-            files = _.sortBy(r, ['originalname']);
-        }
-    }
-    else
-        files = _.sortBy(files, ['filename']);
+        var feedbackItems = feedbackFormat.feedback;
+        var files = feedbackFormat.files;
 
-    // A Unique list of tools used for UI
-    var toolsUsed = _.uniq(_.map(feedbackItems,'toolName'));
+        // setup Project and organize.
+        if(files && files.length > 0 && fs.lstatSync(files[0].filename).isDirectory()) {
+            console.log(files[0].filename)
+            var r = loadFiles(files[0].filename);
+            console.log("R -> ", r );
+            if( r.length > 0 ) {
+                files = _.sortBy(r, ['originalname']);
+            }
 
-    // Suggestions are stringified json, convert back to array.
-    for(var i = 0; i < feedbackItems.length; i++){
-        feedbackItems[i]['suggestions'] = JSON.parse(feedbackItems[i]['suggestions']);
-    }
-
-    // Tool should always be selected unless it's defaulted too.
-    var toolIsSelected = ( options && options['tool'] || toolsUsed.length >= 1);
-    var selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
-    // For each file, read in the content and mark it up for display.
-    for( var i = 0; i < files.length; i++ )
-    {
-        var file = files[i];
-        file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-
-        //TODO: Positional setup information should be moved to the feedback filtering and organization
-        // This decopules the task of highlights and positioning.
-        if( toolIsSelected ) {
-            setupFilePositionInformation(file, selectedTool,feedbackItems);
-            file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
         }
         else
-            file.markedUp = file.content;
+            files = _.sortBy(files, ['filename']);
+
+        // A Unique list of tools used for UI
+        var toolsUsed = _.uniq(_.map(feedbackItems,'toolName'));
+
+        // Suggestions are stringified json, convert back to array.
+        for(var i = 0; i < feedbackItems.length; i++){
+            feedbackItems[i]['suggestions'] = JSON.parse(feedbackItems[i]['suggestions']);
+        }
+
+        // Tool should always be selected unless it's defaulted too.
+        var toolIsSelected = ( options && options['tool'] || toolsUsed.length >= 1);
+        var selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
+        // For each file, read in the content and mark it up for display.
+        for( var i = 0; i < files.length; i++ )
+        {
+            var file = files[i];
+            console.log("File is ", file, " ", file.filename);
+            file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+
+            //TODO: Positional setup information should be moved to the feedback filtering and organization
+            // This decopules the task of highlights and positioning.
+            if( toolIsSelected ) {
+                setupFilePositionInformation(file, selectedTool,feedbackItems);
+                file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+            }
+            else
+                file.markedUp = file.content;
+        }
+
+        var result =  { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
+        if(selectedTool){
+            var i =  selectedTool == "All" ? 0 : _.findIndex(feedbackItems,['toolName',selectedTool]);
+            if( i >= 0 && feedbackItems.length > i)
+                result['toolType'] = feedbackItems[i]['runType'];
+        }
+        return result;
+    }
+    catch( e ) {
+        Logger.error(e);
     }
 
-    var result =  { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
-    if(selectedTool){
-        var i =  selectedTool == "All" ? 0 : _.findIndex(feedbackItems,['toolName',selectedTool]);
-        if( i >= 0 && feedbackItems.length > i)
-            result['toolType'] = feedbackItems[i]['runType'];
-    }
-    return result;
+    // Error return message.
+    return { "err": "Unable to process files, no feedback could be provided."};
+
 }
 
 function readFiles( filename , options) {
