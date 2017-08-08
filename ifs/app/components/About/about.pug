@@ -110,7 +110,7 @@ block content
             div(ng-controller="aboutCtrl")
                 div.uk-clearfix
                     h2.uk-float-left Programming Tools
-                    span(uk-toggle="target: #progAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down")#progAbtToggle.uk-icon-button.uk-float-right
+                    div(uk-toggle="target: #progAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down" title="click to expand" uk-tooltip="pos: left")#progAbtToggle.uk-icon-button.uk-float-right
                 div(uk-grid hidden)#progAbt.uk-grid-small.uk-grid-match
                     div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.prog.tools")
                         include ./tool-card.pug
@@ -118,7 +118,7 @@ block content
                 br
                 div.uk-clearfix
                     h2.uk-float-left Language Tools
-                    span(uk-toggle="target: #langAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down")#langAbtToggle.uk-icon-button.uk-float-right
+                    div(uk-toggle="target: #langAbt; animation: uk-animation-fade" uk-icon="icon: chevron-down" title="click to expand" uk-tooltip="pos: left")#langAbtToggle.uk-icon-button.uk-float-right
                 div(uk-grid hidden)#langAbt.uk-grid-small
                     div(class="uk-width-1-2@m" ng-repeat="tool in toolAbtList.lang.tools")
                         include ./tool-card.pug
