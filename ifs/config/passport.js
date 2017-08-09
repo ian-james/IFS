@@ -38,10 +38,6 @@ module.exports = function (passport) {
     passport.use( 'local-signup',
         new LocalStrategy(
             {
-                /*
-                 * The first and last name fields are not currently being used
-                 * by the sign-up form. How can we make use of them?
-                 */
                 firstnameField: 'firstname',
                 lastnameField: 'lastname',
                 usernameField: 'username',
@@ -49,30 +45,27 @@ module.exports = function (passport) {
                 passReqToCallback : true
             },
             function (req, username, password, done ) {
-
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     //req.flash('errorMessage', 'We tried');
-                    if(err)
-                    {
+                    if (err) {
                         req.flash('errorMessage', 'Unable to signup.');
                         Logger.error( err );
                         return done(err);
                     }
 
-                    if(rows.length) {
+                    if (rows.length) {
                         Logger.info(" Didn't find authorization", rows[0]);
                         req.flash('errorMessage', 'That user is already taken');
                         return done( null, false );
-                    }
-                    else{
+                    } else{
                         Logger.info("Adding new user");
                         var newUser = {
                             username: username,
                             password: bcrypt.hashSync( password, null, null )
                         };
 
-                        var insertQuery = "INSERT INTO users (username, password) values (?,?)";
-                        db.query(insertQuery,[newUser.username, newUser.password], function(err,rows) {
+                        var newuserQuery = "INSERT INTO users (username, password) values (?,?)";
+                        db.query(newuserQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
 
                             // copy the default avatar to the user avatar
@@ -80,7 +73,7 @@ module.exports = function (passport) {
                             var defaultpath = imgpath + "avatar_default.png";
                             var avatarpath = imgpath + newUser.id + "/";
                             mkdirp(avatarpath, function(err) {
-                                if(err) {
+                                if (err) {
                                     Logger.error("Unable to create image folder.");
                                 }
                             });
@@ -90,7 +83,7 @@ module.exports = function (passport) {
                             newUser.sessionId = 0;
                             req.flash('success', 'Successfully signed up.');
 
-                            studentProfile.insertStudentProfile( newUser.id, req.body['firstname'], "", function(profileErr, studentSet) {
+                            studentProfile.insertStudentProfile( newUser.id, req.body['firstname'] + " " + req.body['lastname'], "", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
                                     defaultTool.setupDefaultTool(req);
                                     SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
@@ -114,27 +107,26 @@ module.exports = function (passport) {
                 passwordField : 'password',
                 passReqToCallback : true
             },
-            function (req, username, password, done ) {
-
+            function (req, username, password, done) {
                 console.log(req.session);
 
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
-                    if(err) {
+                    if (err) {
                         req.flash('errorMessage', 'Service currently unavailable');
                         return done(err, false);
                     }
-                    if(!rows.length) {
+                    if (!rows.length) {
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
-                    if(!bcrypt.compareSync(password, rows[0].password)){
+                    if (!bcrypt.compareSync(password, rows[0].password)){
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
 
                     // Increment sessionId for user
                     db.query(dbHelpers.buildUpdate(config.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
-                        if(err)
+                        if (err)
                             Logger.error( err );
                     });
 
@@ -143,7 +135,7 @@ module.exports = function (passport) {
 
                     //Set a single preference on login to load their toolType preferences (defaults to programming)
                     preferencesDB.getStudentPreferencesByToolName( rows[0].id,  toolTypeKey, function(toolErr, result){
-                        if( toolErr || !result || result.length == 0)
+                        if ( toolErr || !result || result.length == 0)
                             defaultTool.setupDefaultTool(req);
                         else
                             defaultTool.setupDefaultTool(req, result[0].toolValue );

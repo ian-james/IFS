@@ -11,8 +11,8 @@ module.exports = {
     // modify the database specified below.
     'connection': {
         'host' :                        'localhost',
-        'user' :                        'root',
-        'password' :                    'mysqlRootPassword',
+        'user' :                        'ifs-admin',
+        'password' :                    'bpjZ1A5Bj3xp',
         'connectionLimit':              500
     },
     // database name
@@ -20,6 +20,8 @@ module.exports = {
 
     // databse tables
     'users_table':                      'users',
+    'user_registration_table':          'user_registration',
+    'verify_table':                     'verify',
     'survey_table':                     'survey',
     'survey_results_table':             'surveyResult',
     'survey_preferences_table':         'survey_preferences',

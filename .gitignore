@@ -8,6 +8,7 @@ npm-debug.log
 ifs/logs/
 ifs/config/databaseConfig.js
 ifs/app/shared/img/user/*
+ifs/users/
 
 # vim swap files
 *.sw[a-p]
