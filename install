@@ -343,6 +343,14 @@ pip3 install hunspell language-check proselint pyapa nltk numpy
 python3 -m nltk.downloader --dir=/usr/share/nltk_data stopwords punkt # all
 echo ""
 
+# install SMTP server
+echo 'Installing and configuring postfix mailer...'
+apt-get install postfix mailutils
+sed -i "s/smtpd_tls_cert_file*/smtpd_tls_cert_file=\/etc\/letsencrypt\/live\/$domain\/fullchain.pem/;
+        s/smtpd_tls_key_file*/smtpd_tls_cert_file=\/etc\/letsencrypt\/live\/$domain\/privkey.pem/;
+        s/myhostname*/myhostname = $domain/;
+        s/mydestination*/mydestination = \$myhostname localhost/;" /etc/postfix/main.cf
+
 echo 'Done installing IFS.'
 echo "You can now run IFS by typing 'npm start' from /var/www/$domain/ifs"
 echo "You many want to fork this to a background process, or run from a detachable session."
