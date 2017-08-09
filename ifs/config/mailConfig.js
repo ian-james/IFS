@@ -15,6 +15,9 @@ var transport_cfg = {
 }
 var transporter = nodemailer.createTransport(transport_cfg);
 
+// create the host for links referrals
+var host = 'ifs.example.com';
+
 // set up message template;
 // USAGE:
 // var mailcfg = require(__configs + 'mailConfig');
