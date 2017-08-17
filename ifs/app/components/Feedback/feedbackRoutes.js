@@ -42,7 +42,6 @@ module.exports = function( app ) {
                 res.end();
             }
             else {
-                console.log("MYYYYYYYYYYYYYYY FILES", req.session.uploadFilesFile);
                 var filesContent = fs.readFile( req.session.uploadFilesFile, 'utf-8', (err,filesContent) => {
                     var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +

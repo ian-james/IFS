@@ -51,5 +51,10 @@ module.exports = function (app) {
      */
     // wordcloud
     app.use("/wordcloud", express.static(nodeModulesPath + "/wordcloud/src/"));
+
+    //Socket IO
     app.use("/socketIO", express.static(nodeModulesPath + "/wordcloud/src/"));
+
+    // Chart JS
+    app.use("/chartjs", express.static(nodeModulesPath + "/chart.js/dist/"));
 }

@@ -1,0 +1,16 @@
+extends ../../shared/views/pageLayout.pug
+
+block scripts
+    script(src="/socket.io/socket.io.js")
+    script(src="/chartjs/Chart.bundle.min.js")
+
+block content
+    div.uk-container.uk-container-small
+        div(uk-alert).uk-alert-danger
+            p.uk-align-center.errorMessage #{messages.errorMessage}
+        div.row
+            canvas#myChart
+                script.
+                    var ctx = document.getElementById("myChart").getContext("2d");
+                    var cd = !{chartData};
+                    var newChart = new Chart(ctx, cd);
