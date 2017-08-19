@@ -12,8 +12,9 @@ module.exports = function (app, iosocket) {
     require(componentsPath + "/Admin/adminRoutes")(app);
     require(componentsPath + "/Admin/adminRemoveRoutes")(app);
 
-    // Dev Team Controllers
+    // Login/registration routes
     require(componentsPath + "/Login/loginRoutes")(app, passport);
+    require(componentsPath + "/Verify/verifyRoutes")(app, passport);
 
     // Tool routes
     require(componentsPath + "/Tool/toolRoutes")(app, iosocket);

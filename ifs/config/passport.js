@@ -6,6 +6,10 @@ var db = require('./database');
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var config = require(__configs + 'databaseConfig');
 
+var nodemailer = require('nodemailer');
+var mailcfg = require(__configs + 'mailConfig');
+var tokgen = require('tokgen');
+
 var path = require('path');
 var mkdirp = require('mkdirp');
 var cp = require('cp-file');
@@ -63,7 +67,8 @@ module.exports = function (passport) {
                             username: username,
                             password: bcrypt.hashSync( password, null, null )
                         };
-
+                        
+                        // set up new user
                         var newuserQuery = "INSERT INTO users (username, password) values (?,?)";
                         db.query(newuserQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
@@ -79,10 +84,40 @@ module.exports = function (passport) {
                             });
                             cp.sync(defaultpath, avatarpath + "avatar.png");
 
+                            //generate verification token and send email
+                            var generator = new tokgen();
+                            var token = generator.generate();
+                            console.log("token:", token);
+                            var link = 'http://' + mailcfg.host + '/verify?id=' + newUser.id +'&t=' + token;
+                            var msg = mailcfg.message;
+                            msg['to'] = newUser.username;
+                            msg['subject'] = "Complete your registration";
+                            var plainbody = "Hello " + req.body['firstname'] + ",\n\nPlease follow the link below to complete your registration:\n";
+                            plainbody += link;
+                            msg['text'] = plainbody;
+
+                            var transporter = new nodemailer.createTransport(mailcfg.transport_cfg);
+                            
+                            console.log('config: ' + JSON.stringify(mailcfg.transport_cfg));
+                            console.log('message: ' + JSON.stringify(msg));
+                            transporter.sendMail(msg, (error, info) => {
+                                if (error)
+                                    return console.log(error);
+                                console.log('Message %s sent: %s', info.messageId, info.reponse);
+                            });
+
+                            // insert token into the verify database
+                            var insert = dbHelpers.buildInsert(config.verify_table) + dbHelpers.buildValues(["userId", "type", "token"]);
+                            db.query(insert, [newUser.id, "verify", token], function(verifyErr, verifyData){
+                                if (err)
+                                    console.log("ERROR", verifyErr);
+                            });
+                            
 
                             newUser.sessionId = 0;
-                            req.flash('success', 'Successfully signed up.');
+                            req.flash('success', 'Check your email for a verification link.');
 
+                            // set up profile and survey settings
                             studentProfile.insertStudentProfile( newUser.id, req.body['firstname'] + " " + req.body['lastname'], "", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
                                     defaultTool.setupDefaultTool(req);
@@ -110,6 +145,7 @@ module.exports = function (passport) {
             function (req, username, password, done) {
                 console.log(req.session);
 
+                // TODO: verify the isRegistered boolean in user_registration
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     if (err) {
                         req.flash('errorMessage', 'Service currently unavailable');

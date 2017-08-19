@@ -12,7 +12,7 @@ var _ = require('lodash');
 module.exports = function( app, passport ) {
 
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/about','/about/data'];
+        var nonSecurePaths = ['/', '/login', '/register', '/verify', '/forgot', '/reset', '/about','/about/data'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
 
         if(result >= 0 || (req.user) ) {
@@ -36,15 +36,15 @@ module.exports = function( app, passport ) {
     });
 
     app.get("/", function(req,res) {
-        if( req &&  req.user  )
+        if(req && req.user)
             res.redirect('/tool');
         else
             res.render(viewPath + "login", { title: 'Login Screen'});
     });
 
     // Load the login page
-    app.get( "/login", function(req,res){
-        if( req &&  req.user  )
+    app.get( "/login", function(req,res) {
+        if(req && req.user)
             res.redirect('/tool');
         res.render( viewPath + "login", { title: 'Login Screen'});
     });
@@ -59,15 +59,13 @@ module.exports = function( app, passport ) {
         res.render(viewPath + 'register', { title: "Signup Screen", message:"ok"});
     });
 
-    /*
-     * TODO: pass first and last name information to the SQL database
-     *
+    /* 
      */
     app.post('/register', passport.authenticate('local-signup', {
-        successRedirect : '/setup',
+        successRedirect : '/logout',
         failureRedirect : '/register',
         failureFlash : true,
-        badRequestMessage: "Failed to login"
+        badRequestMessage: "Failed to register!"
     }));
 
     app.get('/logout', function (req, res ){

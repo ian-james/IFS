@@ -36,6 +36,10 @@ module.exports = {
         return "INSERT INTO " + table + " ";
     },
 
+    buildInsertIgnore: function(table) {
+        return "INSERT IGNORE INTO " + table + " ";
+    },
+
     buildSelect: function(table, sel = "*") {
         return "SELECT " + sel + " FROM " + table + " ";
     },

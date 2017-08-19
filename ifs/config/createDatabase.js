@@ -34,7 +34,7 @@ try {
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             userId INT UNSIGNED NOT NULL, \
             type VARCHAR(10) NOT NULL, \
-            token VARCHAR(20) UNIQUE NOT NULL, \
+            token VARCHAR(40) UNIQUE NOT NULL, \
             timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
             FOREIGN KEY (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
             PRIMARY KEY(id) \
@@ -360,6 +360,15 @@ try {
         connection.query("INSERT INTO " + config.database + "." + config.role_table + "(id, role) VALUES (1, \"admin\") ON DUPLICATE KEY UPDATE id=id;");
         connection.query("INSERT INTO " + config.database + "." + config.role_table + "(id, role) VALUES (2, \"developer\") ON DUPLICATE KEY UPDATE id=id;");
         connection.query("INSERT INTO " + config.database + "." + config.role_table + "(id, role) VALUES (3, \"student\") ON DUPLICATE KEY UPDATE id=id;");
+
+        /* POST DATABASE CREATION: setup deletion rules for entries in the
+         * verify_table; run once per hour */
+        Logger.info("Set up event for expired token management.");
+        connection.query("create event if not exists " + config.database + ".clearExpired\
+            ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 HOUR\
+            DO DELETE FROM " + config.database + "." + config.verify_table + "\
+            WHERE TIMESTAMPDIFF(HOUR, NOW(),  " + config.database + "." + config.verify_table + ".timestamp)>12;"
+        );
     } else {
         Logger.error("Error, Unable to make connection to database")
     }
