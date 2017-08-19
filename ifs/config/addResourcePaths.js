@@ -57,4 +57,7 @@ module.exports = function (app) {
 
     // Chart JS
     app.use("/chartjs", express.static(nodeModulesPath + "/chart.js/dist/"));
+
+    // Angular-Chart
+    app.use( "/achartjs", express.static(nodeModulesPath + "/angular-chart.js/dist/"));
 }

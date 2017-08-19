@@ -2,15 +2,47 @@ extends ../../shared/views/pageLayout.pug
 
 block scripts
     script(src="/socket.io/socket.io.js")
-    script(src="/chartjs/Chart.bundle.min.js")
 
 block content
-    div.uk-container.uk-container-small
+    div(ng-controller="studentModelCtrl").uk-container.uk-container-small
         div(uk-alert).uk-alert-danger
             p.uk-align-center.errorMessage #{messages.errorMessage}
         div.row
-            canvas#myChart
-                script.
-                    var ctx = document.getElementById("myChart").getContext("2d");
-                    var cd = !{chartData};
-                    var newChart = new Chart(ctx, cd);
+            div(ng-if="graphData.data && graphData.data.length > 0").row
+                canvas(id="bar" class="chart-base" chart-type="selectedGraphType" chart-options="graphData.options" chart-colors="selectedColorScheme.colors" chart-data="graphData.data" chart-labels="graphData.labels" chart-series="graphData.series"  )
+            div(ng-if="graphData.data.length == 0").row
+                h3 No Information is available.
+            br
+            br
+            div.row
+                div(uk-grid).uk-grid
+                    div(class="uk-width-1-2").profile.uk-align-left.uk-margin-remove-right
+                        form(class='uk-form')
+                            label(for="studentMetricType").uk-form-label
+                                    | Student Metric
+                            div.uk-form-controls
+                                select(name="studentData" ng-model="selectedData" ng-options="d.name for d in dataOptions track by d.name" ng-init="selectedData = dataOptions[0]").uk-select.uk-margin-bottom
+                                
+                            label(for="minDate").uk-form-label
+                                | Start Date
+                            div.uk-form-controls
+                                input(type="date" ng-model="lowDate" value="{{lowDate}}" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required).uk-input.uk-margin-bottom
+
+                            label(for="maxDate").uk-form-label
+                                |  End Date
+                            div.uk-form-controls
+                                input(type="date" ng-model="highDate" value="{{highDate}}" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required).uk-input.uk-margin-bottom
+                            button(type="submit" ng-click="updateForm()").uk-button.uk-button-primary Update
+
+                    div(class="uk-width-1-2").uk-margin-remove-top
+                        label(for="graphType").uk-form-label
+                                | Graph Type
+                        div.uk-form-controls
+                            select(ng-model="selectedGraphType" ng-options="g for g in graphTypes" ng-init="selectedGraphType = graphTypes[0]").uk-select.uk-margin-bottom
+
+                        label(for="colorSchemes").uk-form-label
+                                | Color Scheme
+                        div.uk-form-controls
+                            select(ng-model="selectedColorScheme" ng-options="c.name for c in colorSchemes" ng-init="selectedColorScheme = colorSchemes[0]").uk-select.uk-margin-bottom
+
+    script(src="components/StudentModel/studentModelController.js")
