@@ -57,7 +57,11 @@ module.exports = function (app, iosocket) {
     require(componentsPath + '/InteractionEvents/trackedEventRoutes')(app, iosocket);
 
     // Post Registration Setup
-    require(componentsPath + '/Setup/setupRoutes')(app, iosocket)
+    require(componentsPath + '/Setup/setupRoutes')(app, iosocket);
+
+    // Open Learner and Social Learner Models
+    require(componentsPath + "/StudentModel/studentModelRoutes")(app,iosocket);
+    require(componentsPath + "/SocialModel/socialModelRoutes")(app,iosocket);
 
     // Test features can be placed here.
     require(componentsPath + "/Test/testRoutes")(app);

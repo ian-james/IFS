@@ -45,9 +45,7 @@ function readFeedbackFormat( feedback , options) {
 
         // setup Project and organize.
         if(files && files.length > 0 && fs.lstatSync(files[0].filename).isDirectory()) {
-            console.log(files[0].filename)
             var r = loadFiles(files[0].filename);
-            console.log("R -> ", r );
             if( r.length > 0 ) {
                 files = _.sortBy(r, ['originalname']);
             }
@@ -71,7 +69,6 @@ function readFeedbackFormat( feedback , options) {
         for( var i = 0; i < files.length; i++ )
         {
             var file = files[i];
-            console.log("File is ", file, " ", file.filename);
             file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
 
             //TODO: Positional setup information should be moved to the feedback filtering and organization

@@ -28,6 +28,7 @@
   "dependencies": {
     "adm-zip": "^0.4.7",
     "angular": "^1.6.1",
+    "angular-chart.js": "^1.1.1",
     "angular-file-upload": "^2.4.1",
     "angular-sanitize": "^1.6.1",
     "angular-ui-bootstrap": "^2.4.0",
@@ -35,6 +36,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",
     "browserify": "^13.3.0",
+    "chart.js": "^2.6.0",
     "code-prettify": "^0.1.0",
     "command-line-args": "^4.0.1",
     "connect-redis": "^3.2.0",
@@ -56,6 +58,7 @@
     "mark.js": "github:julmot/mark.js",
     "method-override": "^2.3.7",
     "mkdirp": "^0.5.1",
+    "moment": "^2.18.1",
     "morgan": "^1.7.0",
     "multer": "^1.2.1",
     "mysql": "^2.12.0",
