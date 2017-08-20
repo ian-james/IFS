@@ -42,10 +42,6 @@ module.exports = function(app, iosocket) {
      * @return {[type]}        [description]
      */
     function makeChart( labels, data, series = [], options = {} ) {
-        /*console.log("L",labels);
-        console.log("D", data);
-        console.log("S", series);
-        */
         return {
             labels: labels,
             data: data,
@@ -151,7 +147,6 @@ module.exports = function(app, iosocket) {
                 var values = _.map(data, "value");
                 var options = chartOptions(false,true,"Session Submissions",makeScale(true,"Session Date"), makeScale(true,"Submissions"));
                 var chartData = makeChart(sessionDates,values,[], options);
-                console.log(chartData);
                 res.json(chartData);
             }
             res.end();
@@ -172,7 +167,7 @@ module.exports = function(app, iosocket) {
                 var options = chartOptions(true,true,"Feedback Items Per Submission",makeScale(true,"Submission Number"), makeScale(true,"Feedback Items"));
                 var chartData = setupSeriesData(groups, options,function( labels, values) {
 
-                    var maxLength = values[0].length;
+                    maxLength = -1;
                     for( var k =0;k<values.length;k++) 
                         maxLength = values[k].length > maxLength ? values[k].length : maxLength;
 
@@ -217,8 +212,37 @@ module.exports = function(app, iosocket) {
         return makeChart(labels, datas, series, options );
     }
 
+
     /**
-     * This funciton setups chart for the feedback Items viewed.
+     * This function evens out the number of data entry points between the groups. Ie adds default values to match row sizes.
+     * Since Feedback must first be viewed in short form before detailed view the sessions.
+     * I'm extending the viewedMore or DetailedView information so that it properly aligns with the submisison data from quick
+     *
+     * Reason: ChartJS wants equal length arrays (AFAIK)
+     *  Sadly arrays  with x-axis information such as [1 2, 3, 4 ] and [1,4] will not have 2 data points at 1 and 4 like you might expect
+     *  but push them into the first and 2nd spots from the array position. This means the 2nd array must become [1, 0, 0, 4] to be a true represetnation.
+     * @param  {[type]} feedbackGroups [description]
+     * @return {[type]}                [description]
+     */
+    function injectDefaultData(field1, field2, feedbackGroups, defaultValue = 0) {
+
+        var viewed = feedbackGroups[field1];
+        var viewedMore = feedbackGroups[field2];
+
+        for( var i = 0; i < viewed.length;i++ ) {
+            var v = viewed[i];
+            var res = _.find(viewedMore,{'labels':v.labels});
+            if(!res){
+                viewedMore.push( { labels: v.labels, series: field2, value: defaultValue } );
+            }
+        }
+        viewedMore = _.orderBy(viewedMore,['labels']);
+        return viewedMore;
+    }
+ 
+
+    /**
+     * This funciton setups chart for the feedback viewed item and viewed elaborate feedback.
      * @param  {[type]} req     [description]
      * @param  {[type]} res     [description]
      * @param  {[type]} options [description]
@@ -227,8 +251,14 @@ module.exports = function(app, iosocket) {
     function feedbackViewedChart(req,res,options) {
          studentModel.getFeedbackViewedPerSubmissionBetweenDates(req.user.id, options.minDate, options.maxDate, function(err,data){
             if(!err) {
+                // CREATE EQUAL GROUPS
                 var groups = _.groupBy(data,"series");
-                console.log("GROUPS", groups);
+                
+                // We inject data in both field because somehow viewedMore occured without viewed. Might be an error
+                // but easy enough to handle at this point.
+                groups['viewedMore'] = injectDefaultData('viewed', 'viewedMore', groups,0);
+                groups['viewed'] = injectDefaultData('viewedMore', 'viewed',groups,1);
+                
                 var options = chartOptions(true,true,"Viewed Feedback Items",makeScale(true,"Session with Feedback View"), makeScale(true,"Times Viewed"));
                 var chartData = setupSeriesData(groups,options, function( labels, values) {
                     return labels[0];
@@ -255,8 +285,14 @@ module.exports = function(app, iosocket) {
         submissionChart(req,res, options );
     });
 
+    /**
+     * Post changes the data that is shown, uses the dates for the mysql requests.
+     * @param  {[type]} req  [description]
+     * @param  {[type]} res) {                   if( req.body.studentData && validateDate(req.body.minDate) && validateDate(req.body.maxDate) ) {            if( req.body.studentData.key [description]
+     * @return {[type]}      [description]
+     */
     app.post('/studentModel/data', function(req, res) {
-        if( req.body.studentData && validateDate(req.body.minDate) && validateDate(req.body.maxDate) ) {
+        if( req.body.studentData && validateDate(req.body.minDate) && validateDate(req.body.maxDate) && moment(req.body.maxDate).isAfter(req.body.minDate)) {
             if( req.body.studentData.key == "nsubs")
                 submissionChart(req,res, req.body );
             else if( req.body.studentData.key == "nfiv")
@@ -265,8 +301,11 @@ module.exports = function(app, iosocket) {
                 feedbackItemChart(req,res,req.body);
             else
                 res.end();
+            
         }
-        else
-            res.end();
+        else {
+            req.flash('errorMessage', "Invalid date information");
+            res.redirect("/studentModel");
+        }
     });
 }

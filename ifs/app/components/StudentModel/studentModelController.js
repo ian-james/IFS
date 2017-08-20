@@ -26,11 +26,11 @@ app.controller( "studentModelCtrl", function($scope, $http) {
         $scope.colorSchemes = [
             {
                 'name': 'primary',
-                'colors': ['#72C02C', '#3498DB', '#717984', '#F1C40F', '#E72525','#FEEF37','#A20078']
+                'colors': [ '#3498DB', '#72C02C', '#F1C40F', '#E72525','#FEEF37','#A20078','#717984']
             },
             {
                 'name': 'secondary',
-                'colors': ['#807F82', '#FFBF6B', '#B88FFF','#98F5C7','#62E3F2', '#3498DB','#E9E37B',]
+                'colors': ['#B88FFF','#98F5C7','#62E3F2', '#3498DB',  '#FFBF6B', '#807F82', '#E9E37B','#800B81' ]
             }
         ];
         $scope.selectedColorScheme = $scope.colorSchemes[0];
@@ -67,7 +67,6 @@ app.controller( "studentModelCtrl", function($scope, $http) {
     $scope.updateForm = function() {
         console.log("UPDATE IS CALLED");
         $http.post('/studentModel/data', {'minDate': $scope.lowDate, 'maxDate': $scope.highDate, 'studentData': $scope.selectedData }).then( function(res) {
-            console.log("$scope.graphData is ", $scope.graphData );
             if(res.data) {
                 $scope.graphData = res.data;
             }
@@ -81,7 +80,6 @@ app.controller( "studentModelCtrl", function($scope, $http) {
 
     $http.get('/studentModel/data').then( function(res) {
         $scope.graphData = res.data;
-        console.log("$scope.graphData is ", $scope.graphData );
     });
 
   
