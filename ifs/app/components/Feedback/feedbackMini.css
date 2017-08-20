@@ -14,3 +14,11 @@
     color:black;
     margin:0px;
 }
+
+.rateUp svg {
+	pointer-events:none;
+}
+
+.rateDown svg {
+	pointer-events:none;
+}

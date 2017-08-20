@@ -69,7 +69,6 @@ module.exports = function( app ) {
                         });
                     });
                 });
-                
             }
         });
     };
@@ -96,7 +95,7 @@ module.exports = function( app ) {
             res.render( viewPath + "feedback", results );
         });
     });
-   
+
    app.get('/feedback/data', function(req,res,next) {
         var opt = {};
         if( req.session.activeTool )

@@ -16,7 +16,6 @@ module.exports = {
     },
 
     /* Retrieval by types of events */
-   
     getUserEvents: function( user, callback ){
         dbHelpers.selectWhere(config.users_interation_table, "userId", user, callback);
     },
