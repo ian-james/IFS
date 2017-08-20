@@ -47,6 +47,7 @@ try {
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             userId INT UNSIGNED NOT NULL, \
             isRegistered BOOL DEFAULT FALSE, \
+            completedSetup BOOL DEFAULT FALSE, \
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
             PRIMARY KEY(id) \
         )");

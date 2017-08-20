@@ -3,6 +3,10 @@ var fs = require('fs');
 var viewPath = path.join( __dirname + "/");
 var Logger = require( __configs + "loggingConfig");
 
+var config = require(__configs + "databaseConfig");
+var db = require(__configs + "database");
+var dbHelpers = require(__components + "Databases/dbHelpers");
+
 var coursesDB = require(__components + "Courses/coursesDB.js");
 var userOptDB = require(__components + "Setup/userOptDB.js");
 
@@ -34,7 +38,7 @@ module.exports = function(app) {
             }
         });
     });
-    
+
     app.get('/setup/values.json', function(req, res, next) {
         var values = [];
         userOptDB.getUserOptIn(req.user.id, function(err, optin) {
@@ -42,7 +46,7 @@ module.exports = function(app) {
                 "name": "optin",
                 "value": optin[0].optedIn
             }
-            values.push(obj); 
+            values.push(obj);
             res.json(values);
         });
     });
@@ -92,5 +96,17 @@ module.exports = function(app) {
         }
 
         res.redirect("/setup");
+    });
+
+    // this route exists to mark that set-up has been completed for the user
+    app.post('/complete-setup', function(req, res, next) {
+        var q = dbHelpers.buildUpdate(config.user_registration_table) + 'SET completedSetup = ? WHERE userId = ?';
+        db.query(q, [1, req.user.id], function(err, data) {
+            if (!err)
+                console.log("UID " + req.user.id + " completed setup.");
+            else
+                console.log("ERROR", err);
+        });
+        res.redirect('/preferences');
     });
 }

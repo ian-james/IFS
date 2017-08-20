@@ -159,6 +159,17 @@ module.exports = function (passport) {
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
+                    // verify the user has completed registration
+                    var uid = rows[0].id;
+                    var isreg = dbHelpers.buildSelect(config.user_registration_table) + dbHelpers.buildWhere(["userId"]);
+                    db.query(isreg, uid, function(err, data) {
+                        if (err)
+                            Logger.error(err);
+                        if (!data[0]) {
+                            req.flash('errorMessage', 'Check your email to complete registration.');
+                            return done(null, false);
+                        }
+                    });
 
                     // Increment sessionId for user
                     db.query(dbHelpers.buildUpdate(config.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
