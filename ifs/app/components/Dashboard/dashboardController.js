@@ -28,6 +28,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     }
 
     $scope.resetSelectedFocus = function() {
+        console.log("RESET");
         $scope.activeStudentFocus = 0;
         $scope.courseSelect = null;
         $scope.assignmentSelect = null;
@@ -52,6 +53,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     }
 
     $scope.hasFocusItem = function() {
+        console.log("C", $scope.assignmentSelect, " and cs ", $scope.courselect);
         return $scope.assignmentSelect && $scope.courseSelect;
     }
 
@@ -68,6 +70,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
 
         if( $scope.focus ) {
 
+            console.log("REST DATA");
             $scope.courseSelect = null;
             $scope.assignmentSelect = null;
 

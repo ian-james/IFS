@@ -49,6 +49,16 @@ module.exports = {
         db.query( q, [userId], callback );
     },
 
+    getSubmissionsPerWeek: function( userId, callback ) {
+        var q = dbHelpers.buildSelect( config.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' monday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + dbHelpers.buildWS('userId') + "  GROUP BY yearweek(date), labels";
+        db.query( q, [userId], callback );
+    },
+
+    getSubmissionsPerWeekBetweenDates: function( userId, minDate, maxDate,  callback ) {
+        var q = dbHelpers.buildSelect( config.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' monday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + dbHelpers.buildWS('userId') + " and date >= ? and date <= ? GROUP BY yearweek(date), labels";
+        db.query( q, [userId,minDate, maxDate], callback );
+    },
+
     getSubmissionsPerDate: function(userId, callback){
         var format = "DATE_FORMAT(date, '%Y-%m-%d')";
         var q = dbHelpers.buildSelect( config.submission_table, format + " as sessionDate, count(*) as value ") + dbHelpers.buildWS('userId') + " GROUP BY " + format;
