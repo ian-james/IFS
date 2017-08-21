@@ -10,7 +10,7 @@ block content
         div.row
             div(ng-if="graphData.data && graphData.data.length > 0").row
                 canvas(id="bar" class="chart-base" chart-type="selectedGraphType" chart-options="graphData.options" chart-colors="selectedColorScheme.colors" chart-data="graphData.data" chart-labels="graphData.labels" chart-series="graphData.series"  )
-            div(ng-if="graphData.data.length == 0").row
+            div(ng-if="!graphData.data || (graphData.data && graphData.data.length == 0)").row
                 h3 No Information is available.
             br
             br

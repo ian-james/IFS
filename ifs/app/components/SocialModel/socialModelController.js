@@ -1,4 +1,4 @@
-app.controller( "studentModelCtrl", function($scope, $http) {
+app.controller( "socialModelCtrl", function($scope, $http) {
 
     // Backend Data passed in.
     $scope.graphData= {};
@@ -39,7 +39,7 @@ app.controller( "studentModelCtrl", function($scope, $http) {
 
     $scope.initDates = function() {
         $scope.lowDate = new Date(2017,6,1);
-        $scope.highDate = new Date();
+        $scope.highDate= new Date();
     }
 
     $scope.initGraphTypes = function() {
@@ -50,9 +50,9 @@ app.controller( "studentModelCtrl", function($scope, $http) {
     $scope.initMetrics = function() {
         $scope.selectedData = 0;
         $scope.dataOptions = [
-            { 'name': 'Submissions', 'key': 'nsubs' },
-            { 'name': 'Feedback Items', 'key': 'nerrs' },
-            { 'name': 'Feedback Items Viewed', 'key': 'nfiv' }
+            { 'name': 'Weekly Submissions', 'key': 'nsubs' },
+            { 'name': 'Feedback Items Per Submission', 'key': 'nerrs' },
+            { 'name': 'Feedback Items Viewed Per Submission', 'key': 'nfiv' }
         ];
     }
 
@@ -64,7 +64,7 @@ app.controller( "studentModelCtrl", function($scope, $http) {
     }
 
     $scope.updateForm = function() {
-        $http.post('/studentModel/data', {'minDate': $scope.lowDate, 'maxDate': $scope.highDate, 'studentData': $scope.selectedData }).then( function(res) {
+        $http.post('/socialModel/data', {'minDate': $scope.lowDate, 'maxDate': $scope.highDate, 'studentData': $scope.selectedData }).then( function(res) {
             if(res.data) {
                 $scope.graphData = res.data;
             }
@@ -76,9 +76,7 @@ app.controller( "studentModelCtrl", function($scope, $http) {
     //Initialize some values
     $scope.init();
 
-    $http.get('/studentModel/data').then( function(res) {
+    $http.get('/socialModel/data').then( function(res) {
         $scope.graphData = res.data;
     });
-
-  
 });

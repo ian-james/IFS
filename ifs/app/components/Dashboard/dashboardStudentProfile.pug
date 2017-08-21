@@ -6,6 +6,14 @@ div(class="uk-visible@s").avatar-section
             br
             span.profile-username {{user.username}}
         hr
+        div.models
+            span.profile-h2 Learner Models
+            a(href="/studentModel" class="uk-button") View Student Stats 
+                span(uk-icon="icon: info")
+            a(href="/socialModel" class="uk-button") View Class Stats 
+                 span(uk-icon="icon: info")
+            br
+        hr
         div.classes
             span.profile-h2 Classes
             br
