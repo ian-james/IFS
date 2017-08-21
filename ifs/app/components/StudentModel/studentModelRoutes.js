@@ -122,8 +122,9 @@ module.exports = function(app, iosocket) {
                 res.end();
         }
         else {
+            
             req.flash('errorMessage', "Invalid date information");
-            res.redirect("/studentModel");
+            res.redirect('/studentModel');
         }
     });
 }

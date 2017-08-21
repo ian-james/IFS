@@ -39,8 +39,7 @@ app.controller( "studentModelCtrl", function($scope, $http) {
 
     $scope.initDates = function() {
         $scope.lowDate = new Date(2017,6,1);
-        console.log("MIN", $scope.lowDate);
-        $scope.highDate= new Date();
+        $scope.highDate = new Date();
     }
 
     $scope.initGraphTypes = function() {
@@ -52,7 +51,7 @@ app.controller( "studentModelCtrl", function($scope, $http) {
         $scope.selectedData = 0;
         $scope.dataOptions = [
             { 'name': 'Submissions', 'key': 'nsubs' },
-            { 'name': 'Errors', 'key': 'nerrs' },
+            { 'name': 'Feedback Items', 'key': 'nerrs' },
             { 'name': 'Feedback Items Viewed', 'key': 'nfiv' }
         ];
     }

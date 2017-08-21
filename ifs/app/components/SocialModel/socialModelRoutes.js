@@ -15,23 +15,12 @@ module.exports = function(app, iosocket) {
         socialModel.getSubmissionsPerWeekBetweenDates(req.user.id, options.minDate, options.maxDate, function(serr,socialData) {
             studentModel.getSubmissionsPerWeekBetweenDates(req.user.id, options.minDate, options.maxDate, function(uerr,userData) {
 
-                console.log("**************************************************** START");
-                console.log(socialData);
-                console.log("**************************************************** START2");
-                console.log(userData);
-                console.log("**************************************************** END");
-                
                 var options = chartHelpers.chartOptions(true,true,"Weekly Submission Rates", chartHelpers.makeScale(true,"Weeks"), chartHelpers.makeScale(true,"Submissions"));
                 var groups = { 'user': userData, 'social': socialData };
 
-                console.log("LOGGGING GR PRE", groups);
-
                 // Added weeks where submission didn't ok for either class or
                 groups['user'] = chartHelpers.injectDefaultData('social', 'user', groups,0);
-                console.log("LOGGGING GR 1st PASS", groups);
                 groups['social'] = chartHelpers.injectDefaultData( 'user', 'social', groups,0);
-
-                console.log("LOGGGING GR POST\n\n", groups);
 
                 var chartData = chartHelpers.setupSeriesData(groups,options, function( labels, values) {
                     return labels[0];
@@ -40,7 +29,83 @@ module.exports = function(app, iosocket) {
                     'social': "Class"
                 });
                 res.json(chartData);
-                res.send();
+                res.end();
+            });
+        });
+    }
+
+    // TODO: Generalized this function a lot of the functionality here is overlapping with chartHelpers but don't have time to rework.
+    function feedbackItemChart( req,res, options ) {
+        socialModel.getFeedbackPerWeekBetweenDates(req.user.id, options.minDate, options.maxDate, function(serr,socialData) {
+            studentModel.getFeedbackPerWeekBetweenDates(req.user.id, options.minDate, options.maxDate, function(uerr,userData) {
+
+                var options = chartHelpers.chartOptions(true,true,"Weekly Feedback Rates", chartHelpers.makeScale(true,"Weeks"), chartHelpers.makeScale(true,"Feedback Items"));
+
+                // Get Labels;
+                var mySet = new Set();
+                for(var i = 0; i < userData.length; i++ )
+                    mySet.add(userData[i].labels);
+
+                for(var i = 0; i < socialData.length; i++ )
+                    mySet.add(socialData[i].labels);
+
+                // Differentiage between social and student runTypes for series information
+                _.each(socialData, obj => obj['runType'] = "s" + obj['runType']);
+
+                // Merge Data
+                var data = userData.concat(socialData);
+                groups = _.groupBy(data,'runType');
+
+
+                // Add default data for each group
+                // For each gropu add all default label values
+                var series = _.keys(groups);
+                for(var i = 0; i < series.length; i++) {
+                    var group = groups[ series[i] ];
+                    for( var setItem of mySet.values() ) {
+                        if(!_.find(group,{'labels':setItem})){
+                            var defaultObject = { 'runType': series[i], 'value':0, 'labels': setItem };
+                            groups[ series[i] ].push( defaultObject);
+                        }
+                    }
+                    groups[ series[i] ] = _.orderBy(groups[ series[i] ],['labels']);
+                }
+
+                // Setup legend mapping
+                var seriesMap = { 'visual': 'Student Visual', 'programming': "Student Programming", 'writing': "Student Writing", 
+                                  'visual': 'Class Visual', 'sprogramming': "Class Programming", "swriting": "Class Writing"};
+
+                // Make chart
+                var chartData = chartHelpers.setupSeriesData(groups, options, function( labels, values) {
+                    return labels[0];
+                }, seriesMap);
+
+                res.json(chartData);
+                res.end();
+            });
+        });
+    }
+
+    
+    function feedbackViewedChart( req,res, options ) {
+        socialModel.getFeedbackViewedPerWeekBetweenDates(req.user.id, options.minDate, options.maxDate, function(serr,socialData) {
+            studentModel.getFeedbackViewedPerWeekBetweenDates(req.user.id, options.minDate, options.maxDate, function(uerr,userData) {
+
+                var options = chartHelpers.chartOptions(true,true,"Weekly Feedback Viewed Rates", chartHelpers.makeScale(true,"Weeks"), chartHelpers.makeScale(true,"Feedback Viewed"));
+                var groups = { 'user': userData, 'social': socialData };
+
+                // Added weeks where submission didn't ok for either class or
+                groups['user'] = chartHelpers.injectDefaultData('social', 'user', groups,0);
+                groups['social'] = chartHelpers.injectDefaultData( 'user', 'social', groups,0);
+
+                var chartData = chartHelpers.setupSeriesData(groups,options, function( labels, values) {
+                    return labels[0];
+                }, {
+                    'user': "Student",
+                    'social': "Class"
+                });
+                res.json(chartData);
+                res.end();
             });
         });
     }
@@ -77,7 +142,7 @@ module.exports = function(app, iosocket) {
         }
         else {
             req.flash('errorMessage', "Invalid date information");
-            res.redirect("/socialModel");
+            res.redirect('/studentModel');
         }
     });
 }

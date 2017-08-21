@@ -79,6 +79,4 @@ app.controller( "socialModelCtrl", function($scope, $http) {
     $http.get('/socialModel/data').then( function(res) {
         $scope.graphData = res.data;
     });
-
-  
 });
