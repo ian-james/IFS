@@ -73,7 +73,7 @@ module.exports = function(app, iosocket) {
 
                 // Setup legend mapping
                 var seriesMap = { 'visual': 'Student Visual', 'programming': "Student Programming", 'writing': "Student Writing", 
-                                  'visual': 'Class Visual', 'sprogramming': "Class Programming", "swriting": "Class Writing"};
+                                  'svisual': 'Class Visual', 'sprogramming': "Class Programming", "swriting": "Class Writing"};
 
                 // Make chart
                 var chartData = chartHelpers.setupSeriesData(groups, options, function( labels, values) {

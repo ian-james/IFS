@@ -1,0 +1,117 @@
+{
+    "title": "Online Student Engagement Scale",
+    "showProgressBar": "bottom",
+    "goNextPageAutomatic": false,
+    "showNavigationButtons": true,
+    "pages": [
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "NAME-ME",
+                    "title": "Within that course, how well do the following behaviors, thoughts, and feelings describe characteristics of you? Please answer using the following scale",
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "not at all"
+                        },
+                        {
+                            "value": 2,
+                            "text": "not really"
+                        },
+                        {
+                            "value": 3,
+                            "text": "moderately"
+                        },
+                        {
+                            "value": 4,
+                            "text": "characteristic of me"
+                        },
+                        {
+                            "value": 5,
+                            "text": "definietely me"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "ose1",
+                            "text": "Making sure to study on a regular basis"
+                        },
+                        {
+                            "value": "ose2",
+                            "text": "Putting forth effort"
+                        },
+                        {
+                            "value": "ose3",
+                            "text": "Staying up on the readings"
+                        },
+                        {
+                            "value": "ose4",
+                            "text": "Looking over class notes between getting online to make sure I understand the material"
+                        },
+                        {
+                            "value": "ose5",
+                            "text": "Being organized"
+                        },
+                        {
+                            "value": "ose6",
+                            "text": "Taking good notes over readings, PowerPoints, or video lectures"
+                        },
+                        {
+                            "value": "ose7",
+                            "text": "Listening/reading carefully"
+                        },
+                        {
+                            "value": "ose8",
+                            "text": "Finding ways to make the course material relevant to my life"
+                        },
+                        {
+                            "value": "ose9",
+                            "text": "Applying course material to my life"
+                        },
+                        {
+                            "value": "ose10",
+                            "text": "Finding ways to make the course interesting to me"
+                        },
+                        {
+                            "value": "ose11",
+                            "text": "Really desiring to learn the material"
+                        },
+                        {
+                            "value": "ose12",
+                            "text": "Having fun in online chats, discussions or via email with the instructor or other students"
+                        },
+                        {
+                            "value": "ose13",
+                            "text": "Participating actively in small-group discussion forums"
+                        },
+                        {
+                            "value": "ose14",
+                            "text": "Helping fellow students"
+                        },
+                        {
+                            "value": "ose15",
+                            "text": "Getting a good grade"
+                        },
+                        {
+                            "value": "ose16",
+                            "text": "Doing well on the tests/quizzes"
+                        },
+                        {
+                            "value": "ose17",
+                            "text": "Engaging in conversations online (chat, discussions, email)"
+                        },
+                        {
+                            "value": "ose18",
+                            "text": "Posting in the discussion forum regularly"
+                        },
+                        {
+                            "value": "ose19",
+                            "text": "Getting to know other students in the class"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

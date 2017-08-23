@@ -1,0 +1,133 @@
+{
+    "title": "Student Course Engagement Questionnaire",
+    "showProgressBar": "bottom",
+    "goNextPageAutomatic": false,
+    "showNavigationButtons": true,
+    "pages": [
+        {
+            "questions": [
+                {
+                    "type": "matrix",
+                    "name": "NAME-ME",
+                    "title": "Student Course Engagement Questionnaire",
+                    "columns": [
+                        {
+                            "value": 1,
+                            "text": "Strongly Disagree"
+                        },
+                        {
+                            "value": 2,
+                            "text": "Disagree"
+                        },
+                        {
+                            "value": 3,
+                            "text": "Neutral"
+                        },
+                        {
+                            "value": 4,
+                            "text": "Agree"
+                        },
+                        {
+                            "value": 5,
+                            "text": "Strongly Agree"
+                        }
+                    ],
+                    "rows": [
+                        {
+                            "value": "sceq1",
+                            "text": "Making sure to study on a regular basis"
+                        },
+                        {
+                            "value": "sceq2",
+                            "text": "Putting forth effort"
+                        },
+                        {
+                            "value": "sceq3",
+                            "text": "Doing all the homework problems"
+                        },
+                        {
+                            "value": "sceq4",
+                            "text": "Staying up to date on readings"
+                        },
+                        {
+                            "value": "sceq5",
+                            "text": "Looking over class notes between classes"
+                        },
+                        {
+                            "value": "sceq6",
+                            "text": "Being organized"
+                        },
+                        {
+                            "value": "sceq7",
+                            "text": "Taking good notes in class"
+                        },
+                        {
+                            "value": "sceq8",
+                            "text": "Listening carefully in class"
+                        },
+                        {
+                            "value": "sceq9",
+                            "text": "Coming to class every day"
+                        },
+                        {
+                            "value": "sceq10",
+                            "text": "Finding ways to make course material relevant to my life"
+                        },
+                        {
+                            "value": "sceq11",
+                            "text": "Applying course material to my life"
+                        },
+                        {
+                            "value": "sceq12",
+                            "text": "Finding ways to make the course interesting to me"
+                        },
+                        {
+                            "value": "sceq13",
+                            "text": "Thinking about the course between classes"
+                        },
+                        {
+                            "value": "sceq14",
+                            "text": "Really desiring to learn the material"
+                        },
+                        {
+                            "value": "sceq15",
+                            "text": "Raising my hand in class"
+                        },
+                        {
+                            "value": "sceq16",
+                            "text": "Asking questions when I don’t understand the instructor"
+                        },
+                        {
+                            "value": "sceq17",
+                            "text": "Having fun in class"
+                        },
+                        {
+                            "value": "sceq18",
+                            "text": "Participating actively in small group discussions"
+                        },
+                        {
+                            "value": "sceq19",
+                            "text": "Going to the professor's office hours for questions"
+                        },
+                        {
+                            "value": "sceq20",
+                            "text": "Helping fellow students"
+                        },
+                        {
+                            "value": "sceq21",
+                            "text": "Getting a good grade"
+                        },
+                        {
+                            "value": "sceq22",
+                            "text": "Doing well on the tests"
+                        },
+                        {
+                            "value": "sceq23",
+                            "text": "Being confident that I can and do well in class."
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

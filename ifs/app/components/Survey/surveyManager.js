@@ -102,11 +102,11 @@ module.exports = {
      * @return {[type]}                [description]
      */
     startNewSurvey: function(surveyPrefData ) {
-       var completed = getCompletedSurveys(surveyPrefData);
-
-        completed = _.sortBy(completed,['surveyStartData']);
+       var completed = this.getCompletedSurveys(surveyPrefData);
+        completed = _.orderBy(completed,['lastRevision'],['desc']);
 
         var nextSurvey = completed.pop();
+        nextSurvey.currentIndex =0;
         return nextSurvey;
     },    
 
