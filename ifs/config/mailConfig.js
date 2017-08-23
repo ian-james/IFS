@@ -19,7 +19,7 @@ var transport_cfg = {
 //var transporter = nodemailer.createTransport(transport_cfg);
 
 // create the host for links referrals
-var host = 'ifs.krourke.org';
+var host = 'ifs.example.com';
 
 // set up message template;
 // USAGE:
@@ -31,7 +31,7 @@ var host = 'ifs.krourke.org';
 // msg[html] = '<p>html body</p>';
 // transporter.sendMail(msg, callback());
 var message = {
-    from: '"Immediate Feedback System Mailer" <noreply@ifs.example.com>',
+    from: '"Immediate Feedback System Mailer" <noreply@' + host + '>',
 }
 
 module.exports.transport_cfg = transport_cfg;

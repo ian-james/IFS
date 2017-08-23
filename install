@@ -363,8 +363,7 @@ sed -i "s/smtpd_tls_cert_file*/smtpd_tls_cert_file=\/etc\/letsencrypt\/live\/$do
         s/smtpd_use_tls=yes/smtpd_use_tls=no/;
         s/myhostname*/myhostname = $domain/;
         s/mydestination*/mydestination = \$myhostname localhost/;" /etc/postfix/main.cf
-sed -i "s/'ifs\.example\.com'/'$domain'/g"
-/var/www/$domain/ifs/config/mailConfig.js
+sed -i "s/'ifs\.example\.com'/'$domain'/g" /var/www/$domain/ifs/config/mailConfig.js
 
 echo 'Done installing IFS.'
 echo "You can now run IFS by typing 'npm start' from /var/www/$domain/ifs"
