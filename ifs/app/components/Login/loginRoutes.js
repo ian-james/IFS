@@ -14,7 +14,6 @@ var dbHelpers = require(__components + "Databases/dbHelpers");
 var _ = require('lodash');
 
 module.exports = function( app, passport ) {
-
     function isAuthenticated(req,res,next) {
         var nonSecurePaths = ['/', '/login', '/register', '/verify', '/forgot', '/reset', '/about','/about/data'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});

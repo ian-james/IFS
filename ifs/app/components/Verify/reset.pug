@@ -1,6 +1,43 @@
 extends ../../shared/views/pageLayout.pug
 
+block scripts
+    script(src="/validate/jquery.validate.min.js")
+    script(src="shared/views/js/form-rules.js")
+
 block content
     div.uk-container
         div#ifs.uk-section
             h1 #{title}
+            if message
+                div(uk-alert).uk-alert-primary
+                    p.statusMessage #{message}
+            if error && user
+                div(uk-alert).uk-alert-danger
+                    p.errorMessage #{error}
+            if !user
+                // client side authorization from server enables showing the form
+                // this form cannot post unless user is also marked as authorized
+                // on the server
+                if valid
+                    div(class="uk-card uk-card-default uk-card-body uk-align-center")
+                        if error
+                            div(uk-alert).uk-alert-danger
+                                p.errorMessage #{error}
+                        if success
+                            div(uk-alert).uk-alert-success
+                                p.successMessage #{success}
+
+                        // email, password, uid, and tok values are repopulated if there is an error;
+                        // this makes the form less annoying if there is a typo
+                        form(id="reset" name="reset" method="post" action="/reset" uk-grid).uk-grid-small
+                            div.uk-width-1-1
+                                input(type="email" name="username" placeholder="Enter email" value=email required).uk-input#inputEmail
+                            div.uk-width-1-1
+                                input(type="password" name="password" placeholder="Enter password" value=passwd required).uk-input#pwd
+                            div.uk-width-1-1
+                                input(type="password" name="password_again" placeholder="Repeat password" required).uk-input
+                                input(type="hidden" name="uid" value=uid required)
+                                input(type="hidden" name="tok" value=token required)
+
+                            div.uk-width-1-2
+                            input(type="submit" value="Reset password").uk-button.uk-button-danger

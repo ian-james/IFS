@@ -365,10 +365,11 @@ try {
         /* POST DATABASE CREATION: setup deletion rules for entries in the
          * verify_table; run once per hour */
         Logger.info("Set up event for expired token management.");
+        Logger.info("PLEASE ENSURE THAT GLOBAL event_scheduler=1 IS SET FOR SERVER.");
         connection.query("create event if not exists " + config.database + ".clearExpired\
-            ON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 1 HOUR\
+            ON SCHEDULE EVERY 1 HOUR\
             DO DELETE FROM " + config.database + "." + config.verify_table + "\
-            WHERE TIMESTAMPDIFF(HOUR, NOW(),  " + config.database + "." + config.verify_table + ".timestamp)>12;"
+            WHERE TIMESTAMPDIFF(HOUR, " + config.database + "." + config.verify_table + ".timestamp, NOW()) > 12 AND type='reset';"
         );
     } else {
         Logger.error("Error, Unable to make connection to database")

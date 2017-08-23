@@ -2,5 +2,22 @@ extends ../../shared/views/pageLayout.pug
 
 block content
     div.uk-container
-        div#ifs.uk-section
-            h1 #{title}
+        h1 #{title}
+        if error && user
+            div(uk-alert).uk-alert-danger
+                p.errorMessage #{error}
+        if !user
+            p Forgot your password? A reset link will be sent to your account email. Please specify it below.
+            div(class="uk-card uk-card-default uk-card-body uk-align-center")
+                if error
+                    div(uk-alert).uk-alert-danger
+                        p.errorMessage #{error}
+                if success
+                    div(uk-alert).uk-alert-success
+                        p.successMessage #{success}
+
+                form(id="forgotForm" name="forgot" method="post" action="/forgot" uk-grid).uk-grid-small
+                    div.uk-width-1-1
+                        input(type="email" name="email" placeholder="Enter email" required).uk-input#inputEmail
+                    div.uk-width-1-2
+                        input(type="submit" value="Reset password").uk-button.uk-button-danger

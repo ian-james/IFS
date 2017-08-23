@@ -48,24 +48,23 @@ module.exports = function (passport) {
                 passwordField : 'password',
                 passReqToCallback : true
             },
-            function (req, username, password, done ) {
+            function(req, username, password, done) {
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
-                    //req.flash('errorMessage', 'We tried');
                     if (err) {
                         req.flash('errorMessage', 'Unable to signup.');
-                        Logger.error( err );
+                        Logger.error(err);
                         return done(err);
                     }
 
                     if (rows.length) {
                         Logger.info(" Didn't find authorization", rows[0]);
-                        req.flash('errorMessage', 'That user is already taken');
-                        return done( null, false );
-                    } else{
+                        req.flash('errorMessage', 'Error. A user already exists with that email address.');
+                        return done(null, false);
+                    } else {
                         Logger.info("Adding new user");
                         var newUser = {
                             username: username,
-                            password: bcrypt.hashSync( password, null, null )
+                            password: bcrypt.hashSync(password, null, null)
                         };
                         
                         // set up new user
@@ -87,7 +86,6 @@ module.exports = function (passport) {
                             //generate verification token and send email
                             var generator = new tokgen();
                             var token = generator.generate();
-                            console.log("token:", token);
                             var link = 'http://' + mailcfg.host + '/verify?id=' + newUser.id +'&t=' + token;
                             var msg = mailcfg.message;
                             msg['to'] = newUser.username;
@@ -98,8 +96,6 @@ module.exports = function (passport) {
 
                             var transporter = new nodemailer.createTransport(mailcfg.transport_cfg);
                             
-                            console.log('config: ' + JSON.stringify(mailcfg.transport_cfg));
-                            console.log('message: ' + JSON.stringify(msg));
                             transporter.sendMail(msg, (error, info) => {
                                 if (error)
                                     return console.log(error);
