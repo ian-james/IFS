@@ -6,6 +6,10 @@ var db = require('./database');
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var config = require(__configs + 'databaseConfig');
 
+var nodemailer = require('nodemailer');
+var mailcfg = require(__configs + 'mailConfig');
+var tokgen = require('tokgen');
+
 var path = require('path');
 var mkdirp = require('mkdirp');
 var cp = require('cp-file');
@@ -38,41 +42,34 @@ module.exports = function (passport) {
     passport.use( 'local-signup',
         new LocalStrategy(
             {
-                /*
-                 * The first and last name fields are not currently being used
-                 * by the sign-up form. How can we make use of them?
-                 */
                 firstnameField: 'firstname',
                 lastnameField: 'lastname',
                 usernameField: 'username',
                 passwordField : 'password',
                 passReqToCallback : true
             },
-            function (req, username, password, done ) {
-
+            function(req, username, password, done) {
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
-                    //req.flash('errorMessage', 'We tried');
-                    if(err)
-                    {
+                    if (err) {
                         req.flash('errorMessage', 'Unable to signup.');
-                        Logger.error( err );
+                        Logger.error(err);
                         return done(err);
                     }
 
-                    if(rows.length) {
+                    if (rows.length) {
                         Logger.info(" Didn't find authorization", rows[0]);
-                        req.flash('errorMessage', 'That user is already taken');
-                        return done( null, false );
-                    }
-                    else{
+                        req.flash('errorMessage', 'Error. A user already exists with that email address.');
+                        return done(null, false);
+                    } else {
                         Logger.info("Adding new user");
                         var newUser = {
                             username: username,
-                            password: bcrypt.hashSync( password, null, null )
+                            password: bcrypt.hashSync(password, null, null)
                         };
-
-                        var insertQuery = "INSERT INTO users (username, password) values (?,?)";
-                        db.query(insertQuery,[newUser.username, newUser.password], function(err,rows) {
+                        
+                        // set up new user
+                        var newuserQuery = "INSERT INTO users (username, password) values (?,?)";
+                        db.query(newuserQuery,[newUser.username, newUser.password], function(err,rows) {
                             newUser.id = rows.insertId;
 
                             // copy the default avatar to the user avatar
@@ -80,17 +77,44 @@ module.exports = function (passport) {
                             var defaultpath = imgpath + "avatar_default.png";
                             var avatarpath = imgpath + newUser.id + "/";
                             mkdirp(avatarpath, function(err) {
-                                if(err) {
+                                if (err) {
                                     Logger.error("Unable to create image folder.");
                                 }
                             });
                             cp.sync(defaultpath, avatarpath + "avatar.png");
 
+                            //generate verification token and send email
+                            var generator = new tokgen();
+                            var token = generator.generate();
+                            var link = 'http://' + mailcfg.host + '/verify?id=' + newUser.id +'&t=' + token;
+                            var msg = mailcfg.message;
+                            msg['to'] = newUser.username;
+                            msg['subject'] = "Complete your registration";
+                            var plainbody = "Hello " + req.body['firstname'] + ",\n\nPlease follow the link below to complete your registration:\n";
+                            plainbody += link;
+                            msg['text'] = plainbody;
+
+                            var transporter = new nodemailer.createTransport(mailcfg.transport_cfg);
+                            
+                            transporter.sendMail(msg, (error, info) => {
+                                if (error)
+                                    return console.log(error);
+                                console.log('Message %s sent: %s', info.messageId, info.reponse);
+                            });
+
+                            // insert token into the verify database
+                            var insert = dbHelpers.buildInsert(config.verify_table) + dbHelpers.buildValues(["userId", "type", "token"]);
+                            db.query(insert, [newUser.id, "verify", token], function(verifyErr, verifyData){
+                                if (err)
+                                    console.log("ERROR", verifyErr);
+                            });
+                            
 
                             newUser.sessionId = 0;
-                            req.flash('success', 'Successfully signed up.');
+                            req.flash('success', 'Check your email for a verification link.');
 
-                            studentProfile.insertStudentProfile( newUser.id, req.body['firstname'], "", function(profileErr, studentSet) {
+                            // set up profile and survey settings
+                            studentProfile.insertStudentProfile( newUser.id, req.body['firstname'] + " " + req.body['lastname'], "", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
                                     defaultTool.setupDefaultTool(req);
                                     SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
@@ -114,27 +138,38 @@ module.exports = function (passport) {
                 passwordField : 'password',
                 passReqToCallback : true
             },
-            function (req, username, password, done ) {
-
+            function (req, username, password, done) {
                 console.log(req.session);
 
+                // TODO: verify the isRegistered boolean in user_registration
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
-                    if(err) {
+                    if (err) {
                         req.flash('errorMessage', 'Service currently unavailable');
                         return done(err, false);
                     }
-                    if(!rows.length) {
+                    if (!rows.length) {
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
-                    if(!bcrypt.compareSync(password, rows[0].password)){
+                    if (!bcrypt.compareSync(password, rows[0].password)){
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
+                    // verify the user has completed registration
+                    var uid = rows[0].id;
+                    var isreg = dbHelpers.buildSelect(config.user_registration_table) + dbHelpers.buildWhere(["userId"]);
+                    db.query(isreg, uid, function(err, data) {
+                        if (err)
+                            Logger.error(err);
+                        if (!data[0]) {
+                            req.flash('errorMessage', 'Check your email to complete registration.');
+                            return done(null, false);
+                        }
+                    });
 
                     // Increment sessionId for user
                     db.query(dbHelpers.buildUpdate(config.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
-                        if(err)
+                        if (err)
                             Logger.error( err );
                     });
 
@@ -143,7 +178,7 @@ module.exports = function (passport) {
 
                     //Set a single preference on login to load their toolType preferences (defaults to programming)
                     preferencesDB.getStudentPreferencesByToolName( rows[0].id,  toolTypeKey, function(toolErr, result){
-                        if( toolErr || !result || result.length == 0)
+                        if ( toolErr || !result || result.length == 0)
                             defaultTool.setupDefaultTool(req);
                         else
                             defaultTool.setupDefaultTool(req, result[0].toolValue );
