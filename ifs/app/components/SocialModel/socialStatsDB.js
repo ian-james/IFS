@@ -5,7 +5,6 @@ var dbHelpers = require(__components + "Databases/dbHelpers");
 
 module.exports = {
 
-
     getMostUsedTools: function(runType, nLimit,  callback ) {
         if( runType == "" ) {
             var q = "select toolName, COUNT(*) as value from feedback group by toolName ORDER by value desc LIMIT " + nLimit.toString();
@@ -15,7 +14,6 @@ module.exports = {
             var q = "select toolName, COUNT(*) as value from feedback where runtype = ? group by toolName ORDER by value desc LIMIT " + nLimit.toString();
             db.query(q,[runType],callback);
         }
-     
     },
 
     getMostCommonSpellingMistakes: function(nLimit, callback ) {
@@ -55,5 +53,26 @@ module.exports = {
     getOtherSubmissionToErrorRate: function( userId, runType, callback) {
         var q =  "select count( distinct(submissionId)) as submissionCount , count(submissionId) as feedbackItems from feedback where userId != ? and runType = ?"
         db.query(q,[userId,runType],callback);
-    }
+    },
+
+    getSubmissionsPerWeek: function( userId, callback ) {
+        var format = "DATE_FORMAT(date, '%Y-%m-%d')";
+        var q = dbHelpers.buildSelect( config.submission_table, " COUNT(*) as value, Date_FORMAT(str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + " where userId != ? GROUP BY yearweek(date), labels";
+        db.query( q, [userId], callback );
+    },
+
+    getSubmissionsPerWeekBetweenDates: function( userId, minDate, maxDate,  callback ) {
+        var q = dbHelpers.buildSelect( config.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + " where userId != ? and date >= ? and date <= ? GROUP BY yearweek(date), labels ";
+        db.query( q, [userId,minDate, maxDate], callback );
+    },
+
+    getFeedbackPerWeekBetweenDates: function( userId, minDate, maxDate,  callback ) {
+        var q  = "select runType,COUNT(distinct(submissionId)) as value, DATE_FORMAT(( str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W') ), '%Y-%m-%d') as 'labels' from feedback where userId != ? and date >= ? and date <= ? GROUP BY yearweek(date), labels, runType;"
+        db.query( q, [userId,minDate, maxDate], callback );
+    },
+
+    getFeedbackViewedPerWeekBetweenDates: function( userId, minDate, maxDate,  callback ) {
+        var q  = "select COUNT(submissionId) as value, DATE_FORMAT(( str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W') ), '%Y-%m-%d') as 'labels' from feedback_interaction where userId != ? and action in ('viewed', 'viewedMore') and date >= ? and date <= ? GROUP BY yearweek(date), labels";
+        db.query( q, [userId,minDate, maxDate], callback );
+    },
 }

@@ -2,7 +2,7 @@
    I believe it needs to be loaded when the minicard is loaded.
    Previous version created an event handler each click..trying to fix that.
 */
-var socket = io(); 
+var socket = io();
 $(function() {
     $("a.readMoreEvent").on('click', function(e) {
         if( $(e.target).attr("href") == "#") {

@@ -1,0 +1,4 @@
+ul.uk-list.uk-list-striped
+    li
+        h4(ng-if="accuracy && accuracy.length > 1").uk-width-1-2.uk-display-inline {{sectionName}} is {{ (accuracy[0].value /  (accuracy[0].value + accuracy[1].value) * 100) | number:0 }} %
+        h4(ng-if="!accuracy || accuracy.length <= 1").uk-width-1-2.uk-display-inline {{sectionName}} is not available.

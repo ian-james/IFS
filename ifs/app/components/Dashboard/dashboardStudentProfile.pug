@@ -2,30 +2,36 @@ div(class="uk-visible@s").avatar-section
     div.uk-align-center
         img(src="../../shared/img/user/" + user.id + "/avatar.png").profile-avatar
         div.user
-            span.profile-name #{studentProfile.name}
+            span.profile-name {{studentProfile.name}}
             br
-            span.profile-username #{user.username}
+            span.profile-username {{user.username}}
+        hr
+        div.models
+            span.profile-h2 Learner Models
+            a(href="/studentModel" class="uk-button") View Student Stats 
+                span(uk-icon="icon: info")
+            a(href="/socialModel" class="uk-button") View Class Stats 
+                 span(uk-icon="icon: info")
+            br
         hr
         div.classes
             span.profile-h2 Classes
             br
-            if courses && courses.length != 0
+            div(ng-if="courses")
                 dl.uk-description-list.uk-description-list-divider
-                    each val,index in courses
-                        dt
-                            strong= val.code + ": " + val.courseName
-            else
+                    dt(ng-repeat="val in courses")
+                        strong {{val.code + ": " + val.courseName}}
+            div(ng-if="!courses")
                 p You haven't enrolled in a class yet. Please enrol on the profile page.
         hr
         div.skills
             span.profile-h2 Skills
             br
-            if skills && skills.length > 0
-                - for(var i = 0; i < skills.length && i < 3; i++) {
-                    p= skills[i].skillName
-                    progress(value=skills[i].value*100 max="100" title=skills[i].value*100 +"%", uk-tooltip).uk-progress
-                - }
-            else
+            div(ng-if="skills && skills.length > 0")
+                div(ng-repeat="item in skills|limitTo:3")
+                    p {{ item.skillName}}
+                    progress(value="{{item.value*100}}" max="100" title="{{item.value*100 + '%''}}", uk-tooltip).uk-progress
+            div(ng-if="!skills || skills.length == 0")
                 p You haven't rated your skill level yet. Please see the student skill page.
 
         div.viewMore

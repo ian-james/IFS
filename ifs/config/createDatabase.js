@@ -207,6 +207,31 @@ try {
             FOREIGN Key (feedbackId) REFERENCES " + config.database + "." + config.feedback_table + "(id) \
         )");
         
+        Logger.info("Create the Table:", config.feedback_rating_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_rating_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            feedbackId INT UNSIGNED NOT NULL, \
+            ratingUp int UNSIGNED  NOT NULL, \
+            ratingDown int UNSIGNED  NOT NULL, \
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            FOREIGN Key (feedbackId) REFERENCES " + config.database + "." + config.feedback_table + "(id) \
+        )");
+
+        Logger.info("Create the Table:", config.feedback_input_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_input_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            feedbackId INT UNSIGNED NOT NULL, \
+            input TEXT NOT NULL, \
+            date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
+            PRIMARY KEY(id), \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            FOREIGN Key (feedbackId) REFERENCES " + config.database + "." + config.feedback_table + "(id) \
+        )");
+
         // student table; used for user profiles; foreign key in users table
         Logger.info("Create the Table:", config.student_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_table + " ( \

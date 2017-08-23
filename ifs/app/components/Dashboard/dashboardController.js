@@ -7,6 +7,9 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     $scope.assignmentTasks = [];
     $scope.activeStudentFocus = 0;
     $scope.focus =  null;
+    $scope.toolType = null;
+    $scope.skills = [];
+
     /**
      * Selects the next active DIV for student focus.
      * @return {[type]} [description]
@@ -25,6 +28,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     }
 
     $scope.resetSelectedFocus = function() {
+        console.log("RESET");
         $scope.activeStudentFocus = 0;
         $scope.courseSelect = null;
         $scope.assignmentSelect = null;
@@ -49,6 +53,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     }
 
     $scope.hasFocusItem = function() {
+        console.log("C", $scope.assignmentSelect, " and cs ", $scope.courselect);
         return $scope.assignmentSelect && $scope.courseSelect;
     }
 
@@ -60,21 +65,26 @@ app.controller( "dashboardCtrl", function($scope, $http) {
         $scope.courses = res.data.courses;
         $scope.assignmentTasks = res.data.assignmentTasks;
         $scope.focus = res.data.focus;
+        $scope.toolType = res.data.toolType;
+        $scope.skills = res.data.skills;
 
         if( $scope.focus ) {
 
+            console.log("REST DATA");
             $scope.courseSelect = null;
             $scope.assignmentSelect = null;
 
             // Attach course select and assignment select
             for( var i = 0; i < $scope.courses.length;i++ ) {
-                if( $scope.courses[i].id == $scope.focus.courseId)
+                if( $scope.courses[i].id == $scope.focus.courseId) {
                     $scope.courseSelect = $scope.courses[i];
+                }
             }
 
             for( var i = 0; i < $scope.assignments.length;i++ ) {
-                if( $scope.assignments[i].assignmentId == $scope.focus.assignmentId)
+                if( $scope.assignments[i].assignmentId == $scope.focus.assignmentId) {
                     $scope.assignmentSelect = $scope.assignments[i];
+                }
             }
 
             if($scope.hasFocusItem())

@@ -4,7 +4,7 @@
 var db = require( __configs + 'database');
 var config = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
-
+var moment = require('moment');
 
 function insertSurveyPrefs( surveyPrefData, callback ) {
     var req = "INSERT INTO " + config.survey_preferences_table + " (surveyId,userId,lastRevision,lastIndex) values (?,?,?,?)";
@@ -14,15 +14,17 @@ function insertSurveyPrefs( surveyPrefData, callback ) {
 }
 
 function setQuestionCounter( userId, surveyId, questionIndex, callback ) {
-    var req = "Update " + config.survey_preferences_table  + " set currentIndex = ? where surveyId = ? and userId = ?";
-    db.query(req, [questionIndex, userId,surveyId], function(err,data){
+    var d = moment( new Date()).format("YYYY-MM-DD HH:mm:ss");
+    var req = "Update " + config.survey_preferences_table  + " set lastRevision = ?, currentIndex = ? where surveyId = ? and userId = ?";
+    db.query(req, [d,questionIndex, userId,surveyId], function(err,data){
         callback(err,data);
     });
 }
 
 function incrementSurveyIndex( userId, surveyId, callback ) {
-    var req = "Update " + config.survey_preferences_table  + " set currentIndex = 0, currentSurveyIndex = currentSurveyIndex+1  where surveyId = ? and userId = ?";
-    db.query(req, [userId,surveyId], function(err,data){
+    var d = moment( new Date()).format("YYYY-MM-DD HH:mm:ss");
+    var req = "Update " + config.survey_preferences_table  + " set lastRevision = ?, set currentSurveyIndex = currentSurveyIndex+1  where surveyId = ? and userId = ?";
+    db.query(req, [d,userId,surveyId], function(err,data){
         callback(err,data);
     });
 }

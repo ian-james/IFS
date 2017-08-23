@@ -101,7 +101,6 @@ module.exports = function (app, iosocket ) {
                                 lastId = Math.max(lastId, parseInt(m[1]) );
                             }
                         }
-
                         // Organize results for survey response database.
                         for(var i = 0; i < qids.length && i < answers.length;i++) {
                             resultsToDb.push( [ surveyId, userId, qids[i], answers[i],surveyIndex ]);

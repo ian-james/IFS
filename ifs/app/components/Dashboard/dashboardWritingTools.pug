@@ -1,0 +1,6 @@
+h4.uk-padding-remove.uk-margin-remove {{sectionName}}
+    ul(ng-if="tools").uk-list.uk-list-striped
+        li(ng-repeat="tool in tools")
+            p(ng-if="tool.toolName").uk-display-inline {{tool.toolName}}
+            p(ng-if="!tool.toolName").uk-display-inline  No tool available.
+    p(ng-if="!tools || tools.length == 0").uk-display-inline No assessment tools have been used.

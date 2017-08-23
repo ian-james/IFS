@@ -1,81 +1,37 @@
 div#statsSection
     div.uk-card
         div.uk-card-body.uk-padding-remove-top.uk-margin-remove.top.uk-padding-remove-bottom.uk-margin-remove.bottom
-            div(data-uk-grid-margin).uk-grid
-                if stats
-                    div.uk-width-1-2
-                        if stats.userStats && stats.userStats.submissionErrorRate
-                            h4.uk-padding-remove.uk-margin-remove My Accuracy
-                            ul.uk-list.uk-list-striped
-                                li 
-                                    p.uk-display-inline #{ stats.userStats.submissionErrorRate.feedbackItems } Feedback Items Total
-                                if stats.userStats.submissionErrorRate.feedbackItems && stats.userStats.submissionErrorRate.feedbackItems != 0
-                                    li 
-                                        - var fr = Math.round(stats.userStats.submissionErrorRate.feedbackItems /stats.userStats.submissionErrorRate.submissionCount ); 
-                                        p.uk-display-inline #{fr} Feedback/Submission Ratio 
-                                else
-                                    li
-                                        p.uk-display-inline No student submissions
-                                    
-                        else
-                            p No Student Submission Stats
-                    div.uk-width-1-2
-                        if stats.socialStats && stats.socialStats.submissionErrorRate
-                            h4.uk-padding-remove.uk-margin-remove Class Accuracy
-                            ul.uk-list.uk-list-striped
-                                li 
-                                    p.uk-display-inline #{ stats.socialStats.submissionErrorRate.feedbackItems } Feedback Items Total
-                                if stats.socialStats.submissionErrorRate.feedbackItems && stats.socialStats.submissionErrorRate.feedbackItems != 0
-                                    li
-                                        - var frc = Math.round(stats.socialStats.submissionErrorRate.feedbackItems /  stats.socialStats.submissionErrorRate.submissionCount ); 
-                                        p.uk-display-inline #{ frc } Feedback/Submission Ratio
-                                else
-                                    li
-                                        p.uk-display-inline No student submissions
-                        else
-                            p No Student Submission Stats
+            div(ng-if="stats" data-uk-grid-margin).uk-grid
+                div(ng-repeat="submissionErrorRate in [stats.userStats.submissionErrorRate]" ng-init="sectionName='My Accuracy';").uk-width-1-2
+                    include dashboardAccuracySection.pug
 
-                    div.uk-width-1-1.uk-margin-medium-bottom
-                        hr
+                div(ng-repeat="submissionErrorRate in [stats.socialStats.submissionErrorRate]" ng-init="sectionName='Class Accuracy';").uk-width-1-2
+                    include dashboardAccuracySection.pug
 
-                    if stats.userStats.commonFeedback 
-                        div.uk-width-1-1.uk-margin-small-bottom
-                            if stats.userStats.commonFeedback.length > 0
-                                h4.uk-padding-remove.uk-margin-remove Most common feedbacks
-                                    ul.uk-list.uk-list-striped
-                                        each feed in stats.userStats.commonFeedback
-                                            li
-                                                p.uk-display-inline #{feed.feedback}
-                            else
-                                p Student's most common feedback is not available.
+                ////////////////////////////////////////////// Section
+                div.uk-width-1-1.uk-margin-medium-bottom
+                    hr
 
-                        div.uk-width-1-1.uk-margin-medium-bottom
-                            hr
+                div(ng-repeat="myArr in [stats.userStats.commonFeedback.value] track by $index" ng-init="sectionName='Most Common Feedback';")
+                    include programmingCommonFeedback.pug
 
-                    div.uk-width-1-2
-                        if stats.userStats && stats.userStats.mostUsedTools && stats.userStats.mostUsedTools  && stats.userStats.mostViewedMoreFeedbackTool && stats.userStats.mostUsedTools.toolName && stats.userStats.mostUsedTools.toolName  && stats.userStats.mostViewedMoreFeedbackTool.toolName
-                            h4.uk-padding-remove.uk-margin-remove Tool Usage:
-                            ul.uk-list.uk-list-striped
-                                li 
-                                    p.uk-display-inline Most Frequent Tool: #{ stats.userStats.mostUsedTools.toolName }
-                                li
-                                    p.uk-display-inline Most Feedback from Tool: #{ stats.userStats.mostFeedbackTools.toolName }
-                                li
-                                    p.uk-display-inline Most Indepth Feedback Views:  #{ stats.userStats.mostViewedMoreFeedbackTool.toolName }
-                        else
-                            p No Student Tool Usage Information Available
+                ////////////////////////////////////////////// Section
+                div.uk-width-1-1.uk-margin-medium-bottom
+                    hr
 
-                    div.uk-width-1-2
-                        if stats.socialStats && stats.socialStats.mostUsedTools && stats.socialStats.mostUsedTools  && stats.socialStats.mostViewedMoreFeedbackTool && stats.socialStats.mostUsedTools.toolName && stats.socialStats.mostUsedTools.toolName  && stats.socialStats.mostViewedMoreFeedbackTool.toolName
-                            h4.uk-padding-remove.uk-margin-remove Class Tool Usage:
-                            ul.uk-list.uk-list-striped
-                                li 
-                                    p.uk-display-inline Most Frequent Tool: #{ stats.socialStats.mostUsedTools.toolName }
-                                li
-                                    p.uk-display-inline Most Feedback from Tool: #{ stats.socialStats.mostFeedbackTools.toolName }
-                                li
-                                    p.uk-display-inline Most Indepth Feedback Views:  #{ stats.socialStats.mostViewedMoreFeedbackTool.toolName }
-                        else
-                            p No Class Tool Usage Information Available
-                else
-                    p Usage statistics are currently unavailable.
+                div.uk-width-1-2
+                    h4.uk-padding-remove.uk-margin-remove Student Tool Usage
+                    ul.uk-list.uk-list-striped
+                        li(ng-repeat="stat in [stats.userStats.mostUsedTools, stats.userStats.mostFeedbackTools, stats.userStats.mostViewedMoreFeedbackTool] track by $index")
+                            p(ng-if="!stat.displayName").uk-display-inline No student submissions
+                            p(ng-if="stat.displayName").uk-display-inline {{ stat.displayName }}: {{ stat.toolName }}
+
+                div.uk-width-1-2
+                    h4.uk-padding-remove.uk-margin-remove Class Tool Usage
+                    ul.uk-list.uk-list-striped
+                        li(ng-repeat="stat in [stats.socialStats.mostUsedTools, stats.socialStats.mostFeedbackTools, stats.socialStats.mostViewedMoreFeedbackTool] track by $index")
+                            p(ng-if="!stat.displayName").uk-display-inline No student submissions
+                            p(ng-if="stat.displayName").uk-display-inline {{ stat.displayName }}: {{ stat.toolName }}
+
+            div(ng-if="!stats")
+                p Usage statistics are currently unavailable.

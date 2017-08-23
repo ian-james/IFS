@@ -43,5 +43,7 @@ module.exports = {
     'user_role_table':                  'user_role',
     'feedback_stats_table':             'feedback_stats',
     'assignment_task_table':            'assignment_task',
-    'student_assignment_task_table':    'student_assignment_task'
+    'student_assignment_task_table':    'student_assignment_task',
+    'feedback_rating_table': 'feedback_rating',
+    'feedback_input_table': 'feedback_input'
 };
