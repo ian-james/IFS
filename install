@@ -316,6 +316,7 @@ echo ""
 # install Immediate Feedback System
 echo 'Installing IFS...'
 mkdir -p /var/www/$domain
+rm -rf /var/www/$domain/*
 git clone https://github.com/ian-james/IFS.git /var/www/$domain
 echo ""
 
@@ -335,14 +336,14 @@ else
 fi
 echo ""
 
-nodejs /var/www/$domain/ifs/config/createDatabase.js
-
-(crontab -l 2>/dev/null; echo '0 0 1 */2 * certbot-auto renew --quiet --no-self-upgrade') | crontab -
-
 # install IFS Node dependencies
 cd /var/www/$domain/ifs
 npm install
 echo ""
+
+nodejs /var/www/$domain/ifs/config/createDatabase.js
+
+(crontab -l 2>/dev/null; echo '0 0 1 */2 * certbot-auto renew --quiet --no-self-upgrade') | crontab -
 
 # install IFS Tool dependencies
 echo 'Installing IFS Tool dependencies...'
