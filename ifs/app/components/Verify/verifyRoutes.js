@@ -47,7 +47,7 @@ module.exports = function(app) {
                         return done(null, false);
                     }
                 });
-                var message = "Somebody requested a password change for your account. Please follow the link below to reset your password. Note that this link will expire in 12 hours. If you did not request this change, you may ignore this email.';
+                var message = "Somebody requested a password change for your account. Please follow the link below to reset your password. Note that this link will expire in 12 hours. If you did not request this change, you may ignore this email.";
                  if (verifySend.sendLink(email, link, 'Reset your password', message)) {
                     res.render(viewPath + "forgot", { title: 'Forgotten Password', error: false, success: "Sucess! Please check your email for a password reset link." });
                  } else {
