@@ -18,7 +18,27 @@ var SurveyResponse = require(__components + "Survey/surveyResponse");
 var event = require(__components + "InteractionEvents/buildEvent.js" );
 var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
+var moment = require('moment');
+
 module.exports = function (app, iosocket ) {
+
+    app.get('/surveys', function(req,res) {
+
+        SurveyManager.getUserSurveyProfileAndSurveyType(req.user.id, function(err, surveyData) {
+            var keys = ['surveyId','lastRevision', 'currentSurveyIndex', 'surveyName','title', 'surveyField'];
+            var ans = _.map(surveyData, obj=> _.pick(obj,keys));
+
+            ans = _.map(ans, function( obj ) {
+                var rev = obj['lastRevision'];
+                if( rev )
+                    obj['lastRevision'] = moment(obj['lastRevision']).format("DD-MM-YYYY");
+                return obj;
+            });
+
+            res.render(viewPath + 'surveyList', { 'title': "Survey List", "surveys": ans});
+        });
+
+    });
     /**
      * Method gets the full survey and displays it.
      * @param  {[type]} req  [description]
@@ -53,6 +73,7 @@ module.exports = function (app, iosocket ) {
      * @return {[type]}      [description]
      */
     app.post( '/survey/sentData', function(req,res) {
+        console.log("POSTING TO SEND DATA");
 
         try {
             var title = req.body['title'];
@@ -63,11 +84,17 @@ module.exports = function (app, iosocket ) {
                     Logger.error("ERRR< GETTING TITLE", err);
                 }
 
+                console.log("DATA WAS ", data );
+
                 if(data && data.length > 0) {
                     var surveyId = data[0].id;
                     var userId = req.user.id || req.passport.user;
 
-                    SurveyPreferences.getSurveyPreferences(surveyId,userId, function(err,surveyPrefData) {
+                    console.log("surveyID ", surveyId , " and userId ", userId );
+
+                    SurveyPreferences.getSurveyPreferences(userId, surveyId, function(err,surveyPrefData) {
+
+                        console.log("PrefDATA WAS ", surveyPrefData );
 
                         if(err) {
                             Logger.error("Unable to get Survey Preferences");
@@ -101,9 +128,17 @@ module.exports = function (app, iosocket ) {
                                 lastId = Math.max(lastId, parseInt(m[1]) );
                             }
                         }
+
+                        // IF all the questions where submitted we increment the surveyIndex because it will need to be a 'new'
+                        //  survey. Even if the old survey was in progress.
+                        console.log("ORIGINAL INDEX = ", surveyIndex );
+                        if(resultsToDb.length == surveyLastIndex )
+                            surveyIndex++;
+
                         // Organize results for survey response database.
                         for(var i = 0; i < qids.length && i < answers.length;i++) {
-                            resultsToDb.push( [ surveyId, userId, qids[i], answers[i],surveyIndex ]);
+                            resultsToDb.push( [ userId, surveyId,  qids[i], answers[i], surveyIndex ]);
+                            console.log("RESULTS TO DB", resultsToDb[i],'\n');
                         }
 
                         // Insert the response to the survey into DB.
@@ -124,15 +159,17 @@ module.exports = function (app, iosocket ) {
                              "surveyIndex": surveyIndex
                         }));
 
-                        // Set the Preferences qestion Index
-                        SurveyPreferences.setQuestionCounter(surveyId,userId,lastId, function(err,qData) {
+                        // Set the Preferences question Index
+                        SurveyPreferences.setQuestionCounter(userId,surveyId,lastId, function(err,qData) {
                             if(err)
                                 Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId );
                         });
 
                         // Check if survey was finished update counter, user survey preferences.
+                        console.log("*************** lastid = ", lastId , " =  surveyLast ", surveyLastIndex );
                         if( lastId == surveyLastIndex ){
-                            SurveyPreferences.incrementSurveyIndex(surveyId,userId, function(err,qData) {
+                            console.log("SURVEY ID WAS ", surveyId);
+                            SurveyPreferences.incrementSurveyIndex(userId, surveyId, function(err,qData) {
                                 if(err)
                                     Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId );
                             });
