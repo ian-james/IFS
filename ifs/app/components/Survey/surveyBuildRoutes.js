@@ -26,9 +26,12 @@ module.exports = function (app) {
         // Thus it's last in the allData variable, so it can be easily extracted.
         var surveyNames = ["CPSEPS","GSE","SEWS", "AGQ", "OSE", "SCEQ"];
         var surveyAuthors = ["Unknown", "Unknown","Unknown","Unknown","Unknown","Unknown"];
-        var surveyTitle = ["Computer Programming Self-Efficacy Survey", "General Self-Efficacy Survey",
-                            "Self-Efficacy Writing Scale", "Achievement Goal Questionnaire",
-                            "Online Student Engagement Scale", "Student Course Engagement Questionnaire"];
+        var surveyTitle = ["Computer Programming Self-Efficacy Survey",
+                           "General Self-Efficacy Survey",
+                           "Self-Efficacy Writing Scale",
+                           "Achievement Goal Questionnaire",
+                           "Online Student Engagement Scale",
+                           "Student Course Engagement Questionnaire"];
         var surveyQuestions = ["data/surveys/CPSEPS.json", "data/surveys/GSE.json",
                             "data/surveys/SEWS.json", "data/surveys/AGQ.json",
                             "data/surveys/OSE.json", "data/surveys/SCEQ.json" ];
@@ -52,7 +55,6 @@ module.exports = function (app) {
     app.get( '/createSurveys', function(req,res) {
         var allData = getStaticSurveyData();
         // pop  survey questions files
-        alldata.pop();
         async.map(allData,
             Survey.insertSurvey,
             function(err){
@@ -131,7 +133,7 @@ module.exports = function (app) {
         var allSurveys = getStaticSurveyData();
         var i = Math.max(0, Math.min(req.params.n,allSurveys.length-1));
 
-        var [ surveyName, surveyAuthors,surveyTitle, numQs, surveyField, freq, surveyFiles] = allSurveys[i];
+        var [ surveyName, surveyAuthors,surveyTitle, numQs, surveyField, freq, surveyFiles,surveyQuestions] = allSurveys[i];
 
         Survey.getSurvey(surveyName, function(err,data) {
              if( err )
@@ -139,7 +141,7 @@ module.exports = function (app) {
             else {
                 if( data.length >= 1){
                     var survey = data[0];
-                    var surveyFile = surveyFile
+                    var surveyFile = surveyQuestions;
                     
                     fs.readFile(surveyFile, "utf-8", function(err,fileData){
                         if(err)

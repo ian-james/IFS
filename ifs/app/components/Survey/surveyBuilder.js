@@ -277,9 +277,8 @@ function setSignupSurveyPreferences(userId,callback ) {
     Survey.getSurveys( function(err,surveyData ){
         if(!err) {
             var surveyPrefsData = [];
-            //SurveyId, userId, NULL, SurveyQuestion
             for(var i = 0; i < surveyData.length;i++){
-                surveyPrefsData.push([surveyData[i].id, userId, null, surveyData[i].totalQuestions]);
+                surveyPrefsData.push([ userId, surveyData[i].id, null, surveyData[i].totalQuestions]);
             }
 
             async.map(surveyPrefsData,
