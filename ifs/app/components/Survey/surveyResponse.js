@@ -7,7 +7,7 @@ var Errors = require(__components + "Errors/errors");
 
 
 function insertSurveyResponse( surveyResponseData, callback ) {
-    var req = "INSERT INTO " + config.survey_results_table + " (surveyId, userId, questionId, questionAnswer, surveyResponseId ) values (?,?,?,?,?)";
+    var req = "INSERT INTO " + config.survey_results_table + " (userId, surveyId,  questionId, questionAnswer, surveyResponseId ) values (?,?,?,?,?)";
     db.query(req, surveyResponseData, callback);
 }
 
