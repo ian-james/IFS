@@ -1,14 +1,14 @@
 var mysql = require('mysql');
-var config = require('./databaseConfig');
+var dbcfg = require('./databaseConfig');
 var Logger = require( __configs + "loggingConfig");
 var Errors = require(__components + "Errors/errors");
 
 var pool = mysql.createPool( {
-    connectionLimit: config.connectionLimit,
-    host: config.connection.host,
-    user: config.connection.user,
-    password: config.connection.password,
-    database: config.database,
+    connectionLimit: dbcfg.connectionLimit,
+    host: dbcfg.connection.host,
+    user: dbcfg.connection.user,
+    password: dbcfg.connection.password,
+    database: dbcfg.database,
     debug: false
 });
 

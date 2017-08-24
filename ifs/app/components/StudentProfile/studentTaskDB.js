@@ -1,5 +1,5 @@
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -43,7 +43,7 @@ module.exports = {
     },
 
     insertStudentSkills: function( studentId, classSkillId, skillValue , callback ) {
-        var q = dbHelpers.buildInsert(config.student_skill_table) + dbHelpers.buildValues(["studentId","classSkillId", "value"]);
+        var q = dbHelpers.buildInsert(dbcfg.student_skill_table) + dbHelpers.buildValues(["studentId","classSkillId", "value"]);
         db.query(q,[studentId, classSkillId, skillValue], callback);
     },
 
@@ -57,7 +57,7 @@ module.exports = {
      * @return {[type]}                    [description]
      */
     insertStudentAssignmentTask: function( studentId, assignmentTaskId, isComplete, callback ) {
-        var q = dbHelpers.buildInsert(config.student_assignment_task_table) + dbHelpers.buildValues(["studentId","assignmentTaskId", "isComplete"]) + "ON Duplicate Key update isComplete=Values(isComplete)";
+        var q = dbHelpers.buildInsert(dbcfg.student_assignment_task_table) + dbHelpers.buildValues(["studentId","assignmentTaskId", "isComplete"]) + "ON Duplicate Key update isComplete=Values(isComplete)";
         db.query(q,[studentId, assignmentTaskId, isComplete], callback);
     },
 
@@ -70,7 +70,7 @@ module.exports = {
      * @return {[type]}                    [description]
      */
     getStudentAssignmentsAndTasks: function( studentId, callback ) {
-        var q = dbHelpers.buildSelect(config.student_assignment_task_table) + dbHelpers.buildWS("studentId");
+        var q = dbHelpers.buildSelect(dbcfg.student_assignment_task_table) + dbHelpers.buildWS("studentId");
         db.query(q,studentId, callback);
     },
     

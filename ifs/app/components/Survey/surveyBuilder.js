@@ -3,7 +3,7 @@ var fs = require('fs');
 var async = require('async');
 
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var Logger = require( __configs + "loggingConfig");
 

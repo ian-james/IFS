@@ -4,11 +4,12 @@ var mysql = require('mysql');
 var bcrypt = require('bcrypt-nodejs');
 var db = require('./database');
 var dbHelpers = require(__components + "Databases/dbHelpers");
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 
 var nodemailer = require('nodemailer');
 var mailcfg = require(__configs + 'mailConfig');
 var tokgen = require('tokgen');
+var verifySend = require(__components + "Verify/verifySend");
 
 var path = require('path');
 var mkdirp = require('mkdirp');
@@ -16,10 +17,10 @@ var cp = require('cp-file');
 var Logger = require( path.join( __dirname, "/loggingConfig") );
 
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
-var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
+var preferencesDB = require( __components + "Preferences/preferenceDB.js");
 var studentProfile = require(__components + "StudentProfile/studentProfileDB")
 
-var defaultTool = require( __components + 'Preferences/setupDefaultToolType.js');
+var defaultTool = require( __components + "Preferences/setupDefaultToolType.js");
 
 module.exports = function (passport) {
     // TODO: Default ToolType is should be set somewhere else with greater visbility.
@@ -83,32 +84,17 @@ module.exports = function (passport) {
                             });
                             cp.sync(defaultpath, avatarpath + "avatar.png");
 
-                            //generate verification token and send email
-                            var generator = new tokgen();
-                            var token = generator.generate();
-                            var link = 'http://' + mailcfg.host + '/verify?id=' + newUser.id +'&t=' + token;
-                            var msg = mailcfg.message;
-                            msg['to'] = newUser.username;
-                            msg['subject'] = "Complete your registration";
-                            var plainbody = "Hello " + req.body['firstname'] + ",\n\nPlease follow the link below to complete your registration:\n";
-                            plainbody += link;
-                            msg['text'] = plainbody;
-
-                            var transporter = new nodemailer.createTransport(mailcfg.transport_cfg);
-                            
-                            transporter.sendMail(msg, (error, info) => {
-                                if (error)
-                                    return console.log(error);
-                                console.log('Message %s sent: %s', info.messageId, info.reponse);
+                            // generate verification token (and insert it into the database) and send email
+                            var link = '';
+                            verifySend.generateLink('verify', newUser.id, function(err, data) {
+                                if (error) {
+                                    console.log(error);
+                            if (data)
+                                link = data;
                             });
-
-                            // insert token into the verify database
-                            var insert = dbHelpers.buildInsert(config.verify_table) + dbHelpers.buildValues(["userId", "type", "token"]);
-                            db.query(insert, [newUser.id, "verify", token], function(verifyErr, verifyData){
-                                if (err)
-                                    console.log("ERROR", verifyErr);
-                            });
-                            
+                            var message = 'Please follow the link below to complete your account registration:';
+                            var subject = "Complete your registration";
+                            verifySend.sendLink(newUser.username, link, subject, message);
 
                             newUser.sessionId = 0;
                             req.flash('success', 'Check your email for a verification link.');
@@ -157,7 +143,7 @@ module.exports = function (passport) {
                     }
                     // verify the user has completed registration
                     var uid = rows[0].id;
-                    var isreg = dbHelpers.buildSelect(config.user_registration_table) + dbHelpers.buildWhere(["userId"]);
+                    var isreg = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(["userId"]);
                     db.query(isreg, uid, function(err, data) {
                         if (err)
                             Logger.error(err);
@@ -168,7 +154,7 @@ module.exports = function (passport) {
                     });
 
                     // Increment sessionId for user
-                    db.query(dbHelpers.buildUpdate(config.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
+                    db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
                         if (err)
                             Logger.error( err );
                     });

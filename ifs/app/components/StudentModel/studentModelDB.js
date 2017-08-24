@@ -1,5 +1,5 @@
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -45,40 +45,40 @@ module.exports = {
     },
 
     getSubmissionsPerSession: function( userId, callback ) {
-        var q = dbHelpers.buildSelect( config.submission_table, "sessionId, COUNT(*) as value") + dbHelpers.buildWS('userId') + " GROUP BY sessionId";
+        var q = dbHelpers.buildSelect( dbcfg.submission_table, "sessionId, COUNT(*) as value") + dbHelpers.buildWS('userId') + " GROUP BY sessionId";
         db.query( q, [userId], callback );
     },
 
     getSubmissionsPerWeek: function( userId, callback ) {
-        var q = dbHelpers.buildSelect( config.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + dbHelpers.buildWS('userId') + "  GROUP BY yearweek(date), labels";
+        var q = dbHelpers.buildSelect( dbcfg.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + dbHelpers.buildWS('userId') + "  GROUP BY yearweek(date), labels";
         db.query( q, [userId], callback );
     },
 
     getSubmissionsPerWeekBetweenDates: function( userId, minDate, maxDate,  callback ) {
-        var q = dbHelpers.buildSelect( config.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + dbHelpers.buildWS('userId') + " and date >= ? and date <= ? GROUP BY yearweek(date), labels";
+        var q = dbHelpers.buildSelect( dbcfg.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + dbHelpers.buildWS('userId') + " and date >= ? and date <= ? GROUP BY yearweek(date), labels";
         db.query( q, [userId,minDate, maxDate], callback );
     },
 
     getSubmissionsPerDate: function(userId, callback){
         var format = "DATE_FORMAT(date, '%Y-%m-%d')";
-        var q = dbHelpers.buildSelect( config.submission_table, format + " as sessionDate, count(*) as value ") + dbHelpers.buildWS('userId') + " GROUP BY " + format;
+        var q = dbHelpers.buildSelect( dbcfg.submission_table, format + " as sessionDate, count(*) as value ") + dbHelpers.buildWS('userId') + " GROUP BY " + format;
         db.query( q, [userId], callback );
     },
 
     /** SECTION USED FOR OLM  */
      getSubmissionsBetweenDates: function(userId, minDate, maxDate, callback){
         var format = "DATE_FORMAT(date, '%Y-%m-%d')";
-        var q = dbHelpers.buildSelect( config.submission_table, format + " as sessionDate, count(*) as value ") + dbHelpers.buildWS('userId') + " and date >= ? AND date <= ? GROUP BY " + format;
+        var q = dbHelpers.buildSelect( dbcfg.submission_table, format + " as sessionDate, count(*) as value ") + dbHelpers.buildWS('userId') + " and date >= ? AND date <= ? GROUP BY " + format;
         db.query( q, [userId, minDate,maxDate], callback );
     },
 
     getFeedbackItemPerSubmissionBetweenDates: function(userId, minDate, maxDate, callback) {
-        var q = dbHelpers.buildSelect( config.feedback_table, " runType as series, submissionId as labels, COUNT(*) as value ") + dbHelpers.buildWS('userId') + " and date >= ? AND date <= ? GROUP BY submissionId, runType"
+        var q = dbHelpers.buildSelect( dbcfg.feedback_table, " runType as series, submissionId as labels, COUNT(*) as value ") + dbHelpers.buildWS('userId') + " and date >= ? AND date <= ? GROUP BY submissionId, runType"
         db.query( q, [userId, minDate,maxDate], callback );
     },
 
     getFeedbackViewedPerSubmissionBetweenDates: function(userId, minDate, maxDate, callback){
-        var q = dbHelpers.buildSelect( config.feedback_interaction_table, " submissionId as labels, action as series, COUNT(*) as value ") + dbHelpers.buildWS('userId') + " and action in ('viewed', 'viewedMore') and date >= ? AND date <= ? GROUP BY submissionId, action"
+        var q = dbHelpers.buildSelect( dbcfg.feedback_interaction_table, " submissionId as labels, action as series, COUNT(*) as value ") + dbHelpers.buildWS('userId') + " and action in ('viewed', 'viewedMore') and date >= ? AND date <= ? GROUP BY submissionId, action"
         db.query( q, [userId, minDate,maxDate], callback );
     },
 

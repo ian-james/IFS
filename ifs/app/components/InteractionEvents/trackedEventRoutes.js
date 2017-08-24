@@ -7,7 +7,7 @@ var Errors = require(__components + "Errors/errors");
 var Logger = require( __configs + "loggingConfig");
 
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var eventDB = require(__components + "InteractionEvents/event.js" );
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var usageQueries = require(__components + "InteractionEvents/usageQueries.js");

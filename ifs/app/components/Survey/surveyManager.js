@@ -8,7 +8,7 @@ var Logger = require( __configs + "loggingConfig");
 
 var mysql = require('mysql');
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
@@ -25,7 +25,7 @@ module.exports = {
      * @return  Array of survey data from DB.
      */
     getUserSurveyProfile: function( userId, callback ) {
-        var q = dbHelpers.buildSelect(config.survey_preferences_table ) + dbHelpers.buildWS("userId");
+        var q = dbHelpers.buildSelect(dbcfg.survey_preferences_table ) + dbHelpers.buildWS("userId");
         db.query(req,userId,callback);
     },
 
@@ -41,7 +41,7 @@ module.exports = {
     },
 
     setAbleAllSurveyPreferences: function( userId, ableValue, callback ) {
-        var q = dbHelpers.buildUpdate(config.survey_preferences_table) + " set allowedToAsk = ? " + dbHelpers.buildWS("userId") 
+        var q = dbHelpers.buildUpdate(dbcfg.survey_preferences_table) + " set allowedToAsk = ? " + dbHelpers.buildWS("userId") 
         db.query(q,[ableValue,userId], callback);
     },
 

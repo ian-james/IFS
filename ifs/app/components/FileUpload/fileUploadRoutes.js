@@ -18,7 +18,7 @@ var upload = require("./fileUploadConfig").upload;
 // Feedback
 var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFilterSystem');
 
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var db = require( __configs + 'database');
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var Errors = require(__components + "Errors/errors");
@@ -84,7 +84,7 @@ module.exports = function (app, iosocket) {
                     _.extend(fi,toolAdd);
 
                     var fe =  eventDB.makeFeedbackEvent( sessionId, userId, submissionId, fi );
-                    dbHelpers.insertEventC( config.feedback_table, fe, function(err,d){
+                    dbHelpers.insertEventC( dbcfg.feedback_table, fe, function(err,d){
                         // Empty Callback if feedback fails to save, we aren't too concerned.
                         _callback();
                     });
@@ -117,7 +117,7 @@ module.exports = function (app, iosocket) {
 
                     var fs =  eventDB.makeFeedbackStatsEvent( sessionId, userId, submissionId, fi );
 
-                    dbHelpers.insertEventC( config.feedback_stats_table, fs, function(err,d){
+                    dbHelpers.insertEventC( dbcfg.feedback_stats_table, fs, function(err,d){
                         // Empty Callback if feedback fails to save, we aren't too concerned.
                         _callback();
                     });

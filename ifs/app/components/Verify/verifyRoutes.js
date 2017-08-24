@@ -3,14 +3,14 @@ var viewPath = path.join(__dirname + "/");
 var Logger = require(__configs + "loggingConfig");
 
 var bcrypt = require('bcrypt-nodejs');
-var tokgen = require('tokgen');
-var nodemailer = require('nodemailer');
-var mailcfg = require(__configs + "mailConfig");
+var verifySend = require('verifySend');
 var passport = require(__configs + "passport");
 
-var config = require(__configs + "databaseConfig");
+var dbcfg = require(__configs + "databaseConfig");
 var db = require(__configs + "database");
 var dbHelpers = require(__components + "Databases/dbHelpers");
+
+var mailcfg = require(__configs + "mailConfig");
 
 var fs = require('fs');
 
@@ -25,63 +25,33 @@ module.exports = function(app) {
             res.render(viewPath + "forgot", { title: 'Forgotten Password', error: false, success: false })
     });
 
-    app.post('/forgot', function(req,res,next) {
+    app.post('/forgot', functiopn(req,res,next) {
+        var title = 'Forgotten Password';
         // lookup user by email
         var email = req.body.email;
-        var q = dbHelpers.buildSelect(config.users_table) + dbHelpers.buildWhere(['username']);
+        var q = dbHelpers.buildSelect(dbcfg.users_table) + dbHelpers.buildWhere(['username']);
         db.query(q, [email], function(err, data) {
             if (err) {
                 Logger.error(err);
-                res.render(viewPath + "forgot", { title: 'Forgotten Password', error: 'Error looking up email.', success: false })
+                res.render(viewPath + "forgot", { title: title, error: 'Error looking up email.', success: false })
             }
             if (!data[0]) {
-                res.render(viewPath + "forgot", { title: 'Forgotten Password', error: "Error. Couldn't find an account with the provided email address.", success: false });
+                res.render(viewPath + "forgot", { title: title, error: "Error. Couldn't find an account with the provided email address.", success: false });
             } else {
                 var uid = data[0].id; // get the user id from the database
-
-                // check the database for a reset token
-                var checkReset = dbHelpers.buildSelect(config.verify_table) + dbHelpers.buildWhere(["userId", "type"]);
-                db.query(checkReset, [uid, "reset"], function(checkErr, checkData) {
-                    // generate token
-                    var generator = new tokgen();
-                    var token = generator.generate();
-                    // if the user already has a reset token, update it
-                    if (checkData[0]) {
-                        var update = dbHelpers.buildUpdate(config.verify_table) + ' SET token = ? ' + dbHelpers.buildWhere(['userId', 'type']);
-                        db.query(update, [token, uid, 'reset'], function(updateErr, updateData) {
-                            if (updateErr) {
-                                console.log("ERROR", updateErr);
-                                res.render(viewPath + "forgot", { title: 'Forgotten Password', error: "Error.", success: false });
-                                return done(null, false);
-                            }
-                        });
-                    } else {
-                        // else insert token into the verify database
-                        var insert = dbHelpers.buildInsert(config.verify_table) + dbHelpers.buildValues(["userId", "type", "token"]);
-                        db.query(insert, [uid, "reset", token], function(verifyErr, verifyData){
-                            if (verifyErr) {
-                                console.log("ERROR", verifyErr);
-                                res.render(viewPath + "forgot", { title: 'Forgotten Password', error: "Error.", success: false});
-                                return done(null, false);
-                            }
-                        });
+                var link = '';
+                verifySend.generateReplLink('forgot', uid, function(err, data) {
+                    if (err) {
+                        Logger.error(err);
+                        res.render(viewPath + 'forgot', { title: title, error: "Error.", success: false });
+                        return done(null, false);
                     }
-
-                    // send email
-                    var link = 'http://' + mailcfg.host + '/reset?id=' + uid +'&t=' + token;
-                    var msg = mailcfg.message;
-                    msg['to'] = email;
-                    msg['subject'] = "Reset your password";
-                    var plainbody = "Someone requested a password change for your account at " + mailcfg.host + ".\n\nPlease follow the link below to reset your password:\n" + link + "\n\nNote that this link will expire in 12 hours.\n\nIf you did not request this change, you may ignore this email.";
-                    msg['text'] = plainbody;
-                    var transporter = new nodemailer.createTransport(mailcfg.transport_cfg);
-
-                    transporter.sendMail(msg, (error, info) => {
-                        if (error)
-                            return console.log(error);
-                        console.log('Message %s sent: %s', info.messageId, info.reponse);
-                    });
+                });
+                var message = "Somebody requested a password change for your account. Please follow the link below to reset your password. Note that this link will expire in 12 hours. If you did not request this change, you may ignore this email.';
+                 if (verifySend.sendLink(email, link, 'Reset your password', message)) {
                     res.render(viewPath + "forgot", { title: 'Forgotten Password', error: false, success: "Sucess! Please check your email for a password reset link." });
+                 } else {
+                     res.render(viewPath + "forgot", { title: title, error: "Error.", success: false });
                 });
             }
         });
@@ -117,7 +87,7 @@ module.exports = function(app) {
             res.render(viewPath + "reset", { title: title, message: error, valid: false });
 
         // look up the uid and compare it with the token
-        var q = dbHelpers.buildSelect(config.verify_table) + dbHelpers.buildWhere(['userId', 'type']);
+        var q = dbHelpers.buildSelect(dbcfg.verify_table) + dbHelpers.buildWhere(['userId', 'type']);
         db.query(q, [uid, 'reset'], function(err, data) {
             if (data[0])
                 var lookup = data[0].token;
@@ -152,7 +122,7 @@ module.exports = function(app) {
         }
 
         // verify that the user-inputted email matches the id supplied by the browser in the form
-        var q = dbHelpers.buildSelect(config.users_table) + dbHelpers.buildWhere(['id', 'username']);
+        var q = dbHelpers.buildSelect(dbcfg.users_table) + dbHelpers.buildWhere(['id', 'username']);
         db.query(q, [uid, email], function(err, data) {
             if (err) {
                 Logger.error(err);
@@ -175,7 +145,7 @@ module.exports = function(app) {
 
         // if we've made it this far, then we need to check that the link in the database still exists, then we can update the password.
         // this is done because of the asynchronous nature of this application... if multiple instances of this request exist in a browser, only one should be allowed to proceed; this check does not guarantee safety, but it mitigates risk
-        var check = dbHelpers.buildSelect(config.verify_table) + dbHelpers.buildWhere(['userId', 'type']);
+        var check = dbHelpers.buildSelect(dbcfg.verify_table) + dbHelpers.buildWhere(['userId', 'type']);
         db.query(check, [uid, 'reset'], function(err, data) {
             if (err) {
                 Logger.error(err);
@@ -190,7 +160,7 @@ module.exports = function(app) {
         // now update password
         var password = bcrypt.hashSync(passwd1, null, null);
 
-        var update = dbHelpers.buildUpdate(config.users_table) + ' SET password = ? ' + dbHelpers.buildWhere(['id', 'username']);
+        var update = dbHelpers.buildUpdate(dbcfg.users_table) + ' SET password = ? ' + dbHelpers.buildWhere(['id', 'username']);
         db.query(update, [password, uid, email], function(err, data) {
             if (err) {
                 Logger.error(err);
@@ -198,13 +168,16 @@ module.exports = function(app) {
                 res.end();
             }
             // remove the reset link from the datbase and alert the user of success
-            var del = dbHelpers.buildDelete(config.verify_table) + dbHelpers.buildWhere(['userId', 'type', 'token']);
+            var del = dbHelpers.buildDelete(dbcfg.verify_table) + dbHelpers.buildWhere(['userId', 'type', 'token']);
             db.query(del, [uid, 'reset', tok], function(err, data) {
                 if (err) {
                     Logger.error(err);
                     res.render(viewPath + "reset", { title: title, message: "An internal error occurred. Please retry using the link from your email." + " (-1)", valid: false });
                     res.end();
                 } else {
+                    var subject = 'Your password was just changed';
+                    var message = 'This is an alert to let you know that your account password was just changed. If you did not request this change, please visit the link below and contact support.';
+                    verifySend.sendLink(email, 'http://' + mailcfg.host + '/forgot', subject, message);
                     res.render(viewPath + "reset", { title: title, message: "Success! Your password was updated. You may now log in using your new password.", valid: false });
                     res.end();
                 }
@@ -241,7 +214,7 @@ module.exports = function(app) {
             res.render(viewPath + "verify", { title: title, message: error});
 
         // look up the uid and compare it with the token
-        var q = dbHelpers.buildSelect(config.verify_table) + dbHelpers.buildWhere(['userId', 'type']);
+        var q = dbHelpers.buildSelect(dbcfg.verify_table) + dbHelpers.buildWhere(['userId', 'type']);
         db.query(q, [uid, 'verify'], function(err, data) {
             if (data[0])
                 var lookup = data[0].token;
@@ -254,7 +227,7 @@ module.exports = function(app) {
                 res.end();
             } else { // looked up correct account, now complete registration and remove entry from verify table
                 // check not already registered
-                var check = dbHelpers.buildSelect(config.user_registration_table) + dbHelpers.buildWhere(['userId']);
+                var check = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(['userId']);
                 db.query(check, [uid], function(err, data) {
                     if (err) {
                         Logger.error(err);
@@ -267,14 +240,14 @@ module.exports = function(app) {
                         res.render(viewPath + "verify", { title: title, message: regd + " (3)"});
                         res.end();
                     } else {
-                        var reg = dbHelpers.buildInsert(config.user_registration_table) + dbHelpers.buildValues(["userId", "isRegistered"]);
+                        var reg = dbHelpers.buildInsert(dbcfg.user_registration_table) + dbHelpers.buildValues(["userId", "isRegistered"]);
                         db.query(reg, [uid, 1], function(err, data) {
                             if (err) {
                                 res.render(viewPath + "verify", { title: title, message: error + " (4)"});
                                 console.log("ERROR", JSON.stringify(err));
                                 return;
                             } else {
-                                var del = dbHelpers.buildDelete(config.verify_table) + dbHelpers.buildWhere(["userId", "type"]);
+                                var del = dbHelpers.buildDelete(dbcfg.verify_table) + dbHelpers.buildWhere(["userId", "type"]);
                                 db.query(del, [uid, "verify"], function(err, data) {
                                     if (err) {
                                         res.render(viewPath + "verify", { title: title, message: error + " (5)"});

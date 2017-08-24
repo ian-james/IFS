@@ -1,5 +1,5 @@
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 

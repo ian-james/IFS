@@ -7,7 +7,7 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var Logger = require(__configs + "loggingConfig");
 
-var config = require(__configs + "databaseConfig");
+var dbcfg = require(__configs + "databaseConfig");
 var db = require(__configs + "database");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -64,7 +64,7 @@ module.exports = function( app, passport ) {
     app.get('/login-redirect', function(req, res) {
         let uid = req.user.id;
         // check if the user completed setup yet
-        var q = dbHelpers.buildSelect(config.user_registration_table) + dbHelpers.buildWhere(['userId']);
+        var q = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(['userId']);
         db.query(q, [uid], function(err, data) {
             if (err) {
                 console.log("ERROR:", err);
