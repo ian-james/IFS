@@ -72,6 +72,6 @@ module.exports = function(app) {
             });
         }
 
-        res.redirect('/preferences');
+        res.redirect('/setup');
     });
 }
