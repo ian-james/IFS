@@ -20,7 +20,7 @@ try {
         Logger.info("Create the Table:", dbcfg.users_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.users_table + "( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-            username VARCHAR(20) NOT NULL, \
+            username VARCHAR(80) NOT NULL, \
             password CHAR(60) NOT NULL, \
             sessionId INT NOT NULL DEFAULT 0, \
             optedIn BOOL DEFAULT TRUE, \

@@ -71,6 +71,9 @@ module.exports = function (passport) {
                         // set up new user
                         var newuserQuery = "INSERT INTO users (username, password) values (?,?)";
                         db.query(newuserQuery,[newUser.username, newUser.password], function(err,rows) {
+                            if (err)
+                                console.log("ERROR", err);
+
                             newUser.id = rows.insertId;
 
                             // copy the default avatar to the user avatar
@@ -84,27 +87,25 @@ module.exports = function (passport) {
                             });
                             cp.sync(defaultpath, avatarpath + "avatar.png");
 
-                            // generate verification token (and insert it into the database) and send email
-                            var link = '';
-                            verifySend.generateLink('verify', newUser.id, function(err, data) {
-                                if (error) {
-                                    console.log(error);
-                            if (data)
-                                link = data;
-                            });
-                            var message = 'Please follow the link below to complete your account registration:';
-                            var subject = "Complete your registration";
-                            verifySend.sendLink(newUser.username, link, subject, message);
-
-                            newUser.sessionId = 0;
-                            req.flash('success', 'Check your email for a verification link.');
-
                             // set up profile and survey settings
-                            studentProfile.insertStudentProfile( newUser.id, req.body['firstname'] + " " + req.body['lastname'], "", function(profileErr, studentSet) {
+                            studentProfile.insertStudentProfile(newUser.id, req.body['firstname'] + " " + req.body['lastname'], "", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
                                     defaultTool.setupDefaultTool(req);
                                     SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
-                                        return done(null, newUser);
+                                        // generate verification token (and insert it into the database) and send email
+                                        verifySend.generateLink('verify', newUser.id, function(err, link) {
+                                            if (err)
+                                                console.log(err);
+                                            if (link) {
+                                                var message = 'Please follow the link below to complete your account registration:';
+                                                var subject = "Complete your registration";
+                                                verifySend.sendLink(newUser.username, link, subject, message);
+
+                                                newUser.sessionId = 0;
+                                                req.flash('success', 'Check your email for a verification link.');
+                                            }
+                                            return done(null, newUser);
+                                        });
                                     });
                                 });
                             });

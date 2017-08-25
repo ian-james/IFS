@@ -3,7 +3,7 @@ var viewPath = path.join(__dirname + "/");
 var Logger = require(__configs + "loggingConfig");
 
 var bcrypt = require('bcrypt-nodejs');
-var verifySend = require('verifySend');
+var verifySend = require(__components + "Verify/verifySend");
 var passport = require(__configs + "passport");
 
 var dbcfg = require(__configs + "databaseConfig");
@@ -25,7 +25,7 @@ module.exports = function(app) {
             res.render(viewPath + "forgot", { title: 'Forgotten Password', error: false, success: false })
     });
 
-    app.post('/forgot', functiopn(req,res,next) {
+    app.post('/forgot', function(req,res,next) {
         var title = 'Forgotten Password';
         // lookup user by email
         var email = req.body.email;
@@ -39,23 +39,19 @@ module.exports = function(app) {
                 res.render(viewPath + "forgot", { title: title, error: "Error. Couldn't find an account with the provided email address.", success: false });
             } else {
                 var uid = data[0].id; // get the user id from the database
-                var link = '';
-                verifySend.generateReplLink('forgot', uid, function(err, data) {
+                verifySend.generateLinkReplTok('reset', uid, function(err, link) {
                     if (err) {
                         Logger.error(err);
-                        res.render(viewPath + 'forgot', { title: title, error: "Error.", success: false });
+                        res.render(viewPath + 'forgot', { title: title, error: "Error. OH ", success: false });
                         return done(null, false);
+                    } else {
+                        var message = "Somebody requested a password change for your account. Please follow the link below to reset your password. Note that this link will expire in 12 hours. If you did not request this change, you may ignore this email.";
+                         verifySend.sendLink(email, link, 'Reset your password', message);
+                        res.render(viewPath + "forgot", { title: 'Forgotten Password', error: false, success: "Sucess! Please check your email for a password reset link." });
                     }
-                });
-                var message = "Somebody requested a password change for your account. Please follow the link below to reset your password. Note that this link will expire in 12 hours. If you did not request this change, you may ignore this email.";
-                 if (verifySend.sendLink(email, link, 'Reset your password', message)) {
-                    res.render(viewPath + "forgot", { title: 'Forgotten Password', error: false, success: "Sucess! Please check your email for a password reset link." });
-                 } else {
-                     res.render(viewPath + "forgot", { title: title, error: "Error.", success: false });
                 });
             }
         });
-
     });
 
     // this route is for checking url parameters, intended to verify an emailed
