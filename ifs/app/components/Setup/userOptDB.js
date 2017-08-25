@@ -1,11 +1,11 @@
 var db = require(__configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 module.exports = {
     getUserOptIn: function(userId, callback) {
-        var q = dbHelpers.buildSelect(config.users_table, "id, username, optedIn") + dbHelpers.buildWhere(["id"]);
+        var q = dbHelpers.buildSelect(dbcfg.users_table, "id, username, optedIn") + dbHelpers.buildWhere(["id"]);
         db.query(q, userId, callback);
     },
 
@@ -16,7 +16,7 @@ module.exports = {
      * @param callback: callback function
      **/
     toggleOptedIn: function(userId, optIn, callback) {
-        var q = "UPDATE " + config.users_table + " SET optedIn = ? WHERE id = ?;"
+        var q = "UPDATE " + dbcfg.users_table + " SET optedIn = ? WHERE id = ?;"
         db.query(q, [optIn, userId], callback);
     }
 }

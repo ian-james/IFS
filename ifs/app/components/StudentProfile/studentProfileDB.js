@@ -1,12 +1,12 @@
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 module.exports = {
 
     getStudentProfile: function( userId, callback ) {
-        var q = dbHelpers.buildSelect(config.student_table) + dbHelpers.buildWS("userId");
+        var q = dbHelpers.buildSelect(dbcfg.student_table) + dbHelpers.buildWS("userId");
         db.query(q,userId,callback);
     },
 
@@ -18,7 +18,7 @@ module.exports = {
      * @param {Function} callback [description]
      */
     insertStudentProfile: function( userId, name, bio, callback ) {
-        var q = dbHelpers.buildInsert(config.student_table) + "( userId, name, bio) VALUES (?,?,?) ";
+        var q = dbHelpers.buildInsert(dbcfg.student_table) + "( userId, name, bio) VALUES (?,?,?) ";
         db.query(q,[userId,name,bio],callback);
     },
 
@@ -30,7 +30,7 @@ module.exports = {
      * @param {Function} callback [description]
      */
     setStudentProfile: function( userId, name, bio, callback ) {
-        var q = dbHelpers.buildUpdate(config.student_table) + " SET name = ?, bio = ? WHERE userId = ? ";
+        var q = dbHelpers.buildUpdate(dbcfg.student_table) + " SET name = ?, bio = ? WHERE userId = ? ";
         db.query(q,[name,bio,userId],callback);
     },
 

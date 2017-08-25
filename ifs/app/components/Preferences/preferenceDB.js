@@ -1,5 +1,5 @@
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -12,7 +12,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getStudentPreferences: function( userId, callback ) {
-        var q = dbHelpers.buildSelect(config.preferences_table, "toolName,toolValue") + dbHelpers.buildWS("userId");
+        var q = dbHelpers.buildSelect(dbcfg.preferences_table, "toolName,toolValue") + dbHelpers.buildWS("userId");
         db.query(q,userId,callback);
     },
 
@@ -24,7 +24,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getStudentPreferencesByToolName: function( userId, toolName, callback ) {
-        var q = dbHelpers.buildSelect(config.preferences_table, "toolName,toolValue") +  dbHelpers.buildWhere(["userId", "toolName"]);
+        var q = dbHelpers.buildSelect(dbcfg.preferences_table, "toolName,toolValue") +  dbHelpers.buildWhere(["userId", "toolName"]);
         db.query(q,[userId,toolName],callback);
     },
 
@@ -36,13 +36,13 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getStudentPreferencesByToolType: function( userId, toolType, callback ) {
-        var q = dbHelpers.buildSelect(config.preferences_table, "toolName,toolValue") +  dbHelpers.buildWhere(["userId", "toolType"]);
+        var q = dbHelpers.buildSelect(dbcfg.preferences_table, "toolName,toolValue") +  dbHelpers.buildWhere(["userId", "toolType"]);
         db.query(q,[userId,toolType],callback);
     },
 
 
     setStudentPreferences: function(userId, toolType, toolName, toolValue, callback ) {
-        var q = dbHelpers.buildInsert(config.preferences_table) + dbHelpers.buildValues(["userId","toolType", "toolName","toolValue"]) +
+        var q = dbHelpers.buildInsert(dbcfg.preferences_table) + dbHelpers.buildValues(["userId","toolType", "toolName","toolValue"]) +
                 " ON DUPLICATE KEY UPDATE toolValue = ?";
         db.query(q,[userId,toolType, toolName, toolValue, toolValue], callback);
     },
@@ -55,7 +55,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     clearStudentFormPreferences: function( userId, toolType, callback ) {
-        var q = dbHelpers.buildDelete(config.preferences_table) + " where userId = ? and toolType = ? and  (toolName LIKE 'opt-%' or toolName LIKE 'enabled-%')";
+        var q = dbHelpers.buildDelete(dbcfg.preferences_table) + " where userId = ? and toolType = ? and  (toolName LIKE 'opt-%' or toolName LIKE 'enabled-%')";
         db.query(q,[userId,toolType], callback);
     }
 

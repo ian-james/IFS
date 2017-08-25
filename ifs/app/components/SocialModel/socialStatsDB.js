@@ -1,5 +1,5 @@
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -57,12 +57,12 @@ module.exports = {
 
     getSubmissionsPerWeek: function( userId, callback ) {
         var format = "DATE_FORMAT(date, '%Y-%m-%d')";
-        var q = dbHelpers.buildSelect( config.submission_table, " COUNT(*) as value, Date_FORMAT(str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + " where userId != ? GROUP BY yearweek(date), labels";
+        var q = dbHelpers.buildSelect( dbcfg.submission_table, " COUNT(*) as value, Date_FORMAT(str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + " where userId != ? GROUP BY yearweek(date), labels";
         db.query( q, [userId], callback );
     },
 
     getSubmissionsPerWeekBetweenDates: function( userId, minDate, maxDate,  callback ) {
-        var q = dbHelpers.buildSelect( config.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + " where userId != ? and date >= ? and date <= ? GROUP BY yearweek(date), labels ";
+        var q = dbHelpers.buildSelect( dbcfg.submission_table, " COUNT(*) as value, Date_FORMAT((str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W')), '%Y-%m-%d') as 'labels' ") + " where userId != ? and date >= ? and date <= ? GROUP BY yearweek(date), labels ";
         db.query( q, [userId,minDate, maxDate], callback );
     },
 

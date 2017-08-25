@@ -1,5 +1,5 @@
 var db = require( __configs + 'database');
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -15,27 +15,27 @@ module.exports = {
     },
 
     insertCourse: function(course, callback){
-        var q = dbHelpers.buildInsert(config.class_table) + dbHelpers.buildValues(["code","name","description","disciplineType"])
+        var q = dbHelpers.buildInsert(dbcfg.class_table) + dbHelpers.buildValues(["code","name","description","disciplineType"])
         db.query(q,course,callback);
     },
 
     insertUpcomingEvent: function(event, callback){
-        var q = dbHelpers.buildInsert(config.upcoming_event_table) + dbHelpers.buildValues(["classId","name","title","description","openDate","closedDate"])
+        var q = dbHelpers.buildInsert(dbcfg.upcoming_event_table) + dbHelpers.buildValues(["classId","name","title","description","openDate","closedDate"])
         db.query(q,event,callback);
     },
 
     insertAssignment: function(assignment, callback){
-        var q = dbHelpers.buildInsert(config.assignment_table) + dbHelpers.buildValues(["classId","name","title","description","deadline"])
+        var q = dbHelpers.buildInsert(dbcfg.assignment_table) + dbHelpers.buildValues(["classId","name","title","description","deadline"])
         db.query(q,assignment,callback);
     },
 
     insertSkill: function(skill, callback){
-        var q = dbHelpers.buildInsert(config.class_skill_table) + dbHelpers.buildValues(["classId","assignmentId","name","description"])
+        var q = dbHelpers.buildInsert(dbcfg.class_skill_table) + dbHelpers.buildValues(["classId","assignmentId","name","description"])
         db.query(q,skill,callback);
     },
 
     insertTask: function(skill, callback){
-        var q = dbHelpers.buildInsert(config.assignment_task_table) + dbHelpers.buildValues(["assignmentId","name","description"])
+        var q = dbHelpers.buildInsert(dbcfg.assignment_task_table) + dbHelpers.buildValues(["assignmentId","name","description"])
         db.query(q,skill,callback);
     },
 
@@ -46,12 +46,12 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAllClasses: function(callback) {
-        var q = dbHelpers.buildSelect( config.class_table );
+        var q = dbHelpers.buildSelect( dbcfg.class_table );
         db.query(q,[],callback);
     },
 
     getAllEvents: function(callback) {
-        var q = dbHelpers.buildSelect( config.upcoming_event_table );
+        var q = dbHelpers.buildSelect( dbcfg.upcoming_event_table );
         db.query(q,[],callback);
     },
 
@@ -61,7 +61,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAllSkills: function(callback) {
-        var q = dbHelpers.buildSelect( config.class_skill_table );
+        var q = dbHelpers.buildSelect( dbcfg.class_skill_table );
         db.query(q,[],callback);
     },
 
@@ -71,7 +71,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAllTasks: function(callback) {
-        var q = dbHelpers.buildSelect( config.assignment_task_table );
+        var q = dbHelpers.buildSelect( dbcfg.assignment_task_table );
         db.query(q,[],callback);
     },
 
@@ -82,7 +82,7 @@ module.exports = {
      * @return {[type]}                 [description]
      */
     getClassByCode: function( classCodeName, callback ) {
-        var q = dbHelpers.buildSelect( config.class_table ) + dbHelpers.buildWS('code');
+        var q = dbHelpers.buildSelect( dbcfg.class_table ) + dbHelpers.buildWS('code');
         db.query(q,classCodeName,callback);
     },
 
@@ -92,7 +92,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAllAssignments: function( callback )  {
-        var q = dbHelpers.buildSelect( config.assignment_table );
+        var q = dbHelpers.buildSelect( dbcfg.assignment_table );
         db.query(q,[],callback);
     },
 
@@ -128,32 +128,32 @@ module.exports = {
 
     /*********************************************************************************/
     deleteCourse: function(courseId, callback){
-        module.exports.deleteById(config.class_table,courseid,callback);
+        module.exports.deleteById(dbcfg.class_table,courseid,callback);
     },
 
     deleteCourses: function(ids, callback){
-        module.exports.deleteByIds(config.class_table,ids,callback);
+        module.exports.deleteByIds(dbcfg.class_table,ids,callback);
     },
 
     deleteEvents: function(ids, callback){
-        module.exports.deleteByIds(config.upcoming_event_table,ids,callback);
+        module.exports.deleteByIds(dbcfg.upcoming_event_table,ids,callback);
     },
 
     deleteSkills: function(ids, callback){
-        module.exports.deleteByIds(config.class_skill_table,ids,callback);
+        module.exports.deleteByIds(dbcfg.class_skill_table,ids,callback);
     },
 
     deleteAssignments: function(ids, callback){
-        module.exports.deleteByIds(config.assignment_table,ids,callback);
+        module.exports.deleteByIds(dbcfg.assignment_table,ids,callback);
     },
 
     deleteTasks: function(ids, callback){
-        module.exports.deleteByIds(config.assignment_task_table,ids,callback);
+        module.exports.deleteByIds(dbcfg.assignment_task_table,ids,callback);
     },
 
     /***************************** Admin Stats *************************************/
     countTotalStudents: function( callback ) {
-        var q = dbHelpers.buildSelect(config.student_table,"COUNT(*) as totalStudents");
+        var q = dbHelpers.buildSelect(dbcfg.student_table,"COUNT(*) as totalStudents");
         db.query(q,[],callback);
     },
 
@@ -168,7 +168,7 @@ module.exports = {
     },
 
     countWeeklySubmission: function( callback ){
-        var q =  "select COUNT(*) as weeklySubmissions from "  + config.submission_table +  " where date >= Date(NOW()) - INTERVAL 7 DAY"
+        var q =  "select COUNT(*) as weeklySubmissions from "  + dbcfg.submission_table +  " where date >= Date(NOW()) - INTERVAL 7 DAY"
         db.query(q,[],callback);
     }
 }

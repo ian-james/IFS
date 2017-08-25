@@ -1,18 +1,18 @@
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 var eventDB = require(__components + "InteractionEvents/event.js" );
 var dbHelpers = require(__components + "Databases/dbHelpers.js");
 
 module.exports = {
 
     addSubmission: function ( submissionData, callback) {
-        dbHelpers.insertEventC(config.submission_table, submissionData ,callback);
+        dbHelpers.insertEventC(dbcfg.submission_table, submissionData ,callback);
     },
 
     getLastSubmissionId: function(userId, sessionId ){
         return {
             "name": 'lastSubmissionNumber',
             "data": [ userId,sessionId ],
-            "request": "select id as value from " + config.submission_table +  " where userId = ? and sessionId = sessionId ORDER BY id desc LIMIT 1"
+            "request": "select id as value from " + dbcfg.submission_table +  " where userId = ? and sessionId = sessionId ORDER BY id desc LIMIT 1"
         };
     },
 
@@ -20,7 +20,7 @@ module.exports = {
         return {
             "name": 'submissionNumber',
             "data": [ userId ],
-            "request": "select COUNT(*) as value from " + config.submission_table +  " where userId = ? "
+            "request": "select COUNT(*) as value from " + dbcfg.submission_table +  " where userId = ? "
         };
     },
 
@@ -29,7 +29,7 @@ module.exports = {
         return {
             'name': "allSubmissions",
             'data':[userId],
-            'request': "select COUNT(*) as value from "  + config.submission_table +  " where userId = ?"
+            'request': "select COUNT(*) as value from "  + dbcfg.submission_table +  " where userId = ?"
         };
     },
 
@@ -37,7 +37,7 @@ module.exports = {
         return {
             'name': "totalSubmissions",
             'data':[userId, "submission", "received"],
-            'request': "select COUNT(*) as value from "  + config.submission_table +  " where userId = ?"
+            'request': "select COUNT(*) as value from "  + dbcfg.submission_table +  " where userId = ?"
         };
     },
 
@@ -45,7 +45,7 @@ module.exports = {
         return {
             'name': "countSessionSubmissions",
             'data':[userId, sessionId],
-            'request': "select COUNT(*) as value from "  + config.submission_table +  " where userId = ? and sessionId = ?"
+            'request': "select COUNT(*) as value from "  + dbcfg.submission_table +  " where userId = ? and sessionId = ?"
         };
     },
 
@@ -54,7 +54,7 @@ module.exports = {
         return {
             'name': "submissions",
             'data':[userId, "submission", "received"],
-            'request': "select userId,date from "  + config.submission_table +  " where userId = ? and eventType = ? and name=?"
+            'request': "select userId,date from "  + dbcfg.submission_table +  " where userId = ? and eventType = ? and name=?"
         };
     },
 
@@ -62,7 +62,7 @@ module.exports = {
         return {
             'name': "mostRecentSubmission",
             'data':[userId],
-            'request': "select userId,date as value from "  + config.submission_table +  " where userId = ? ORDER BY date desc LIMIT 1"
+            'request': "select userId,date as value from "  + dbcfg.submission_table +  " where userId = ? ORDER BY date desc LIMIT 1"
         };
     },
 
@@ -71,7 +71,7 @@ module.exports = {
         return {
             'name': "sessionSubmissions",
             'data':[userId, sessionId, "submission", "received"],
-            'request': "select userId,date from "  + config.submission_table +  " where userId = ? and sessionId = ?"
+            'request': "select userId,date from "  + dbcfg.submission_table +  " where userId = ? and sessionId = ?"
         };
     },
     
@@ -79,7 +79,7 @@ module.exports = {
         return {
             'name': "dailySubmissions",
             'data':[userId],
-            'request': "select userId, COUNT(*) as value  from "  + config.submission_table +  " where userId = ? and Date(date) = Date(NOW()) GROUP By date"
+            'request': "select userId, COUNT(*) as value  from "  + dbcfg.submission_table +  " where userId = ? and Date(date) = Date(NOW()) GROUP By date"
         };
     },
 
@@ -87,7 +87,7 @@ module.exports = {
         return {
             'name': "weeklySubmissions",
             'data':[userId],
-            'request': "select userId, COUNT(*) as value  from "  + config.submission_table +  " where userId = ? and date >= Date(NOW()) - INTERVAL 7 DAY"
+            'request': "select userId, COUNT(*) as value  from "  + dbcfg.submission_table +  " where userId = ? and date >= Date(NOW()) - INTERVAL 7 DAY"
         };
     },
 

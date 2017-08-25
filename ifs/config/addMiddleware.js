@@ -6,7 +6,7 @@ module.exports = function (app, mySession ) {
 
     // A logging middleware 
     // Winston Middleware but customized
-    var configPath = __dirname + "/";
+    var dbcfgPath = __dirname + "/";
     var myLogger = require( __configs + "loggingConfig");
 
     console.log("ENV VAR - ", app.get('env') )

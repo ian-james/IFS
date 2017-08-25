@@ -1,7 +1,7 @@
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var submissionEvent = require(__components + "InteractionEvents/submissionEvents.js");
 var eventDB = require(__components + "InteractionEvents/event.js" );
-var config = require(__configs + 'databaseConfig');
+var dbcfg = require(__configs + 'databaseConfig');
 
 var _ = require('lodash');
 
@@ -48,7 +48,7 @@ module.exports = {
      * @return {[type]}          [description]
      */
     btrackFeedbackInteractionEvent: function(iosocket, event){
-        dbHelpers.insertEvent(config.feedback_interaction_table,event);
+        dbHelpers.insertEvent(dbcfg.feedback_interaction_table,event);
         iosocket.broadcast.emit('trackEvent', event);
     }
 };

@@ -3,7 +3,7 @@ var fs = require('fs');
 var viewPath = path.join( __dirname + "/");
 var Logger = require( __configs + "loggingConfig");
 
-var config = require(__configs + "databaseConfig");
+var dbcfg = require(__configs + "databaseConfig");
 var db = require(__configs + "database");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -100,7 +100,7 @@ module.exports = function(app) {
 
     // this route exists to mark that set-up has been completed for the user
     app.post('/complete-setup', function(req, res, next) {
-        var q = dbHelpers.buildUpdate(config.user_registration_table) + 'SET completedSetup = ? WHERE userId = ?';
+        var q = dbHelpers.buildUpdate(dbcfg.user_registration_table) + 'SET completedSetup = ? WHERE userId = ?';
         db.query(q, [1, req.user.id], function(err, data) {
             if (!err)
                 console.log("UID " + req.user.id + " completed setup.");
