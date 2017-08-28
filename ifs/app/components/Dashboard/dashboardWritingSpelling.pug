@@ -1,9 +1,11 @@
-h4.uk-padding-remove.uk-margin-remove {{sectionName}}
-    ul(ng-if="spellingSuggestion && spellingSuggestion.length > 0").uk-list.uk-list-striped
-        li( ng-repeat="suggest in spellingSuggestion")
-            p.uk-display-inline {{suggest.target}}
-            span(uk-icon="icon: arrow-left")
-                span(uk-icon="icon: arrow-right")
-            p.uk-display-inline {{suggest.suggestions}}
-                       
-    p(ng-if="!(spellingSuggestion && spellingSuggestion.length > 0)") Unable to show most common spelling feedback.
+div.uk-card.uk-card-default
+    div.uk-card-body
+        h4 {{sectionName}}
+        ul(ng-if="spellingSuggestion && spellingSuggestion.length > 0").uk-list.uk-list-striped
+            li( ng-repeat="suggest in spellingSuggestion")
+                p.uk-display-inline.uk-text-danger {{suggest.target}}
+                span(uk-icon="icon: arrow-left").uk-margin-remove.uk-padding-remove
+                span(uk-icon="icon: arrow-right").uk-margin-remove.uk-padding-remove
+                p.uk-display-inline.uk-text-primary {{suggest.suggestions}}
+                           
+        p(ng-if="!(spellingSuggestion && spellingSuggestion.length > 0)") Unable to show most common spelling feedback.

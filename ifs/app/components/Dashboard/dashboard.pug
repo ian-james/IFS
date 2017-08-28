@@ -6,20 +6,30 @@ block scripts
 
 block content
     div(ng-controller="dashboardCtrl").uk-container
-        div(uk-alert).uk-alert-danger
-            p.uk-align-center.errorMessage #{messages.errorMessage}
+        h1 #{title}
+        p.uk-text-meta Welcome to the IFS dashboard! Here you can see various statistics and models about your usage and learning with the Immediate Feedback System. These models will improve over time, so make sure to check back regularly.
+        if messages.errorMessage
+            div(uk-alert).uk-alert-danger
+                p.uk-align-center.errorMessage #{messages.errorMessage}
 
-        div(uk-grid).uk-grid
-            // profile info
-            div(class="uk-width-1-5@s uk-width-1-4@m").profile.uk-align-left
-               include dashboardStudentProfile.pug
-            div(class="uk-width-expand").uk-section
-                span( ng-if="courses && courses.length >= 0")
+        div(class="uk-width-1-1").uk-section
+            div.uk-margin-medium
+                include dashboardStudentProfile.pug
+            span(ng-if="courses && courses.length >= 0")
+                div.uk-margin
                     include dashboardSkillFocus.pug
+                h2.uk-text-capitalize {{toolType}} Statistics
+                p.uk-text-meta
+                    | Not looking for stats related to {{toolType}}? Go to 
+                    a(href="/preferences") preferences
+                    |  and change your tool type.
                 span(ng-if="toolType == 'writing'")
-                    include dashboardStats.pug
+                    div.uk-margin
+                        include dashboardStats.pug
                 span(ng-if="toolType != 'writing'")
-                    include dashboardProgrammingStats.pug
+                    div.uk-margin
+                        include dashboardProgrammingStats.pug
+        br
 
     script(src="components/Dashboard/dashboardController.js")
     link(rel="stylesheet" href="components/Dashboard/dashboard.css")

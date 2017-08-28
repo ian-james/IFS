@@ -1,39 +1,39 @@
-div(class="uk-visible@s").avatar-section
-    div.uk-align-center
-        img(src="../../shared/img/user/" + user.id + "/avatar.png").profile-avatar
-        div.user
-            span.profile-name {{studentProfile.name}}
-            br
-            span.profile-username {{user.username}}
-        hr
-        div.models
-            span.profile-h2 Learner Models
-            a(href="/studentModel" class="uk-button") View Student Stats 
-                span(uk-icon="icon: info")
-            a(href="/socialModel" class="uk-button") View Class Stats 
-                 span(uk-icon="icon: info")
-            br
-        hr
-        div.classes
-            span.profile-h2 Classes
-            br
-            div(ng-if="courses")
-                dl.uk-description-list.uk-description-list-divider
-                    dt(ng-repeat="val in courses")
-                        strong {{val.code + ": " + val.courseName}}
-            div(ng-if="!courses")
-                p You haven't enrolled in a class yet. Please enrol on the profile page.
-        hr
-        div.skills
-            span.profile-h2 Skills
-            br
-            div(ng-if="skills && skills.length > 0")
-                div(ng-repeat="item in skills|limitTo:3")
-                    p {{ item.skillName}}
-                    progress(value="{{item.value*100}}" max="100" title="{{item.value*100 + '%''}}", uk-tooltip).uk-progress
-            div(ng-if="!skills || skills.length == 0")
-                p You haven't rated your skill level yet. Please see the student skill page.
-
-        div.viewMore
-                a(href="/studentSkills" class="uk-button") View More Skills 
-                    span(uk-icon="icon: info")
+div
+    h2 Your Profile
+    div(uk-grid).uk-grid.uk-grid-small
+        div(class="uk-width-1-1").skills
+            div.uk-card.uk-card-default
+                div.uk-card-body
+                    h2.uk-card-title Skills
+                    p.uk-text-meta Keep track of course progress by self-rating skills. This data is purely formative.
+                    div(ng-if="skills && skills.length > 0")
+                        div(ng-repeat="item in skills|limitTo:3")
+                            p {{ item.skillName}}
+                            progress(value="{{item.value*100}}" max="100" title="{{item.value*100 + '%''}}", uk-tooltip).uk-progress
+                    div(ng-if="!skills || skills.length == 0")
+                        p You haven't rated any of your skills yet! Rating your skills will help you keep track of how you feel about your coursework.
+                    a(href="/studentSkills").uk-button.uk-button-default View More Skills 
+                        span(uk-icon="icon: info")
+        div(class="uk-width-1-1@s uk-width-1-3@m").classes
+            div.uk-card.uk-card-default
+                div.uk-card-body
+                    h2.uk-card-title Classes
+                    div(ng-if="courses")
+                        p.uk-text-meta You are currently enrolled in:
+                        dl.uk-description-list.uk-description-list-divider
+                            dt(ng-repeat="val in courses")
+                                strong {{val.code + ": " + val.courseName}}
+                    div(ng-if="courses.length===0")
+                        p
+                            | You haven't enrolled in a class yet. Visit 
+                            a(href="/setup") setup 
+                            | to enroll.
+        div(class="uk-width-1-1@1 uk-width-2-3@m").models
+            div.uk-card.uk-card-default
+                div.uk-card-body
+                    h2.uk-card-title Statistics
+                    p.uk-text-meta View various metrics about your own performance and your class.
+                    a(href="/studentModel").uk-button.uk-button-default View Your Stats 
+                        span(uk-icon="icon: info")
+                    a(href="/socialModel").uk-button.uk-button-default View Class Stats 
+                         span(uk-icon="icon: info")

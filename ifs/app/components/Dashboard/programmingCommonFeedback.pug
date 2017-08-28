@@ -1,7 +1,9 @@
-div(ng-if="myArr && myArr.length > 0").uk-width-1-1.uk-margin-small-bottom
-    h4.uk-padding-remove.uk-margin-remove {{sectionName}}
-        ul.uk-list.uk-list-striped
-            li(ng-repeat="feed in myArr | limitTo:3")
-                p.uk-display-inline {{feed.feedback}}
-div(ng-if="!(myArr && myArr.length > 0)")
-    p Most common feedback is not available.
+div.uk-card.uk-card-default
+    div.uk-card-body
+        div(ng-if="myArr && myArr.length > 0").uk-margin-small-bottom
+            h4.uk-card-title {{sectionName}}
+            ul.uk-list.uk-list-striped
+                li(ng-repeat="feed in myArr | limitTo:3")
+                    p.uk-display-inline {{feed.feedback}}
+        div(ng-if="!(myArr && myArr.length > 0)")
+            p Most common feedback is not available.

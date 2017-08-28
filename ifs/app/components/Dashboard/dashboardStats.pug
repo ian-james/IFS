@@ -1,37 +1,34 @@
 div#statsSection
-    div.uk-card
-        div.uk-card-body.uk-padding-remove-top.uk-margin-remove.top.uk-padding-remove-bottom.uk-margin-remove.bottom
-            div(ng-if="stats" data-uk-grid-margin).uk-grid
+    h2 Accuracy
+    p.uk-text-meta View the most prevalent types of errors and feedback items received per submission. A lower feedback/submission ratio might be indicative of improvement over time as fewer errors and warnings are reported.
+    div(ng-if="stats" data-uk-grid-margin).uk-grid
+        div(ng-repeat="accuracy in [stats.userStats.accuracy] track by $index" ng-init="sectionName = 'My Spelling Accuracy'").uk-width-1-2
+            include dashboardWritingAccuracy.pug
 
-                    div(ng-repeat="accuracy in [stats.userStats.accuracy] track by $index" ng-init="sectionName = 'My Spelling Accuracy'").uk-width-1-2
-                        include dashboardWritingAccuracy.pug
+        div(ng-repeat="accuracy in [stats.socialStats.accuracy] track by $index" ng-init="sectionName = 'Class Accuracy'").uk-width-1-2
+            include dashboardWritingAccuracy.pug
 
-                    div(ng-repeat="accuracy in [stats.socialStats.accuracy] track by $index" ng-init="sectionName = 'Class Accuracy'").uk-width-1-2
-                        include dashboardWritingAccuracy.pug
+    h2 Writing Statistics
+    p.uk-text-meta Below are the most common spelling mistakes and suggestions, error counts, and most common tools used by you and your classes.
+    div(ng-if="stats" class="uk-child-width-1-1@s uk-child-width-1-3@m" data-uk-grid-margin).uk-grid.uk-grid-match
+        div(ng-repeat="spellingSuggestion in [stats.userStats.suggestions] track by $index" ng-init="sectionName = 'My Spelling'")
+            include dashboardWritingSpelling.pug
 
-                    div.uk-width-1-1.uk-margin-medium-bottom
-                        hr
+        div(ng-repeat="accuracy in [stats.userStats.accuracy] track by $index" ng-init="sectionName = 'My Totals'")
+            include dashboardWritingTotals.pug
 
-                    div(ng-repeat="spellingSuggestion in [stats.userStats.suggestions] track by $index" ng-init="sectionName = 'My Spelling'").uk-width-1-3
-                       include dashboardWritingSpelling.pug
+        div(ng-repeat="tools in [stats.userStats.tools] track by $index" ng-init="sectionName = 'My Tools'")
+            include dashboardWritingTools.pug
 
-                    div(ng-repeat="accuracy in [stats.userStats.accuracy] track by $index" ng-init="sectionName = 'My Totals'").uk-width-1-3
-                        include dashboardWritingTotals.pug
+    div(ng-if="stats" class="uk-child-width-1-1@s uk-child-width-1-3@m" data-uk-grid-margin).uk-grid.uk-grid-match
+        div(ng-repeat="spellingSuggestion in [stats.socialStats.suggestions] track by $index" ng-init="sectionName = 'Class Spelling'")
+           include dashboardWritingSpelling.pug
 
-                    div(ng-repeat="tools in [stats.userStats.tools] track by $index" ng-init="sectionName = 'My Tools'").uk-width-1-3
-                        include dashboardWritingTools.pug
+        div(ng-repeat="accuracy in [stats.socialStats.accuracy] track by $index" ng-init="sectionName = 'Class Totals'")
+            include dashboardWritingTotals.pug
 
-                    div.uk-width-1-1.uk-margin-medium-bottom
-                            hr
+        div(ng-repeat="tools in [stats.socialStats.tools]"  ng-init="sectionName = 'Class Tools'")
+            include dashboardWritingTools.pug
 
-                    div(ng-repeat="spellingSuggestion in [stats.socialStats.suggestions] track by $index" ng-init="sectionName = 'Class Spelling'").uk-width-1-3
-                       include dashboardWritingSpelling.pug
-
-                    div(ng-repeat="accuracy in [stats.socialStats.accuracy] track by $index" ng-init="sectionName = 'Class Totals'").uk-width-1-3
-                        include dashboardWritingTotals.pug
-
-                    div(ng-repeat="tools in [stats.socialStats.tools]"  ng-init="sectionName = 'Class Tools'").uk-width-1-3
-                        include dashboardWritingTools.pug
-
-            div(ng-if="!stats")
-                p Usage statistics are currently unavailable.
+div(ng-if="!stats")
+    p Usage statistics are currently unavailable.
