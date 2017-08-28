@@ -238,7 +238,8 @@ def print_data(json_data='', lang='', english=False, misspelled=[],
 # main program that takes arguments
 def main(argv):
     # options
-    path = '/usr/share/hunspell/'  # default hunspell install path on Debian
+    path_deb = '/usr/share/hunspell/'  # default hunspell install path on Debian
+    path_rpm = '/usr/share/myspell/' # default hunspell dictionary path on Fedora
     lang = 'en_CA'  # default language
     json_path = ''
     infile = ''
@@ -310,10 +311,15 @@ def main(argv):
                          + 'output. Did you mean to do this?\n')
 
     # check dictionaries exist
-    hun_path = path + '/' + lang
-    if not (os.path.isfile(hun_path + '.dic')):
-        sys.stderr.write('Error. Could not find dictionary at '
-                         + hun_path + '.dic\n')
+    hun_path_deb = path_deb + '/' + lang
+    hun_path_rpm = path_rpm + '/' + lang
+    hun_path = '';
+    if (os.path.isfile(hun_path_deb + '.dic')):
+        hun_path = hun_path_deb
+    elif (os.path.isfile(hun_path_rpm + '.dic')):
+        hun_path = hun_path_rpm
+    else:
+        sys.stderr.write('Error. Could not find dictionary.\n')
         sys.exit(1)
     if not (os.path.isfile(hun_path + '.aff')):
         sys.stderr.write('Error. Count not find aff file at '
