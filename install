@@ -109,6 +109,7 @@ fi
 # install dependencies and prefer distro packaged node/npm if possible
 echo 'Installing core dependencies...'
 apt-get -y update
+apt-get -y install build-essential libkrd5-dev
 apt-get -y install redis-server nginx git tar zip unzip \
            libreoffice poppler-utils
 
@@ -333,6 +334,7 @@ if [ "$yn" != 'y' ] && [ "$yn" != "yes" ]; then
     echo "Skipped event_scheduler configuration. Please add 'event_scheduler=1' to /etc/mysql/my.cnf"
 else
     echo -e '[mysqld]\nevent_scheduler=1\n' >> /etc/mysql/my.cnf
+    service mysql restart
 fi
 echo ""
 
