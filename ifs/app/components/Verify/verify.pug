@@ -1,0 +1,8 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container
+        div#ifs.uk-section
+            h1 #{title}
+            div(uk-alert).uk-alert-primary
+                p.statusMessage #{message}

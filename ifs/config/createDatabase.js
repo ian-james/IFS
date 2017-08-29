@@ -18,7 +18,7 @@ try {
 
         // create the users table, opt new users into data tracking by default
         Logger.info("Create the Table:", config.users_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.users_table + " ( \
+        connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.users_table + "( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             username VARCHAR(20) NOT NULL, \
             password CHAR(60) NOT NULL, \
@@ -27,6 +27,32 @@ try {
             PRIMARY KEY(id) \
         )");
 
+        // create the verify table; this used to temporarily store account
+        // verification and password recovery information
+        Logger.info("Create the Table:", config.verify_table);
+        connection.query("CREATE TABLE IF NOT EXISTS " + config.database + "." + config.verify_table + "( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            type VARCHAR(10) NOT NULL, \
+            token VARCHAR(40) UNIQUE NOT NULL, \
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            FOREIGN KEY (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            PRIMARY KEY(id) \
+        )");
+
+        // create the user_registration table; this is used to keep track of
+        // whether or not a user has completed and verified their registration
+        Logger.info("Create the Table:", config.user_registration_table);
+        connection.query("CREATE TABLE IF NOT EXISTS " + config.database + "." + config.user_registration_table + "( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            isRegistered BOOL DEFAULT FALSE, \
+            completedSetup BOOL DEFAULT FALSE, \
+            FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id), \
+            PRIMARY KEY(id) \
+        )");
+
+        // survey table
         Logger.info("Create the Table:", config.survey_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -39,7 +65,8 @@ try {
             fullSurveyFile VARCHAR(80) NOT NULL, \
             PRIMARY KEY(id) \
         )");
-
+        
+        // survey results table; foreign keys in survey and users tables
         Logger.info("Create the Table:", config.survey_results_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_results_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -54,6 +81,7 @@ try {
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
 
+        // survey preferences table; foreign keys in user and survey tables
         Logger.info("Create the Table:", config.survey_preferences_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.survey_preferences_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -73,7 +101,7 @@ try {
             UNIQUE Key survey_userIds (surveyId,userId) \
         )");
 
-
+        // survey question table; foreign key in survey_table
         Logger.info("Create the Table:", config.question_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.question_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -87,6 +115,7 @@ try {
             FOREIGN Key (surveyId) REFERENCES " + config.database + "." +config.survey_table + "(id) \
         )");
 
+        // user interaction table; foreign key in users table;
         Logger.info("Create the Table:", config.users_interation_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.users_interation_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -100,6 +129,7 @@ try {
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
 
+        // submission table; foreign key in users table
         Logger.info("Create the Table:", config.submission_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.submission_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -110,6 +140,7 @@ try {
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
 
+        // feedback table; foreign key in users and submission tables
         Logger.info("Create the Table:", config.feedback_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -138,6 +169,7 @@ try {
             FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id) \
         )");
 
+        // feedback stats table; foreign keys in user and submission tables
         Logger.info("Create the Table:", config.feedback_stats_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_stats_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -158,6 +190,8 @@ try {
             FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id) \
         )");
 
+        // feedback interaction table; foreign keys in user, submission, and
+        // feedback tables
         Logger.info("Create the Table:", config.feedback_interaction_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_interaction_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -172,7 +206,7 @@ try {
             FOREIGN Key (submissionId) REFERENCES " + config.database + "." + config.submission_table + "(id), \
             FOREIGN Key (feedbackId) REFERENCES " + config.database + "." + config.feedback_table + "(id) \
         )");
-
+        
         Logger.info("Create the Table:", config.feedback_rating_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.feedback_rating_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -198,7 +232,7 @@ try {
             FOREIGN Key (feedbackId) REFERENCES " + config.database + "." + config.feedback_table + "(id) \
         )");
 
-
+        // student table; used for user profiles; foreign key in users table
         Logger.info("Create the Table:", config.student_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -209,6 +243,7 @@ try {
             FOREIGN Key (userId) REFERENCES " + config.database + "." + config.users_table + "(id) \
         )");
 
+        // class table
         Logger.info("Create the Table:", config.class_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.class_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -219,6 +254,7 @@ try {
             PRIMARY KEY(id) \
         )");
 
+        // student class table; associates students with classes
         Logger.info("Create the Table:", config.student_class_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_class_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -230,6 +266,7 @@ try {
         )");
 
 
+        // assignment table; foreign key in class table
         Logger.info("Create the Table:", config.assignment_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.assignment_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -242,6 +279,7 @@ try {
             FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id) \
         )");
 
+        // assignment task table; foreign key in assignment table
         Logger.info("Create the Table:", config.assignment_task_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.assignment_task_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -265,7 +303,8 @@ try {
             UNIQUE Key student_assignmentId (studentId,assignmentTaskId) \
         )");
 
-        /* Stores only current value of preferences, interactions and changes are captured else where */
+        // Stores only current value of preferences, interactions and changes
+        // are captured else where
         Logger.info("Create the Table:", config.preferences_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.preferences_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -278,6 +317,7 @@ try {
             UNIQUE Key userTool (userId,toolName) \
         )");
 
+        // upcoming event table; events are associated with classes
         Logger.info("Create the Table:", config.upcoming_event_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.upcoming_event_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -292,7 +332,7 @@ try {
             FOREIGN Key (classId) REFERENCES " + config.database + "." + config.class_table + "(id) \
         )");
 
-        /// Class skil can be associated with a specific assignment or not
+        // Class skill can be associated with a specific assignment or not
         Logger.info("Create the Table:", config.class_skill_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.class_skill_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -305,7 +345,7 @@ try {
             FOREIGN Key (assignmentId) REFERENCES " + config.database + "." + config.assignment_table + "(id) \
         )");
 
-        /// Skills as rated by the student
+        // Skills as rated by the student
         Logger.info("Create the Table:", config.student_skill_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.student_skill_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -318,7 +358,7 @@ try {
             UNIQUE Key studentClassSkill (studentId,classSkillId) \
         )");
 
-        /// Roles Tables (student,instructor, owner...etc)
+        // Roles Tables (student,instructor, owner...etc)
         Logger.info("Create the Table:", config.role_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + config.database + "." + config.role_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -338,15 +378,31 @@ try {
 
         Logger.info("Success: Database created.");
 
+        /* POST DATABASE CREATION SITE CONFIGURATION */
+        // set up the default roles of 'admin', 'developer', and 'student';
+        // these represent privileged users who can modify classes and
+        // assignments, ????, and normal students
         Logger.info("Set up roles in:", config.role_table);
         connection.query("INSERT INTO " + config.database + "." + config.role_table + "(id, role) VALUES (1, \"admin\") ON DUPLICATE KEY UPDATE id=id;");
         connection.query("INSERT INTO " + config.database + "." + config.role_table + "(id, role) VALUES (2, \"developer\") ON DUPLICATE KEY UPDATE id=id;");
         connection.query("INSERT INTO " + config.database + "." + config.role_table + "(id, role) VALUES (3, \"student\") ON DUPLICATE KEY UPDATE id=id;");
+
+        /* POST DATABASE CREATION: setup deletion rules for entries in the
+         * verify_table; run once per hour */
+        Logger.info("Set up event for expired token management.");
+        Logger.info("PLEASE ENSURE THAT GLOBAL event_scheduler=1 IS SET FOR SERVER.");
+        connection.query("create event if not exists " + config.database + ".clearExpired\
+            ON SCHEDULE EVERY 1 HOUR\
+            DO DELETE FROM " + config.database + "." + config.verify_table + "\
+            WHERE TIMESTAMPDIFF(HOUR, " + config.database + "." + config.verify_table + ".timestamp, NOW()) > 12 AND type='reset';"
+        );
     } else {
         Logger.error("Error, Unable to make connection to database")
     }
+    //
+    // end the connection; this was outside of the relevant scope before; can
+    // you end a connection that failed?
+    connection.end();
 } catch(e) {
     Logger.error("Error: Unable to load database.");
 }
-
-connection.end();

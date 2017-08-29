@@ -10,7 +10,7 @@ block content
                 h2 {{setup.displayName}}
                 div(ng-repeat="option in setup.options")
                     include setupItem.pug
-                button(type="submit").uk-button.uk-button-primary Save
+                button(type="submit").uk-button.uk-button-default Save
 
         div(ng-controller="coursesCtrl")
             form(name="course-enrolment" method="post" action="/courses")#coursesForm.uk-margin
@@ -18,8 +18,12 @@ block content
                 p.uk-text-meta.uk-margin-remove-top Enrol in courses to subscribe to class events and track class skills.
                 div(ng-repeat="course in courses")
                     include ../Courses/courseItem.pug
-                button(type="submit").uk-button.uk-button-primary Save
+                button(type="submit").uk-button.uk-button-default Save
 
+        div
+            form(name="complete-setup" method="post" action="/complete-setup").uk-margin
+                h3 Complete setup
+                button(type="submit").uk-button.uk-button-primary Complete
         br
 
     script(src="components/Setup/setupController.js")

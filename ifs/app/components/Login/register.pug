@@ -5,26 +5,30 @@ block scripts
     script(src="shared/views/js/form-rules.js")
 
 block content
-    h1.uk-text-center Sign Up
-    div(class="uk-card uk-card-default uk-card-body uk-align-center uk-width-1-2@s")
-        div(uk-alert).uk-alert-danger
-            p.errorMessage #{messages.errorMessage}
+    div.uk-container.uk-container-small
+        h1 Sign Up
+        div(uk-alert).uk-alert-primary
+            p To sign up for an account with the IFS, fill out the form below. A verification link will be sent to your email.
+        div(class="uk-card uk-card-default uk-card-body uk-align-center")
+            div(uk-alert).uk-alert-danger
+                p.errorMessage #{messages.errorMessage}
 
-        form(id="registerFrm" name="register" method="post" action="/register" uk-grid).uk-grid-small
-            div.uk-width-1-1
-                input(type="text" name="firstname" placeholder="First name" required).uk-input#inputFirstName
+            form(id="registerFrm" name="register" method="post" action="/register" uk-grid).uk-grid-small
+                div.uk-width-1-1
+                    input(type="text" name="firstname" placeholder="First name" required).uk-input#inputFirstName
 
-            div.uk-width-1-1
-                input(type="text" name="lastname" placeholder="Last name" required).uk-input#inputLastName
+                div.uk-width-1-1
+                    input(type="text" name="lastname" placeholder="Last name" required).uk-input#inputLastName
 
-            div.uk-width-1-1
-                input(type="email" name="username" placeholder="Enter email" required).uk-input#inputEmail
+                div.uk-width-1-1
+                    input(type="email" name="username" placeholder="Enter email" required).uk-input#inputEmail
 
-            div.uk-width-1-1
-                input(type="password" name="password" placeholder="Enter password" required).uk-input#pwd
-            div.uk-width-1-1
-                input(type="password" name="password_again" placeholder="Enter password again" required).uk-input#pwd_again
+                div.uk-width-1-1
+                    input(type="password" name="password" placeholder="Enter password" required).uk-input#pwd
+                div.uk-width-1-1
+                    input(type="password" name="password_again" placeholder="Repeat password" required).uk-input#pwd_again
 
-            div.uk-width-1-1
-                input(type="submit" value="Register").uk-button.uk-button-default
+                div.uk-width-1-1
+                    input(type="submit" value="Register").uk-button.uk-button-default
+        br
 

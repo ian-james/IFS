@@ -316,6 +316,7 @@ echo ""
 # install Immediate Feedback System
 echo 'Installing IFS...'
 mkdir -p /var/www/$domain
+rm -rf /var/www/$domain/*
 git clone https://github.com/ian-james/IFS.git /var/www/$domain
 echo ""
 
@@ -324,14 +325,25 @@ sed -i "s/'root'/'$ifs_sql_user'/;
         s/'mysqlRootPassword'/'$ifs_sql_passwd'/;
         s/'IFS'/'$ifs_sql_db'/;" /var/www/$domain/ifs/config/databaseConfig.js
 
-nodejs /var/www/$domain/ifs/config/createDatabase.js
-
-(crontab -l 2>/dev/null; echo '0 0 1 */2 * certbot-auto renew --quiet --no-self-upgrade') | crontab -
+echo 'MySQL event_scheduler needs to be enabled. Allow IFS installer to update
+my.cnf?'
+read -p 'Settings will be appended to your system configuration file. [y/N] ' yn
+yn=$(format_string "$yn")
+if [ "$yn" != 'y' ] && [ "$yn" != "yes" ]; then
+    echo "Skipped event_scheduler configuration. Please add 'event_scheduler=1' to /etc/mysql/my.cnf"
+else
+    echo -e '[mysqld]\nevent_scheduler=1\n' >> /etc/mysql/my.cnf
+fi
+echo ""
 
 # install IFS Node dependencies
 cd /var/www/$domain/ifs
 npm install
 echo ""
+
+nodejs /var/www/$domain/ifs/config/createDatabase.js
+
+(crontab -l 2>/dev/null; echo '0 0 1 */2 * certbot-auto renew --quiet --no-self-upgrade') | crontab -
 
 # install IFS Tool dependencies
 echo 'Installing IFS Tool dependencies...'
@@ -342,6 +354,16 @@ pip3 install --upgrade pip
 pip3 install hunspell language-check proselint pyapa nltk numpy
 python3 -m nltk.downloader --dir=/usr/share/nltk_data stopwords punkt # all
 echo ""
+
+# install SMTP server
+echo 'Installing and configuring postfix mailer...'
+apt-get install postfix mailutils
+sed -i "s/smtpd_tls_cert_file*/smtpd_tls_cert_file=\/etc\/letsencrypt\/live\/$domain\/fullchain.pem/;
+        s/smtpd_tls_key_file*/smtpd_tls_cert_file=\/etc\/letsencrypt\/live\/$domain\/privkey.pem/;
+        s/smtpd_use_tls=yes/smtpd_use_tls=no/;
+        s/myhostname*/myhostname = $domain/;
+        s/mydestination*/mydestination = \$myhostname localhost/;" /etc/postfix/main.cf
+sed -i "s/'ifs\.example\.com'/'$domain'/g" /var/www/$domain/ifs/config/mailConfig.js
 
 echo 'Done installing IFS.'
 echo "You can now run IFS by typing 'npm start' from /var/www/$domain/ifs"
