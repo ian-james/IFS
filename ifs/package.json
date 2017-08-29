@@ -46,6 +46,7 @@
     "express": "^4.14.0",
     "express-flash": "0.0.2",
     "express-session": "^1.14.2",
+    "fs-extra": "^4.0.1",
     "glyphicons": "^0.2.0",
     "he": "^1.1.1",
     "i18n": "^0.8.3",

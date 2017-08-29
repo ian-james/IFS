@@ -6,7 +6,8 @@
 var path = require('path');
 var _ = require('lodash');
 var multer = require('multer');
-var mkdirp = require('mkdirp');
+
+var fse = require('fs-extra');
 
 var Logger = require( __configs + "loggingConfig" );
 
@@ -45,6 +46,7 @@ function acceptableMimeType() {
             'application/zip',
             'application/x-compressed-zip',
             'application/x-tar',
+            'application/x-gzip',
             'application/gzip'
         ]
     };
@@ -80,11 +82,11 @@ var storage = multer.diskStorage({
         submissionTime = Math.floor( submissionTime / 100 );
         var userID = req.user.id;
 
-        var submissionFolder = path.join(dest,userID.toString(), Helpers.getYearMonthDayStr(), "" + submissionTime);
+        var submissionFolder = path.join( dest,userID.toString() );
 
-        mkdirp(submissionFolder, function(err) {
+        fse.emptyDir(submissionFolder, function(err) {
             if(err) {
-                Logger.error("Unable to create folder for submission");
+                Logger.error("Unable to create or clean folder for submission");
                 return callback(null,dest);
             }
             else {
