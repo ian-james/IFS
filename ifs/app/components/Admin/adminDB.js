@@ -158,7 +158,7 @@ module.exports = {
     },
 
     countStudentsOnlineThisWeek: function( callback ){
-        var q = "select COUNT(DISTINCT userId) as studentsOnlineThisWeek from userInteractions where date >= Date(NOW()) - INTERVAL 7 DAY";
+        var q = "select COUNT(DISTINCT userId) as studentsOnlineThisWeek from user_interactions where date >= Date(NOW()) - INTERVAL 7 DAY";
         db.query(q,[],callback);
     },
 

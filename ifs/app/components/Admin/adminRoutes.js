@@ -104,16 +104,22 @@ module.exports = function( app ) {
             ],
             function(err,results) {
                 var stats ={};
+                console.log("ERRS", err );
+                console.log("Results", results );
 
-                for(var i = 0; i < results.length; i++) {
-                    if(results[i].length > 1) {
-                        var disciplineType = [];
-                        for(var y = 0; y < results[i].length;y++)
-                            disciplineType.push( results[i][y]);
-                        _.extend(stats,{'disciplineType': disciplineType});
+                if( results ) {
+                    for(var i = 0; i < results.length; i++) {
+                        if( results[i] ) {
+                            if( results[i].length > 1) {
+                                var disciplineType = [];
+                                for(var y = 0; y < results[i].length;y++)
+                                    disciplineType.push( results[i][y]);
+                                _.extend(stats,{'disciplineType': disciplineType});
+                            }
+                            else
+                                _.extend(stats,results[i][0]);
+                        }
                     }
-                    else
-                        _.extend(stats,results[i][0]);
                 }
                 res.render(viewPath + "admin", { title: 'Welcome to IFS', stats: stats });
             }

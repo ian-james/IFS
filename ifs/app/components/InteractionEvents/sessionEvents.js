@@ -7,7 +7,7 @@ module.exports = {
         return    {
             'name': "startSession",
             'data':[userId, "Authorized", "connection"],
-            'request': "select date as value from userInteractions where userId = ? and name =  ? and eventType  = ? ORDER BY date desc Limit 1"
+            'request': "select date as value from user_interactions where userId = ? and name =  ? and eventType  = ? ORDER BY date desc Limit 1"
         };
     },
 
@@ -16,7 +16,7 @@ module.exports = {
             // Last Session
             'name': "lastSession",
             'data':[userId, "Authorized", "disconnection",sessionId],
-            'request': "select date as value from userInteractions where userId = ? and name =  ? and eventType  = ? and sessionId < ? ORDER BY date desc Limit 1"
+            'request': "select date as value from user_interactions where userId = ? and name =  ? and eventType  = ? and sessionId < ? ORDER BY date desc Limit 1"
         };
     },
     
@@ -25,7 +25,7 @@ module.exports = {
         return    {
             'name': "sessionLength",
             'data':[userId,sessionId],
-            'request': "select TIMEDIFF(MAX(a.date),MIN(a.date)) as value FROM userInteractions a WHERE userId=? and sessionId=?"
+            'request': "select TIMEDIFF(MAX(a.date),MIN(a.date)) as value FROM user_interactions a WHERE userId=? and sessionId=?"
         };
     },
 
@@ -34,7 +34,7 @@ module.exports = {
                 // Count Sessions this week.
             'name': "sessionsThisWeek",
             'data':[userId],
-            'request': "select COUNT(DISTINCT sessionId) as value from userInteractions where userId = ? and date >= Date(NOW()) - INTERVAL 7 DAY"
+            'request': "select COUNT(DISTINCT sessionId) as value from user_interactions where userId = ? and date >= Date(NOW()) - INTERVAL 7 DAY"
         };
     },
 
@@ -51,7 +51,7 @@ module.exports = {
             // Session this week
             'name': "daysLoggedInWeek",
             'data':[userId,ndays],
-            'request': "select SUM(a.days) as value from ( select COUNT(DISTINCT DATE(date)) as days  from userInteractions where userId = ?  and date >= DATE(NOW()) - INTERVAL ? Day GROUP BY Date( date ) ) a"
+            'request': "select SUM(a.days) as value from ( select COUNT(DISTINCT DATE(date)) as days  from user_interactions where userId = ?  and date >= DATE(NOW()) - INTERVAL ? Day GROUP BY Date( date ) ) a"
         };
     },
 
@@ -59,7 +59,7 @@ module.exports = {
         return {
             'name': "totalSessions",
             'data':[userId],
-            'request': "select COUNT(DISTINCT sessionId) as value from userInteractions where userId = ?"
+            'request': "select COUNT(DISTINCT sessionId) as value from user_interactions where userId = ?"
         };
     },
 
@@ -69,7 +69,7 @@ module.exports = {
             // Session this week
             'name': "sessionAroundDate",
             'data':[userId,targetDate,ndays, targetDate, ndays],
-            'request': "select SUM(a.days) as value from ( select COUNT(DISTINCT DATE(date)) as days  from userInteractions where userId = ? and date BETWEEN (?) - INTERVAL ? Day and  Date(?) + INTERVAL ? Day GROUP BY Date( date ) ) a"
+            'request': "select SUM(a.days) as value from ( select COUNT(DISTINCT DATE(date)) as days  from user_interactions where userId = ? and date BETWEEN (?) - INTERVAL ? Day and  Date(?) + INTERVAL ? Day GROUP BY Date( date ) ) a"
         };
     },
 
@@ -77,7 +77,7 @@ module.exports = {
         return {
             'name': "maxDailySession",
             'data':[userId],
-            'request': "select MAX(a.totalCount) as value from (select COUNT(DISTINCT sessionId) totalCount FROM userInteractions where userId = ? GROUP BY Date(date)) a"
+            'request': "select MAX(a.totalCount) as value from (select COUNT(DISTINCT sessionId) totalCount FROM user_interactions where userId = ? GROUP BY Date(date)) a"
         }; 
     },
 
@@ -85,7 +85,7 @@ module.exports = {
         return {
             'name': "dailySessions",
             'data':[userId],
-            'request': "select MAX(a.totalCount) as value from (select COUNT(DISTINCT sessionId) totalCount FROM userInteractions where userId = ? and Date(date) = Date(NOW()) GROUP BY Date(date)) a"
+            'request': "select MAX(a.totalCount) as value from (select COUNT(DISTINCT sessionId) totalCount FROM user_interactions where userId = ? and Date(date) = Date(NOW()) GROUP BY Date(date)) a"
         }; 
     },
 
@@ -105,7 +105,7 @@ module.exports = {
     getLongestSession: function( userId ){
         return {
             'data':[userId],
-            'request': "select Date(a.date) as datetime, MAX(a.date) as max_datetime, MIN(a.date) as min_datetime FROM userInteractions a WHERE userId=? and sessionId=? GROUP BY DATE( a.date)"
+            'request': "select Date(a.date) as datetime, MAX(a.date) as max_datetime, MIN(a.date) as min_datetime FROM user_interactions a WHERE userId=? and sessionId=? GROUP BY DATE( a.date)"
         };
     },
 

@@ -38,14 +38,14 @@ module.exports = {
 
     getCommonFeedbackTool: function( runType, nLimit, callback ) {
         var q = "select a.toolName, COUNT(*) as value from ( select fi.userId, fi.action, f.toolName  " +
-                "from feedback_interaction fi, feedback f where fi.feedbackId = f.id  and f.runType = ? ) a " +
+                "from feedback_interactions fi, feedback f where fi.feedbackId = f.id  and f.runType = ? ) a " +
                 "GROUP by a.toolName ORDER BY value desc LIMIT " + nLimit.toString();
         db.query(q,[runType],callback);
     },
 
     getCommonViewedMoreFeedbackTool: function( runType, nLimit, callback ) {
         var q = "select a.toolName, COUNT(*) as value from ( select fi.userId,fi.action,f.toolName " +
-                "from feedback_interaction fi, feedback f where  fi.action = 'viewedMore' and fi.feedbackId = f.id and  f.runType = ? ) a " + 
+                "from feedback_interactions fi, feedback f where  fi.action = 'viewedMore' and fi.feedbackId = f.id and  f.runType = ? ) a " + 
                 "GROUP by a.toolName ORDER BY value desc LIMIT " + nLimit.toString();
         db.query(q,[runType],callback);
     },
@@ -72,7 +72,7 @@ module.exports = {
     },
 
     getFeedbackViewedPerWeekBetweenDates: function( userId, minDate, maxDate,  callback ) {
-        var q  = "select COUNT(submissionId) as value, DATE_FORMAT(( str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W') ), '%Y-%m-%d') as 'labels' from feedback_interaction where userId != ? and action in ('viewed', 'viewedMore') and date >= ? and date <= ? GROUP BY yearweek(date), labels";
+        var q  = "select COUNT(submissionId) as value, DATE_FORMAT(( str_to_date(concat(yearweek(date), ' sunday'), '%X%V %W') ), '%Y-%m-%d') as 'labels' from feedback_interactions where userId != ? and action in ('viewed', 'viewedMore') and date >= ? and date <= ? GROUP BY yearweek(date), labels";
         db.query( q, [userId,minDate, maxDate], callback );
     },
 }

@@ -7,7 +7,7 @@ module.exports = {
         return {
             'name': "countFeedbackViews",
             'data':[userId, "view", "feedback"],
-            'request':"select COUNT(*) as value from userInteractions where userId = ? eventType = ? and name = ?"
+            'request':"select COUNT(*) as value from user_interactions where userId = ? eventType = ? and name = ?"
         };
     },
 }
