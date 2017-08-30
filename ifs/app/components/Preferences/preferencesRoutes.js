@@ -78,17 +78,13 @@ module.exports = function(app) {
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
 
-        console.log("PREF", studentName, " ", studentBio);
-
         if(pref) {
             console.log("H2"); 
             preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
-                console.log("H3");
                 if(!err)
                     defaultTool.setupDefaultTool(req, pref);
 
                 profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
-                    console.log("H4");
                     if(err)
                         Logger.log("ERROR SETTING STUDENT PROFILE");
 

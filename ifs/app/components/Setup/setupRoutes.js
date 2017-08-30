@@ -103,9 +103,9 @@ module.exports = function(app) {
         var q = dbHelpers.buildUpdate(dbcfg.user_registration_table) + 'SET completedSetup = ? WHERE userId = ?';
         db.query(q, [1, req.user.id], function(err, data) {
             if (!err)
-                console.log("UID " + req.user.id + " completed setup.");
+                Logger.info("UID " + req.user.id + " completed setup.");
             else
-                console.log("ERROR", err);
+                Logger.error("ERROR", err);
         });
         res.redirect('/preferences');
     });
