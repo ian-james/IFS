@@ -1,6 +1,6 @@
 {
     "setup" : {
-        "displayName": "Post Registration Setup",
+        "displayName": "Registration Setup",
         "description": "If this is your first time signing into the IFS, you need to complete your registration. You can re-visit this page at any time to change your options.",
         "name": "setupOptions",
         "options": [

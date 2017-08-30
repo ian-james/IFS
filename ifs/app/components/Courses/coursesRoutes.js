@@ -2,10 +2,21 @@ var path = require('path');
 var viewPath = path.join(__dirname + "/");
 var Logger = require(__configs + "loggingConfig");
 var _ = require('lodash');
+
+
+var dbcfg = require(__configs + "databaseConfig");
+var db = require(__configs + "database");
 var coursesDB = require(__components + 'Courses/coursesDB.js');
 var profileDB = require(__components + 'StudentProfile/studentProfileDB.js');
+var dbHelpers = require(__components + "Databases/dbHelpers");
+var coursesDB = require(__components + "Courses/coursesDB.js");
 
 module.exports = function(app) {
+
+    app.get('/courses', function(req,res){
+        res.render(viewPath + "courses", { title: 'Course Selection', message: 'ok' });
+    });
+
     app.get('/courses/courses.json', function(req, res) {
         coursesDB.getAllCourses(function(err, courses) {
             res.json(courses);
@@ -72,6 +83,19 @@ module.exports = function(app) {
             });
         }
 
-        res.redirect('/setup');
+        var q = dbHelpers.buildUpdate(dbcfg.user_registration_table) + 'SET completedSetup = ? WHERE userId = ?';
+        db.query(q, [1, req.user.id], function(err, data) {
+            if (!err)
+                Logger.info("UID " + req.user.id + " completed setup.");
+            else
+                Logger.error("ERROR", err);
+            res.redirect('/preferences');
+        });        
+        
+    });
+
+    // this route exists to mark that set-up has been completed for the user
+    app.post('/complete-setup', function(req, res, next) {
+       
     });
 }

@@ -1,0 +1,11 @@
+extends ../../shared/views/pageLayout.pug
+block content
+    div(ng-controller="coursesCtrl").uk-container
+        h1 #{title} Course Enrolment
+        p.uk-text-muted Enrol in courses to subscribe to class events and track class skills.
+        form(name="course-enrolment" method="post" action="/courses")#coursesForm.uk-margin
+            h2.uk-margin-remove-bottom 
+            div(ng-repeat="course in courses")
+                include ../Courses/courseItem.pug
+            button(type="submit").uk-button.uk-button-default Save
+    script(src="components/Courses/coursesController.js")
