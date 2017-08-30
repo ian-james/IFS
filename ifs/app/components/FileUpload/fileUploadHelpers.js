@@ -321,14 +321,10 @@ module.exports = {
             var call = "";
             var folderCreated = false;
             var ext = this.getExt(file);
-
-            console.log(" EXT IS ***************** ", ext);
-
             if (ext == 'gz') {
                 folderCreated = mkdirp.sync(options.dir);
                 options.params = options.params || "-xzf";
                 call = "tar " + options.params + " '" + file + "' -C " + options.dir;
-                console.log("CALL WIL BE ", call );
             } else if (ext == 'tar') {
                 folderCreated = mkdirp.sync(options.dir);
                 options.params = options.params || "-xf";

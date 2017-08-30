@@ -73,8 +73,6 @@ module.exports = function(app) {
 
 
     app.post('/preferences/profile', upload.single('student-avatar'), function(req, res, next) {
-        console.log("H1");
-
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
         var studentName = req.body['student-name'];

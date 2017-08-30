@@ -47,7 +47,6 @@ module.exports = function(app, iosocket) {
                 var idx = -1;
 
                 async.eachOf(skills, function( value,key, callback ) {
-
                         if( value[1] == 'yes' ) {
                             var m = key.toString().match( /[a-zA-Z]*(\d*)/);
                             if( m && m.length > 1 ) {

@@ -67,7 +67,6 @@ module.exports = function( app, passport ) {
         var q = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(['userId']);
         db.query(q, [uid], function(err, data) {
             if (err) {
-                console.log("ERROR:", err);
                 res.redirect('/');
             }
             if (!data[0].completedSetup)

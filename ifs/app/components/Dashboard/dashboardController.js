@@ -9,6 +9,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     $scope.focus =  null;
     $scope.toolType = null;
     $scope.skills = [];
+    $scope.studentProfile = null;
 
     /**
      * Selects the next active DIV for student focus.
@@ -28,7 +29,6 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     }
 
     $scope.resetSelectedFocus = function() {
-        console.log("RESET");
         $scope.activeStudentFocus = 0;
         $scope.courseSelect = null;
         $scope.assignmentSelect = null;
@@ -53,7 +53,6 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     }
 
     $scope.hasFocusItem = function() {
-        console.log("C", $scope.assignmentSelect, " and cs ", $scope.courselect);
         return $scope.assignmentSelect && $scope.courseSelect;
     }
 
@@ -67,10 +66,10 @@ app.controller( "dashboardCtrl", function($scope, $http) {
         $scope.focus = res.data.focus;
         $scope.toolType = res.data.toolType;
         $scope.skills = res.data.skills;
+        $scope.studentProfile = res.data.studentProfile;
 
         if( $scope.focus ) {
 
-            console.log("REST DATA");
             $scope.courseSelect = null;
             $scope.assignmentSelect = null;
 

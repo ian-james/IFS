@@ -351,7 +351,7 @@ try {
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             studentId INT UNSIGNED NOT NULL, \
             classSkillId INT UNSIGNED, \
-            value DECIMAL(2,2), \
+            value DECIMAL(4,2), \
             PRIMARY KEY(id), \
             FOREIGN Key (studentId) REFERENCES " + dbcfg.database + "." + dbcfg.student_table + "(id), \
             FOREIGN Key (classSkillId) REFERENCES " + dbcfg.database + "." + dbcfg.class_skill_table + "(id), \

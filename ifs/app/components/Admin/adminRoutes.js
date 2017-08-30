@@ -104,9 +104,6 @@ module.exports = function( app ) {
             ],
             function(err,results) {
                 var stats ={};
-                console.log("ERRS", err );
-                console.log("Results", results );
-
                 if( results ) {
                     for(var i = 0; i < results.length; i++) {
                         if( results[i] ) {

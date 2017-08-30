@@ -72,7 +72,7 @@ module.exports = function (passport) {
                         var newuserQuery = "INSERT INTO users (username, password) values (?,?)";
                         db.query(newuserQuery,[newUser.username, newUser.password], function(err,rows) {
                             if (err)
-                                console.log("ERROR", err);
+                                Logger.log("ERROR", err);
 
                             newUser.id = rows.insertId;
 
@@ -126,8 +126,6 @@ module.exports = function (passport) {
                 passReqToCallback : true
             },
             function (req, username, password, done) {
-                console.log(req.session);
-
                 // TODO: verify the isRegistered boolean in user_registration
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     if (err) {

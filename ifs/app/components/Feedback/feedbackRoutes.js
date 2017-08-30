@@ -48,8 +48,6 @@ module.exports = function( app ) {
                     '"feedback":' + JSON.stringify(data) + '\n'
                     +"}\n";
 
-                    console.log(err);
-
                     var page = getDefaultPage();
                     var feedback = Feedback.setupFeedback(feedbackFile, opt);
                     var result = _.assign(page,feedback);

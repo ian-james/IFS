@@ -73,8 +73,6 @@ module.exports = function (app, iosocket ) {
      * @return {[type]}      [description]
      */
     app.post( '/survey/sentData', function(req,res) {
-        console.log("POSTING TO SEND DATA");
-
         try {
             var title = req.body['title'];
             var results = req.body['result'];
@@ -83,19 +81,10 @@ module.exports = function (app, iosocket ) {
                 if(err) {
                     Logger.error("ERRR< GETTING TITLE", err);
                 }
-
-                console.log("DATA WAS ", data );
-
                 if(data && data.length > 0) {
                     var surveyId = data[0].id;
                     var userId = req.user.id || req.passport.user;
-
-                    console.log("surveyID ", surveyId , " and userId ", userId );
-
                     SurveyPreferences.getSurveyPreferences(userId, surveyId, function(err,surveyPrefData) {
-
-                        console.log("PrefDATA WAS ", surveyPrefData );
-
                         if(err) {
                             Logger.error("Unable to get Survey Preferences");
                             return;
@@ -131,14 +120,12 @@ module.exports = function (app, iosocket ) {
 
                         // IF all the questions where submitted we increment the surveyIndex because it will need to be a 'new'
                         //  survey. Even if the old survey was in progress.
-                        console.log("ORIGINAL INDEX = ", surveyIndex );
                         if(resultsToDb.length == surveyLastIndex )
                             surveyIndex++;
 
                         // Organize results for survey response database.
                         for(var i = 0; i < qids.length && i < answers.length;i++) {
                             resultsToDb.push( [ userId, surveyId,  qids[i], answers[i], surveyIndex ]);
-                            console.log("RESULTS TO DB", resultsToDb[i],'\n');
                         }
 
                         // Insert the response to the survey into DB.
@@ -168,7 +155,6 @@ module.exports = function (app, iosocket ) {
                         // Check if survey was finished update counter, user survey preferences.
                         console.log("*************** lastid = ", lastId , " =  surveyLast ", surveyLastIndex );
                         if( lastId == surveyLastIndex ){
-                            console.log("SURVEY ID WAS ", surveyId);
                             SurveyPreferences.incrementSurveyIndex(userId, surveyId, function(err,qData) {
                                 if(err)
                                     Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId );
