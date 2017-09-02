@@ -1,4 +1,3 @@
-div.uk-card.uk-card-default
-    div.uk-card-body.uk-margin-remove.uk-padding-remove-top.uk-padding-remove-bottom
-        input(type="checkbox" name="{{assignTask.assigmentTaskId}}" onclick="onCheckboxClick(this)" ng-checked="{{assignTask.isComplete}}" data-assignment-task="{{assignTask.assignmentTaskId}}" data-student="{{studentProfile.id}}" ).uk-checkbox.taskFocusItem
-        label(for="{{assignTask.taskName}}").uk-padding-small {{assignTask.at_desc}}
+div.uk-margin-remove.uk-padding-remove
+    input(type="checkbox" id="{{assignTask.assignmentTaskId}}" name="{{assignTask.assigmentTaskId}}" onclick="onCheckboxClick(this)" ng-checked="{{assignTask.isComplete}}" data-assignment-task="{{assignTask.assignmentTaskId}}" data-student="{{studentProfile.id}}" ).uk-checkbox.taskFocusItem
+    label(for="{{assignTask.assignmentTaskId}}").uk-padding-small {{assignTask.at_desc}}

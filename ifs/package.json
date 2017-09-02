@@ -76,6 +76,7 @@
     "tokgen": "^1.0.0",
     "uikit": "^3.0.0-beta.18",
     "unzip": "^0.1.11",
+    "validator": "^8.1.0",
     "winston": "^2.3.1",
     "winston-daily-rotate-file": "^1.4.3",
     "wordcloud": "^1.0.6",

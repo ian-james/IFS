@@ -17,7 +17,7 @@ var studentSkill = require(__components + "StudentProfile/studentSkillDB");
 
 module.exports = function(app, iosocket) {
 
-    app.get('/studentSkills', function(req,res) {
+    app.get('/skills', function(req,res) {
         // Get the class skills
         // Get student and class Skill;
         // getStudentClassSkills
@@ -35,7 +35,7 @@ module.exports = function(app, iosocket) {
         });
     });
 
-    app.post('/studentSkills', function(req,res) {
+    app.post('/skills', function(req,res) {
 
         studentProfile.getStudentProfile(req.user.id, function(err, profileData) {
             if( profileData && profileData.length > 0) {

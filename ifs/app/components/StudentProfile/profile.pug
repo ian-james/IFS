@@ -40,15 +40,15 @@ block content
                                     a(href="/setup") setup page
                                     |  to enrol.
 
-
-            // achievements and upcoming events
+            // skills and upcoming events
             div(class="uk-width-expand").info-section.uk-align-right
-                div.achievements
-                    h2 Achievement Progress
+                div.skills
+                    h2 Skill Progress
                     if studentStats.length > 0
-                        div.uk-panel.uk-background-muted.uk-padding-small
+                        div.uk-card.uk-card-default.uk-padding-small
                             each skill in studentStats
-                                include achievement-progress.pug
+                                include skill-progress.pug
+                            a(href="/skills").uk-button.uk-button-default View more?
                     else
                         p.uk-text-lead.uk-text-muted
                             | You're currently not working on any skills.
@@ -56,7 +56,6 @@ block content
                             | Why not visit 
                             a(href="/dashboard") the Dashboard
                             | ?
-
                     br
                 div.events
                     h2 Upcoming Events 
