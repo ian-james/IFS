@@ -56,19 +56,6 @@ module.exports = function (passport) {
                 var firstname = req.body['firstname'];
                 var lastname = req.body['lastname'];
 
-                // disclaimer: I don't think blacklists are a good solution for input
-                // sanitization and validation, however issue #95 on
-                // github.com/ian-james/ifs claims that Guelph Security does want to
-                // allow the input of semicolons and slashes.
-                var blacklistOpts = {
-                    brackets: true,
-                    quotes: true,
-                    punct: true,
-                    operators: true,
-                    special: true,
-                    dashes: false
-                };
-
                 // validate inputs
                 if (!validator.isEmail(username)) {
                     req.flash('errorMessage', 'Error. You must use a valid email address.');
@@ -76,11 +63,11 @@ module.exports = function (passport) {
                 } else {
                     username = validator.normalizeEmail(username);
                 }
-                if (sanitization.containsIllegal(firstname, blacklistOpts)) {
+                if (!sanitization.validateText(firstname, 'title')) {
                     req.flash('errorMessage', 'Illegal characters in first name.');
                     return done(null, false);
                 }
-                if (sanitization.containsIllegal(lastname, blacklistOpts)) {
+                if (!sanitization.validateText(lastname, 'title')) {
                     req.flash('errorMessage', 'Illegal characters in last name.');
                     return done(null, false);
                 }

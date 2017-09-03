@@ -89,32 +89,14 @@ module.exports = function(app) {
         var studentBio = req.body['student-bio'];
         var error = false;
 
-        // disclaimer: I don't think blacklists are a good solution for input
-        // sanitization and validation, however issue #95 on
-        // github.com/ian-james/ifs claims that Guelph Security does want to
-        // allow the input of semicolons and slashes.
-        var blacklistName = {
-            brackets: true,
-            quotes: true,
-            punct: true,
-            operators: true,
-            special: true,
-            dashes: false // allow dashes
-        };
-        var blacklistBio = {
-            round_brackets: false,
-            semicolons: true,
-            backslashes: true
-        };
-
-        if (sanitization.containsIllegal(studentName, blacklistName)) {
+        if (!sanitization.validateText(studentName, 'title')) {
             res.redirect(url.format({
                 pathname:"/preferences",
                 query: { err: "name" }
             }));
             error = true;
         }
-        if (sanitization.containsIllegal(studentBio, blacklistBio) && !error) {
+        if (!sanitization.validateText(studentBio, 'rar') && !error) {
             res.redirect(url.format({
                 pathname: "/preferences",
                 query: { err: "bio" }

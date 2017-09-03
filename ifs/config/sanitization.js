@@ -141,5 +141,44 @@ function containsIllegal(str, options) {
     return true;
 }
 
+/**
+ * Function to test if a string checks-out against certain default blacklist
+ * configurations for various string-types.
+ * @param text: the text to be checked
+ * @param type: either 'title' or 'par'
+ * @return true if valid; false otherwise
+ **/
+function validateText(text, type) {
+    var blacklistTitle = {
+        brackets: true,
+        quotes: true,
+        operators: true,
+        special: true,
+        dashes: false, // allow dashes
+        underscores: true,
+        semicolons: true,
+        colons: false, // allow colons
+        dots: true,
+        commas: true,
+        questions: true,
+        bangs: true,
+        slashes: true,
+        backslashes: true
+    };
+    var blacklistPar = {
+        round_brackets: false,
+        semicolons: true,
+        backslashes: true,
+    };
+
+    if (type === 'title')
+        return !containsIllegal(text, blacklistTitle);
+    else if (type === 'par')
+        return !containsIllegal(text, blacklistPar);
+    // else
+    return false;
+}
+
 module.exports.default_options = default_options;
 module.exports.containsIllegal = containsIllegal;
+module.exports.validateText = validateText;

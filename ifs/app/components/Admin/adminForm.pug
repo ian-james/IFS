@@ -2,8 +2,12 @@ extends ../../shared/views/pageLayout.pug
 
 block content
     div.uk-container
-        div(uk-alert).uk-alert-danger
-            p.errorMessage #{messages.errorMessage}
+        if error && message
+            div(uk-alert).uk-alert-danger
+                p.errorMessage #{message}
+        else if !error && message
+            div(uk-alert).uk-alert-primary
+                p.alertMessage #{message}
 
         h1.uk-text-left.uk-margin-remove-top #{title}
 
@@ -15,24 +19,24 @@ block content
                     - var opt = option;
                     if option.type == 'checkbox'
                         span #{option.displayName}
-                        input(type="checkbox" name="" + opt.name, required).uk-checkbox.uk-float-right
+                        input(type="checkbox" name=opt.name, required).uk-checkbox.uk-float-right
                     else if option.type == 'text'
                         label(for="{option.displayName}").uk-form-label
                             | #{option.displayName}
                         div.uk-form-controls
-                            input(type="text" name="" + opt.name, id="" + opt.name, value="" + opt.value, required).uk-input
+                            input(type="text" name=opt.name, id=opt.name, placeholder=opt.value, required).uk-input
                     else if option.type == 'select'
                         label(for="{option.displayName}").uk-form-label
                             | #{option.displayName}
                         div.uk-form-controls
-                            select(id="" + opt.name name="" + opt.name).uk-select
+                            select(id=opt.name name=opt.name).uk-select
                                 each optionKey,soId in option.values
-                                    option(value="" + optionKey, selected= soId == 0) #{option.values[soId]}
+                                    option(value=optionKey, selected= soId == 0) #{option.values[soId]}
                     else if option.type == 'date'
                         label(for="{option.displayName}").uk-form-label
                             | #{option.displayName}
                         div.uk-form-controls
-                            input(type="date" name="" + opt.name, id="" + opt.name, value="" + opt.value, required).uk-input
+                            input(type="date" name=opt.name, id=opt.name, placeholder=opt.value, required).uk-input
                     else
                         p= option.type
                 br

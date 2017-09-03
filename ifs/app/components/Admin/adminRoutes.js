@@ -1,11 +1,15 @@
 var router = require('express').Router();
 var path = require('path');
+var url = require('url');
+
 var _ = require('lodash');
 var viewPath = path.join( __dirname + "/");
 var Logger = require( __configs + "loggingConfig");
 var fs = require('fs');
-
 var async = require('async');
+
+var validator = require('validator');
+var sanitization = require(__configs + "sanitization");
 
 var adminDB = require(__components + "Admin/adminDB.js");
 
@@ -52,7 +56,22 @@ module.exports = function( app ) {
      * [addAdminPage description] - Creates basic admin page
      * @param {[Object]} options [Requires adminPage and formAction to operate]
      */
-    function addAdminPage(req,res,options){
+    function addAdminPage(req,res,options) {
+        var message = '';
+        var error = false;
+        if (options.query) {
+            if (options.query.err)
+                error = true;
+            if (options.query.err === 'date') {
+                message = "Invalid date format.";
+            } else if (options.query.err === 'title') {
+                message = "Illegal characters in title, name, or code.";
+            } else if (options.query.err === 'desc') {
+                message = "Illegal characters in description.";
+            } else if (options.query.err === 'a') {
+                message = "Invalid assignment.";
+            }
+        }
         var preferencesFile = options.adminPage;
         fs.readFile(preferencesFile, 'utf-8', function(err, data) {
             if (err) {
@@ -62,7 +81,7 @@ module.exports = function( app ) {
                 var jsonObj = JSON.parse(data);
                 var menuOptions = jsonObj['page'];
                 updateJsonWithDbValues(menuOptions.options, options.dynamicData)
-                res.render(viewPath + options.adminForm, { title: 'Admin Page', page: menuOptions, formAction: options.formAction });
+                res.render(viewPath + options.adminForm, { title: 'Admin Dashboard', page: menuOptions, formAction: options.formAction, message: message, error: error });
             }
         });
     }
@@ -84,6 +103,50 @@ module.exports = function( app ) {
                 }
             }
         }
+    }
+
+    function validateTitles(res, route, titles) {
+        var error = false
+        for (var i = 0; i < titles.length; i++) {
+            if (!sanitization.validateText(titles[i], 'title')) {
+                error = true;
+                directTo(res, url.format({
+                    pathname: route,
+                    query: {
+                        err: 'title'
+                    }
+                }));
+            }
+        }
+        return error;
+    }
+    function validateDesc(res, route, desc) {
+        var error = false
+        if (!sanitization.validateText(desc, 'par')) {
+            error = true;
+            directTo(res, url.format({
+                pathname: route,
+                query: {
+                    err: 'desc'
+                }
+            }));
+        }
+        return error;
+    }
+    function validateDates(res, route, dates) {
+        var error = false;
+        for (var i = 0; i < dates.length; i++) {
+            if (!validator.toDate(dates[i])) {
+                error = true;
+                directTo(res, url.format({
+                    pathname: route,
+                    query: {
+                        err: 'date'
+                    }
+                }));
+            }
+        }
+        return error;
     }
 
     /**
@@ -118,21 +181,32 @@ module.exports = function( app ) {
                         }
                     }
                 }
-                res.render(viewPath + "admin", { title: 'Welcome to IFS', stats: stats });
+                res.render(viewPath + "admin", { title: 'IFS Admin Dashboard', stats: stats });
             }
         );
     });
 
     /**************************************************************ADMIN Add CLASS**/
     app.route('/admin-add-course')
-    .get(function(req,res) {
-        addAdminPage( req,res,{
+    .get(function(req, res) {
+        addAdminPage(req, res, {
             adminForm: 'adminForm',
             adminPage:'./data/admin/class.json',
-            formAction:"/admin-add-course"
+            formAction:"/admin-add-course",
+            query: req.query
         });
     })
-    .post(function(req,res,next){
+    .post(function(req,res,next) {
+        var route = '/admin-add-course'
+        var error = false;
+        var code = req.body['class-code']
+        var name = req.body['class-name']
+        var desc = req.body['class-description']
+
+        error = validateTitles(res, route, [code, name]);
+        if (!error)
+            error = validateDesc(res, route, desc);
+
         var courseKeys = ["class-code","class-name","class-description","class-disciplineType"];
 
         var submission = _.pick(req.body, courseKeys);
@@ -145,13 +219,14 @@ module.exports = function( app ) {
 
     /*************************************************************ADMIN Add Event**/
     app.route('/admin-add-event')
-    .get(function(req,res){
+    .get(function(req,res) {
         adminDB.getAllClasses( function(err,data) {
             var result = _.map( data, obj => obj['code']);
             addAdminPage(req, res, {
                 adminForm: 'adminForm',
                 adminPage:'./data/admin/upcomingEvent.json',
                 formAction:"/admin-add-event",
+                query: req.query,
                 dynamicData: [{
                     "target":"class-name",
                     "values": result,
@@ -161,19 +236,32 @@ module.exports = function( app ) {
         });
     })
     .post(function(req,res,next) {
-        var keys = ["event-name","event-title","event-description","event-startDate","event-endDate"];
+        var route = '/admin-add-event';
+        var error = false;
+        var name = req.body['event-name']
+        var title = req.body['event-title']
+        var desc = req.body['event-description']
 
-        var submission = _.pick(req.body, keys);
-        // Find the class id then insert event for class
-        adminDB.getClassByCode(req.body['class-name'], function(err,data){
+        error = validateTitles(res, route, title);
+        if (!error)
+            error = validateDesc(res, route, desc);
+        if (!error)
+            error = validateDates(res, route, [req.body['event-startDate'], req.body['event-endDatee']]);
 
-            var values = _.values(submission);
-            values.unshift(data[0].id);
+        if (!error) {
+            var keys = ["event-name","event-title","event-description","event-startDate","event-endDate"];
+            var submission = _.pick(req.body, keys);
+            // Find the class id then insert event for class
+            adminDB.getClassByCode(req.body['class-name'], function(err,data) {
 
-            adminDB.insertUpcomingEvent( values, function(err,result ){
-                directTo(res);
+                var values = _.values(submission);
+                values.unshift(data[0].id);
+
+                adminDB.insertUpcomingEvent(values, function(err,result) {
+                    directTo(res);
+                });
             });
-        });
+        }
     });
 
     /**************************************************************ADMIN Add Assignment**/
@@ -185,6 +273,7 @@ module.exports = function( app ) {
                 adminForm: 'adminForm',
                 adminPage:'./data/admin/assignment.json',
                 formAction:"/admin-add-assignment",
+                query: req.query,
                 dynamicData: [{
                     "target":"class-name",
                     "values": result,
@@ -193,21 +282,38 @@ module.exports = function( app ) {
             });
         });
     })
-    .post(function(req,res,next){
-        var keys = ["assignment-name","assignment-title","assignment-description",
-                    "assignment-dueDate"];
+    .post(function(req,res,next) {
+        var error = false;
+        route = '/admin-add-assignment';
+        var name = req.body['assignment-name'];
+        var title = req.body['assignment-title'];
+        var desc= req.body['assignment-description'];
+        var date= req.body['assignment-dueDate'];
 
-        var submission = _.pick(req.body, keys);
+        error = validateTitles(res, route, [name, title]);
 
-        // Find the class id then insert event for class
-        adminDB.getClassByCode(req.body['class-name'], function(err,data) {
-            var values = _.values(submission);
-            values.unshift(data[0].id);
+        if (!error)
+            validateDesc(res, route, desc);
 
-            adminDB.insertAssignment(values, function(err,result) {
-                directTo(res);
+        if (!error)
+            validateDates(res, route, [date]);
+
+        if (!error) {
+            var keys = ["assignment-name","assignment-title","assignment-description",
+                        "assignment-dueDate"];
+
+            var submission = _.pick(req.body, keys);
+
+            // Find the class id then insert event for class
+            adminDB.getClassByCode(req.body['class-name'], function(err,data) {
+                var values = _.values(submission);
+                values.unshift(data[0].id);
+
+                adminDB.insertAssignment(values, function(err,result) {
+                    directTo(res);
+                });
             });
-        });
+        }
     });
 
       /******************************************************************ADMIN Add Assignment Task**/
@@ -215,13 +321,14 @@ module.exports = function( app ) {
     .get(function(req,res) {
         adminDB.getAllClasses(function(err,classes) {
             var result = _.map(classes, obj => obj['code']);
-            adminDB.getAllAssignments( function(err,assignments) {
+            adminDB.getAllAssignments(function(err,assignments) {
                 var assignmentNames = _.map(assignments, obj => obj['name']);
                 assignmentNames.unshift(null);
                 addAdminPage(req, res, {
                     adminForm: 'adminForm',
                     adminPage:'./data/admin/assignment_task.json',
                     formAction:"/admin-add-assignment-task",
+                    query: req.query,
                     dynamicData: [{
                         "target":"class-name",
                         "values": result,
@@ -236,24 +343,44 @@ module.exports = function( app ) {
         });
     })
     .post(function(req,res,next) {
-        var keys = ['assignment-task-name','assignment-task-description'];
+        var route = '/admin-add-assignment-task';
+        var error = false;
+        var name = req.body['assignment-task-name'];
+        var desc = req.body['assignment-task-description'];
+        var assign = req.body['assignment-name'];
+        if (!assign) {
+            error = true;
+            res.redirect(url.format({
+                pathname: route,
+                query: {
+                    err: "a"
+                }
+            }));
+        }
+        error = validateTitles(res, route, [name]);
+        if (!error)
+            error = validateDesc(res, route, desc);
 
-        var submission = _.pick(req.body, keys);
-        var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
-        // Find the class id then insert event for class
-        adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
-            if(data && data.length > 0) {
-                var values = _.values(submission);
-                values.unshift(data[0].aId);
+        if (!error) {
+            var keys = ['assignment-task-name','assignment-task-description'];
 
-                adminDB.insertTask(values, function(err,result) {
-                    directTo(res);
-                });
-            } else {
-                req.flash('errorMessage', 'Unable to add task, please check assignment belongs to class.');
-                res.end();
-            }
-        });
+            var submission = _.pick(req.body, keys);
+            var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
+            // Find the class id then insert event for class
+            adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
+                if(data && data.length > 0) {
+                    var values = _.values(submission);
+                    values.unshift(data[0].aId);
+
+                    adminDB.insertTask(values, function(err,result) {
+                        directTo(res);
+                    });
+                } else {
+                    req.flash('errorMessage', 'Unable to add task, please check assignment belongs to class.');
+                    res.end();
+                }
+            });
+        }
     });
 
      /******************************************************************ADMIN Add Skill**/
@@ -268,6 +395,7 @@ module.exports = function( app ) {
                     adminForm: 'adminForm',
                     adminPage:'./data/admin/class_skill.json',
                     formAction:"/admin-add-skill",
+                    query: req.query,
                     dynamicData: [{
                         "target":"class-name",
                         "values": result,
@@ -282,23 +410,43 @@ module.exports = function( app ) {
         });
     })
     .post(function(req,res,next) {
-        var keys = ['skill-name','skill-description'];
-        var submission = _.pick(req.body, keys);
-        var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
-        // Find the class id then insert event for class
-        adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
-            if(data && data.length > 0) {
-                var values = _.values(submission);
-                values.unshift(data[0].aId);
-                values.unshift(data[0].classId);
+        var route = '/admin-add-skill';
+        var error = false;
+        var name = req.body['skill-name'];
+        var desc = req.body['skill-description'];
+        var assign = req.body['assignment-name'];
+        if (!assign) {
+            error = true;
+            res.redirect(url.format({
+                pathname: route,
+                query: {
+                    err: "a"
+                }
+            }));
+        }
+        error = validateTitles(res, route, [name]);
+        if (!error)
+            error = validateDesc(res, route, desc);
 
-                adminDB.insertSkill(values, function(err,result) {
-                    directTo(res);
-                });
-            } else {
-                req.flash('errorMessage', 'Unable to add skill, please check assignment belongs to class.');
-                res.end();
-            }
-        });
+        if (!error) {
+            var keys = ['skill-name','skill-description'];
+            var submission = _.pick(req.body, keys);
+            var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
+            // Find the class id then insert event for class
+            adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
+                if(data && data.length > 0) {
+                    var values = _.values(submission);
+                    values.unshift(data[0].aId);
+                    values.unshift(data[0].classId);
+
+                    adminDB.insertSkill(values, function(err,result) {
+                        directTo(res);
+                    });
+                } else {
+                    req.flash('errorMessage', 'Unable to add skill, please check assignment belongs to class.');
+                    res.end();
+                }
+            });
+        }
     });
 };
