@@ -3,6 +3,12 @@ include ../../shared/UI_components/formSubmit.pug
 
 block content
     div.uk-container.uk-container-small
+        if err
+            div(uk-alert).uk-alert-danger
+                p.errorMessage #{message}
+        else if !err && message
+            div(uk-alert).uk-alert-success
+                p.successMessage #{message}
         div(ng-controller="prefCtrl")
             form(name="preferences" enctype="multipart/form-data" method="post" action="/preferences/profile")#preferencesFrm.uk-margin
                 h2.uk-margin-remove-bottom {{ prefsList.displayName }}

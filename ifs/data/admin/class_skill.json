@@ -25,14 +25,14 @@
                 "name": "skill-name",
                 "type": "text",
                 "values": "",
-                "value": ""
+                "value": "Descriptive name for skill"
             },
             {
                 "displayName": "Skill Description",
                 "name": "skill-description",
                 "type": "text",
                 "values": "",
-                "value": ""
+                "value": "Extended description for the skill"
             }
         ]
     }

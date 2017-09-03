@@ -16,36 +16,36 @@
                 "displayName":"Event Name",
                 "name": "event-name",
                 "type": "text",
-                "values": "",
-                "value": ""
+                "values": [],
+                "value": "Unique identifier for the event"
             },
             {
                 "displayName":"Title",
                 "name": "event-title",
                 "type": "text",
-                "values": "",
-                "value": ""
+                "values": [],
+                "value": "Descriptive title for the event"
             },
             {
                 "displayName":"Description",
                 "name": "event-description",
                 "type": "text",
                 "values": "",
-                "value": "Describe the event"
+                "value": "Extended description for the event"
             },
             {
                 "displayName":"Start date",
                 "name": "event-startDate",
                 "type": "date",
                 "values": "",
-                "value": ""
+                "value": "YYYY-MM-DD"
             },
             {
                 "displayName":"Due date",
                 "name": "event-endDate",
                 "type": "date",
                 "values": "",
-                "value": ""
+                "value": "YYYY-MM-DD"
             }
         ]
     }

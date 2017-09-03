@@ -3,7 +3,7 @@ p.uk-text-meta Set assignment goals and keep track of them below. This will help
 div#studentFocus
     div#unsetCurrentFocus(ng-show="activeStudentFocus==0" ng-click="getNextSelected( $event )").uk-card.uk-card-default.uk-card-hover
         div.uk-card-header
-            h2.uk-card-title What is your focus today?
+            h2.uk-card-title What are you working on?
         div.uk-card-body
             p Click this card to set your focus.
 
@@ -11,7 +11,7 @@ div#studentFocus
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
             h2.uk-card-title Set your focus:
-        div.uk-card-body.uk-padding-remove-bottom
+        div.uk-card-body
             div.uk-form-controls
                 div.uk-grid
                     div.uk-width-1-2
@@ -25,14 +25,14 @@ div#studentFocus
     div(ng-show="activeStudentFocus==2")#studentSelectedFocus.uk-card.uk-card-default.uk-card-hover
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
-            h2.uk-card-title Daily Focus:
-        div.uk-card-body.uk-padding-remove-bottom
-            h3 {{courseSelect.courseName}} {{assignmentSelect.assignmentName}} Tasks 
-                a(href="#myModal" uk-toggle="target: #myModal").uk-text-center
-                    span(uk-icon="icon: info")
+            h2.uk-card-title Current Focus:
+        div.uk-card-body
+            div.uk-clearfix
+                h3.uk-float-left Tasks for {{courseSelect.courseName}} {{assignmentSelect.assignmentName}}
+                a(href="#myModal" uk-icon="icon: info" uk-toggle="target: #myModal").uk-float-right.uk-icon-button
 
-            div.uk-grid.uk-grid-small.uk-grid-divider.uk-grid-match
-                div(ng-repeat="assignTask in ( filteredArray =  (assignmentTasks | filter:{assignmentId:assignmentSelect.assignmentId} ))").uk-width-1-2.uk-margin-bottom
+            ul.uk-list.uk-list-divider
+                li(ng-repeat="assignTask in ( filteredArray =  (assignmentTasks | filter:{assignmentId:assignmentSelect.assignmentId} ))")
                     include dashboardFocus.pug
 
                 div(id="myModal" uk-modal)
@@ -41,13 +41,14 @@ div#studentFocus
                         div.uk-modal-header
                             h3.uk-modal-title {{assignmentSelect.assignmentName}}
                         div.uk-modal-body
+                            h4 Assignment description
                             p {{assignmentSelect.description}}
 
-            button(id="assignmentCompleteId" type="button" ng-click="assignmentComplete()").uk-button.uk-button-default.uk-align-center.uk-hidden Finish Assignment
+            button(id="assignmentCompleteId" type="button" ng-click="assignmentComplete()").uk-button.uk-button-primary.uk-align-center.uk-hidden Finish Assignment
 
     div(ng-show="activeStudentFocus==3")#assignmentAccomplished.uk-card.uk-card-default.uk-card-hover
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
             h2.uk-card-title  Congrats, you've recently completed {{assignmentSelect.assignmentName}}
-        div.uk-card-body.uk-padding-remove-bottom
+        div.uk-card-body
             button(type="button" ng-click="resetSelectedFocus( $event )" ).uk-button.uk-button-default.uk-align-center  Set New Focus?

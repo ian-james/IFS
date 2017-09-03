@@ -17,28 +17,28 @@
                 "name": "assignment-name",
                 "type": "text",
                 "values": "",
-                "value": ""
+                "value": "Unique identifier for assignment"
             },
             {
                 "displayName":"Title",
                 "name": "assignment-title",
                 "type": "text",
                 "values": "",
-                "value": ""
+                "value": "Descriptive title for the assignment"
             },
             {
                 "displayName":"Description",
                 "name": "assignment-description",
                 "type": "text",
                 "values": "",
-                "value": "Describe the assignment"
+                "value": "Extended description for the assignment"
             },
             {
                 "displayName":"Due date",
                 "name": "assignment-dueDate",
                 "type": "date",
                 "values": "",
-                "value": ""
+                "value": "YYYY-MM-DD"
             }
         ]
     }

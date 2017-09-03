@@ -16,11 +16,15 @@ block content
             div.uk-margin-medium
                 include dashboardStudentProfile.pug
             span(ng-if="courses && courses.length >= 0")
-                h2.uk-text-capitalize {{toolType}} Statistics
-                p.uk-text-meta
-                    | Not looking for stats related to {{toolType}}? Go to 
-                    a(href="/preferences") preferences
-                    |  and change your tool type.
+                div.uk-clearfix
+                    h2.uk-text-capitalize.uk-float-left {{toolType}} Statistics
+                    div.uk-inline.uk-float-right
+                        a(href="#" uk-icon="icon: info").uk-icon-button
+                        div(uk-dropdown="pos: left-center; delay-hide: 100")
+                            p.uk-text-muted
+                                | Not looking for stats related to {{toolType}}? Go to 
+                                a.uk-text-primary(href="/preferences") preferences
+                                |  and change your tool type.
                 span(ng-if="toolType == 'writing'")
                     div.uk-margin
                         include dashboardStats.pug

@@ -6,6 +6,9 @@ var db = require('./database');
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var dbcfg = require(__configs + 'databaseConfig');
 
+var validator = require('validator');
+var sanitization = require(__configs + 'sanitization');
+
 var nodemailer = require('nodemailer');
 var mailcfg = require(__configs + 'mailConfig');
 var tokgen = require('tokgen');
@@ -40,7 +43,7 @@ module.exports = function (passport) {
 
     // This is the initialized of the local-signup strategy used by passport, it calls this callback upcon
     // an attempted signup, basically just hashes password and tries to insert new user.
-    passport.use( 'local-signup',
+    passport.use('local-signup',
         new LocalStrategy(
             {
                 firstnameField: 'firstname',
@@ -50,15 +53,34 @@ module.exports = function (passport) {
                 passReqToCallback : true
             },
             function(req, username, password, done) {
+                var firstname = req.body['firstname'];
+                var lastname = req.body['lastname'];
+
+                // validate inputs
+                if (!validator.isEmail(username)) {
+                    req.flash('errorMessage', 'Error. You must use a valid email address.');
+                    return done(null, false);
+                } else {
+                    username = validator.normalizeEmail(username);
+                }
+                if (!sanitization.validateText(firstname, 'title')) {
+                    req.flash('errorMessage', 'Illegal characters in first name.');
+                    return done(null, false);
+                }
+                if (!sanitization.validateText(lastname, 'title')) {
+                    req.flash('errorMessage', 'Illegal characters in last name.');
+                    return done(null, false);
+                }
+
+                // inputs validated, now double check that the user does not already exist
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     if (err) {
                         req.flash('errorMessage', 'Unable to signup.');
                         Logger.error(err);
                         return done(err);
                     }
-
                     if (rows.length) {
-                        Logger.info(" Didn't find authorization", rows[0]);
+                        Logger.info("Attempt to register new account with existing email was just made.", rows[0]);
                         req.flash('errorMessage', 'Error. A user already exists with that email address.');
                         return done(null, false);
                     } else {
@@ -67,7 +89,7 @@ module.exports = function (passport) {
                             username: username,
                             password: bcrypt.hashSync(password, null, null)
                         };
-                        
+
                         // set up new user
                         var newuserQuery = "INSERT INTO users (username, password) values (?,?)";
                         db.query(newuserQuery,[newUser.username, newUser.password], function(err,rows) {
@@ -88,14 +110,14 @@ module.exports = function (passport) {
                             cp.sync(defaultpath, avatarpath + "avatar.png");
 
                             // set up profile and survey settings
-                            studentProfile.insertStudentProfile(newUser.id, req.body['firstname'] + " " + req.body['lastname'], "", function(profileErr, studentSet) {
-                                preferencesDB.setStudentPreferences( newUser.id, prefToolType, toolTypeKey, defaultToolType, function( prefErr, prefData ){
+                            studentProfile.insertStudentProfile(newUser.id, firstname + " " + lastname, "", function(profileErr, studentSet) {
+                                preferencesDB.setStudentPreferences(newUser.id, prefToolType, toolTypeKey, defaultToolType, function(prefErr, prefData){
                                     defaultTool.setupDefaultTool(req);
                                     SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
                                         // generate verification token (and insert it into the database) and send email
                                         verifySend.generateLink('verify', newUser.id, function(err, link) {
                                             if (err)
-                                                console.log(err);
+                                                Logger.error(err);
                                             if (link) {
                                                 var message = 'Please follow the link below to complete your account registration:';
                                                 var subject = "Complete your registration";
@@ -116,9 +138,9 @@ module.exports = function (passport) {
         )
     );
 
-    // This is the initialized of the local-login strategy used by passport, it calls this callback upcon
+    // This is the initialization of the local-login strategy used by passport, it calls this callback upon
     // an attempted login, basically a simple check to see if user exists.
-    passport.use( 'local-login',
+    passport.use('local-login',
         new LocalStrategy(
             {
                 usernameField: 'username',
@@ -126,6 +148,13 @@ module.exports = function (passport) {
                 passReqToCallback : true
             },
             function (req, username, password, done) {
+                if (!validator.isEmail(username)) {
+                    req.flash('errorMessage', 'Error. You must use a valid email address.');
+                    return done(null, false);
+                } else {
+                    username = validator.normalizeEmail(username);
+                }
+
                 // TODO: verify the isRegistered boolean in user_registration
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     if (err) {
@@ -155,18 +184,18 @@ module.exports = function (passport) {
                     // Increment sessionId for user
                     db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
                         if (err)
-                            Logger.error( err );
+                            Logger.error(err);
                     });
 
                     // Increment local copy, instead of reading from DB.
                     rows[0].sessionId += 1;
 
                     //Set a single preference on login to load their toolType preferences (defaults to programming)
-                    preferencesDB.getStudentPreferencesByToolName( rows[0].id,  toolTypeKey, function(toolErr, result){
-                        if ( toolErr || !result || result.length == 0)
+                    preferencesDB.getStudentPreferencesByToolName(rows[0].id,  toolTypeKey, function(toolErr, result) {
+                        if (toolErr || !result || result.length == 0)
                             defaultTool.setupDefaultTool(req);
                         else
-                            defaultTool.setupDefaultTool(req, result[0].toolValue );
+                            defaultTool.setupDefaultTool(req, result[0].toolValue);
 
                         return done(null, rows[0]);
                     });

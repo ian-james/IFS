@@ -25,14 +25,14 @@
                 "name": "assignment-task-name",
                 "type": "text",
                 "values": "",
-                "value": ""
+                "value": "Descriptive title for task"
             },
             {
                 "displayName": "Task Description",
                 "name": "assignment-task-description",
                 "type": "text",
                 "values": "",
-                "value": ""
+                "value": "Extended description for task"
             }
         ]
     }
