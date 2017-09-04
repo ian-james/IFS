@@ -7,7 +7,9 @@
     "pretest": "node ./config/createDatabase.js",
     "test": "nodemon --inspect --config ./config/nodemon.json ./config/index.js",
     "prestart": "node ./config/createDatabase.js",
-    "start": "pm2 start ./config/index.js -i 0 --name IFS"
+    "start": "pm2 start ./config/index.js -i 0 --name IFS",
+    "restart": "pm2 start -f ./config/index.js -i -0 --name IFS",
+    "stop": "pm2 stop IFS"
   },
   "repository": {
     "type": "git",
