@@ -96,7 +96,7 @@ module.exports = function(app) {
             }));
             error = true;
         }
-        if (!sanitization.validateText(studentBio, 'rar') && !error) {
+        if (!sanitization.validateText(studentBio, 'par') && !error) {
             res.redirect(url.format({
                 pathname: "/preferences",
                 query: { err: "bio" }

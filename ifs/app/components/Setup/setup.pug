@@ -3,11 +3,11 @@ include ../../shared/UI_components/formSubmit.pug
 
 block content
     div(ng-controller="setupCtrl").uk-container
-        h1 #{title}
+        h1 Welcome!
         p.uk-text-muted {{setup.description}}
         div.researchDescription
-            h2 Research Description
-            p {{setup.researchDescription}}
+            h2.uk-text-center  CONSENT TO PARTICIPATE IN RESEARCH
+            include researchDescription.pug
         div
             form(name="setup" method="post" action="/setup")#setupForm.uk-margin
                 h2 {{setup.displayName}}

@@ -7,7 +7,7 @@
             {
                 "displayName": "Experiment opt-in",
                 "info": "Toggle the switch left if you would like to opt-out.",
-                "description": "The IFS is an experiment in student learning. To be part of this experiment, we need to collect some data on general use and behaviour, as well as some metrics on your improvement over time. Opting out of the experiment will turn off this tracking, as well as most of the features of this web application.",
+                "description": "The IFS is an experiment in student learning and engagement. To be part of this experiment, we need to collect some data on your general use and behaviour. Any individual information gathered during your usage will not be shared and will be used only for research purposes. Opting out of the experiment will turn off the experiment's surveys but all other features will remain available.",
                 "name": "optin",
                 "type": "checkbox",
                 "values": "",

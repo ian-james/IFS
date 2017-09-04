@@ -31,7 +31,7 @@ module.exports = function (app, iosocket ) {
             ans = _.map(ans, function( obj ) {
                 var rev = obj['lastRevision'];
                 if( rev )
-                    obj['lastRevision'] = moment(obj['lastRevision']).format("DD-MM-YYYY");
+                    obj['lastRevision'] = moment(obj['lastRevision']).format("hh:mm a DD-MM-YYYY");
                 return obj;
             });
 

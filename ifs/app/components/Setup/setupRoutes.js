@@ -36,7 +36,6 @@ module.exports = function(app) {
                     var jsonObj = JSON.parse(data);
                     var setup = jsonObj['setup'];
                     if(fdata) {
-                        console.log(fdata);
                         setup['researchDescription'] = fdata;
                     }
                     res.json(setup);
