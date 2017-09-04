@@ -1,4 +1,6 @@
 div
+    div(class="uk-width-1-1").focusCard
+           include dashboardSkillFocus.pug
     h2 Your Profile
     div(uk-grid).uk-grid.uk-grid-small
         div(class="uk-width-1-1").skills
@@ -8,8 +10,8 @@ div
                     p.uk-text-meta Keep track of course progress by self-rating skills. This data is purely formative.
                     div(ng-if="skills && skills.length > 0")
                         div(ng-repeat="item in skills|limitTo:3")
-                            p {{ item.skillName}}
-                            progress(value="{{item.value*100}}" max="100" title="{{item.value*100 + '%''}}", uk-tooltip).uk-progress
+                            p {{item.skillName}}
+                            progress(value="{{item.value*100}}" max="100" title="{{item.value*100 + '%'}}", uk-tooltip).uk-progress
                     div(ng-if="!skills || skills.length == 0")
                         p You haven't rated any of your skills yet! Rating your skills will help you keep track of how you feel about your coursework.
                     a(href="/skills" class="uk-width-1-1 uk-width-auto@s").uk-button.uk-button-default
@@ -39,5 +41,3 @@ div
                             span(uk-icon="icon: info").uk-margin-small-left
                         a(href="/socialModel").uk-button.uk-button-default View Class Stats 
                              span(uk-icon="icon: info").uk-margin-small-left
-        div(class="uk-width-1-1").focusCard
-           include dashboardSkillFocus.pug

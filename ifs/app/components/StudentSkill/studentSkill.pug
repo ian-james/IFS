@@ -4,7 +4,7 @@ block scripts
     script(src="/socket.io/socket.io.js")
 
 block content
-    div(ng-controller="studentSkillCtrl").uk-container
+    div.uk-container
         div(uk-alert).uk-alert-danger
             p.errorMessage #{messages.errorMessage}
 
@@ -20,11 +20,13 @@ block content
                                     h3.uk-margin-remove-bottom #{skill.title}
                                 h4 #{skill.skillName}
 
+                                //- Note: studentSkillSlider uses the format and naming form this code
+                                //- If you need to change it make sure studentSkillSliders.js is update to still work.
                                 div(uk-grid).uk-grid.uk-margin-small
                                     div.uk-width-auto
                                         input(id="numeric"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]", type="number" min="0" max="100" value=skill.value*100).uk-text-center.studentInput
                                     div.uk-width-expand
-                                        progress(value=skill.value*100, max="100").uk-progress.studentSlider
+                                        progress(id="prog"+skill.classSkillId, value=skill.value*100, max="100").uk-progress.studentSlider
                                     input(id="userHidden"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
                             - title = skill.title;
                 else
@@ -42,12 +44,14 @@ block content
                                     h3.uk-margin-remove-bottom #{skill.title}
                                 h4 #{skill.skillName}
 
+                                //- Note: studentSkillSlider uses the format and naming form this code
+                                //- If you need to change it make sure studentSkillSliders.js is update to still work.
                                 div(uk-grid).uk-grid.uk-margin-small
                                     div.uk-width-auto
                                         input(id="numeric"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]", type="number" min="0" max="100" value=0).uk-text-center.uk-display-inline.studentInput
                                     div.uk-width-expand
-                                        progress(value=0 max="100").uk-progress.studentSlider
-                                        input(id="userHidden"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
+                                        progress(id="prog"+skill.classSkillId, value=0 max="100").uk-progress.studentSlider
+                                    input(id="userHidden"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
                                 - title = skill.title;
                 else
                     h4 No course skills are available.
@@ -56,5 +60,4 @@ block content
 
             div.uk-width-1-1.uk-margin-top
 
-    script(src="components/StudentSkill/studentSkillController.js")
     script(src="components/StudentSkill/studentSkillSliders.js")
