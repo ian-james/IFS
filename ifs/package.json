@@ -1,13 +1,15 @@
 {
   "name": "ifs",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Project to provide students formative feedback on C/C++ assignments or essays. Creates recommendations",
   "main": "index.js",
   "scripts": {
     "pretest": "node ./config/createDatabase.js",
-    "test": "mocha --timeout 10000",
+    "test": "nodemon --inspect --config ./config/nodemon.json ./config/index.js",
     "prestart": "node ./config/createDatabase.js",
-    "start": "nodemon --inspect --config ./config/nodemon.json ./config/index.js"
+    "start": "pm2 start ./config/index.js -i 0 --name IFS",
+    "restart": "pm2 start -f ./config/index.js -i -0 --name IFS",
+    "stop": "pm2 stop IFS"
   },
   "repository": {
     "type": "git",
@@ -46,6 +48,7 @@
     "express": "^4.14.0",
     "express-flash": "0.0.2",
     "express-session": "^1.14.2",
+    "fs-extra": "^4.0.1",
     "glyphicons": "^0.2.0",
     "he": "^1.1.1",
     "i18n": "^0.8.3",
@@ -75,6 +78,7 @@
     "tokgen": "^1.0.0",
     "uikit": "^3.0.0-beta.18",
     "unzip": "^0.1.11",
+    "validator": "^8.1.0",
     "winston": "^2.3.1",
     "winston-daily-rotate-file": "^1.4.3",
     "wordcloud": "^1.0.6",

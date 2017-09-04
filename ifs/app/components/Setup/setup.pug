@@ -3,8 +3,11 @@ include ../../shared/UI_components/formSubmit.pug
 
 block content
     div(ng-controller="setupCtrl").uk-container
-        h1 #{title}
+        h1 Welcome!
         p.uk-text-muted {{setup.description}}
+        div.researchDescription
+            h2.uk-text-center  CONSENT TO PARTICIPATE IN RESEARCH
+            include researchDescription.pug
         div
             form(name="setup" method="post" action="/setup")#setupForm.uk-margin
                 h2 {{setup.displayName}}
@@ -12,19 +15,5 @@ block content
                     include setupItem.pug
                 button(type="submit").uk-button.uk-button-default Save
 
-        div(ng-controller="coursesCtrl")
-            form(name="course-enrolment" method="post" action="/courses")#coursesForm.uk-margin
-                h2.uk-margin-remove-bottom Course Enrolment
-                p.uk-text-meta.uk-margin-remove-top Enrol in courses to subscribe to class events and track class skills.
-                div(ng-repeat="course in courses")
-                    include ../Courses/courseItem.pug
-                button(type="submit").uk-button.uk-button-default Save
-
-        div
-            form(name="complete-setup" method="post" action="/complete-setup").uk-margin
-                h3 Complete setup
-                button(type="submit").uk-button.uk-button-primary Complete
-        br
 
     script(src="components/Setup/setupController.js")
-    script(src="components/Courses/coursesController.js")

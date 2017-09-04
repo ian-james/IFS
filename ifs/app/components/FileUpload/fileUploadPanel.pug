@@ -15,7 +15,7 @@ div
         input(type="hidden" name="time"  id="time" value=Date.now())
 
     div(id="processingModal" uk-modal="center: true; bg-close: false; esc-close: false;")
-        div.uk-modal-dialog.uk-width-1-2
+        div(class="uk-width-1-1 uk-width-2-3@l").uk-modal-dialog
             button(class="uk-modal-close-default" uk-close)
             div.uk-modal-header
                 h2(id="modalTitle" uk-modal.title) Processing Files please wait...
@@ -41,7 +41,7 @@ div
                         });
                     });
                 
-                div(class="col-md-12")
+                div
                     div(id="surveyElement")
 
 script(src="components/FileUpload/progressModal.js")

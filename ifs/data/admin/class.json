@@ -9,21 +9,21 @@
                 "name": "class-name",
                 "type": "text",
                 "values": "",
-                "value": "Course Name"
+                "value": "Descriptive class name (Ex. 'Introduction to Programming')"
             },
             {
                 "displayName": "Class Code",
                 "name": "class-code",
                 "type": "text",
                 "values": "",
-                "value": "Class Code or shortform"
+                "value": "Unique identifier for class (Ex. 'CIS1500')"
             },
             {
                 "displayName": "Description",
                 "name": "class-description",
                 "type": "text",
                 "values": "",
-                "value": "Describe your class here"
+                "value": "Extended description for the class"
             },
             {
                 "displayName": "Class Type",

@@ -1,37 +1,39 @@
 div#statsSection
-    div.uk-card
-        div.uk-card-body.uk-padding-remove-top.uk-margin-remove.top.uk-padding-remove-bottom.uk-margin-remove.bottom
-            div(ng-if="stats" data-uk-grid-margin).uk-grid
-                div(ng-repeat="submissionErrorRate in [stats.userStats.submissionErrorRate]" ng-init="sectionName='My Accuracy';").uk-width-1-2
-                    include dashboardAccuracySection.pug
+    h3 Accuracy
+    p.uk-text-meta View the most prevalent types of errors and feedback items received per submission. A lower feedback/submission ratio might be indicative of improvement over time as fewer errors and warnings are reported.
+    div(ng-if="stats" data-uk-grid-margin).uk-grid.uk-grid-match
+        div(ng-repeat="submissionErrorRate in [stats.userStats.submissionErrorRate]" ng-init="sectionName='My Accuracy';").uk-width-1-2
+            include dashboardAccuracySection.pug
 
-                div(ng-repeat="submissionErrorRate in [stats.socialStats.submissionErrorRate]" ng-init="sectionName='Class Accuracy';").uk-width-1-2
-                    include dashboardAccuracySection.pug
+        div(ng-repeat="submissionErrorRate in [stats.socialStats.submissionErrorRate]" ng-init="sectionName='Class Accuracy';").uk-width-1-2
+            include dashboardAccuracySection.pug
 
-                ////////////////////////////////////////////// Section
-                div.uk-width-1-1.uk-margin-medium-bottom
-                    hr
+    h3 Common feedback
+    p.uk-text-meta The most commons errors made by you and your peers are reported below.
+    div(ng-if="stats" data-uk-grid-margin).uk-grid.uk-grid-match
+        div(ng-repeat="myArr in [stats.userStats.commonFeedback.value] track by $index" ng-init="sectionName='Most Common Feedback';").uk-width-1-1
+            include programmingCommonFeedback.pug
 
-                div(ng-repeat="myArr in [stats.userStats.commonFeedback.value] track by $index" ng-init="sectionName='Most Common Feedback';")
-                    include programmingCommonFeedback.pug
-
-                ////////////////////////////////////////////// Section
-                div.uk-width-1-1.uk-margin-medium-bottom
-                    hr
-
-                div.uk-width-1-2
-                    h4.uk-padding-remove.uk-margin-remove Student Tool Usage
+    h3 Tool usage
+    p.uk-text-meta The most commonly used programming tools available in the IFS are reported below.
+    div(ng-if="stats" data-uk-grid-margin).uk-grid.uk-grid-match
+        div.uk-width-1-2
+            div.uk-card.uk-card-default
+                div.uk-card-body
+                    h4.uk-card-title Student Tool Usage
                     ul.uk-list.uk-list-striped
                         li(ng-repeat="stat in [stats.userStats.mostUsedTools, stats.userStats.mostFeedbackTools, stats.userStats.mostViewedMoreFeedbackTool] track by $index")
                             p(ng-if="!stat.displayName").uk-display-inline No student submissions
                             p(ng-if="stat.displayName").uk-display-inline {{ stat.displayName }}: {{ stat.toolName }}
 
-                div.uk-width-1-2
-                    h4.uk-padding-remove.uk-margin-remove Class Tool Usage
+        div.uk-width-1-2
+            div.uk-card.uk-card-default
+                div.uk-card-body
+                    h4.uk-card-title Class Tool Usage
                     ul.uk-list.uk-list-striped
                         li(ng-repeat="stat in [stats.socialStats.mostUsedTools, stats.socialStats.mostFeedbackTools, stats.socialStats.mostViewedMoreFeedbackTool] track by $index")
                             p(ng-if="!stat.displayName").uk-display-inline No student submissions
                             p(ng-if="stat.displayName").uk-display-inline {{ stat.displayName }}: {{ stat.toolName }}
 
             div(ng-if="!stats")
-                p Usage statistics are currently unavailable.
+                        p Usage statistics are currently unavailable.

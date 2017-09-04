@@ -7,7 +7,6 @@ var dbcfg = require(__configs + "databaseConfig");
 var db = require(__configs + "database");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
-var coursesDB = require(__components + "Courses/coursesDB.js");
 var userOptDB = require(__components + "Setup/userOptDB.js");
 
 var _ = require('lodash');
@@ -19,24 +18,31 @@ module.exports = function(app) {
     app.route("/setup")
 
     .get(function(req,res,next) {
-        res.render(viewPath + "setup", { title: 'Setup', message: 'ok' });
+        res.render(viewPath + "setup", { title: 'Setup', message: 'ok', noNav: true });
     });
 
     app.get('/setup/data.json', function(req, res, next) {
         var userId = req.user.id;
         var setupFile = './config/setup.json';
-        fs.readFile(setupFile, 'utf-8', function(err, data) {
-            if(err) {
-                //Unable to get setup options file, larger problem here.
-                Logger.error(err);
-                res.status(500);
-                res.end();
-            } else {
-                var jsonObj = JSON.parse(data);
-                var setup = jsonObj['setup'];
-                res.json(setup);
-            }
-        });
+        var researchFile = "./data/research/researchDescription"
+        fs.readFile(researchFile, 'utf-8', function(ferr, fdata) {
+            fs.readFile(setupFile, 'utf-8', function(err, data) {
+                if(err) {
+                    //Unable to get setup options file, larger problem here.
+                    Logger.error(err);
+                    res.status(500);
+                    res.end();
+                } else {
+                    var jsonObj = JSON.parse(data);
+                    var setup = jsonObj['setup'];
+                    if(fdata) {
+                        setup['researchDescription'] = fdata;
+                    }
+                    res.json(setup);
+                }
+            });
+        })
+        
     });
 
     app.get('/setup/values.json', function(req, res, next) {
@@ -95,18 +101,6 @@ module.exports = function(app) {
             });
         }
 
-        res.redirect("/setup");
-    });
-
-    // this route exists to mark that set-up has been completed for the user
-    app.post('/complete-setup', function(req, res, next) {
-        var q = dbHelpers.buildUpdate(dbcfg.user_registration_table) + 'SET completedSetup = ? WHERE userId = ?';
-        db.query(q, [1, req.user.id], function(err, data) {
-            if (!err)
-                console.log("UID " + req.user.id + " completed setup.");
-            else
-                console.log("ERROR", err);
-        });
-        res.redirect('/preferences');
+        res.redirect("/courses");
     });
 }

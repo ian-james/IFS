@@ -8,10 +8,9 @@
  */
 
  function onCheckboxClick( input ) {
-
     var assignmentTaskId = parseInt($(input).attr('data-assignment-task'));
     var studentId = parseInt($(input).attr('data-student'));
-    
+
     var checked = false;
     if( $(input).is(':checked') )
         checked = true;

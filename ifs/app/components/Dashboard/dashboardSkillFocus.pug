@@ -1,15 +1,17 @@
+h2 Focus
+p.uk-text-meta Set assignment goals and keep track of them below. This will help you stay organized.
 div#studentFocus
-    div#unsetCurrentFocus(ng-show="activeStudentFocus==0" ng-click="getNextSelected( $event )").uk-card
+    div#unsetCurrentFocus(ng-show="activeStudentFocus==0" ng-click="getNextSelected( $event )").uk-card.uk-card-default.uk-card-hover
         div.uk-card-header
-            h2 What is your focus today?
-        div.uk-card-body.uk-padding-remove-top
-            p ______________________________________________
+            h2.uk-card-title What are you working on?
+        div.uk-card-body
+            p Click this card to set your focus.
 
-    div#selectAssignment.uk-card(ng-show="activeStudentFocus==1")
+    div(ng-show="activeStudentFocus==1")#selectAssignment.uk-card.uk-card-default.uk-card-hover
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
-            h2.uk-display-inline Set your focus:
-        div.uk-card-body.uk-padding-remove-top
+            h2.uk-card-title Set your focus:
+        div.uk-card-body
             div.uk-form-controls
                 div.uk-grid
                     div.uk-width-1-2
@@ -20,17 +22,17 @@ div#studentFocus
                         select(ng-model="assignmentSelect" ng-options="a.assignmentName for a in ( assignments | filter:{courseId: courseSelect.id}) track by a.assignmentId").uk-select
                 button(type="button" ng-disabled="!hasFocusItem()" ng-click="getNextSelected( $event )" ).uk-button.uk-button-default.uk-align-center Set Focus
 
-    div#studentSelectedFocus.uk-card(ng-show="activeStudentFocus==2")
+    div(ng-show="activeStudentFocus==2")#studentSelectedFocus.uk-card.uk-card-default.uk-card-hover
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
-            h2.uk-display-inline Daily Focus:
-        div.uk-card-body.uk-padding-remove-top
-            h3 {{courseSelect.courseName}} {{assignmentSelect.assignmentName}} Tasks 
-                a(href="#myModal" uk-toggle="target: #myModal").uk-text-center
-                    span(uk-icon="icon: info")
+            h2.uk-card-title Current Focus:
+        div.uk-card-body
+            div.uk-clearfix
+                h3.uk-float-left Tasks for {{courseSelect.courseName}} {{assignmentSelect.assignmentName}}
+                a(href="#myModal" uk-icon="icon: info" uk-toggle="target: #myModal").uk-float-right.uk-icon-button
 
-            div.uk-grid.uk-grid-small.uk-grid-divider.uk-grid-match
-                div(ng-repeat="assignTask in ( filteredArray =  (assignmentTasks | filter:{assignmentId:assignmentSelect.assignmentId} ))").uk-width-1-2.uk-margin-bottom
+            ul.uk-list.uk-list-divider
+                li(ng-repeat="assignTask in ( filteredArray =  (assignmentTasks | filter:{assignmentId:assignmentSelect.assignmentId} ))")
                     include dashboardFocus.pug
 
                 div(id="myModal" uk-modal)
@@ -39,13 +41,14 @@ div#studentFocus
                         div.uk-modal-header
                             h3.uk-modal-title {{assignmentSelect.assignmentName}}
                         div.uk-modal-body
+                            h4 Assignment description
                             p {{assignmentSelect.description}}
 
-            button(id="assignmentCompleteId" type="button" ng-click="assignmentComplete()").uk-button.uk-button-default.uk-align-center.uk-hidden Finish Assignment
+            button(id="assignmentCompleteId" type="button" ng-click="assignmentComplete()").uk-button.uk-button-primary.uk-align-center.uk-hidden Finish Assignment
 
-    div#assignmentAccomplished.uk-card(ng-show="activeStudentFocus==3")
+    div(ng-show="activeStudentFocus==3")#assignmentAccomplished.uk-card.uk-card-default.uk-card-hover
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default
         div.uk-card-header
-            h2.uk-display-inline  Congrats, you've recently completed {{assignmentSelect.assignmentName}}
-        div.uk-card-body.uk-padding-remove-top
+            h2.uk-card-title  Congrats, you've recently completed {{assignmentSelect.assignmentName}}
+        div.uk-card-body
             button(type="button" ng-click="resetSelectedFocus( $event )" ).uk-button.uk-button-default.uk-align-center  Set New Focus?

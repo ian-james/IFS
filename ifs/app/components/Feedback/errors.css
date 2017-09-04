@@ -21,7 +21,7 @@
     border-radius: 3px !important;
 }
 
-.word-use {
+.word-use, .duplication {
     display: inline-block;
     background-color: #12cfc0 !important;
     text-decoration: none !important;

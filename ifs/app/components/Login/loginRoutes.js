@@ -67,7 +67,6 @@ module.exports = function( app, passport ) {
         var q = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(['userId']);
         db.query(q, [uid], function(err, data) {
             if (err) {
-                console.log("ERROR:", err);
                 res.redirect('/');
             }
             if (!data[0].completedSetup)
@@ -85,11 +84,21 @@ module.exports = function( app, passport ) {
     /* 
      */
     app.post('/register', passport.authenticate('local-signup', {
-        successRedirect : '/logout',
+        successRedirect : '/registration-complete',
         failureRedirect : '/register',
         failureFlash : true,
         badRequestMessage: "Failed to register!"
     }));
+
+    app.get('/registration-complete', function(req, res) {
+        if (req && req.user) {
+            res.render(viewPath + "/registration-complete", {title: "Success!", message: "Please check your email for a confirmation link. You need to verify your account before you can login.", justSignedUp: true});
+            req.session.destroy();
+        } else {
+            res.render(viewPath + "/registration-complete", {title: "Oops!", message: "Something went wrong and your request could not be processed. If you do not receive a verification link at your email address, contact support.", justSignedUp: true});
+        }
+        res.end();
+    });
 
     app.get('/logout', function (req, res) {
         req.session.destroy(function(err) {

@@ -74,7 +74,6 @@ module.exports = {
                     var update = dbHelpers.buildUpdate(dbcfg.verify_table) + ' SET token = ? ' + dbHelpers.buildWhere(['userId', 'type']);
                     db.query(update, [token, uid, route], function(updateErr, updateRet) {
                         if (updateErr) {
-                            console.log("ERROR", updateErr);
                             callback(updateErr, null);
                         } else { // query was successful
                             callback(null, link); // return
@@ -85,7 +84,6 @@ module.exports = {
                     var insert = dbHelpers.buildInsert(dbcfg.verify_table) + dbHelpers.buildValues(['userId', 'type', 'token']);
                     db.query(insert, [uid, route, token], function(insErr, insRet) {
                         if (insErr) {
-                            console.log("ERROR", insErr);
                             callback(insErr, null);
                         } else { //query was successful
                             callback(null, link); // return

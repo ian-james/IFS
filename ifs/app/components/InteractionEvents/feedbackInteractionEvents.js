@@ -14,7 +14,7 @@ module.exports = {
         return {
             'name': "feedbackViewedThisSession",
             'data':[userId,sessionId, "viewed"],
-            'request': "select COUNT(*) as value from feedback_interaction where userId = ? and sessionId = ? and action = ? "
+            'request': "select COUNT(*) as value from feedback_interactions where userId = ? and sessionId = ? and action = ? "
         };
     },
 
@@ -22,7 +22,7 @@ module.exports = {
         return {
             'name': "feedbackViewedThisSubmission",
             'data':[userId, sessionId, "viewed", userId],
-            'request': "select COUNT(*) as value from feedback_interaction where userId = ? and sessionId = ? and action = ? and submissionId = ( select MAX(submissionId) from feedback where userId = ? ) "
+            'request': "select COUNT(*) as value from feedback_interactions where userId = ? and sessionId = ? and action = ? and submissionId = ( select MAX(submissionId) from feedback where userId = ? ) "
         };
     },
 
@@ -30,7 +30,7 @@ module.exports = {
         return {
             'name': "feedbackViewedMoreThisSession",
             'data':[userId,sessionId, "viewedMore"],
-            'request': "select COUNT(*) as value from feedback_interaction where userId = ? and sessionId = ? and action = ? "
+            'request': "select COUNT(*) as value from feedback_interactions where userId = ? and sessionId = ? and action = ? "
         };
     },
 
@@ -38,7 +38,7 @@ module.exports = {
         return {
             'name': "feedbackViewedMoreThisSubmission",
             'data':[userId, sessionId, "viewedMore", userId],
-            'request': "select COUNT(*) as value from feedback_interaction where userId = ? and sessionId = ? and action = ? and submissionId = ( select MAX(submissionId) from feedback where userId = ? ) "
+            'request': "select COUNT(*) as value from feedback_interactions where userId = ? and sessionId = ? and action = ? and submissionId = ( select MAX(submissionId) from feedback where userId = ? ) "
         };
     },
 
@@ -46,7 +46,7 @@ module.exports = {
         return {
             'name': "feedbackViewedToViewedRatio",
             'data':["viewedMore", "viewed", userId, sessionId],
-            'request': "select ( sum(case when a.action = ? then 1 else 0 end) / sum(case when a.action = ? then 1 else 0 end )) as value from (select f.userId, f.sessionId, f.feedback, f_i.action from feedback f INNER JOIN feedback_interaction f_i on f.id = f_i.feedbackId where f.userId = ? and f.sessionId = ?) a"
+            'request': "select ( sum(case when a.action = ? then 1 else 0 end) / sum(case when a.action = ? then 1 else 0 end )) as value from (select f.userId, f.sessionId, f.feedback, f_i.action from feedback f INNER JOIN feedback_interactions f_i on f.id = f_i.feedbackId where f.userId = ? and f.sessionId = ?) a"
         };
     },
 
@@ -54,7 +54,7 @@ module.exports = {
         return {
             'name': "feedbackViewedToViewedRatio",
             'data':[ userId, sessionId ],
-            'request': "select DISTINCT a.toolName, COUNT(a.toolName) from (select f.userId, f.sessionId, f.feedback, f.toolName, f_i.action from feedback f INNER JOIN feedback_interaction f_i on f.id = f_i.feedbackId where f.userId = ? and f.sessionId = ? and f_i.submissionId = ?) a GROUP BY toolName"
+            'request': "select DISTINCT a.toolName, COUNT(a.toolName) from (select f.userId, f.sessionId, f.feedback, f.toolName, f_i.action from feedback f INNER JOIN feedback_interactions f_i on f.id = f_i.feedbackId where f.userId = ? and f.sessionId = ? and f_i.submissionId = ?) a GROUP BY toolName"
         };
     },
 
@@ -62,7 +62,7 @@ module.exports = {
         return {
             'name': "toolWithMostViewedFeedback",
             'data':[ userId, sessionId ],
-            'request': "select DISTINCT a.toolName, COUNT(a.toolName) from (select f.userId, f.sessionId, f.feedback, f.toolName, f_i.action from feedback f INNER JOIN feedback_interaction f_i on f.id = f_i.feedbackId where f.userId = ? and f.sessionId = ? and f_i.submissionId = ?) a GROUP BY toolName ORDER BY COUNT(a.toolName) desc LIMIT 1"
+            'request': "select DISTINCT a.toolName, COUNT(a.toolName) from (select f.userId, f.sessionId, f.feedback, f.toolName, f_i.action from feedback f INNER JOIN feedback_interactions f_i on f.id = f_i.feedbackId where f.userId = ? and f.sessionId = ? and f_i.submissionId = ?) a GROUP BY toolName ORDER BY COUNT(a.toolName) desc LIMIT 1"
         };
     },
 };

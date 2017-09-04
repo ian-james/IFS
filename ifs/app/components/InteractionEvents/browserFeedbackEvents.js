@@ -28,7 +28,6 @@ $(function() {
             });
         }
         else {
-            //console.log("else unknown clicker");
         }
     });
 });

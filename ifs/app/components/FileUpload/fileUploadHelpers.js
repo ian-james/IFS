@@ -321,15 +321,14 @@ module.exports = {
             var call = "";
             var folderCreated = false;
             var ext = this.getExt(file);
-
             if (ext == 'gz') {
                 folderCreated = mkdirp.sync(options.dir);
                 options.params = options.params || "-xzf";
-                call = "tar " + options.params + " " + file + " -C " + options.dir;
+                call = "tar " + options.params + " '" + file + "' -C " + options.dir;
             } else if (ext == 'tar') {
                 folderCreated = mkdirp.sync(options.dir);
                 options.params = options.params || "-xf";
-                call = "tar " + options.params + " " + file + " -C " + options.dir;
+                call = "tar " + options.params + " '" + file + "' -C " + options.dir;
             } else if (ext == 'zip') {
                 folderCreated = true;
                 options.params = options.params || " -q ";
@@ -341,7 +340,7 @@ module.exports = {
                 throw Errors.cLogErr("Unable to unzip project archive.");
             }
         } catch (e) {
-            var e = Errors.cErrLog("Unable to extract file(s): " + file);
+            var e = Errors.cLogErr("Unable to extract file(s): " + file);
             return e;
         }
 

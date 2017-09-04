@@ -1,16 +1,25 @@
 $(function(){
     $('.studentInput').on('change', function() {
-        sVal = $(this).val();
-        var progress = $(this).next('progress');
+
+        //constants relating to studentSkill.pug
+        var inputName = "numeric";
+        var progressName = "prog"
+        var hiddenName = "userHidden";
+
+        var sVal = Math.min(100, Math.max(0, $(this).val()));
+        var inputId = $(this).attr('id');
+        var idVal = inputId.substr( inputName.length );
+
+        var progress = $('#'+ progressName + idVal );
+
         if(progress) {
             // Change the progress bar.
             progress.val(sVal);
-        }
-
-        var hidden = progress.next('input');
-        if(hidden) {
-            // Set hidden to have changed to track.
-            hidden.val('yes');
+            var hidden = $('#' + hiddenName + idVal);
+            if(hidden) {
+                // Set hidden to have changed to track.
+                hidden.val('yes');
+            }
         }
     });
 });

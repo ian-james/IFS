@@ -92,7 +92,6 @@ module.exports = function(app) {
                 res.end();
             }
             if (!lookup || lookup != tok) {
-                console.log("ERROR TOKENS DO NOT MATCH");
                 res.render(viewPath + "verify", { title: title, message: error + " (2)"});
                 res.end();
             } else {
@@ -126,7 +125,6 @@ module.exports = function(app) {
                 res.end();
             }
             if (!data[0]) {
-                console.log("USER SUPPLIED EMAIL DOES NOT MATCH ID (" + uid + ") FOR PASSWD RESET.");
                 res.render(viewPath + "reset", { title: title, error: "Email does not match reset request. Did you make a typo?", valid: true, email: email, uid: uid, token: tok });
 
             }
@@ -218,7 +216,6 @@ module.exports = function(app) {
                 res.render(viewPath + "verify", { title: title, message: error + " (1)"});
             }
             if (!lookup || lookup != tok) {
-                console.log("ERROR TOKENS DO NOT MATCH");
                 res.render(viewPath + "verify", { title: title, message: error + " (2)"});
                 res.end();
             } else { // looked up correct account, now complete registration and remove entry from verify table
@@ -232,7 +229,6 @@ module.exports = function(app) {
                     }
                     console.log("DATA:", JSON.stringify(data));
                     if (data[0]) {
-                        console.log("USER ALREADY REGISTERED.");
                         res.render(viewPath + "verify", { title: title, message: regd + " (3)"});
                         res.end();
                     } else {
@@ -240,14 +236,12 @@ module.exports = function(app) {
                         db.query(reg, [uid, 1], function(err, data) {
                             if (err) {
                                 res.render(viewPath + "verify", { title: title, message: error + " (4)"});
-                                console.log("ERROR", JSON.stringify(err));
                                 return;
                             } else {
                                 var del = dbHelpers.buildDelete(dbcfg.verify_table) + dbHelpers.buildWhere(["userId", "type"]);
                                 db.query(del, [uid, "verify"], function(err, data) {
                                     if (err) {
                                         res.render(viewPath + "verify", { title: title, message: error + " (5)"});
-                                        console.log("ERROR", JSON.stringify(err));
                                         return;
                                     } else {
                                         res.render(viewPath + "verify", { title: title, message: success});
@@ -259,7 +253,6 @@ module.exports = function(app) {
                     }
                 });
             }
-            //res.render(viewPath + "verify", { title: title, message: debug});
         });
     });
 }

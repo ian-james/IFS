@@ -5,10 +5,14 @@ var multer = require('multer');
 var Logger = require( __configs + "loggingConfig");
 
 var _ = require('lodash');
+var url = require('url');
 
 var preferencesDB = require(__components + 'Preferences/preferenceDB.js');
 var profileDB = require(__components + 'StudentProfile/studentProfileDB.js');
 var defaultTool = require(__components + 'Preferences/setupDefaultToolType.js');
+
+var sanitization = require(__configs + 'sanitization');
+var validator = require('validator');
 
 // multer config
 var limits = { fileSize: 51200 };
@@ -41,10 +45,16 @@ var upload = multer({
 
 // POST/GET requests
 module.exports = function(app) {
-    app.route("/preferences")
-
-    .get(function(req,res,next) {
-        res.render(viewPath + "preferences", { title: 'Preferences', message:'ok'})
+    app.get('/preferences', function(req,res,next) {
+        var err = false;
+        var msg = "";
+        if (req.query.err === 'name' || req.query.err === 'bio') {
+                msg = "Illegal characters in " + req.query.err + ". Please try again.";
+                err = true;
+        } else if (req.query.success) {
+            msg = "Success! Your changes have been saved.";
+        }
+        res.render(viewPath + "preferences", {title: 'Preferences', message: msg, err: err})
     });
 
     app.get('/preferences/data.json', function(req, res) {
@@ -73,34 +83,46 @@ module.exports = function(app) {
 
 
     app.post('/preferences/profile', upload.single('student-avatar'), function(req, res, next) {
-        console.log("H1");
-
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
+        var error = false;
 
-        console.log("PREF", studentName, " ", studentBio);
+        if (!sanitization.validateText(studentName, 'title')) {
+            res.redirect(url.format({
+                pathname:"/preferences",
+                query: { err: "name" }
+            }));
+            error = true;
+        }
+        if (!sanitization.validateText(studentBio, 'par') && !error) {
+            res.redirect(url.format({
+                pathname: "/preferences",
+                query: { err: "bio" }
+            }));
+            error = true;
+        }
 
-        if(pref) {
-            console.log("H2"); 
+        if(pref && !error) {
             preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
-                console.log("H3");
                 if(!err)
                     defaultTool.setupDefaultTool(req, pref);
 
                 profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
-                    console.log("H4");
                     if(err)
                         Logger.log("ERROR SETTING STUDENT PROFILE");
+                    else {
+                        res.redirect(url.format({
+                            pathname: '/preferences',
+                            query: { success: "1" }
+                        }));
+                    }
 
-                    //TODO pop or message
-                    res.location("/tool");
-                    res.redirect("/tool");
                 });
             });
         } else {
-            Logger.log("ERROR ERROR");
+            Logger.log("ERROR IN POSTING PROFILE PREFERENCES");
             res.end();
         }
     });
