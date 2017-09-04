@@ -18,7 +18,11 @@ block content
                             div.uk-margin-remove-bottom
                                 if title != skill.title
                                     h3.uk-margin-remove-bottom #{skill.title}
-                                h4 #{skill.skillName}
+                                div.uk-clearfix
+                                    h4.uk-float-left #{skill.skillName}
+                                    a(href="#" uk-icon="icon: info").uk-icon-button.uk-float-right
+                                    div(uk-dropdown="pos: left-center; delay-hide: 100").uk-width-medium
+                                        span #{skill.classDescription}
 
                                 //- Note: studentSkillSlider uses the format and naming form this code
                                 //- If you need to change it make sure studentSkillSliders.js is update to still work.
@@ -42,7 +46,11 @@ block content
                             div
                                 if title != skill.title
                                     h3.uk-margin-remove-bottom #{skill.title}
-                                h4 #{skill.skillName}
+                                div.uk-clearfix
+                                    h4.uk-float-left #{skill.skillName}
+                                    a(href="#" uk-icon="icon: info").uk-icon-button.uk-float-right
+                                    div(uk-dropdown="pos: left-center; delay-hide: 100").uk-width-medium
+                                        span #{skill.description}
 
                                 //- Note: studentSkillSlider uses the format and naming form this code
                                 //- If you need to change it make sure studentSkillSliders.js is update to still work.

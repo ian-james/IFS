@@ -13,8 +13,11 @@ block content
             form(name="preferences" enctype="multipart/form-data" method="post" action="/preferences/profile")#preferencesFrm.uk-margin
                 h2.uk-margin-remove-bottom {{ prefsList.displayName }}
                 p.uk-text-meta.uk-margin-remove-top Change settings for your account and choose assessment tools.
-                p.uk-text-center If you would want to review or change your experiment opt-in information please visit the experiment
-                    a(href="/setup")  setup page.
+                div(uk-alert).uk-alert-primary
+                    p
+                        |If you would want to review or change your experiment opt-in information please visit the experiment 
+                        a(href="/setup") setup page
+                        |.
                 div(ng-repeat="option in prefsList.options")
                     include prefsItem.pug
                 br
