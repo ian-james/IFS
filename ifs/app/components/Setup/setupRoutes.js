@@ -18,7 +18,7 @@ module.exports = function(app) {
     app.route("/setup")
 
     .get(function(req,res,next) {
-        res.render(viewPath + "setup", { title: 'Setup', message: 'ok' });
+        res.render(viewPath + "setup", { title: 'Setup', message: 'ok', noNav: true });
     });
 
     app.get('/setup/data.json', function(req, res, next) {

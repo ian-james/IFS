@@ -11,51 +11,52 @@ nav(uk-navbar).uk-background-secondary.uk-margin
         ul.uk-navbar-nav
             // justSignedUp is passed to the client from /registration-complete;
             // this is kind of hackish but it works well
-            if !user || justSignedUp === true
-                li
-                    a(href="/register")
-                        span(uk-icon="icon: plus-circle").uk-margin-small-right
-                        | Sign-up
-                li
-                    a(href="/login")
-                        span(uk-icon="icon: sign-in").uk-margin-small-right
-                        | Login
-            else
-                li
-                    a(href="/")
-                        span(uk-icon="icon: push").uk-margin-small-right
-                        span(class="uk-visible@m") Upload
-                li
-                    a(href="/feedback")
-                        span(uk-icon="icon: commenting").uk-margin-small-right
-                        span(class="uk-visible@m") Feedback
-                // Drop down menu
-                li.uk-inline
-                    a(href="#")
-                        // user's avatar if any
-                        img(src="../../shared/img/user/" + user.id + "/avatar.png").nav-avatar
-                        span(uk-icon="icon: triangle-down")
-                    div(uk-dropdown="mode: click; pos: bottom-right").uk-dropdown
-                        ul(uk-nav).uk-nav-default
-                            // navigation options
-                            li
-                                a(href="/profile")
-                                    span(uk-icon="icon: user").uk-margin-small-right
-                                    | Profile
-                            li
-                                a(href="/dashboard")
-                                    span(uk-icon="icon: thumbnails").uk-margin-small-right
-                                    | Dashboard
-                            li
-                                a(href="/preferences")
-                                    span(uk-icon="icon: cog").uk-margin-small-right
-                                    | Preferences
-                            li
-                                a(href="/surveys")
-                                    span(uk-icon="icon: link").uk-margin-small-right
-                                    | Surveys
-                            hr
-                            li
-                                a(href="/logout")
-                                    span(uk-icon="icon: sign-out").uk-margin-small-right
-                                    | Logout
+            if !noNav
+                if !user || justSignedUp === true
+                    li
+                        a(href="/register")
+                            span(uk-icon="icon: plus-circle").uk-margin-small-right
+                            | Sign-up
+                    li
+                        a(href="/login")
+                            span(uk-icon="icon: sign-in").uk-margin-small-right
+                            | Login
+                else
+                    li
+                        a(href="/")
+                            span(uk-icon="icon: push").uk-margin-small-right
+                            span(class="uk-visible@m") Upload
+                    li
+                        a(href="/feedback")
+                            span(uk-icon="icon: commenting").uk-margin-small-right
+                            span(class="uk-visible@m") Feedback
+                    // Drop down menu
+                    li.uk-inline
+                        a(href="#")
+                            // user's avatar if any
+                            img(src="../../shared/img/user/" + user.id + "/avatar.png").nav-avatar
+                            span(uk-icon="icon: triangle-down")
+                        div(uk-dropdown="mode: click; pos: bottom-right").uk-dropdown
+                            ul(uk-nav).uk-nav-default
+                                // navigation options
+                                li
+                                    a(href="/profile")
+                                        span(uk-icon="icon: user").uk-margin-small-right
+                                        | Profile
+                                li
+                                    a(href="/dashboard")
+                                        span(uk-icon="icon: thumbnails").uk-margin-small-right
+                                        | Dashboard
+                                li
+                                    a(href="/preferences")
+                                        span(uk-icon="icon: cog").uk-margin-small-right
+                                        | Preferences
+                                li
+                                    a(href="/surveys")
+                                        span(uk-icon="icon: link").uk-margin-small-right
+                                        | Surveys
+                                hr
+                                li
+                                    a(href="/logout")
+                                        span(uk-icon="icon: sign-out").uk-margin-small-right
+                                        | Logout
