@@ -3,6 +3,7 @@ var viewPath = path.join( __dirname + "/");
 var Logger = require( __configs + "loggingConfig");
 
 var fs = require('fs');
+var async = require('async');
 
 module.exports = function( app ) {
 
@@ -16,21 +17,17 @@ module.exports = function( app ) {
         var langToolsFile = './tools/toolList.json';
         var progToolsFile = './tools/toolListProgramming.json';
 
-        fs.readFile(langToolsFile, 'utf-8', function(errLang, langToolData) {
-
-            fs.readFile(progToolsFile, 'utf-8', function(errProg, progToolData) {
-                if (errLang || errProg ) {
-                    // unable to get supported tools file, larger problem here.
-                    // Unlikely to occur given these are static files but never know.
-                    Logger.error(err);
-                    res.json({'lang':[], 'prog':[]});
-                } else {
-                    var langToolsObj = JSON.parse(langToolData);
-                    var progToolsObj = JSON.parse(progToolData);
-
-                    res.json({'lang':langToolsObj, 'prog':progToolsObj})
-                }
-            });
+        async.concatSeries( [langToolsFile, progToolsFile], fs.readFile, function(err,files){
+            if(err) {
+                Logger.error(err);
+                res.json({'lang':[], 'prog':[]});
+                res.end();
+            }
+            else {
+                var langToolsObj = JSON.parse(files[0]);
+                var progToolsObj = JSON.parse(files[1]);
+                res.json({'lang':langToolsObj, 'prog':progToolsObj})
+            }
         });
     })
 }

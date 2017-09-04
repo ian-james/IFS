@@ -6,7 +6,7 @@ module.exports = function (app, iosocket) {
     var passport = require('passport');
 
     // i18n Translation routes
-    require( path.join( __dirname, "/i18nRoutes"))(app);
+    //require( path.join( __dirname, "/i18nRoutes"))(app);
     require( componentsPath + "/InteractionEvents/eventRoutes")(app, iosocket);
 
     require(componentsPath + "/Admin/adminRoutes")(app);

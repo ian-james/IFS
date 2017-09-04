@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "pretest": "node ./config/createDatabase.js",
-    "test": "mocha --timeout 10000",
+    "test": "nodemon --inspect --config ./config/nodemon.json ./config/index.js",
     "prestart": "node ./config/createDatabase.js",
-    "start": "nodemon --inspect --config ./config/nodemon.json ./config/index.js"
+    "start": "pm2 start ./config/index.js -i 0 --name IFS"
   },
   "repository": {
     "type": "git",

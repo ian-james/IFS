@@ -2,6 +2,9 @@
 var express = require('express');
 var app = express();
 
+//var compression = require('compression');
+//app.use(compression());
+
 if(app.get('env') === 'production'){
     console.log("In PRODUCTION");
 }
