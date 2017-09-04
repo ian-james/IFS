@@ -26,6 +26,14 @@
                     "params": ""
                 },
                 {
+                    "displayName": "Custom compiler flags",
+                    "type": "text",
+                    "name": "opt-gccCompilerFlags",
+                    "placeholder": "ex. -lm -lncurses -DX_OPENSOURCE",
+                    "values": "",
+                    "arg": "-f"
+                },
+                {
                     "displayName": "Standard warnings (-Wall)",
                     "type": "checkbox",
                     "name": "opt-gccLanguageWarningAll",
@@ -83,6 +91,14 @@
                     "values": [ "c89", "c99","c11"],
                     "arg": "-s",
                     "params": ""
+                },
+                {
+                    "displayName": "Custom compiler flags",
+                    "type": "text",
+                    "name": "opt-clangCompilerFlags",
+                    "placeholder": "ex. -lm -lncurses, -D_XOPENSOURCE",
+                    "values": "",
+                    "arg": "-f"
                 },
                 {
                     "displayName": "Standard warnings (-Wall)",
