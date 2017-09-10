@@ -14,4 +14,5 @@ Security fix: 2017/09/03
     formatted inputs are validated to match expected patterns (ex. date
     strings, etc.) using validator.js.
  5. Credit
-    This issue was identified by [Keefer Rourke](https://github.com/keeferrourke)
+    This issue was identified by the University of Guelph CIS Security
+    team and fixed by [Keefer Rourke](https://github.com/keeferrourke)
