@@ -21,7 +21,7 @@
                     "displayName": "Language standard (std)",
                     "type": "select",
                     "name": "opt-gccLanguageStd",
-                    "values": [ "c99","c11","c89"],
+                    "values": [ "c99", "gnu99", "c11", "gnu11", "c89", "gnu89"],
                     "arg": "-s",
                     "params": ""
                 },
@@ -69,7 +69,7 @@
         },
         {
             "displayName": "Clang Diagnostics",
-            "description": "Identifies errors and warnings from the Clang C compiler.",
+            "description": "Identifies errors and warnings from the Clang C compiler. These errors and warnings are often more readable than those from GCC.",
             "technicalDesc": "A Python script that checks C/C++ compilation with the Clang compiler.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
@@ -88,7 +88,7 @@
                     "displayName": "Language standard (std)",
                     "type": "select",
                     "name": "opt-clangLanguageStd",
-                    "values": [ "c99","c11","c89"],
+                    "values": [ "c99", "gnu99", "c11", "gnu11", "c89", "gnu89"],
                     "arg": "-s",
                     "params": ""
                 },
