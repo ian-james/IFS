@@ -40,7 +40,7 @@ module.exports = function(app) {
                     if( r ){
                         if(r.type == "checkbox")
                             r['prefValue'] = toolPreferences[i].toolValue == "on";
-                        else if(r.type == "select")
+                        else if(r.type == "select" || r.type == "text")
                             r['prefValue'] = toolPreferences[i].toolValue;
                     }
                 }
