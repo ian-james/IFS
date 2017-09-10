@@ -21,7 +21,7 @@
                     "displayName": "Language standard (std)",
                     "type": "select",
                     "name": "opt-gccLanguageStd",
-                    "values": [ "c89", "c99","c11"],
+                    "values": [ "c99","c11","c89"],
                     "arg": "-s",
                     "params": ""
                 },
@@ -88,7 +88,7 @@
                     "displayName": "Language standard (std)",
                     "type": "select",
                     "name": "opt-clangLanguageStd",
-                    "values": [ "c89", "c99","c11"],
+                    "values": [ "c99","c11","c89"],
                     "arg": "-s",
                     "params": ""
                 },
@@ -163,7 +163,7 @@
                     "displayName": "CppCheck language standard (std)",
                     "type": "select",
                     "name": "opt-cppCheckLanguageStd",
-                    "values": [ "c89", "c99","c11"],
+                    "values": [ "c99","c11","c89"],
                     "arg": "-s",
                     "params": ""
                 },
