@@ -166,9 +166,13 @@ function validateText(text, type) {
         backslashes: true
     };
     var blacklistPar = {
-        round_brackets: false,
+        round_brackets: true,
+        square_brackets: true,
         semicolons: true,
-        backslashes: true,
+        colon: true,
+        dots: true,
+        commas: true,
+        questions: true
     };
 
     if (type === 'title')
