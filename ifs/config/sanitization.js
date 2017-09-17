@@ -183,6 +183,21 @@ function validateText(text, type) {
     return false;
 }
 
+function validateGuelphEmail( email ) {
+
+    if( email ) {
+        var esplits = email.split('@');
+        if( esplits.length == 2 )
+        {
+            var userId = esplits[0];
+            var domain = "uoguelph.ca"
+            return userId.length >= 1 && domain == esplits[1] && validateText(userId, 'title');
+        }
+    }
+    return false;
+}
+
 module.exports.default_options = default_options;
 module.exports.containsIllegal = containsIllegal;
 module.exports.validateText = validateText;
+module.exports.validateGuelphEmail = validateGuelphEmail;

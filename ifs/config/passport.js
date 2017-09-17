@@ -62,6 +62,10 @@ module.exports = function (passport) {
                     return done(null, false);
                 } else {
                     username = validator.normalizeEmail(username);
+                    if(!sanitization.validateGuelphEmail(username)) {
+                        req.flash('errorMessage', 'Error. You must use a valid University of Guelph email address.');
+                        return done(null, false);
+                    }
                 }
                 if (!sanitization.validateText(firstname, 'title')) {
                     req.flash('errorMessage', 'Illegal characters in first name.');
