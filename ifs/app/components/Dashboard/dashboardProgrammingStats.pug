@@ -1,6 +1,6 @@
 div#statsSection
-    h3 Accuracy
-    p.uk-text-meta View the most prevalent types of errors and feedback items received per submission. A lower feedback/submission ratio might be indicative of improvement over time as fewer errors and warnings are reported.
+    h3 Submission accuracy
+    p.uk-text-meta  View cumulative course submissions and feedback information. A lower feedback/submission ratio might be indicative of improvement over time as fewer errors and warnings are reported.
     div(ng-if="stats" data-uk-grid-margin).uk-grid.uk-grid-match
         div(ng-repeat="submissionErrorRate in [stats.userStats.submissionErrorRate]" ng-init="sectionName='My Accuracy';").uk-width-1-2
             include dashboardAccuracySection.pug
@@ -9,18 +9,18 @@ div#statsSection
             include dashboardAccuracySection.pug
 
     h3 Common feedback
-    p.uk-text-meta The most commons errors made by you and your peers are reported below.
+    p.uk-text-meta View the most prevalent types of errors and feedback items received per submission.
     div(ng-if="stats" data-uk-grid-margin).uk-grid.uk-grid-match
         div(ng-repeat="myArr in [stats.userStats.commonFeedback.value] track by $index" ng-init="sectionName='Most Common Feedback';").uk-width-1-1
             include programmingCommonFeedback.pug
 
-    h3 Tool usage
+    h3 Favourite tools
     p.uk-text-meta The most commonly used programming tools available in the IFS are reported below.
     div(ng-if="stats" data-uk-grid-margin).uk-grid.uk-grid-match
         div.uk-width-1-2
             div.uk-card.uk-card-default
                 div.uk-card-body
-                    h4.uk-card-title Student Tool Usage
+                    h4.uk-card-title Your favourites
                     ul.uk-list.uk-list-striped
                         li(ng-repeat="stat in [stats.userStats.mostUsedTools, stats.userStats.mostFeedbackTools, stats.userStats.mostViewedMoreFeedbackTool] track by $index")
                             p(ng-if="!stat.displayName").uk-display-inline No student submissions
@@ -29,7 +29,7 @@ div#statsSection
         div.uk-width-1-2
             div.uk-card.uk-card-default
                 div.uk-card-body
-                    h4.uk-card-title Class Tool Usage
+                    h4.uk-card-title Class favourites
                     ul.uk-list.uk-list-striped
                         li(ng-repeat="stat in [stats.socialStats.mostUsedTools, stats.socialStats.mostFeedbackTools, stats.socialStats.mostViewedMoreFeedbackTool] track by $index")
                             p(ng-if="!stat.displayName").uk-display-inline No student submissions

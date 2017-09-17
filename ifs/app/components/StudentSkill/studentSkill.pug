@@ -9,57 +9,67 @@ block content
             p.errorMessage #{messages.errorMessage}
 
         form(id="studentSkillForm" class='uk-form' method="post" action="/skills")
-            div.studentSkills
-                h2 Student Skills
+            div(class="uk-width-1-1").studentSkills
+                h2 Student Self-Assessed Skills
+                p.uk-text-meta This section allows you to make self-assessment about your knowledge on a certain portion of assignment. It allows you to track your own growth over time.
+                p.uk-text-meta 
+                    | Ratings are between 
+                    span.uk-text-primary.uk-text-bold  0 (no experience) 
+                    | and 
+                    span.uk-text-primary.uk-text-bold 100 (completely confident).
                 if userRatedSkills && userRatedSkills.length > 0
                     div.uk-container
                         - var title = "";
+                        h2.uk-text-center Student Rated Skills
+                        hr
                         each skill in userRatedSkills
-                            div.uk-margin-remove-bottom
-                                if title != skill.title
-                                    h3.uk-margin-remove-bottom #{skill.title}
-                                div.uk-clearfix
-                                    h4.uk-float-left #{skill.skillName}
+                            div.uk-card.uk-card-hover.uk-card-default.uk-margin
+                                h2.uk-card-title.uk-text-center
+                                    |  #{skill.title}
+                                    span(uk-icon="icon: arrow-right").uk-margin-remove.uk-padding-remove
+                                    | #{skill.skillName}
+
+                                div.uk-card-body.uk-padding-remove-top
                                     a(href="#" uk-icon="icon: info").uk-icon-button.uk-float-right
                                     div(uk-dropdown="pos: left-center; delay-hide: 100").uk-width-medium
                                         span #{skill.classDescription}
 
-                                //- Note: studentSkillSlider uses the format and naming form this code
-                                //- If you need to change it make sure studentSkillSliders.js is update to still work.
-                                div(uk-grid).uk-grid.uk-margin-small
-                                    div.uk-width-auto
-                                        input(id="numeric"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]", type="number" min="0" max="100" value=skill.value*100).uk-text-center.studentInput
-                                    div.uk-width-expand
-                                        progress(id="prog"+skill.classSkillId, value=skill.value*100, max="100").uk-progress.studentSlider
-                                    input(id="userHidden"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
-                            - title = skill.title;
+                                    //- Note: studentSkillSlider uses the format and naming form this code
+                                    //- If you need to change it make sure studentSkillSliders.js is update to still work.
+                                    div(uk-grid).uk-grid.uk-margin-small
+                                        div.uk-width-auto
+                                            input(id="numeric"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]", type="number" min="0" max="100" value=skill.value*100).uk-text-center.studentInput
+                                        div.uk-width-expand
+                                            progress(id="prog"+skill.classSkillId, value=skill.value*100, max="100").uk-progress.studentSlider
+                                        input(id="userHidden"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
+                                - title = skill.title;
                 else
                     h4 You've yet to rate your skill level in any course skills.
-            hr
 
-            div.courseSkills
-                h2.uk-margin-remove-bottom Course Skills
+                hr
+
                 if classSkills && classSkills.length > 0
-                   div
-                        - var title = "";
+                    div.uk-container
                         each skill in classSkills
-                            div
-                                if title != skill.title
-                                    h3.uk-margin-remove-bottom #{skill.title}
-                                div.uk-clearfix
-                                    h4.uk-float-left #{skill.skillName}
+                            div.uk-card.uk-card-hover.uk-card-default.uk-margin-bottom
+                                h2.uk-card-title.uk-text-center.uk-text-muted
+                                    |  #{skill.title}
+                                    span(uk-icon="icon: arrow-right").uk-margin-remove.uk-padding-remove
+                                    | #{skill.skillName}
+
+                                div.uk-card-body.uk-padding-remove-top
                                     a(href="#" uk-icon="icon: info").uk-icon-button.uk-float-right
                                     div(uk-dropdown="pos: left-center; delay-hide: 100").uk-width-medium
-                                        span #{skill.description}
+                                        span #{skill.classDescription}
 
-                                //- Note: studentSkillSlider uses the format and naming form this code
-                                //- If you need to change it make sure studentSkillSliders.js is update to still work.
-                                div(uk-grid).uk-grid.uk-margin-small
-                                    div.uk-width-auto
-                                        input(id="numeric"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]", type="number" min="0" max="100" value=0).uk-text-center.uk-display-inline.studentInput
-                                    div.uk-width-expand
-                                        progress(id="prog"+skill.classSkillId, value=0 max="100").uk-progress.studentSlider
-                                    input(id="userHidden"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
+                                    //- Note: studentSkillSlider uses the format and naming form this code
+                                    //- If you need to change it make sure studentSkillSliders.js is update to still work.
+                                    div(uk-grid).uk-grid.uk-margin-small
+                                        div.uk-width-auto
+                                            input(id="numeric"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]", type="number" min="0" max="100" value=skill.value*100).uk-text-center.studentInput
+                                        div.uk-width-expand
+                                            progress(id="prog"+skill.classSkillId, value=skill.value*100, max="100").uk-progress.studentSlider
+                                        input(id="userHidden"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
                                 - title = skill.title;
                 else
                     h4 No course skills are available.

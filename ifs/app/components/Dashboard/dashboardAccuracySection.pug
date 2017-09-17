@@ -2,9 +2,9 @@ div.uk-card.uk-card-default
     div.uk-card-body
         h4.uk-card-title {{sectionName}}
         ul(ng-if="submissionErrorRate").uk-list.uk-list-striped
-            li 
-                p.uk-display-inline {{ submissionErrorRate.feedbackItems }} Feedback Items Total
             li
-                p.uk-display-inline {{ submissionErrorRate.submissionCount }} Submissions
+                p.uk-display-inline {{ submissionErrorRate.submissionCount }} Number of submissions
             li 
-                p.uk-display-inline {{ ((submissionErrorRate.feedbackItems / submissionErrorRate.submissionCount) | number:0) || 0 }} Feedback/Submission Ratio 
+                p.uk-display-inline {{ submissionErrorRate.feedbackItems }} Total suggestions received
+            li 
+                p.uk-display-inline {{ ((submissionErrorRate.feedbackItems / submissionErrorRate.submissionCount) | number:0) || 0 }} Feedback per submission ratio

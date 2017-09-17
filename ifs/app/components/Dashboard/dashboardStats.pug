@@ -1,6 +1,6 @@
 div#statsSection
     h2 Accuracy
-    p.uk-text-meta View the most prevalent types of errors and feedback items received per submission. A lower feedback/submission ratio might be indicative of improvement over time as fewer errors and warnings are reported.
+    p.uk-text-meta View cumulative course submissions and feedback information. A lower feedback/submission ratio might be indicative of improvement over time as fewer errors and warnings are reported.
     div(ng-if="stats" data-uk-grid-margin).uk-grid
         div(ng-repeat="accuracy in [stats.userStats.accuracy] track by $index" ng-init="sectionName = 'My Spelling Accuracy'").uk-width-1-2
             include dashboardWritingAccuracy.pug
@@ -8,26 +8,26 @@ div#statsSection
         div(ng-repeat="accuracy in [stats.socialStats.accuracy] track by $index" ng-init="sectionName = 'Class Accuracy'").uk-width-1-2
             include dashboardWritingAccuracy.pug
 
-    h2 Writing Statistics
+    h2 Writing Assessment Information
     p.uk-text-meta Below are the most common spelling mistakes and suggestions, error counts, and most common tools used by you and your classes.
     div(ng-if="stats" class="uk-child-width-1-1@s uk-child-width-1-3@m" data-uk-grid-margin).uk-grid.uk-grid-match
-        div(ng-repeat="spellingSuggestion in [stats.userStats.suggestions] track by $index" ng-init="sectionName = 'My Spelling'")
+        div(ng-repeat="spellingSuggestion in [stats.userStats.suggestions] track by $index" ng-init="sectionName = 'My Common Feedback'")
             include dashboardWritingSpelling.pug
 
-        div(ng-repeat="accuracy in [stats.userStats.accuracy] track by $index" ng-init="sectionName = 'My Totals'")
+        div(ng-repeat="accuracy in [stats.userStats.accuracy] track by $index" ng-init="sectionName = 'My Submission Totals'")
             include dashboardWritingTotals.pug
 
-        div(ng-repeat="tools in [stats.userStats.tools] track by $index" ng-init="sectionName = 'My Tools'")
+        div(ng-repeat="tools in [stats.userStats.tools] track by $index" ng-init="sectionName = 'My Favourite Tools'")
             include dashboardWritingTools.pug
 
     div(ng-if="stats" class="uk-child-width-1-1@s uk-child-width-1-3@m" data-uk-grid-margin).uk-grid.uk-grid-match
-        div(ng-repeat="spellingSuggestion in [stats.socialStats.suggestions] track by $index" ng-init="sectionName = 'Class Spelling'")
+        div(ng-repeat="spellingSuggestion in [stats.socialStats.suggestions] track by $index" ng-init="sectionName = 'Class Common Feedback'")
            include dashboardWritingSpelling.pug
 
-        div(ng-repeat="accuracy in [stats.socialStats.accuracy] track by $index" ng-init="sectionName = 'Class Totals'")
+        div(ng-repeat="accuracy in [stats.socialStats.accuracy] track by $index" ng-init="sectionName = 'Class Submission Totals'")
             include dashboardWritingTotals.pug
 
-        div(ng-repeat="tools in [stats.socialStats.tools]"  ng-init="sectionName = 'Class Tools'")
+        div(ng-repeat="tools in [stats.socialStats.tools]"  ng-init="sectionName = 'Class Favourite Tools'")
             include dashboardWritingTools.pug
 
 div(ng-if="!stats")

@@ -80,7 +80,7 @@ module.exports = function(app) {
     app.get('/tool', function(req, res, next) {
         var userId = req.user.id || req.passport.user;
         SurveyManager.getUserSurveyProfileAndSurveyType(userId, function(err,surveyPrefData) {
-            if( err ) {
+            if( err || !__EXPERIMENT_ON ) {
                 res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
             }
             else {
