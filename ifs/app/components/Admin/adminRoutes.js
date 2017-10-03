@@ -196,7 +196,7 @@ module.exports = function( app ) {
                     }
                 }));
             } else {
-                error = validateDesc(res, route, desc, function(err2, route) {
+                validateDesc(res, route, desc, function(err2, route) {
                     if (err2) {
                         directTo(res, url.format({
                             pathname: route,

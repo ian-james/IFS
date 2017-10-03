@@ -100,15 +100,16 @@ module.exports = function (app, iosocket )
 
         var toolSelect = req.session.toolSelect.toLowerCase();
         var topN = 3;
+        var uid = req.user.id;
         var requests = [
             {
-                'request': studentModel.getMyMostCommonSpellingMistakes.bind( null,req.user.id, topN ),
+                'request': studentModel.getMyMostCommonSpellingMistakes.bind( null,uid, topN ),
                 'process': getSuggestion,
                 'resultPath': 'userStats.suggestions',
                 'displayName': 'My Suggestions'
             },
             {
-                'request': studentModel.getMySpellingAccuracy.bind( null,req.user.id),
+                'request': studentModel.getMySpellingAccuracy.bind( null,uid),
                 'process': null,
                 'resultPath': 'userStats.accuracy',
                 'displayName': 'Spelling Accuracy'
@@ -127,7 +128,7 @@ module.exports = function (app, iosocket )
             },
 
             {
-                'request': studentModel.getMyMostUsedTools.bind( null,req.user.id, toolSelect, topN ),
+                'request': studentModel.getMyMostUsedTools.bind( null,uid, toolSelect, topN ),
                 'process': null,
                 'resultPath': 'userStats.tools',
                 'displayName': 'My Tools'
@@ -237,14 +238,13 @@ module.exports = function (app, iosocket )
     }
 
     function collectDashboardData( req, res, callback ) {
-
         studentProfile.getStudentProfileAndClasses(req.user.id, function(err, studentData) {
             var toolType = req.session.toolSelect == "Programming" ? "programming" : "writing";
             var toolFunc =  req.session.toolSelect == "Programming" ? programmingStats : writingStats;
 
             if(studentData) {
                 var studentProfile = _.pick(studentData[0],  ["id","name", "bio", "avatarFileName"]);
-                var courses = _.map(studentData, obj => _.pick(obj,["id","code","courseName","description","disciplineType"]));
+                var courses = _.map(studentData, obj => _.pick(obj,["courseId","code","courseName","description","disciplineType"]));
                 if(courses.length == 0 ) {
                     // NO courses
                     var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses,'assignments': [],
@@ -258,8 +258,7 @@ module.exports = function (app, iosocket )
                     studentSkill.getAssigmentAndTaskList(studentProfile.id, function(errTask, taskData) {
 
                         var assignmentTasks = taskData;
-
-                        studentSkill.getUserSkills( req.user.id, function(skillErr, skills) {
+                        studentSkill.getStudentSkills( studentProfile.id, function(skillErr, skills) {
 
                             var focus = null;
                             if( req.session.dailyFocus )

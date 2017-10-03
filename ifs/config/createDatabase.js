@@ -352,10 +352,10 @@ try {
             studentId INT UNSIGNED NOT NULL, \
             classSkillId INT UNSIGNED, \
             value DECIMAL(4,2), \
+            lastRated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
             PRIMARY KEY(id), \
             FOREIGN Key (studentId) REFERENCES " + dbcfg.database + "." + dbcfg.student_table + "(id), \
-            FOREIGN Key (classSkillId) REFERENCES " + dbcfg.database + "." + dbcfg.class_skill_table + "(id), \
-            UNIQUE Key studentClassSkill (studentId,classSkillId) \
+            FOREIGN Key (classSkillId) REFERENCES " + dbcfg.database + "." + dbcfg.class_skill_table + "(id) \
         )");
 
         // Roles Tables (student,instructor, owner...etc)

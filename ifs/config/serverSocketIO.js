@@ -1,6 +1,6 @@
 var event = require(__components + "InteractionEvents/buildEvent.js" );
 var tracker = require(__components + "InteractionEvents/trackEvents.js" );
-var studentTask = require(__components + "StudentProfile/studentTaskDB.js");
+var studentTask = require(__components + "StudentProfile/studentSkillDB.js");
 
 module.exports = function (app, socket_io) {
 

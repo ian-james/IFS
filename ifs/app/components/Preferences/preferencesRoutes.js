@@ -114,8 +114,7 @@ module.exports = function(app) {
                         Logger.log("ERROR SETTING STUDENT PROFILE");
                     else {
                         res.redirect(url.format({
-                            pathname: '/preferences',
-                            query: { success: "1" }
+                            pathname: '/tool'
                         }));
                     }
 

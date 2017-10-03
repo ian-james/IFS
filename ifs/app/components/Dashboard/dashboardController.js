@@ -75,7 +75,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
 
             // Attach course select and assignment select
             for( var i = 0; i < $scope.courses.length;i++ ) {
-                if( $scope.courses[i].id == $scope.focus.courseId) {
+                if( $scope.courses[i].courseId == $scope.focus.courseId) {
                     $scope.courseSelect = $scope.courses[i];
                 }
             }

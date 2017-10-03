@@ -16,10 +16,10 @@ div#studentFocus
                 div.uk-grid
                     div.uk-width-1-2
                         label(for="courseSelect").uk-padding-small Select course:
-                        select(ng-model="courseSelect" ng-options="c.courseName for c in courses track by c.id" name="courseSelection").uk-select
+                        select(ng-model="courseSelect" ng-options="c.courseName for c in courses track by c.courseId" name="courseSelection").uk-select
                     div.uk-width-1-2
                         label(for="assignmentSelect").uk-padding-small Select Assignment:
-                        select(ng-model="assignmentSelect" ng-options="a.assignmentName for a in ( assignments | filter:{courseId: courseSelect.id}) track by a.assignmentId").uk-select
+                        select(ng-model="assignmentSelect" ng-options="a.assignmentName for a in ( assignments | filter:{courseId: courseSelect.courseId}) track by a.assignmentId").uk-select
                 button(type="button" ng-disabled="!hasFocusItem()" ng-click="getNextSelected( $event )" ).uk-button.uk-button-default.uk-align-center Set Focus
 
     div(ng-show="activeStudentFocus==2")#studentSelectedFocus.uk-card.uk-card-default.uk-card-hover
