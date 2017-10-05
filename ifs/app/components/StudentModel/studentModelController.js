@@ -52,7 +52,8 @@ app.controller( "studentModelCtrl", function($scope, $http) {
         $scope.dataOptions = [
             { 'name': 'Submissions', 'key': 'nsubs' },
             { 'name': 'Feedback Items', 'key': 'nerrs' },
-            { 'name': 'Feedback Items Viewed', 'key': 'nfiv' }
+            { 'name': 'Feedback Items Viewed', 'key': 'nfiv' },
+            { 'name': "Self-Assessments", 'key':'sass'}
         ];
     }
 

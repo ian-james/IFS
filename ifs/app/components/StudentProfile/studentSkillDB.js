@@ -16,9 +16,13 @@ module.exports = {
     },
 
     getStudentTop3Skills: function( studentId,callback ) {
-        console.log("Log me ", studentId );
         var q = "SELECT cs.id as classSkillId, a.id as assignmentId, a.name as assignmentName, a.title, cs.name as skillName, cs.description as classDescription, ss.value FROM (select * from student_skill where (studentId, classSkillId, lastRated) IN ( SELECT studentId,classSkillId,max(lastRated) as lastRated from student_skill GROUP BY studentId,classSkillId )) ss, class_skill cs, assignment a WHERE ss.studentId = ? AND cs.id = ss.classSkillId and cs.assignmentId = a.id ORDER BY value LIMIT 3";
-        db.query(q,studentId,callback)
+        db.query(q,studentId,callback);
+    },
+
+    getAllStudentSkillsWithDescription: function( studentId, callback ) {
+        var q = "SELECT cs.id as classSkillId, a.id as assignmentId, a.name as assignmentName, a.title, cs.name as skillName, cs.description as classDescription, ss.value, ss.lastRated FROM student_skill ss, class_skill cs, assignment a WHERE ss.studentId = ? AND cs.id = ss.classSkillId and cs.assignmentId = a.id";
+        db.query(q,studentId,callback);
     },
 /*
     getStudentTasks: function( studentId, callback ) {
