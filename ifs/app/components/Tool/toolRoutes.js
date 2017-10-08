@@ -10,6 +10,7 @@ var SurveyBuilder = require(__components + "Survey/surveyBuilder");
 var Survey = require( __components + "Survey/survey");
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
+var TipManager = require(__components + 'TipManager/tipManager.js');
 
 module.exports = function(app) {
 
@@ -79,31 +80,34 @@ module.exports = function(app) {
      */
     app.get('/tool', function(req, res, next) {
         var userId = req.user.id || req.passport.user;
-        SurveyManager.getUserSurveyProfileAndSurveyType(userId, function(err,surveyPrefData) {
-            if( err || !__EXPERIMENT_ON ) {
-                res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
-            }
-            else {
-                SurveyManager.setupSurvey(req.session.toolSelect.toLowerCase(), surveyPrefData, function(err, selectedSurveyData) {
-                    if( err || !selectedSurveyData ) {
-                        res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
-                    }
-                    else {
-                        var opts = Constants.surveyDisplayDefaultOptions();
-                        var surveyId = selectedSurveyData.data.surveyId;
-                        var options = selectedSurveyData.options;
 
-                        // Set pulse survey size
-                        options.range[1] = Math.min( options.range[0] + opts.pulseQuestions, options.range[1]);
-                        var surveyData = selectedSurveyData;
-                        
-                        SurveyBuilder.getSurveySection(surveyData.data, options, function( err, data ) {
-                            data = data ? JSON.stringify(data) : [];
-                            res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":data } );
-                        });
-                    }
-                });
-            }
+        TipManager.selectTip(req,res, userId, function() {
+            SurveyManager.getUserSurveyProfileAndSurveyType(userId, function(err,surveyPrefData) {
+                if( err || !__EXPERIMENT_ON ) {
+                    res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
+                }
+                else {
+                    SurveyManager.setupSurvey(req.session.toolSelect.toLowerCase(), surveyPrefData, function(err, selectedSurveyData) {
+                        if( err || !selectedSurveyData ) {
+                            res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
+                        }
+                        else {
+                            var opts = Constants.surveyDisplayDefaultOptions();
+                            var surveyId = selectedSurveyData.data.surveyId;
+                            var options = selectedSurveyData.options;
+
+                            // Set pulse survey size
+                            options.range[1] = Math.min( options.range[0] + opts.pulseQuestions, options.range[1]);
+                            var surveyData = selectedSurveyData;
+                            
+                            SurveyBuilder.getSurveySection(surveyData.data, options, function( err, data ) {
+                                data = data ? JSON.stringify(data) : [];
+                                res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":data } );
+                            });
+                        }
+                    });
+                }
+            });
         });
     });
 }

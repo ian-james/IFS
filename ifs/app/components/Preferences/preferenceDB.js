@@ -57,6 +57,5 @@ module.exports = {
     clearStudentFormPreferences: function( userId, toolType, callback ) {
         var q = dbHelpers.buildDelete(dbcfg.preferences_table) + " where userId = ? and toolType = ? and  (toolName LIKE 'opt-%' or toolName LIKE 'enabled-%')";
         db.query(q,[userId,toolType], callback);
-    }
-
+    },
 }

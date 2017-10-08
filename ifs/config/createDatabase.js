@@ -376,6 +376,14 @@ try {
             FOREIGN Key (roleId) REFERENCES " + dbcfg.database + "." + dbcfg.role_table + "(id) \
         )");
 
+        Logger.info("Create the Table:", dbcfg.ifs_tips_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.ifs_tips_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            name TEXT, \
+            description TEXT, \
+            PRIMARY KEY(id) \
+        )");
+
         Logger.info("Success: Database created.");
 
         /* POST DATABASE CREATION SITE CONFIGURATION */

@@ -114,23 +114,29 @@ module.exports = function (passport) {
                             cp.sync(defaultpath, avatarpath + "avatar.png");
 
                             // set up profile and survey settings
+                            // TODO: This needs to be moved to a default account setup.
+                            // // perrN and pdata1 isn't named to indicate not used.
                             studentProfile.insertStudentProfile(newUser.id, firstname + " " + lastname, "", function(profileErr, studentSet) {
                                 preferencesDB.setStudentPreferences(newUser.id, prefToolType, toolTypeKey, defaultToolType, function(prefErr, prefData){
-                                    defaultTool.setupDefaultTool(req);
-                                    SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
-                                        // generate verification token (and insert it into the database) and send email
-                                        verifySend.generateLink('verify', newUser.id, function(err, link) {
-                                            if (err)
-                                                Logger.error(err);
-                                            if (link) {
-                                                var message = 'Please follow the link below to complete your account registration:';
-                                                var subject = "Complete your registration";
-                                                verifySend.sendLink(newUser.username, link, subject, message);
+                                    preferencesDB.setStudentPreferences(newUser.id, "Option", 'pref-tipsIndex', "1", function(perr1, pdata1) {
+                                        preferencesDB.setStudentPreferences(newUser.id, "Option", 'pref-tipsAllowed', "on", function(perr2, pdata2){
+                                            defaultTool.setupDefaultTool(req);
+                                            SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
+                                                // generate verification token (and insert it into the database) and send email
+                                                verifySend.generateLink('verify', newUser.id, function(err, link) {
+                                                    if (err)
+                                                        Logger.error(err);
+                                                    if (link) {
+                                                        var message = 'Please follow the link below to complete your account registration:';
+                                                        var subject = "Complete your registration";
+                                                        verifySend.sendLink(newUser.username, link, subject, message);
 
-                                                newUser.sessionId = 0;
-                                                req.flash('success', 'Check your email for a verification link.');
-                                            }
-                                            return done(null, newUser);
+                                                        newUser.sessionId = 0;
+                                                        req.flash('success', 'Check your email for a verification link.');
+                                                    }
+                                                    return done(null, newUser);
+                                                });
+                                            });
                                         });
                                     });
                                 });

@@ -34,14 +34,23 @@ div
                         Survey.defaultBootstrapCss.navigationButton = "btn btn-primary";
                         Survey.Survey.cssType = "bootstrap";
                         var squestions =!{surveyQuestions};
-                        var model = new Survey.Model(squestions);
-                        $("#surveyElement").Survey({
-                            model:model,
-                            onComplete: sendDataToServer
-                        });
+                        if(squestions) {
+                            var model = new Survey.Model(squestions);
+                            $("#surveyElement").Survey({
+                                model:model,
+                                onComplete: sendDataToServer
+                            });
+                        }
                     });
-                
-                div
-                    div(id="surveyElement")
+                if tip
+                    div
+                        h3 #{tip.title}
+                        p #{tip.desc}
+                else
+                    div
+                        div(id="surveyElement")
+
+
+
 
 script(src="components/FileUpload/progressModal.js")

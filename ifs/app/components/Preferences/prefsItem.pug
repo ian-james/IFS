@@ -1,9 +1,11 @@
 div(ng-if="option.type == 'checkbox'")
     div.uk-clearfix
-        span.uk-float-left {{ option.displayName }}
+        label(for="{{option.name}}").uk-form-label.uk-float-left
+            | {{ option.displayName }}
         div.uk-inline.uk-float-right
             a(href="#" uk-icon="icon: info").uk-icon-button
             div(uk-dropdown="pos: left-center; delay-hide: 100")
+                span {{ option.info }}
     input(type="checkbox" name="{{option.name}}" id="{{option.name}}" ng-checked="{{option.prefValue}}").uk-checkbox.uk-float-right
     br
 

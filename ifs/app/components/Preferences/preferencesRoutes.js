@@ -85,6 +85,7 @@ module.exports = function(app) {
     app.post('/preferences/profile', upload.single('student-avatar'), function(req, res, next) {
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
+        var tipsOn = req.body["pref-tipsAllowed"] ? req.body["pref-tipsAllowed"] : "off";
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
         var error = false;
@@ -106,18 +107,20 @@ module.exports = function(app) {
 
         if(pref && !error) {
             preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
-                if(!err)
-                    defaultTool.setupDefaultTool(req, pref);
+                preferencesDB.setStudentPreferences(userId, "Option", "pref-tipsAllowed",tipsOn, function(err1,result1) {
+                    if(!err)
+                        defaultTool.setupDefaultTool(req, pref);
 
-                profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
-                    if(err)
-                        Logger.log("ERROR SETTING STUDENT PROFILE");
-                    else {
-                        res.redirect(url.format({
-                            pathname: '/tool'
-                        }));
-                    }
+                    profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
+                        if(err)
+                            Logger.log("ERROR SETTING STUDENT PROFILE");
+                        else {
+                            res.redirect(url.format({
+                                pathname: '/tool'
+                            }));
+                        }
 
+                    });
                 });
             });
         } else {
