@@ -28,6 +28,9 @@ module.exports = function (app, iosocket) {
     // Preferences page routes
     require(componentsPath + "/Preferences/preferencesRoutes")(app, iosocket);
 
+    // IFS Tips routes
+    require(componentsPath + '/TipManager/tipRoutes')(app);
+
     // Survey page routes
     require(componentsPath + '/Survey/surveyRoutes')(app,iosocket);
 

@@ -53,14 +53,20 @@ module.exports = {
      * @param {Function} callback    [description]
      */
     setIFSTips: function( name, description, callback ) {
-        var q = dbHelpers.buildSelect(dbcfg.ifs_tips_table) + dbHelpers.buildValues(["name","description"]);
-        db.query(req,tipIndex,callback);
+        var q = dbHelpers.buildInsert(dbcfg.ifs_tips_table) + dbHelpers.buildValues(["name","description"]);
+        db.query(q,[name,description],callback);
     },
-    // ALl tips are stored in a single database these are access but individual preferences
-    // are stored in the preferences which indicate which index of tip you're on and
-    // how often you see the tip.
-    // Option to turn them on or off is also include
-    // Need a route to generate tips if needed.
+
+    deleteIFSTips: function(callback) {
+        var q =  dbHelpers.buildDelete(dbcfg.ifs_tips_table); 
+        db.query(q,[],callback);
+    },
+
+    resetIFSTipCounter: function(callback) {
+        var q = "ALTER TABLE " + dbcfg.ifs_tips_table + " AUTO_INCREMENT = 1";
+        db.query(q,[],callback);
+    },
+   
 
 /**
  * [selectTip description]
