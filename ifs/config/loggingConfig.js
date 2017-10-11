@@ -35,7 +35,7 @@ const tsFormat = () => (new Date()).toLocaleTimeString();
 const logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({
-            level: env == 'production' ?  'debug' : 'info',
+            level: env == 'dev' ?  'debug' : 'info',
             //timestamp: tsFormat(),
             handleExceptions: true,
             colorize:true,

@@ -15,6 +15,7 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.sideSelectedId = 0;
 
     $scope.showSideBar = false;
+    $scope.wasRated = false;
 
     $scope.test = function() {
         $scope.showSideBar = !$scope.showSideBar;
@@ -28,6 +29,7 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
             $scope.selectedArray = $scope.selectedArray.split(",");
 
             $scope.sideSelectedArrId = 0;
+            $scope.wasRated = false;
 
             // Set the first item for the mini popover
             $scope.sideSelectedId = $scope.selectedArray[ $scope.sideSelectedArrId ];
@@ -42,6 +44,7 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
         // Set the first item for the mini popover
         $scope.sideSelectedId =  $scope.selectedArray[ $scope.sideSelectedArrId ];
         $scope.selectedFeedback = $scope.feedbackItems[ $scope.sideSelectedId ];
+        $scope.wasRated = false;
     };
 
     $scope.getPrevSelected = function() {
@@ -49,6 +52,8 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
             $scope.sideSelectedArrId = $scope.selectedArray.length-1;
         else
             $scope.sideSelectedArrId--;
+
+        $scope.wasRated = false;
 
     // Set the first item for the mini popover
         $scope.sideSelectedId =  $scope.selectedArray[ $scope.sideSelectedArrId ];

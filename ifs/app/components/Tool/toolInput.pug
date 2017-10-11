@@ -8,7 +8,7 @@ div(ng-if="option.type == 'text'")
     label(for="{{ option.name }}").uk-form-label.text-normal
         | {{ option.displayName }}
     div.uk-form-controls
-        input(type="text" name="{{option.name}}" id="{{option.name}}" value="{{option.prefValue}}").uk-input
+        input(type="text" name="{{option.name}}" id="{{option.name}}" placeholder="{{option.placeholder}}" value="{{option.prefValue}}").uk-input
 
 // file input
 div(ng-if="option.type == 'file'")

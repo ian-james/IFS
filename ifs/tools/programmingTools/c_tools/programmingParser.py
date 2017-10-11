@@ -69,7 +69,6 @@ def getProcessInfo( cmd, outFile, errorFile ):
 # Each format has a specific character split sequence such as '##' or ':'
 # Types specify how to tag the incoming sections
 def parse( text, options ):
-
     results = []
     types = options['splitTypes']
     for line in text.splitlines():
@@ -122,7 +121,6 @@ def getKV( dict, key ):
 
 
 def createCmd( options ):
-
     iDir = os.path.normpath( os.path.join( options['dir'], options['includeDir']) )
     srcDir = os.path.normpath( os.path.join(options['dir'], options['srcDir']) )
     # Assumption here that we can still try directory for .h and .c files at the top level
@@ -216,7 +214,8 @@ def main(argv):
         elif opt in ('--errorLevel', '-e'):
             options['errorLevel'] = arg
         elif opt in ('--flags=', '-f'):
-            options['flags'].append(arg)
+            if arg.startswith('-'): # safeguard against malformed flags
+                options['flags'].append(arg)
         elif opt in ('--std=', '-s'):
             options['std'] = arg
         elif opt in ('--suppress', '-u'):

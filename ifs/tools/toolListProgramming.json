@@ -21,9 +21,17 @@
                     "displayName": "Language standard (std)",
                     "type": "select",
                     "name": "opt-gccLanguageStd",
-                    "values": [ "c89", "c99","c11"],
+                    "values": [ "c99", "gnu99", "c11", "gnu11", "c89", "gnu89"],
                     "arg": "-s",
                     "params": ""
+                },
+                {
+                    "displayName": "Custom compiler flags",
+                    "type": "text",
+                    "name": "opt-gccCompilerFlags",
+                    "placeholder": "ex. -lm -lncurses -DX_OPENSOURCE",
+                    "values": "",
+                    "arg": "-f"
                 },
                 {
                     "displayName": "Standard warnings (-Wall)",
@@ -61,7 +69,7 @@
         },
         {
             "displayName": "Clang Diagnostics",
-            "description": "Identifies errors and warnings from the Clang C compiler.",
+            "description": "Identifies errors and warnings from the Clang C compiler. These errors and warnings are often more readable than those from GCC.",
             "technicalDesc": "A Python script that checks C/C++ compilation with the Clang compiler.",
             "author": "Jamey Fraser",
             "copyright": "Copyright © 2017",
@@ -80,9 +88,17 @@
                     "displayName": "Language standard (std)",
                     "type": "select",
                     "name": "opt-clangLanguageStd",
-                    "values": [ "c89", "c99","c11"],
+                    "values": [ "c99", "gnu99", "c11", "gnu11", "c89", "gnu89"],
                     "arg": "-s",
                     "params": ""
+                },
+                {
+                    "displayName": "Custom compiler flags",
+                    "type": "text",
+                    "name": "opt-clangCompilerFlags",
+                    "placeholder": "ex. -lm -lncurses, -D_XOPENSOURCE",
+                    "values": "",
+                    "arg": "-f"
                 },
                 {
                     "displayName": "Standard warnings (-Wall)",
@@ -147,7 +163,7 @@
                     "displayName": "CppCheck language standard (std)",
                     "type": "select",
                     "name": "opt-cppCheckLanguageStd",
-                    "values": [ "c89", "c99","c11"],
+                    "values": [ "c99","c11","c89"],
                     "arg": "-s",
                     "params": ""
                 },

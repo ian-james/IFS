@@ -40,7 +40,7 @@ module.exports = function(app) {
                     if( r ){
                         if(r.type == "checkbox")
                             r['prefValue'] = toolPreferences[i].toolValue == "on";
-                        else if(r.type == "select")
+                        else if(r.type == "select" || r.type == "text")
                             r['prefValue'] = toolPreferences[i].toolValue;
                     }
                 }
@@ -80,7 +80,7 @@ module.exports = function(app) {
     app.get('/tool', function(req, res, next) {
         var userId = req.user.id || req.passport.user;
         SurveyManager.getUserSurveyProfileAndSurveyType(userId, function(err,surveyPrefData) {
-            if( err ) {
+            if( err || !__EXPERIMENT_ON ) {
                 res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
             }
             else {

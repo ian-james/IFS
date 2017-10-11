@@ -69,8 +69,12 @@ module.exports = function( app, passport ) {
             if (err) {
                 res.redirect('/');
             }
-            if (!data[0].completedSetup)
-                res.redirect('/setup');
+            if (!data[0].completedSetup){
+                if(__EXPERIMENT_ON)
+                    res.redirect('/setup');
+                else
+                    res.redirect("/courses");
+            }
             else
                 res.redirect('/tool');
             res.end();

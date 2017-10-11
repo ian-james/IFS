@@ -2,6 +2,17 @@ div(uk-offcanvas="flip:true; overlay: true")#popOver
     div.uk-offcanvas-bar.uk-text-left
         button(type="button" uk-close).uk-offcanvas-close
         h3 Additional Information
+        div
+            h4 Rate this feedback
+            div(class="uk-grid-small" uk-grid ng-show="wasRated == false" ng-click=" wasRated = !wasRated")
+                div.uk-display-inline
+                    a(href="#" uk-icon="icon: minus" data-feedbackId="{{selectedFeedback.id}}" data-sessionId="{{selectedFeedback.sessionId}}" data-submissionId="{{selectedFeedback.submissionId}}" class="rateDown uk-icon-button")
+                div
+                    span.uk-text-center Is this useful?
+                div
+                    a(href="#" uk-icon="icon: plus" data-feedbackId="{{selectedFeedback.id}}" data-sessionId="{{selectedFeedback.sessionId}}" data-submissionId="{{selectedFeedback.submissionId}}" class="rateUp uk-icon-button")
+            div(class="uk-width-1-1" ng-show="wasRated")
+                p.uk-text-muted Thank you!
 
         div(ng-if="selectedArray.length > 1")
             p.uk-text-meta This selection has multiple types of feedback items. Use the buttons below to scroll between items.
@@ -15,12 +26,12 @@ div(uk-offcanvas="flip:true; overlay: true")#popOver
             dd {{ selectedFeedback.type }}
             br
 
-            dt Target
+            dt Feedback Item
             dd(ng-if="selectedFeedback.lineNum") Line: {{ selectedFeedback.lineNum }}
             dd(ng-if="selectedFeedback.decodedTarget") {{ selectedFeedback.decodedTarget }}
             br
 
-            dt Tool
+            dt Assessment Tool
             dd {{ selectedFeedback.displayName}} {{ selectedFeedback.toolName }}
             br
 
@@ -35,12 +46,3 @@ div(uk-offcanvas="flip:true; overlay: true")#popOver
         div
             ul.uk-list.uk-list-divider
                 li(ng-repeat="suggestion in selectedFeedback.suggestions | limitTo: 5") {{ suggestion }}
-        div
-            h4 User Feedback
-            div(class="uk-grid-small" uk-grid)
-                div
-                    a(href="#" uk-icon="icon: minus" data-feedbackId="{{selectedFeedback.id}}" data-sessionId="{{selectedFeedback.sessionId}}" data-submissionId="{{selectedFeedback.submissionId}}" class="rateDown uk-icon-button")
-                div
-                    span.uk-text-center User Rating
-                div
-                    a(href="#" uk-icon="icon: plus" data-feedbackId="{{selectedFeedback.id}}" data-sessionId="{{selectedFeedback.sessionId}}" data-submissionId="{{selectedFeedback.submissionId}}" class="rateUp uk-icon-button")

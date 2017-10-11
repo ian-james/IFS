@@ -97,7 +97,8 @@ function parseFormSelection( formData ) {
                 var r = {};
                 r['name'] = key;
                 r['value'] = value;
-                tool.options.push( r );
+                if (r['value'])
+                    tool.options.push(r);
             }
         }
     });
