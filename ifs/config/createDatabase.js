@@ -352,10 +352,10 @@ try {
             studentId INT UNSIGNED NOT NULL, \
             classSkillId INT UNSIGNED, \
             value DECIMAL(4,2), \
+            lastRated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, \
             PRIMARY KEY(id), \
             FOREIGN Key (studentId) REFERENCES " + dbcfg.database + "." + dbcfg.student_table + "(id), \
-            FOREIGN Key (classSkillId) REFERENCES " + dbcfg.database + "." + dbcfg.class_skill_table + "(id), \
-            UNIQUE Key studentClassSkill (studentId,classSkillId) \
+            FOREIGN Key (classSkillId) REFERENCES " + dbcfg.database + "." + dbcfg.class_skill_table + "(id) \
         )");
 
         // Roles Tables (student,instructor, owner...etc)
@@ -374,6 +374,14 @@ try {
             PRIMARY KEY(id), \
             FOREIGN Key (userId) REFERENCES " + dbcfg.database + "." + dbcfg.users_table + "(id), \
             FOREIGN Key (roleId) REFERENCES " + dbcfg.database + "." + dbcfg.role_table + "(id) \
+        )");
+
+        Logger.info("Create the Table:", dbcfg.ifs_tips_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.ifs_tips_table + " ( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            name TEXT, \
+            description TEXT, \
+            PRIMARY KEY(id) \
         )");
 
         Logger.info("Success: Database created.");

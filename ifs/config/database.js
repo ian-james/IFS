@@ -26,20 +26,14 @@ function handleConnectionError(err, connection){
 function query(queryStr, args, callback) {
    //Logger.info("Database query started");
    pool.getConnection(function(err,connection) {
-
-        //console.log("IN QUERY ");
         if(connection){
-            //console.log("QUERY: ", queryStr, JSON.stringify(args));
             connection.query( queryStr, args, function(err,data) {
                 if(err) {
                     console.log("ERROR FOR STRING: ", queryStr);
                     console.log("ERROR ", err);
                 }
-                Errors.ifErrLog(err);
-
-                //console.log("QUERY RETURNED DATA:\n", JSON.stringify( data ));
+                handleConnectionError(err,connection);
                 callback(err, data);
-                connection.release();
             });
         }
         else {
@@ -56,6 +50,3 @@ function query(queryStr, args, callback) {
 
 module.exports.pool = pool;
 module.exports.query = query;
-
-
-

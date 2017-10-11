@@ -2,10 +2,13 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var _ = require('lodash');
 var chart = require('chart.js');
+var async = require('async');
 
 var moment = require('moment');
 var chartHelpers = require( __components + "Chart/chartHelpers.js");
+var studentProfile = require(__components + "StudentProfile/studentProfileDB");
 var studentModel = require(__components + "StudentModel/studentModelDB");
+var studentSkill = require(__components + "StudentProfile/studentSkillDB");
 
 module.exports = function(app, iosocket) {
 
@@ -42,15 +45,15 @@ module.exports = function(app, iosocket) {
         studentModel.getFeedbackItemPerSubmissionBetweenDates(req.user.id, options.minDate, options.maxDate, function(err,data){
             if(!err) {
                 var groups = _.groupBy(data,"series");
-                var options = chartHelpers.chartOptions(true,true,"Feedback Items Per Submission", chartHelpers.makeScale(true,"Submission Number"), chartHelpers.makeScale(true,"Feedback Items"));
+                var options = chartHelpers.chartOptions(true,true,"Feedback Per Submission", chartHelpers.makeScale(true,"Submission Number"), chartHelpers.makeScale(true,"Feedback Items"));
                 var chartData = chartHelpers.setupSeriesData(groups, options,function( labels, values) {
 
                     maxLength = -1;
-                    for( var k =0;k<values.length;k++) 
+                    for( var k =0;k<values.length;k++)
                         maxLength = values[k].length > maxLength ? values[k].length : maxLength;
 
                     var labels =[];
-                    for( var k =1;k<=maxLength;k++) 
+                    for( var k =1;k<=maxLength;k++)
                         labels.push(k);
                     return labels;
                 });
@@ -72,13 +75,13 @@ module.exports = function(app, iosocket) {
             if(!err) {
                 // CREATE EQUAL GROUPS
                 var groups = _.groupBy(data,"series");
-                
+
                 // We inject data in both field because somehow viewedMore occured without viewed. Might be an error
                 // but easy enough to handle at this point.
                 groups['viewedMore'] = chartHelpers.injectDefaultData('viewed', 'viewedMore', groups,0);
                 groups['viewed'] = chartHelpers.injectDefaultData('viewedMore', 'viewed',groups,1);
-                
-                var options = chartHelpers.chartOptions(true,true,"Viewed Feedback Items", chartHelpers.makeScale(true,"Session with Feedback View"), chartHelpers.makeScale(true,"Times Viewed"));
+
+                var options = chartHelpers.chartOptions(true,true,"Feedback Viewed", chartHelpers.makeScale(true,"Session with Feedback View"), chartHelpers.makeScale(true,"Times Viewed"));
                 var chartData = chartHelpers.setupSeriesData(groups,options, function( labels, values) {
                     return labels[0];
                 }, {
@@ -89,7 +92,58 @@ module.exports = function(app, iosocket) {
             }
             res.end();
         });
+    }
 
+    /**
+     * Get StudentId from a studentProfile, essentially a wrapper to retrieve data
+     *    and then pass it on.
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+    function getStudentId( data , callback)
+    {
+       callback(null, _.get(data[0],"id") );
+    }
+
+    function studentSelfAssessmentChart(req,res,options) {
+        async.waterfall([
+            async.apply(studentProfile.getStudentProfile, req.user.id),
+            getStudentId,
+            studentSkill.getAllStudentSkillsWithDescription,
+        ], function(err,results){
+            if(err) {
+                Logger.error("Unable to create self-assessment graph");
+            }
+            else {
+                // Find self-assessments between specific dates.
+                var maxDate = moment(options.maxDate).format(DEFAULT_DATE_FORMAT);
+                var minDate = moment(options.minDate).format(DEFAULT_DATE_FORMAT);
+
+                // Remove anything not in the date range.
+                _.remove( results, function(rating){
+                    var rateTime = moment(rating.lastRated).format(DEFAULT_DATE_FORMAT);
+                    return moment(rateTime).isAfter(maxDate) ||
+                            moment(rateTime).isBefore(minDate);
+                });
+
+                var groups = _.groupBy(results,"skillName");
+                // Create a chart show self assessment scores
+                var chartOptions = chartHelpers.chartOptions(true,true,"Self-Assessments", chartHelpers.makeScale(true,"Number of Assessments"), chartHelpers.makeScale(true,"Assessment"));
+                chartOptions['labelKey'] = 'lastRated';
+                var chartData = chartHelpers.setupSeriesData(groups, chartOptions,function(labels, values) {
+                            maxLength = -1;
+                    for( var k =0;k<values.length;k++)
+                        maxLength = values[k].length > maxLength ? values[k].length : maxLength;
+
+                    var labels =[];
+                    for( var k =1;k<=maxLength;k++)
+                        labels.push(k);
+                    return labels;
+                });
+                res.json(chartData);
+            }
+            res.end();
+        });
     }
 
     /************************************************** ROUTES *********************************************************************/
@@ -118,11 +172,12 @@ module.exports = function(app, iosocket) {
                 feedbackViewedChart(req,res,req.body);
             else if( req.body.studentData.key == 'nerrs')
                 feedbackItemChart(req,res,req.body);
+            else if( req.body.studentData.key == 'sass')
+                studentSelfAssessmentChart(req,res,req.body);
             else
                 res.end();
         }
         else {
-            
             req.flash('errorMessage', "Invalid date information");
             res.redirect('/studentModel');
         }

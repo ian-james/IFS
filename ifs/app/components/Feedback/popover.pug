@@ -7,14 +7,15 @@ div(uk-offcanvas="flip:true; overlay: true")#popOver
             div(class="uk-grid-small" uk-grid ng-show="wasRated == false" ng-click=" wasRated = !wasRated")
                 div.uk-display-inline
                     a(href="#" uk-icon="icon: minus" data-feedbackId="{{selectedFeedback.id}}" data-sessionId="{{selectedFeedback.sessionId}}" data-submissionId="{{selectedFeedback.submissionId}}" class="rateDown uk-icon-button")
-                div
-                    span.uk-text-center Is this useful?
+                div.uk-padding-small
+                    span.uk-padding-remove-top Is this useful?
                 div
                     a(href="#" uk-icon="icon: plus" data-feedbackId="{{selectedFeedback.id}}" data-sessionId="{{selectedFeedback.sessionId}}" data-submissionId="{{selectedFeedback.submissionId}}" class="rateUp uk-icon-button")
             div(class="uk-width-1-1" ng-show="wasRated")
                 p.uk-text-muted Thank you!
 
         div(ng-if="selectedArray.length > 1")
+            br
             p.uk-text-meta This selection has multiple types of feedback items. Use the buttons below to scroll between items.
             div.uk-align-center
                 a(href="" uk-icon="icon: arrow-left" ng-click="getPrevSelected()").uk-icon-button
@@ -31,12 +32,12 @@ div(uk-offcanvas="flip:true; overlay: true")#popOver
             dd(ng-if="selectedFeedback.decodedTarget") {{ selectedFeedback.decodedTarget }}
             br
 
-            dt Assessment Tool
-            dd {{ selectedFeedback.displayName}} {{ selectedFeedback.toolName }}
-            br
-
             dt Description
             dd {{ selectedFeedback.feedback }}
+            br
+
+            dt Assessment Tool
+            dd {{ selectedFeedback.displayName}} {{ selectedFeedback.toolName }}
             br
 
             dt(ng-if="selectedFeedback.suggestions.length > 0")

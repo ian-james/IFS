@@ -22,15 +22,19 @@ module.exports = function(app, iosocket) {
         // Get student and class Skill;
         // getStudentClassSkills
         var userId = req.user.id;
-        studentSkill.getUserSkills( userId, function( errUserSkills, userSkills ) {
-            studentSkill.getStudentClassSkills( userId, function( err,classSkills ) {
-                classSkills = _.differenceBy(classSkills,userSkills,'classSkillId');
-                var page = {
-                    'title': "Student Skill Set",
-                    'userRatedSkills': userSkills,
-                    'classSkills': classSkills
-                };
-                res.render( viewPath + "studentSkill", page );
+
+        studentProfile.getStudentProfile(req.user.id, function(err, profileData)  {
+            var studentId = profileData  && profileData.length > 0 ? profileData[0].id : -1;
+            studentSkill.getStudentSkills( studentId, function( errUserSkills, userSkills ) {
+                studentSkill.getStudentClassSkills( studentId, function( err,classSkills ) {
+                    classSkills = _.differenceBy(classSkills,userSkills,'classSkillId');
+                    var page = {
+                        'title': "Student Skill Set",
+                        'userRatedSkills': userSkills,
+                        'classSkills': classSkills
+                    };
+                    res.render( viewPath + "studentSkill", page );
+                });
             });
         });
     });
@@ -52,7 +56,7 @@ module.exports = function(app, iosocket) {
                             if( m && m.length > 1 ) {
                                 idx = parseInt(m[1]);
                                 if( _.startsWith(key, userKey) )
-                                    studentSkill.setStudentSkills(studentId, idx, parseInt(value[0])/100, callback);
+                                    studentSkill.insertStudentSkills(studentId, idx, parseInt(value[0])/100, callback);
                                 else if( _.startsWith(key, classKey) )
                                     studentSkill.insertStudentSkills( studentId, idx, parseInt(value[0])/100, callback );
                             }

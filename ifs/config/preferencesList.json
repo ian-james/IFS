@@ -34,6 +34,14 @@
                 "type": "select",
                 "values": [  "Programming","Writing" ],
                 "value": "Programming"
+            },
+            {
+                "displayName":"IFS Feature Tips",
+                "info": "Allow IFS to highlight features and options",
+                "name": "pref-tipsAllowed",
+                "type": "checkbox",
+                "values":[],
+                "value": ""
             }
         ]
     }

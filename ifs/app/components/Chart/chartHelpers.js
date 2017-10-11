@@ -126,8 +126,8 @@ module.exports = {
         
         for(var i = 0; i < series.length; i++) {
             var data = groupedData[series[i]];
-            var label = _.map(data,"labels");
-            var value = _.map(data, "value");
+            var label = _.map(data, _.get(options,"labelKey","labels"));
+            var value = _.map(data, _.get(options,"valueKey","value"));
             datas.push(value);
             labels.push(label);
         }
@@ -169,5 +169,4 @@ module.exports = {
         viewedMore = _.orderBy(viewedMore,['labels']);
         return viewedMore;
     }
-
 }
