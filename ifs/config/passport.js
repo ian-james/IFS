@@ -37,7 +37,10 @@ module.exports = function (passport) {
 
     passport.deserializeUser( function(user,done) {
         db.query( "SELECT id, username, sessionId FROM users where id = ? ", user.id, function(err,rows) {
-            done( err, rows[0]);
+            if( err )
+                done(err,null);
+            else
+                done( err, rows[0]);
         });
     });
 
