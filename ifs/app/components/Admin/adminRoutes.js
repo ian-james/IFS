@@ -106,7 +106,9 @@ module.exports = function( app ) {
     }
 
     function validateTitles(res, route, titles, cb) {
-        var error = false
+	// Commenting out as settings need allow many blacklisted items 
+	cb(false,route);
+        /*var error = false
         for (var i = 0; i < titles.length; i++) {
             if (!sanitization.validateText(titles[i], 'title')) {
                 error = true;
@@ -114,14 +116,22 @@ module.exports = function( app ) {
             }
         }
         cb(error, route);
+	*/
     }
+
     function validateDesc(res, route, desc, cb) {
+	// Commenting out as settings need allow many blacklisted items 
+	cb(false,route);
+	
+	/*
         var error = false
         if (!sanitization.validateText(desc, 'par')) {
             error = true;
         }
         cb(error, route);
+	*/
     }
+
     function validateDates(res, route, dates, cb) {
         var error = false;
         for (var i = 0; i < dates.length; i++) {
@@ -483,15 +493,8 @@ module.exports = function( app ) {
         var name = req.body['skill-name'];
         var desc = req.body['skill-description'];
         var assign = req.body['assignment-name'];
-        if (!assign) {
-            error = true;
-            res.redirect(url.format({
-                pathname: route,
-                query: {
-                    err: "a"
-                }
-            }));
-        } else {
+	
+	// Removed incorrect logic assignments can be NULL
             validateTitles(res, route, [name], function(err, route) {
                 if (err) {
                     directTo(res, url.format({
@@ -512,7 +515,7 @@ module.exports = function( app ) {
                         } else {
                             var keys = ['skill-name','skill-description'];
                             var submission = _.pick(req.body, keys);
-                            var assignmentName = req.body['assignment-name'] == 'null' ? null : req.body['assignment-name'];
+                            var assignmentName = assign == 'null' ? "" : assign;;
                             // Find the class id then insert event for class
                             adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
                                 if(data && data.length > 0) {
@@ -532,6 +535,5 @@ module.exports = function( app ) {
                     });
                 }
             });
-        }
     });
 };
