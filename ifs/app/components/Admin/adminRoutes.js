@@ -493,7 +493,9 @@ module.exports = function( app ) {
         var name = req.body['skill-name'];
         var desc = req.body['skill-description'];
         var assign = req.body['assignment-name'];
-	
+
+        console.log("Req.body", req.body);
+
 	// Removed incorrect logic assignments can be NULL
             validateTitles(res, route, [name], function(err, route) {
                 if (err) {
@@ -515,13 +517,15 @@ module.exports = function( app ) {
                         } else {
                             var keys = ['skill-name','skill-description'];
                             var submission = _.pick(req.body, keys);
-                            var assignmentName = assign == 'null' ? "" : assign;;
+                            var assignmentName = assign == 'null' ? "" : assign;
                             // Find the class id then insert event for class
                             adminDB.getAssignmentByClassCodeAndName(req.body['class-name'], assignmentName, function(err,data){
                                 if(data && data.length > 0) {
                                     var values = _.values(submission);
                                     values.unshift(data[0].aId);
                                     values.unshift(data[0].classId);
+
+                                    console.log("VALUES ", values );
 
                                     adminDB.insertSkill(values, function(err,result) {
                                         directTo(res);

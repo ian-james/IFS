@@ -28,6 +28,8 @@ module.exports = function(app, iosocket) {
             studentSkill.getStudentSkills( studentId, function( errUserSkills, userSkills ) {
                 studentSkill.getStudentClassSkills( studentId, function( err,classSkills ) {
                     classSkills = _.differenceBy(classSkills,userSkills,'classSkillId');
+                    console.log("STUDENT SKILLS\n\n", userSkills);
+                    console.log("Class SKILLS\n\n", classSkills);
                     var page = {
                         'title': "Student Skill Set",
                         'userRatedSkills': userSkills,

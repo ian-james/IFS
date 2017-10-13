@@ -42,7 +42,7 @@ block content
                                         div.uk-width-expand
                                             progress(id="prog"+skill.classSkillId, value=skill.value*100, max="100").uk-progress.studentSlider
                                         input(id="userHidden"+skill.classSkillId, name="userRatedSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
-                                - title = skill.title;
+                                    - title = skill.title;
                 else
                     h4 You've yet to rate your skill level in any course skills.
 
@@ -53,9 +53,7 @@ block content
                         each skill in classSkills
                             div.uk-card.uk-card-hover.uk-card-default.uk-margin-bottom
                                 h2.uk-card-title.uk-text-center.uk-text-muted
-                                    |  #{skill.title}
-                                    span(uk-icon="icon: arrow-right").uk-margin-remove.uk-padding-remove
-                                    | #{skill.skillName}
+                                   | #{skill.skillName}
 
                                 div.uk-card-body.uk-padding-remove-top
                                     a(href="#" uk-icon="icon: info").uk-icon-button.uk-float-right
@@ -70,7 +68,7 @@ block content
                                         div.uk-width-expand
                                             progress(id="prog"+skill.classSkillId, value=skill.value*100, max="100").uk-progress.studentSlider
                                         input(id="userHidden"+skill.classSkillId, name="classSkills" + skill.classSkillId + "[]",  type="hidden" value="no")
-                                - title = skill.title;
+                                    - title = skill.title;
                 else
                     h4 No course skills are available.
 
