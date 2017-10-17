@@ -30,11 +30,11 @@ import hunspell
 # this function prints usage information
 def print_usage():
     print( 'Usage:')
-    print( 'spell_check.py [--path=PATH] [--lang=LANG] [--correct]')
+    print( 'spell_check.py [--path=PATH] [--lang=LANG] [--limit=LIM] [--correct]')
     print( '               [--outfile=OUT.json] [--english OR --quiet]')
     print( '               --infile=INPUTFILE')
     print()
-    print( 'spell_check.py [-p PATH] [-l LANG] [-c] [-o OUT.json] [-q]')
+    print( 'spell_check.py [-p PATH] [-l LANG] [-d LIM] [-c] [-o OUT.json] [-q]')
     print( '               -i INPUTFILE')
 
     return
@@ -51,10 +51,10 @@ def isnumber(string):
     return True
 
 
-# spcheck(string to_check, string lang, hunspell.HunSpell hun)
+# spcheck(string to_check, string lang, int limit, hunspell.HunSpell hun)
 # returns two lists -- mispelled is a complicated structure that is handled in
 # build_json() and print_data()
-def spcheck(to_check, lang, hun):
+def spcheck(to_check, lang, limit, hun):
     misspelled = []  # each element is (line_num, word_num, (word, suggest[]))
     correct_words = []  # each element is (line_num, word_num, word)
     json_string = ''
@@ -67,6 +67,7 @@ def spcheck(to_check, lang, hun):
     # use built in word matching pattern
     regex = re.compile(r'((?!\'.*\')\b[\w\']+\b)')
 
+    count = 0
     for line in to_check:
         char_pos= 0
         word_pos = 0
@@ -79,9 +80,8 @@ def spcheck(to_check, lang, hun):
                 char_pos = line.find(word, char_pos)
 
                 if not hun.spell(word):
-                    sug = [ x.decode('utf-8') for x in hun.suggest(word) ]
-                    suggestion = (line_num, word_num, char_num+char_pos,
-                                  char_pos, word_pos, (word, sug))
+                    sug = [ x for x in hun.suggest(word) ]
+                    suggestion = (line_num, word_num, char_num+char_pos, char_pos, word_pos, (word, sug))
                     misspelled.append(suggestion)
 
                 else:
@@ -89,9 +89,14 @@ def spcheck(to_check, lang, hun):
 
                 word_num += 1
                 word_pos += 1
+                count += 1
 
-        line_num +=1
+        line_num += 1
         char_num += len(line)
+
+        # limit error matches
+        if count >= limit:
+            break;
 
     feedback_stats = []
     # Note 'key' value shouldn't be changed unless changing in IFS
@@ -241,6 +246,7 @@ def main(argv):
     path_deb = '/usr/share/hunspell/'  # default hunspell install path on Debian
     path_rpm = '/usr/share/myspell/' # default hunspell dictionary path on Fedora
     lang = 'en_CA'  # default language
+    limit = -1      # limit for number of errors reported
     json_path = ''
     infile = ''
     with_correct = False
@@ -253,10 +259,7 @@ def main(argv):
 
     # define command line arguments and check if the script call is valid
     try:
-        opts, args = getopt.getopt(argv, 'p:l:o:i:cqh', ['path=', 'lang=',
-                                                         'outfile=', 'infile=',
-                                                         'correct', 'english',
-                                                         'quiet', 'help'])
+        opts, args = getopt.getopt(argv, 'p:l:d:o:i:cqh', ['path=', 'lang=', 'limit=', 'outfile=', 'infile=', 'correct', 'english', 'quiet', 'help'])
     except getopt.GetoptError as err:
         sys.stderr.write('Error. ' + str(err) + '\n')
         print_usage()
@@ -276,13 +279,14 @@ def main(argv):
                 sys.exit()
         elif opt in ('--lang', '-l'):
             lang = arg
+        elif opt in ('--limit', '-d'):
+            limit = int(arg)
         elif opt in ('--outfile', '-o'):
             json_path = arg
         elif opt in ('--infile', '-i'):
             infile = arg
             if not (os.path.isfile(infile)):
-                sys.stderr.write('Error. File ' + infile
-                                 + ' does not exist.\n')
+                sys.stderr.write('Error. File ' + infile + ' does not exist.\n')
                 sys.exit(1)
         elif opt in ('--correct', '-c'):
             with_correct = True
@@ -303,12 +307,10 @@ def main(argv):
         sys.exit(2)
 
     if not json_path and quiet:
-        sys.stderr.write('Error. The quiet option cannot be used without '
-                         + 'specifying an output file.\n')
+        sys.stderr.write('Error. The quiet option cannot be used without specifying an output file.\n')
         sys.exit(2)
     elif english and quiet:
-        sys.stderr.write('Warning: Suppressing specified plain English '
-                         + 'output. Did you mean to do this?\n')
+        sys.stderr.write('Warning: Suppressing specified plain English output. Did you mean to do this?\n')
 
     # check dictionaries exist
     hun_path_deb = path_deb + '/' + lang
@@ -322,8 +324,7 @@ def main(argv):
         sys.stderr.write('Error. Could not find dictionary.\n')
         sys.exit(1)
     if not (os.path.isfile(hun_path + '.aff')):
-        sys.stderr.write('Error. Count not find aff file at '
-                         + hun_path + '.aff\n')
+        sys.stderr.write('Error. Count not find aff file at ' + hun_path + '.aff\n')
         sys.exit(1)
 
     # init hunspell
@@ -331,7 +332,7 @@ def main(argv):
 
     # perform the spell check
     f_in = open(infile, 'r', encoding="utf-8")
-    misspelled, correct_words,feedback_stats = spcheck(f_in, lang, hun)
+    misspelled, correct_words, feedback_stats = spcheck(f_in, lang, limit, hun)
     f_in.close()
 
     # build json string
