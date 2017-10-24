@@ -14,7 +14,7 @@
             "route": "",
             "filesAllowed": "singleFile",
             "parseCmd": "",
-            "defaultArg": "",
+            "defaultArg": "-d 256",
             "fileArgs": "-i",
             "options" : [
                 {
