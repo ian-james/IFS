@@ -47,7 +47,7 @@
                 {
                     "displayName": "Dictionary",
                     "type": "select",
-                    "values": ["en-US", "en-CA","en-GB"],
+                    "values": ["en-US", "en-CA"],
                     "name": "opt-gramDictionary",
                     "arg": "-l",
                     "params": ""

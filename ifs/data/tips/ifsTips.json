@@ -1,14 +1,14 @@
 [
     {
-        "name":"Do something",
-        "description": "DO MORE THINGS"
+        "name":"Track your progress on the Dashboard!",
+        "description": "Did you know you can visit the Dashboard to rate your understanding of specific course skills?"
     },
     {
-        "name":"Do something1111111111111111",
-        "description": "DO MORE THINGS11111111111111111"
+        "name":"See how your class is doing!",
+        "description": "Visit the Dashboard and checkout the Student and Class Acitivity section to view interactive graphs."
     },
     {
-        "name":"Do something22222",
-        "description": "DO MORE THINGS1111111111111111111121222222222222222222222"
+        "name":"View your most recent submission again",
+        "description":"Click on \"Feedback\" in the topbar to view your most recent submission!"
     }
 ]
