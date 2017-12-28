@@ -13,7 +13,7 @@ block content
             form(name="preferences" enctype="multipart/form-data" method="post" action="/preferences/profile")#preferencesFrm.uk-margin
                 h2.uk-margin-remove-bottom {{ prefsList.displayName }}
                 p.uk-text-meta.uk-margin-remove-top Change settings for your account and choose assessment tools.
-                //div(uk-alert).uk-alert-primary
+                div(uk-alert).uk-alert-primary
                     p
                         |If you would want to review or change your experiment opt-in information please visit the experiment 
                         a(href="/setup") setup page
@@ -23,7 +23,13 @@ block content
                 br
                 button(type="submit").uk-button.uk-button-primary Save
 
+            div(uk-alert).uk-text-center
+                p
+                    | If you would want to delete your account please vist 
+                    a(href="/deleteAccount") account management
+                    |  page.
     br
+    
 
     script(src="components/Preferences/preferencesController.js")
     script(src="components/Courses/coursesController.js")

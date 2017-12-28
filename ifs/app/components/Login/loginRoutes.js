@@ -28,6 +28,20 @@ module.exports = function( app, passport ) {
         }
     }
 
+
+    function getEmailUsername( email ) {
+
+        if( email ) {
+            var esplits = email.split('@');
+            if( esplits.length == 2 )
+            {
+                var userId = esplits[0];
+                return userId;
+            }
+        }
+        return "";
+    }
+
     // Call Authenticate before every function
     app.use( isAuthenticated );
 
@@ -109,6 +123,48 @@ module.exports = function( app, passport ) {
             res.redirect('/');
         });
     });
+
+
+    app.get('/deleteAccount', function(req,res) {
+        res.render( viewPath + 'deleteAccount', {title: "Delete Account", message:"Your participation in this research is voluntary and appreciated!!!",
+            note:"This removes your IFS account, to be completely removed from the experiement you must contact:",
+            researchers:" Dr. Judi McCuaig or James Fraser.",
+            leave:"If you would like to delete your account, click below"});
+    });
+
+    app.post('/deleteAccount', function(req,res) {
+        if(req.user)
+        {
+            var username = req.user.username;
+            if( username )
+            {
+                var q = dbHelpers.buildSelect(dbcfg.users_table) + dbHelpers.buildWS("username");
+
+                db.query(q, [username], function(err, data) {
+                    if (data && data.length > 0) {
+                        var updateQ= dbHelpers.buildUpdate(dbcfg.users_table) + " set username = ? " + dbHelpers.buildWS("username");
+
+                        var emailParts = username.split('@');
+                        var newUsername =  username.length > 0 ? username[0]+"@zzz" : undefined;
+                        if(newUsername) {
+                            db.query(updateQ,[newUsername,username], function(err,data2) {
+                                if(err)
+                                    res.redirect('/tool');
+                                else
+                                    res.redirect('/logout');
+                            });
+                        }
+                        else
+                            res.redirect('/logout');
+                    }
+                    else {
+                        res.redirect('/tool');
+                    }
+                });
+            }
+        }
+    });
+
 }; 
 
 

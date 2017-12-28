@@ -1,0 +1,16 @@
+extends ../../shared/views/pageLayout.pug
+include ../../shared/UI_components/formSubmit.pug
+
+block content
+    div.uk-container.uk-container-small
+        p.uk-text-primary.uk-text-large #{message}
+        p.errorMessage #{note}
+        p #{researchers}
+        p #{leave}
+        button(class="uk-button uk-button-default" type="button" uk-toggle="target: #confirmID") Delete Account?
+        div(id="confirmID" uk-modal)
+            div.uk-modal-dialog.uk-modal-body
+                h2 Are you sure you want to delete your account?
+                form(name="deleteMe" enctype="multipart/form-data" method="post" action="/deleteAccount")#deleteAccountFrm.uk-margin
+                    button( class="uk-button uk-button-primary" type="submit").uk-float-right Delete
+                    button( class="uk-button uk-button-default uk-modal-close" type="button") Cancel
