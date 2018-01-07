@@ -59,7 +59,7 @@ module.exports = function(app) {
                         var upEvents = _.map(upcomingEventsData, obj => _.pick(obj,eventsKeys));
 
                         studentSkill.getStudentTop3Skills( studentProfile.id , function(errSkill, skillsData) {
-                            var skillsKeys = ['name','value'];
+                            var skillsKeys = ['skillName','value'];
                             studentStats = _.map(skillsData, obj => _.pick(obj,skillsKeys));
                             res.render( viewPath + "profile", {
                                 "title": "Profile for " + studentProfile.name,
