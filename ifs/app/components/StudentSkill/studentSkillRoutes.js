@@ -10,6 +10,8 @@ var Logger = require( __configs + "loggingConfig");
 var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var dbHelpers = require(__components + "Databases/dbHelpers");
+var event = require(__components + "InteractionEvents/buildEvent.js" );
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
 var studentProfile = require(__components + "StudentProfile/studentProfileDB");
 var upcomingEvents = require(__components + "StudentProfile/upcomingEventsDB");
@@ -55,10 +57,19 @@ module.exports = function(app, iosocket) {
                             var m = key.toString().match( /[a-zA-Z]*(\d*)/);
                             if( m && m.length > 1 ) {
                                 idx = parseInt(m[1]);
-                                if( _.startsWith(key, userKey) )
-                                    studentSkill.insertStudentSkills(studentId, idx, parseInt(value[0])/100, callback);
-                                else if( _.startsWith(key, classKey) )
-                                    studentSkill.insertStudentSkills( studentId, idx, parseInt(value[0])/100, callback );
+                                if( value[0] )
+                                {
+                                    var rateValue = parseInt(value[0])/100;
+                                    var obj = {
+                                       "userRatedSkill": idx,
+                                       "value": rateValue
+                                    };
+                                    tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "userRatedSkill", JSON.stringify(obj)));
+                                    if( _.startsWith(key, userKey) )
+                                        studentSkill.insertStudentSkills(studentId, idx, rateValue, callback);
+                                    else if( _.startsWith(key, classKey) )
+                                        studentSkill.insertStudentSkills( studentId, idx, rateValue, callback );
+                                }
                             }
                         }
                     }, function(err){

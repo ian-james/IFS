@@ -113,7 +113,7 @@ module.exports = function(app, iosocket) {
                 preferencesDB.setStudentPreferences(userId, "Option", "pref-tipsAllowed",tipsOn, function(err1,result1) {
 
                     tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
-                        tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-tipsAllowed", tipsOn));
+                    tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-tipsAllowed", tipsOn));
 
                     if(!err)
                         defaultTool.setupDefaultTool(req, pref);
