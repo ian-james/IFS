@@ -260,8 +260,6 @@ module.exports = function (app, iosocket )
                         var assignmentTasks = taskData;
                         studentSkill.getStudentSkills( studentProfile.id, function(skillErr, skills) {
 
-                            console.log("Skills ", skills);
-
                             var focus = null;
                             if( req.session.dailyFocus )
                                 focus = req.session.dailyFocus;

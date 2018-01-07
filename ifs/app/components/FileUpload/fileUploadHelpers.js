@@ -1,6 +1,6 @@
 var path = require('path');
 var mkdirp = require('mkdirp');
-var fs = require('fs');
+var fs = require('fs-extra');
 var _ = require('lodash');
 const execSync = require('child_process').execSync;
 
@@ -219,23 +219,38 @@ module.exports = {
         var zipfile = fileInfo.filename;
         if (zipfile && this.isZip(zipfile)) {
 
-            var zipDir = path.join(path.dirname(zipfile), '/unzipped');
+            // Temporary folder to unzip all content into then copying
+            // C and header files to a clean directory for tool assessments.
+            var tempZipDir = path.join(path.dirname(zipfile), '/tempUnzipped');
             try {
                 var unarc = this.unarchive(zipfile, {
-                    'dir': zipDir
+                    'dir': tempZipDir
                 });
                 if (Errors.ifErrLog(unarc)) {
                     return unarc;
                 } else {
-                    var files = this.findFilesSync(zipDir);
-                    var fileGroups = _.groupBy(res, this.getExt);
-
+                    var files = this.findFilesSync(tempZipDir);
+                    var fileGroups = _.groupBy(files, this.getExt);
                     if (fileGroups) {
                         var isValidProject = this.validateProjectStructure(fileGroups);
-                        if (Errors.ifErrLog(isValidProject))
+                        if (Errors.ifErrLog(isValidProject)) {
                             return isValidProject
+                        }
 
-                        // These will not point to the proper directory.
+                        var zipDir = path.join(path.dirname(zipfile), '/unzipped');
+                        // Move all files types to directory
+                        var fileTypes =  ["c", "cpp", "cc", "cxx", "h", "hpp"];
+                        _.forOwn( fileGroups, function(value,key) {
+                            if(fileTypes.indexOf(key) >= 0 )
+                            {
+                                var files = value;
+                                for(var y = 0; files &&  y < files.length;y++) {
+                                    var shortName = zipDir + "/" + path.basename(files[y]);
+                                    fs.copy(files[y], shortName);
+                                }
+                            }
+                        });
+                        // These will not point to the initial directory.
                         fileInfo.filename = zipDir;
                         fileInfo.originalname = zipDir;
                         res = {

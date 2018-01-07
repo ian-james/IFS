@@ -493,9 +493,6 @@ module.exports = function( app ) {
         var name = req.body['skill-name'];
         var desc = req.body['skill-description'];
         var assign = req.body['assignment-name'];
-
-        console.log("Req.body", req.body);
-
 	// Removed incorrect logic assignments can be NULL
             validateTitles(res, route, [name], function(err, route) {
                 if (err) {

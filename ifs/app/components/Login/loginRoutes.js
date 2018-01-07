@@ -99,8 +99,6 @@ module.exports = function( app, passport ) {
         res.render(viewPath + 'register', {title: "Signup Screen", message:"ok"});
     });
 
-    /* 
-     */
     app.post('/register', passport.authenticate('local-signup', {
         successRedirect : '/registration-complete',
         failureRedirect : '/register',
@@ -124,7 +122,6 @@ module.exports = function( app, passport ) {
         });
     });
 
-
     app.get('/deleteAccount', function(req,res) {
         res.render( viewPath + 'deleteAccount', {title: "Delete Account", message:"Your participation in this research is voluntary and appreciated!!!",
             note:"This removes your IFS account, to be completely removed from the experiement you must contact:",
@@ -139,11 +136,9 @@ module.exports = function( app, passport ) {
             if( username )
             {
                 var q = dbHelpers.buildSelect(dbcfg.users_table) + dbHelpers.buildWS("username");
-
                 db.query(q, [username], function(err, data) {
                     if (data && data.length > 0) {
                         var updateQ= dbHelpers.buildUpdate(dbcfg.users_table) + " set username = ? " + dbHelpers.buildWS("username");
-
                         var emailParts = username.split('@');
                         var newUsername =  username.length > 0 ? username[0]+"@zzz" : undefined;
                         if(newUsername) {
@@ -164,9 +159,4 @@ module.exports = function( app, passport ) {
             }
         }
     });
-
-}; 
-
-
-
-
+};
