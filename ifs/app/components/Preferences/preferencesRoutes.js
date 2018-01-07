@@ -14,6 +14,9 @@ var defaultTool = require(__components + 'Preferences/setupDefaultToolType.js');
 var sanitization = require(__configs + 'sanitization');
 var validator = require('validator');
 
+var event = require(__components + "InteractionEvents/buildEvent.js" );
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
+
 // multer config
 var limits = { fileSize: 51200 };
 var fileFilter = function(req, file, cb) {
@@ -44,7 +47,7 @@ var upload = multer({
 });
 
 // POST/GET requests
-module.exports = function(app) {
+module.exports = function(app, iosocket) {
     app.get('/preferences', function(req,res,next) {
         var err = false;
         var msg = "";
@@ -108,10 +111,18 @@ module.exports = function(app) {
         if(pref && !error) {
             preferencesDB.setStudentPreferences(userId, "Option", "pref-toolSelect", pref , function(err,result){
                 preferencesDB.setStudentPreferences(userId, "Option", "pref-tipsAllowed",tipsOn, function(err1,result1) {
+
+                    tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
+                        tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-tipsAllowed", tipsOn));
+
                     if(!err)
                         defaultTool.setupDefaultTool(req, pref);
 
                     profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
+
+                        tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "studentName", studentName));
+                        tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "studentBio", studentBio));
+
                         if(err)
                             Logger.log("ERROR SETTING STUDENT PROFILE");
                         else {

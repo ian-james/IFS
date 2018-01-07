@@ -143,4 +143,8 @@ module.exports = {
     viewEvent:  function (sessionId, userId, name, data){
         return this.makeEvent(sessionId, userId, "view", name,  data);
     },
+
+    changeEvent: function( sessionId, userId, name, data) {
+        return this.makeEvent( sessionId, userId, "change", name, data);
+    }
 };

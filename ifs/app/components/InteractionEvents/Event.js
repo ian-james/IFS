@@ -1,4 +1,6 @@
-module.exports = {
+/*
+
+ module.exports = {
     makeEvent: function( userId, et, name, data, time = Date.now() ) {
         return {
             "eventType": et,
@@ -25,4 +27,9 @@ module.exports = {
     viewEvent:  function (userId, name, data ){
         return this.makeEvent( userId, "view", name,  data );
     },
+
+    changeEvent: function( userId, name, data) {
+        return this.makeEvent( userId, "change", name,data);
+    }
 };
+*/

@@ -9,10 +9,11 @@ var dbHelpers = require(__components + "Databases/dbHelpers");
 module.exports = {
      /************************ Preference Event *******************************************/
     getPreferenceChanges: function( userId ){
+        //TODO_JF: NOT USED
         return {
             'name': "preferenceChanges",
             'data':[userId],
-            'request': "select userId, prefId as value  from preferences where userId = ? ORDER BY userId desc LIMIT 1"
+            'request': "select userId, id as value  from preferences where userId = ? ORDER BY userId desc LIMIT 1"
         };
     },
 };
