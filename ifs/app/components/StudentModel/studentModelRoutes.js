@@ -10,10 +10,12 @@ var studentProfile = require(__components + "StudentProfile/studentProfileDB");
 var studentModel = require(__components + "StudentModel/studentModelDB");
 var studentSkill = require(__components + "StudentProfile/studentSkillDB");
 
+var event = require(__components + "InteractionEvents/buildEvent.js" );
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
+
 module.exports = function(app, iosocket) {
 
-    var DEFAULT_DATE_FORMAT = "YYYY-MM-DD"
-
+    var DEFAULT_DATE_FORMAT = "YYYY-MM-DD";
     /**
      * Retrieve submission information and rap it in chart form.
      * @param  {[type]} req     [description]
@@ -166,6 +168,11 @@ module.exports = function(app, iosocket) {
      */
     app.post('/studentModel/data', function(req, res) {
         if( req.body.studentData && chartHelpers.validateDate(req.body.minDate) && chartHelpers.validateDate(req.body.maxDate) && moment(req.body.maxDate).isAfter(req.body.minDate)) {
+
+            if( req.body.studentData ) {
+                tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "studentModelData", req.body.studentData ));
+            }
+
             if( req.body.studentData.key == "nsubs")
                 submissionChart(req,res, req.body );
             else if( req.body.studentData.key == "nfiv")
