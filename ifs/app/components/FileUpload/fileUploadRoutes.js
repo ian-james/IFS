@@ -106,7 +106,6 @@ module.exports = function (app, iosocket) {
     function writeFeedbackStatsFile( sessionId, userId, submissionId, feedbackFileObj, callback ) {
         fs.readFile( feedbackFileObj.file, function(err,data){
             if(data) {
-                console.log("WRITING FEEDBACK", data);
                 var feedbackItemData = JSON.parse(data);
                 var feedbackStatsItems = feedbackItemData['feedbackStats'];
 
