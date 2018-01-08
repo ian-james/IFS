@@ -20,6 +20,9 @@ var socialModel = require(__components + "SocialModel/socialStatsDB");
 
 var feedbackModel = require(__components + "InteractionEvents/feedbackEvents");
 
+var event = require(__components + "InteractionEvents/buildEvent.js" );
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
+
 module.exports = function (app, iosocket )
 {    /**
      * [focusOptions description]
@@ -315,6 +318,7 @@ module.exports = function (app, iosocket )
             courseId: req.body.focusCourseId,
             assignmentId: req.body.focusAssignmentId
         };
+        tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "assignmentFocus", req.session.dailyFocus));
         req.session.save();
     });
 }
