@@ -1,6 +1,7 @@
 // Create the express app
 var express = require('express');
 var app = express();
+var http = require('http');
 
 //var compression = require('compression');
 //app.use(compression());
@@ -28,9 +29,20 @@ app.set('port', port);
 app.set('case sensitive routing', true);
 app.set('strict routing', false);
 app.set('x-powered-by', false); // don't publicize the server information
+app.set( 'view engine', 'pug');
 
 // Add path information
 require("./addResourcePaths.js")(app);
+
+// A logging middleware 
+// Winston Middleware but customized
+var dbcfgPath = __dirname + "/";
+var myLogger = require( __configs + "loggingConfig");
+
+if( app.get('env') != "test" ) {
+    var logger = require('morgan')("combined", {"stream": myLogger.stream } );
+    app.use( logger );
+}
 
 // This section creates our session store data, it is outside the other add* requires because it is shared.
 var redisOpts = require( __components  + "/Queue/kuaServerConfig").testKue;
@@ -39,7 +51,8 @@ var redis = require('redis');
 var redisStore = require('connect-redis')(session);
 var client = redis.createClient();
 
-var mySession =  session({
+var sessionInfo =  {
+    key: 'express.sid',
     secret: 'ifsSecretSessionInfo',
     resave: true,
     store: new redisStore({
@@ -52,26 +65,79 @@ var mySession =  session({
         maxAge:30*60*1000,
         httpOnly: false
     }
-});
+}
+
+var mySession =  session(sessionInfo);
+
+var cookieParser = require('cookie-parser');
+
+app.use(cookieParser(sessionInfo.secret));
+
+var passport = require('passport');
+
+var methodOverride = require("method-override");
+app.use( methodOverride() );
+
+var bodyParser = require('body-parser');
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded({extended: false}) );
+
+app.use(mySession);
+
+// Setup Flash messages
+var flash = require('express-flash');
+app.use(flash());
+
+
+//Require passport routes
+require( "./passport") (passport);
+app.use( passport.initialize() );
 
 // Add middleware 
-require("./addMiddleware.js") (app,mySession);
+//require("./addMiddleware.js") (app,mySession);
+
+var server = http.Server(app);
+var io = require('socket.io')(server);
+
+var passportSocketIO = require('passport.socketio');
+
+function onAuthorizeSuccess(data, accept){
+  // The accept-callback still allows us to decide whether to
+  // accept the connection or not.
+  accept(null, true);
+
+}
+
+function onAuthorizeFail(data, message, error, accept){
+  console.log('failed connection to socket.io:', message);
+  if(error)
+    throw new Error(message);
+  // We use this callback to log all of our failed connections.
+  accept(null, false);  
+}
+
+
+io.use( passportSocketIO.authorize({
+        key: 'express.sid',
+        cookieParsser: cookieParser,
+        secret: sessionInfo.secret,
+        store: sessionInfo.store,
+        passport: passport,
+        success: onAuthorizeSuccess,
+        fail: onAuthorizeFail,
+    }
+));
 
 // Start the app listening
-const server = app.listen(app.get('port'), function() {
+server.listen(app.get('port'), function() {
     console.log("Listening on port " + app.get('port'));
 });
 
-const socket_io = require('socket.io')(server).
-                use(function(socket,next) {
-                    mySession(socket.request, socket.request.res, next);
-                });
-
 // Add Emit Routes
-require("./serverSocketIO.js")(app,socket_io);
+require("./serverSocketIO.js")(app,io);
 
 // Add Developer Routes
-require("./addRoutes.js")(app, socket_io);
+require("./addRoutes.js")(app, io);
 
 // Error handling in common format (err,req,res,next)
 var errorHandler = require('errorhandler');

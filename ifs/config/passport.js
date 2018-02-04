@@ -168,7 +168,6 @@ module.exports = function (passport) {
                     username = validator.normalizeEmail(username);
                 }
 
-                // TODO: verify the isRegistered boolean in user_registration
                 db.query("SELECT * FROM users WHERE username = ?", username, function(err,rows) {
                     if (err) {
                         req.flash('errorMessage', 'Service currently unavailable');
@@ -209,7 +208,6 @@ module.exports = function (passport) {
                             defaultTool.setupDefaultTool(req);
                         else
                             defaultTool.setupDefaultTool(req, result[0].toolValue);
-
                         return done(null, rows[0]);
                     });
                 });

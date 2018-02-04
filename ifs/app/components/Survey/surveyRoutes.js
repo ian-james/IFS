@@ -153,7 +153,6 @@ module.exports = function (app, iosocket ) {
                         });
 
                         // Check if survey was finished update counter, user survey preferences.
-                        console.log("*************** lastid = ", lastId , " =  surveyLast ", surveyLastIndex );
                         if( lastId == surveyLastIndex ){
                             SurveyPreferences.incrementSurveyIndex(userId, surveyId, function(err,qData) {
                                 if(err)
