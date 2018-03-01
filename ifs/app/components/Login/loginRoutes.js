@@ -83,9 +83,10 @@ module.exports = function( app, passport ) {
         // check if the user completed setup yet
         var q = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(['userId']);
         db.query(q, [uid], function(err, data) {
-            if (err && data) {
+            if (err && data && data.length <= 0 ) {
                 res.redirect('/');
             }
+
             if (!data[0].completedSetup){
                 if(__EXPERIMENT_ON)
                     res.redirect('/setup');

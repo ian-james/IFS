@@ -185,31 +185,29 @@ module.exports = function (passport) {
                     var uid = rows[0].id;
                     var isreg = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(["userId"]);
                     db.query(isreg, uid, function(err, data) {
-                        if (err)
+                        if (err || !data || data.length == 0) {
                             Logger.error(err);
-                        if (!data[0]) {
                             req.flash('errorMessage', 'Check your email to complete registration.');
                             return done(null, false);
                         }
-                    });
+                            // Increment sessionId for user
+                            db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
+                                if (err)
+                                    Logger.error(err);
+                            });
 
-                    // Increment sessionId for user
-                    db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
-                        if (err)
-                            Logger.error(err);
-                    });
+                            // Increment local copy, instead of reading from DB.
+                            rows[0].sessionId += 1;
 
-                    // Increment local copy, instead of reading from DB.
-                    rows[0].sessionId += 1;
-
-                    //Set a single preference on login to load their toolType preferences (defaults to programming)
-                    preferencesDB.getStudentPreferencesByToolName(rows[0].id,  toolTypeKey, function(toolErr, result) {
-                        if (toolErr || !result || result.length == 0)
-                            defaultTool.setupDefaultTool(req);
-                        else
-                            defaultTool.setupDefaultTool(req, result[0].toolValue);
-                        return done(null, rows[0]);
-                    });
+                            //Set a single preference on login to load their toolType preferences (defaults to programming)
+                            preferencesDB.getStudentPreferencesByToolName(rows[0].id,  toolTypeKey, function(toolErr, result) {
+                                if (toolErr || !result || result.length == 0)
+                                    defaultTool.setupDefaultTool(req);
+                                else
+                                    defaultTool.setupDefaultTool(req, result[0].toolValue);
+                                return done(null, rows[0]);
+                            });
+                   });
                 });
             }
         )

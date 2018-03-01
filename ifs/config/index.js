@@ -92,12 +92,13 @@ app.use(flash());
 //Require passport routes
 require( "./passport") (passport);
 app.use( passport.initialize() );
+app.use( passport.session() );
 
 // Add middleware 
 //require("./addMiddleware.js") (app,mySession);
 
 var server = http.Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server,{'transports':['polling', 'websocket'], pingInterval:25000,pingTimeout:60000});
 
 var passportSocketIO = require('passport.socketio');
 
@@ -105,14 +106,15 @@ function onAuthorizeSuccess(data, accept){
   // The accept-callback still allows us to decide whether to
   // accept the connection or not.
   accept(null, true);
-
 }
 
 function onAuthorizeFail(data, message, error, accept){
-  console.log('failed connection to socket.io:', message);
+
+  console.log("onAuthoFailM-", message);
   if(error)
     throw new Error(message);
   // We use this callback to log all of our failed connections.
+  console.log('failed connection to socket.io:', message);
   accept(null, false);  
 }
 
@@ -128,11 +130,6 @@ io.use( passportSocketIO.authorize({
     }
 ));
 
-// Start the app listening
-server.listen(app.get('port'), function() {
-    console.log("Listening on port " + app.get('port'));
-});
-
 // Add Emit Routes
 require("./serverSocketIO.js")(app,io);
 
@@ -144,3 +141,9 @@ var errorHandler = require('errorhandler');
 if(app.get('env') === 'development'){
     app.use(errorHandler());
 }
+
+// Start the app listening
+var processPort = process.env.NODE_APP_INSTANCE || 0;
+server.listen(parseInt(app.get('port')) + parseInt(processPort), function() {
+    console.log("Listening on port " + app.get('port'));
+});
