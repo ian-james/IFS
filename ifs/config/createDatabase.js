@@ -27,6 +27,17 @@ try {
             PRIMARY KEY(id) \
         )");
 
+        // create the users table, opt new users into data tracking by default
+        Logger.info("Create the Table:", dbcfg.login_table);
+        connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.login_table + "( \
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
+            userId INT UNSIGNED NOT NULL, \
+            sessionId INT NOT NULL DEFAULT 0, \
+            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            FOREIGN KEY (userId) REFERENCES " + dbcfg.database + "." + dbcfg.users_table + "(id), \
+            PRIMARY KEY(id) \
+        )");
+
         // create the verify table; this used to temporarily store account
         // verification and password recovery information
         Logger.info("Create the Table:", dbcfg.verify_table);

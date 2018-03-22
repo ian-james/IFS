@@ -191,7 +191,14 @@ module.exports = function (passport) {
                             return done(null, false);
                         }
                             // Increment sessionId for user
-                            db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,rows) {
+                            db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,r1) {
+                                if (err)
+                                    Logger.error(err);
+                            });
+
+                            var loginQuery = dbHelpers.buildInsert(dbcfg.login_table) + dbHelpers.buildValues(["userId", "sessionId"]);
+                            console.log("LQ = ", loginQuery);
+                            db.query( loginQuery, [ uid, rows[0].sessionId + 1],  function(err,r5) {
                                 if (err)
                                     Logger.error(err);
                             });
