@@ -5,6 +5,7 @@ var _ = require('lodash');
 var path = require('path');
 var async = require('async');
 var fs = require('fs');
+var fse = require('fs-extra');
 
 // Managers
 var manager = require( __components + 'Queue/managerJob');
@@ -189,6 +190,23 @@ module.exports = function (app, iosocket) {
         });
     }
 
+    function saveUploadErrorFiles( userId, submissionId, fileDir, callback ) {
+        var dest = "./users/failedUploads/"
+        var submissionFolder = path.join( dest,userId.toString(), submissionId.toString() );
+
+        fse.ensureDir(submissionFolder, function(err) {
+            if(err) {
+                Logger.error("Unable to save uploaded files for submission error.");
+            }
+            else {
+                Logger.info("Upload Error Folder Structure for ", submissionFolder, " has been created");
+                fse.copy( fileDir, submissionFolder, err => {
+                    console.log(err);
+                });
+            }
+        });
+    }
+
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
         var user = eventDB.eventID(req);
@@ -203,6 +221,13 @@ module.exports = function (app, iosocket) {
                 if( Errors.hasErr(uploadedFiles) ) {
                     var err = Errors.getErrMsg(uploadedFiles);
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId,"failed", err) ) ;
+
+                    if( req.files && uploadedFiles && uploadedFiles.length > 0 )
+                    {
+                        saveUploadErrorFiles( req.user.id, user.sessionId, uploadedFiles[0].destination, function(d,e) {
+                            Logger.log("Saving failed upload files for user:", req.user.id);
+                        });
+                    }
                     //req.flash('errorMessage', err );
                     res.status(500).send(JSON.stringify({"msg":err}));
                     return;
@@ -216,6 +241,9 @@ module.exports = function (app, iosocket) {
                 if(!tools || tools.length == 0)
                 {
                     var err = Errors.cErr();
+                    saveUploadErrorFiles( req.user.id, user.sessionId, uploadedFiles[0].destination, function(d,e) {
+                        Logger.log("Saving failed job request files for user:", req.user.id);
+                    });
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "failed", err) );
                     res.status(500).send(JSON.stringify({"msg":"Please select a tool to evaluate your work."}));
                     return;
@@ -256,6 +284,9 @@ module.exports = function (app, iosocket) {
                 })
                 .catch( function(err){
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "toolError", {"msg":e}) );
+                    saveUploadErrorFiles( req.user.id, user.sessionId, uploadedFiles[0].destination, function(d,e) {
+                        Logger.log("Saving Tool Error upload files for user:", req.user.id);
+                    });
                     res.status(500).send({
                         error: e
                     });
