@@ -58,14 +58,14 @@ function organizeResults( fileInfo, fullData, callback ) {
 }
 */
 
-/**
+*
  * Sets up position information for feedback items.
  * Uses regular expressions, the tool and feedback positional info.
  * @param  {[type]} file          [description]
  * @param  {[type]} selectedTool  [description]
  * @param  {[type]} feedbackItems [description]
  * @return {[type]}               [description]
- */
+ 
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
     var fileParser = new FileParser();
     fileParser.setupContent( file.content );

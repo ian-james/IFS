@@ -49,7 +49,6 @@ function readFeedbackFormat( feedback , options) {
             if( r.length > 0 ) {
                 files = _.sortBy(r, ['originalname']);
             }
-
         }
         else
             files = _.sortBy(files, ['filename']);
@@ -117,8 +116,10 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
             }
+            console.log( feedbackItem.target);
 
             if (!feedbackItem.target) {
+                console.log(feedbackItem);
                 // Try to fill out positional information first.
                 if( !feedbackItem.charNum ) {
                     feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
@@ -144,6 +145,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                     }
                 }
             }
+            console.log("FOUND TARGET", feedbackItem.target);
             // Set up a decoded target for Bootstrap UI Popover
             // This is probably a bad temporary fix
             if ( !feedbackItem.decodedTarget ) {
