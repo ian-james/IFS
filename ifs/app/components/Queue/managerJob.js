@@ -64,16 +64,14 @@ function loadAllTools(job, done) {
                 failed.push(res[i].reason.job);
             }
         }
-
         var Err = passed.length == 0 ? new Error('No jobs successfully completed.') : null;
         done(Err, { 'passed': passed, 'failed': failed });
-
     },
 
     function(reason) {
         // This doesn't occurr because we don't reject child nodes.
         Logger.info("Reason: Error promise all parent.", reason);
-        done( new Error("Unable to complete any jobs"), null );
+        done( new Error("Unable to complete any jobs") );
     },
 
     function(notice) {

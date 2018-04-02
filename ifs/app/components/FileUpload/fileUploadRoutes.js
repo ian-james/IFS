@@ -226,8 +226,10 @@ module.exports = function (app, iosocket) {
                 var filesFile = Helpers.writeResults( uploadedFiles, { 'filepath': uploadedFiles[0].filename, 'file': 'fileUploads.json'});
                 req.session.jobRequestFile = requestFile;
                 req.session.uploadFilesFile = filesFile;
+                console.log("HERE");
 
                 emitJobRequests(req,iosocket,tools);
+                console.log("HERE2");
 
                 res.writeHead(202, { 'Content-Type': 'application/json' });
 
@@ -240,7 +242,7 @@ module.exports = function (app, iosocket) {
                     res.end();
 
                 }, function(err){
-                    Logger.error("Failed to make jobs:", err );
+                    //Logger.error("Failed to make jobs:", err );
 
                     // NOTE: Abusing XHR communication because I can't get the below code to communicate.
                     // Want to just sent error to XHR but nothing gets communicated. So added 'err':true

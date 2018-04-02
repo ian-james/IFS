@@ -53,7 +53,7 @@ function makeJob(toolOptions, jobOpts) {
             done: true,
             job: job.data,
             success: false,
-            result: null
+            result: []
         });
     })
     .removeOnComplete(jobOpts.removeIfDone).save(function(err) {

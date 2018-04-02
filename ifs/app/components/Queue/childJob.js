@@ -61,18 +61,17 @@ function runSingleTool( job, done )
         if(data) {
             error = true;
             job.emit('failed');
-            done({"code":-1, "response":new Error(data)});
             return;
         }
     });
 
     // Event on close to indicate progress has finished and close the stream.
     child.on('close', function(code) {
-        
         job.progress(100,100);
         ws.end();
         if(error) {
-            done({"code":-1, "response":new Error("Failed to execute assessment tool: ", job.data.name)});
+            var err = {"code":-1, "response":new Error("Failed to execute assessment tool: " + job.data.name)};
+            done(JSON.stringify(err));
             job.emit('failed');
         }
         else {

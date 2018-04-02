@@ -26,24 +26,25 @@ module.exports = function (app, socket_io) {
             // NOTE, THIS DISCONNECTS on connection made from client ajax calls..
             // So not reliable as session disconnect.
             clients--; 
+            console.log("Clients = ", clients);
             //tracker.trackEvent(socket, event.makeEvent(sessionId, id, "disconnection", "Authorized", {}));
         });
 
         socket.on('event', function(data) {
             //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
-            console.log("EVENT SOCKET", data);
+            //console.log("EVENT SOCKET", data);
             tracker.btrackEvent(socket, event.makeEvent(sessionId, id, data.eventType, data.name, data.data) );
             //event.trackEvent( socket, event.makeEvent( id, data.eventType, data.name, data.data ) );
         });
 
         socket.on('feedbackEvent', function(data) {
-            console.log("IFeedback  DATA EVENT", data);
+            //console.log("IFeedback  DATA EVENT", data);
             //TODO: NOTE THIS MIGHT BE EMITTING TO LARGE CLIENT BASE
             tracker.btrackFeedbackInteractionEvent(socket, event.makeFeedbackInteractionEvent(sessionId,id, data) );
         });
 
         socket.on('trackEvent', function(data) {
-            console.log("SERVER GOT TRACK EVENT", data);
+            //console.log("SERVER GOT TRACK EVENT", data);
         });
 
         socket.on('studentAssignmentTaskEvent', function(data) {
