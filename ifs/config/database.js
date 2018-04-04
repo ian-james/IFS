@@ -16,8 +16,9 @@ var pool = mysql.createPool( {
 // throw error
 function handleConnectionError(err, connection){
     Errors.ifErrLog(err)
-    if(connection)
+    if(connection) {
       connection.release();
+    }
 }
 
 /* This is a generic query that get information from the database.clear
@@ -25,26 +26,32 @@ function handleConnectionError(err, connection){
  */
 function query(queryStr, args, callback) {
    //Logger.info("Database query started");
+   //console.log("DATABASE QUERY STARTED", queryStr);
    pool.getConnection(function(err,connection) {
         if(connection){
+            connection.setMaxListeners(15);
+/*            console.log("Connections Events");
+            console.log( connection.eventNames() );
+            console.log('connection end', connection.listenerCount('end'));
+            console.log('connection errir', connection.listenerCount('error'));
+            */
             connection.query( queryStr, args, function(err,data) {
+                connection.release();
                 if(err) {
                     console.log("ERROR FOR STRING: ", queryStr);
                     console.log("ERROR ", err);
+                    callback(err);
                 }
-                handleConnectionError(err,connection);
+                
+                console.log("HANDLE POSSIBLE CALLBACK WITH ERROR", queryStr);
                 callback(err, data);
             });
         }
         else {
             handleConnectionError(err);
+            console.log("HANDLE NO CONNECTION");
             callback(err,null);
         }
-
-        connection.on('error', function(err) {
-            console.log("DB Connection error handled");
-            handleConnectionError(err,connection);
-        });
    });
 }
 

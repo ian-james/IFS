@@ -8,7 +8,7 @@
     "test": "nodemon --inspect --config ./config/nodemon.json ./config/index.js",
     "prestart": "node ./config/createDatabase.js",
     "start": "pm2 start ./config/index.js -i 0 --name IFS",
-    "restart": "pm2 start -f ./config/index.js -i -0 --name IFS",
+    "restart": "pm2 start -f ./config/index.js -i 0 --name IFS",
     "stop": "pm2 stop IFS"
   },
   "repository": {
@@ -75,7 +75,25 @@
     "pm2": "^2.4.2",
     "pug": "^2.0.0-beta6",
     "q": "^1.4.1",
-    "siege": "^0.2.0",
+    "retext": "^5.0.0",
+    "retext-contractions": "^2.1.2",
+    "retext-diacritics": "^1.2.1",
+    "retext-english": "^3.0.0",
+    "retext-equality": "^3.3.0",
+    "retext-indefinite-article": "^1.1.3",
+    "retext-keywords": "^4.0.1",
+    "retext-overuse": "^1.1.1",
+    "retext-passive": "^1.3.0",
+    "retext-profanities": "^4.4.0",
+    "retext-quotes": "^2.0.1",
+    "retext-readability": "^4.2.0",
+    "retext-redundant-acronyms": "^1.2.1",
+    "retext-repeated-words": "^1.2.1",
+    "retext-sentence-spacing": "^2.0.1",
+    "retext-sentiment": "^4.1.0",
+    "retext-simplify": "^4.1.1",
+    "retext-spell": "^2.3.1",
+    "retext-usage": "^0.5.0",
     "socket.io": "^1.7.3",
     "survey-jquery": "^0.12.5",
     "tokgen": "^1.0.0",
@@ -92,6 +110,6 @@
     "chai-http": "^3.0.0",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
-    "passport.socketio": "^3.7.0"
+    "siege": "^0.2.0"
   }
 }
