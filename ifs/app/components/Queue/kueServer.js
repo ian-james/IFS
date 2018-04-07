@@ -38,7 +38,6 @@ kue.Job.rangeByState('inactive',0, 15000, 'asc', function(err,jobs){
 */
 
 kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
-    console.log("*********************** failed kue starting");
     jobs.forEach( function(job) {
         job.remove( function() {
             console.log('removed', job.id);
@@ -46,13 +45,11 @@ kue.Job.rangeByState('failed',0, 1000, 'asc', function(err,jobs){
     });
 });
 
-
 queue.on('ready', () => {
     Logger.info("Kue is ready");
 });
 
 queue.on('error', (err) => {
-    Logger.error("There is an error in the main queue.");
     Logger.error(err);
     Logger.error(err.stack);
 });

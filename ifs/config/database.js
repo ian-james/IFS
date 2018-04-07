@@ -29,28 +29,18 @@ function query(queryStr, args, callback) {
    //console.log("DATABASE QUERY STARTED", queryStr);
    pool.getConnection(function(err,connection) {
         if(connection){
-            connection.setMaxListeners(15);
-/*            console.log("Connections Events");
-            console.log( connection.eventNames() );
-            console.log('connection end', connection.listenerCount('end'));
-            console.log('connection errir', connection.listenerCount('error'));
-            */
             connection.query( queryStr, args, function(err,data) {
                 connection.release();
                 if(err) {
-                    console.log("ERROR FOR STRING: ", queryStr);
-                    console.log("ERROR ", err);
+                    console.log("ERROR FOR STRING: ", err, " >>> " , queryStr);
                     callback(err);
                 }
-                
-                console.log("HANDLE POSSIBLE CALLBACK WITH ERROR", queryStr);
                 callback(err, data);
             });
         }
         else {
             handleConnectionError(err);
-            console.log("HANDLE NO CONNECTION");
-            callback(err,null);
+            callback(err);
         }
    });
 }

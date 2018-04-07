@@ -26,7 +26,7 @@ module.exports = function (app, socket_io) {
             // NOTE, THIS DISCONNECTS on connection made from client ajax calls..
             // So not reliable as session disconnect.
             clients--; 
-            console.log("Clients = ", clients);
+            console.log("Clients Disconnect = ", clients);
             //tracker.trackEvent(socket, event.makeEvent(sessionId, id, "disconnection", "Authorized", {}));
         });
 
@@ -56,9 +56,5 @@ module.exports = function (app, socket_io) {
                 //TODO: nothing to do here if failures.
             });
         });
-
-        socket.on('close', () => console.log("CLOSING SOCKET"));
-
-        //tracker.trackEvent(socket, event.makeEvent(sessionId, id, "connection", "Authorized", {}));
     });
 }
