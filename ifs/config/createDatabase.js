@@ -219,7 +219,7 @@ try {
             FOREIGN Key (userId) REFERENCES " + dbcfg.database + "." + dbcfg.users_table + "(id), \
             FOREIGN Key (feedbackId) REFERENCES " + dbcfg.database + "." + dbcfg.feedback_table + "(id) \
         )");
-
+/*
         Logger.info("Create the Table:", dbcfg.feedback_input_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.feedback_input_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -231,7 +231,7 @@ try {
             FOREIGN Key (userId) REFERENCES " + dbcfg.database + "." + dbcfg.users_table + "(id), \
             FOREIGN Key (feedbackId) REFERENCES " + dbcfg.database + "." + dbcfg.feedback_table + "(id) \
         )");
-
+*/
         // student table; used for user profiles; foreign key in users table
         Logger.info("Create the Table:", dbcfg.student_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.student_table + " ( \

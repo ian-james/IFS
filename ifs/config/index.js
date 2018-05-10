@@ -46,6 +46,8 @@ if( app.get('env') != "test" ) {
 
 // This section creates our session store data, it is outside the other add* requires because it is shared.
 var redisOpts = require( __components  + "/Queue/kuaServerConfig").testKue;
+var kueServerSetup = require( __components  + "Queue/kueServer").setupQueue(app);
+
 var session = require('express-session');
 var redis = require('redis');
 var redisStore = require('connect-redis')(session);

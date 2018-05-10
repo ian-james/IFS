@@ -1,6 +1,6 @@
 var Q = require('q');
 
-var queue = require('./kueServer').queue;
+var queue = require('./kueServer');
 var cjob = require('./childJob');
 var job = require('./generalJob');
 var path = require('path');
@@ -9,6 +9,7 @@ var _ = require('lodash');
 
 // This is just a regular reference, it needed a name for managerJob.
 const jobType = 'mJob';
+const JobConCurrent = 10;
 
 /* This function creates a 'ManagerJob', which is a job that starts a bunch of other tools in a queue and waits for feedback.
    This version of the file provides options for the job.
@@ -95,7 +96,7 @@ function loadAllTools(job, done) {
    This will start running any created jobs (ie jobs that have been saved )
 */
 function runManagerJob() {
-    queue.process(jobType, function(job,done) {
+    queue.getQueue().process(jobType, JobConCurrent , function(job,done) {
         loadAllTools( job, done );
     });
 }
