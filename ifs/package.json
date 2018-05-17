@@ -41,7 +41,7 @@
     "chart.js": "^2.6.0",
     "code-prettify": "^0.1.0",
     "command-line-args": "^4.0.1",
-    "compression": "^1.7.0",
+    "compression": "^1.7.2",
     "connect-redis": "^3.2.0",
     "cookie-parser": "^1.4.3",
     "cp-file": "^4.2.0",

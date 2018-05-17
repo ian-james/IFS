@@ -3,8 +3,8 @@ var express = require('express');
 var app = express();
 var http = require('http');
 
-//var compression = require('compression');
-//app.use(compression());
+var compression = require('compression');
+app.use(compression());
 
 if(app.get('env') === 'production'){
     console.log("In PRODUCTION");
