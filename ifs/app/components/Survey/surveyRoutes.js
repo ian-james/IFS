@@ -65,6 +65,19 @@ module.exports = function (app, iosocket ) {
         });
     });
 
+    app.get ('/survey/:id', (req, res) => {
+        let id = req.params.id;
+        Survey.getSurvey (id, (err, surveyData) => {
+            if (err) {
+                Logger.error (err);
+            } else {
+                SurveyBuilder.loadSurveyQuestions(surveyData[0], (err, data) => {
+                    res.send (data);
+                });
+            }
+        });
+    });
+
     /**
      * This function receives the survey data from SurveyJS and parses it and
      * updates the databases with relevenat information.

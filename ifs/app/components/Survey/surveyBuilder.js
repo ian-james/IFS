@@ -125,6 +125,11 @@ function loadSurveyFile( surveyData, callback ) {
     });
 }
 
+let loadSurveyQuestions = (surveyData, callback) => {
+    console.log (surveyData);
+    callback (null, surveyData);
+};
+
 /**
  * Separate a Matrix type question into multiple sections
  * Takes each row value and combines it with the remainder of the questions's json
@@ -300,3 +305,4 @@ module.exports.loadSurveyFile = loadSurveyFile;
 module.exports.buildDefaultMatrixSurvey =  defaultMatrixSurvey;
 module.exports.setDisplaySurveyOptions = setDefaultDisplaySurveyOptions;
 module.exports.setSignupSurveyPreferences = setSignupSurveyPreferences;
+module.exports.loadSurveyQuestions = loadSurveyQuestions;
