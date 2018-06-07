@@ -49,7 +49,8 @@ function acceptableMimeType() {
             'application/x-gzip',
             'application/x-tar',
             'application/x-gzip',
-            'application/gzip'
+            'application/gzip',
+            'application/octet-stream'
         ]
     };
 }
