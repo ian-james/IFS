@@ -1,4 +1,22 @@
 #!/usr/bin/env python
+#
+# This is a script that checks python formatting with accordance to PEP8
+# Copyright (c) 2018 Grant Douglas gdouglas@uoguelph.ca
+#
+# Permission to use, copy, modify, and/or distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+# REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+# INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+# LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+# OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+# PERFORMANCE OF THIS SOFTWARE.
+# 
+#
+# Usage notes: You'll have to install stopwords from nltk.download('stopwords')
 
 import sys, getopt, os
 import io, json
@@ -38,12 +56,14 @@ def parse( text, options ):
 		feedback['toolName'] = options['tool']
 		sections = line.split("|")
 
+		# parse the sections into appropriate feedback keys
 		feedback['filename'] = os.path.basename(sections[0])
 		feedback['lineNum'] = sections[1]
 		feedback['charPos'] = sections[2]
 		feedback['feedback'] = sections[3]
 		feedback['type'] = 'formatting'
 
+		# append feedback
 		results.append(feedback)
 
 
@@ -82,17 +102,15 @@ def createCmd(options):
 
 	cmdStr = ""
 
+	# create the pycodestyle tool command
 	if options['tool'] == 'pycodestyle':
 		cmdStr = " ".join( [ options['tool'],
 				" ".join(options['flags']),
 				" " + options['format'] + " " + srcDir
 			])
 	else:
-	
-
 		return ""
 
-	
 	return cmdStr
 
 
@@ -152,7 +170,7 @@ def main(argv):
 			print( 'programmingParser.py [-t tool] [-i IFS MODE] [-l LANGUAGE] [-e ERROR LEVEL] [-f FLAGS] [-s STD] [-u SUPPRESS MSG] -d InputDirectory')
 			sys.exit()
 
-
+	# create tool command, and generate JSON output
 	if currDirectory != '':
 		options['dir'] = currDirectory
 
@@ -168,10 +186,7 @@ def main(argv):
 					outFile = os.path.normpath(os.path.join(currDirectory, options['outFile']) )
 					outErrFile = os.path.normpath(os.path.join(currDirectory, options['outErrFile']) )
 
-				
-
 				code, out, err = getProcessInfo( cmd, outFile, outErrFile )
-
 
 				with open(outErrFile, 'r') as errFile:
 
