@@ -72,7 +72,9 @@ module.exports = function (app, iosocket) {
     function writeFeedbackFile( sessionId, userId, submissionId, feedbackFileObj, callback ) {
         fs.readFile( feedbackFileObj.file, function(err,data){
             if(data) {
+                
                 var feedbackItemData = JSON.parse(data);
+
                 var feedbackItems = feedbackItemData['feedback'];
                 var feedbackStatsItems = feedbackItemData['feedbackStats'];
 
@@ -233,8 +235,10 @@ module.exports = function (app, iosocket) {
 
                 // Add the jobs to the queue, results are return in object passed:[], failed:[]
                 manager.makeJob(tools).then( function( jobResults ) {
+                    console.log("testing");
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "success", {}) );
                     emitFeedbackResults(user.sessionId, user.userId, submissionId, jobResults.result.passed);
+                    console.log("more testing");
                     var data = { "msg":"Awesome"};
                     res.write(JSON.stringify(data));
                     res.end();

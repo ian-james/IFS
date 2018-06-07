@@ -192,6 +192,44 @@
                     "params": ""
                 }
             ]
+        },
+        {
+            "displayName": "Python Formatting",
+            "description": "Finds errors in python files",
+            "technicalDesc": "A Python script that checks with a python linter",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
+            "progName": "./tools/programmingTools/python_tools/pythonParser.py",
+            "cmdToolName": "pycodestyle",
+            "runType": "programming",
+            "route": "",
+            "filesAllowed": "zipFile",
+            "parseCmd": "",
+            "defaultArg": "-t pycodestyle",
+            "fileArgs": "-d",
+            "options":  [
+                {
+                    "displayName": "Language standard (std)",
+                    "type": "select",
+                    "name": "opt-pythonStandard",
+                    "values": [ "python3"],
+                    "arg": "-s",
+                    "params": ""
+                },
+                {
+
+                    "displayName": "Suppress unused function warnings",
+                    "type": "checkbox",
+                    "name": "opt-pythonFlags",
+                    "values": "",
+                    "arg": "-f --first",
+                    "params": ""
+
+                }
+               
+            ]
         }
     ]
 }
