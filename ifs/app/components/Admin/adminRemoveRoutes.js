@@ -30,6 +30,7 @@ module.exports = function( app ) {
      * @return {[type]}            [description]
      */
     function getAdminRemove(req, res, options, callback) {
+        var currentUser = _.get(req, "session.passport.user",req.user);
          callback(function(err, data) {
             res.render(viewPath + options.removeForm, {
                 title: options.title,
@@ -37,7 +38,8 @@ module.exports = function( app ) {
                     displayName:options.displayName
                 },
                 values: data,
-                formAction: options.formAction
+                formAction: options.formAction,
+                user: currentUser
             });
         });
     }

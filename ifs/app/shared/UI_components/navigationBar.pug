@@ -56,6 +56,18 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                                         span(uk-icon="icon: link").uk-margin-small-right
                                         | Surveys
                                 hr
+                                if user.admin
+                                    li
+                                        a(href="/admin")
+                                            span(uk-icon="icon: bolt", style="color:red").uk-margin-small-right
+                                            | Admin Panel
+                                    hr
+                                else if user.instr
+                                    li
+                                        a(href="/instructor")
+                                            span(uk-icon="icon: lifesaver", style="color:red").uk-margin-small-right
+                                            | Instructor Panel
+                                    hr
                                 li
                                     a(href="/logout")
                                         span(uk-icon="icon: sign-out").uk-margin-small-right

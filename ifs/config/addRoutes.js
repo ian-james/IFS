@@ -69,4 +69,8 @@ module.exports = function (app, iosocket) {
 
     // Test features can be placed here.
     require(componentsPath + "/Test/testRoutes")(app);
+
+    // Instructor route
+    require(componentsPath + "/Instructor/instructorRoutes")(app);
+
 }

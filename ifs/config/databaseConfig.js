@@ -12,7 +12,7 @@ module.exports = {
     'connection': {
         'host' :                        'localhost',
         'user' :                        'root',
-        'password' :                    'mysqlRootPassword',
+        'password' :                    'cowscows',
         'connectionLimit':              500
     },
     // database name

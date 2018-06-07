@@ -10,6 +10,15 @@ module.exports = {
         db.query(q,userId,callback);
     },
 
+    getPermissions: function ( role ){
+        if (role == "admin")
+            return 1;
+        else if (role == "instructor")
+            return 2;
+        else
+            return 3;
+    },
+
     isAdmin: function( role ) {
         return role == "admin";
     },

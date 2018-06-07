@@ -87,8 +87,8 @@ try {
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             surveyId Int UNSIGNED NOT NULL, \
             userId INT UNSIGNED NOT NULL, \
-            surveyStartDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
-            lastRevision TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            surveyStartDate DATETIME, \
+            lastRevision TIMESTAMP, \
             pauseAsking BOOL DEFAULT FALSE, \
             pauseTime TIME, \
             allowedToAsk BOOL DEFAULT TRUE, \
@@ -274,7 +274,7 @@ try {
             name TEXT, \
             title TEXT, \
             description TEXT, \
-            deadline DATETIME DEFAULT CURRENT_TIMESTAMP , \
+            deadline DATETIME , \
             PRIMARY KEY(id), \
             FOREIGN Key (classId) REFERENCES " + dbcfg.database + "." + dbcfg.class_table + "(id) \
         )");
@@ -325,9 +325,9 @@ try {
             name TEXT, \
             title TEXT, \
             description TEXT, \
-            openDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
-            closedDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
-            dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            openDate DATETIME, \
+            closedDate DATETIME, \
+            dateCreated TIMESTAMP, \
             PRIMARY KEY(id), \
             FOREIGN Key (classId) REFERENCES " + dbcfg.database + "." + dbcfg.class_table + "(id) \
         )");

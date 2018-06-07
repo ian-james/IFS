@@ -1,0 +1,31 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container
+        h2.uk-text-left #{title}
+        hr
+        div.uk-margin
+            if !classes
+                p.uk-text-lead
+                    | No classes to show create one?
+            else
+                 div(uk-grid).uk-grid-small.uk-grid-match.uk-padding-small
+                    each cs in classes
+                        div(class="uk-width-1-2@m")
+                            div.uk-card.uk-card-default
+                                div.uk-card-header
+                                    div(uk-grid).uk-grid-small.uk-flex-middle
+                                        div.uk-width-auto
+                                            img(src="../../shared/img/jfraser.png").avatar
+                                        div.uk-width-expand
+                                            h3.uk-card-title.uk-margin-remove-bottom #{cs.code}
+                                            p.uk-text-meta.uk-margin-remove-top= cs.name
+                                    a(href="/register").uk-float-right
+                                        span(uk-icon="icon: world").uk-margin-small-right
+                                        | Statistics
+                                    a(href="/register").uk-float-right.uk-margin-small-right
+                                        span(uk-icon="icon: pencil").uk-margin-small-right
+                                        | Edit
+                                    
+
+

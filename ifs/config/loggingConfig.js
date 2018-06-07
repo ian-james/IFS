@@ -18,7 +18,9 @@ if( !fs.existsSync(logDir) ) {
 
 // Setup a timestamp in the logs
 const tsFormat = () => (new Date()).toLocaleTimeString();
-
+//const tsFormat = function (){
+ //   (new Date()).toLocaleTimeString();
+//}
 
 /* Create multiple loggers for errors,info and Console information.
    Other levels available if needed but you can create the logger.

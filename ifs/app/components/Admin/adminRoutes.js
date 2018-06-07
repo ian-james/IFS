@@ -23,14 +23,14 @@ module.exports = function( app ) {
      * @return {[type]}        [description]
      */
     function requiresAdmin(req, res, next) {
+        // it is now checked upon sign on, no longer have to check here.
+        var user = _.get(req, "session.passport.user",req.user);
         if (req && req.user) {
-            adminDB.getRole( req.user.id, function (err,roles){
-                if (roles && roles.length > 0 && adminDB.isAdmin(roles[0].value)) {
-                    next();
-                } else {
-                    res.sendStatus(400);
-                }
-            });
+            if (user.admin) {
+                next();
+            } else {
+                res.sendStatus(400);
+            }
         }
         else {
             res.redirect('/login');
@@ -81,7 +81,10 @@ module.exports = function( app ) {
                 var jsonObj = JSON.parse(data);
                 var menuOptions = jsonObj['page'];
                 updateJsonWithDbValues(menuOptions.options, options.dynamicData)
-                res.render(viewPath + options.adminForm, { title: 'Admin Dashboard', page: menuOptions, formAction: options.formAction, message: message, error: error });
+                // again with the hacky fix. It just makes sure that when you re render the page you have access to user
+                // can be fixed later 
+                var currentUser = _.get(req, "session.passport.user",req.user);
+                res.render(viewPath + options.adminForm, { title: 'Admin Dashboard', page: menuOptions, formAction: options.formAction, message: message, error: error , user : currentUser});
             }
         });
     }
@@ -106,7 +109,7 @@ module.exports = function( app ) {
     }
 
     function validateTitles(res, route, titles, cb) {
-	// Commenting out as settings need allow many blacklisted items 
+	// Commenting out as settings need allow many blacklisted items
 	cb(false,route);
         /*var error = false
         for (var i = 0; i < titles.length; i++) {
@@ -120,9 +123,9 @@ module.exports = function( app ) {
     }
 
     function validateDesc(res, route, desc, cb) {
-	// Commenting out as settings need allow many blacklisted items 
+	// Commenting out as settings need allow many blacklisted items
 	cb(false,route);
-	
+
 	/*
         var error = false
         if (!sanitization.validateText(desc, 'par')) {
@@ -176,7 +179,9 @@ module.exports = function( app ) {
                         }
                     }
                 }
-                res.render(viewPath + "admin", { title: 'IFS Admin Dashboard', stats: stats });
+                // little fix so admin panel appears in drop down menu.
+                var currentUser = _.get(req, "session.passport.user",req.user);
+                res.render(viewPath + "admin", { title: 'IFS Admin Dashboard', stats: stats , user: currentUser});
             }
         );
     });
@@ -198,7 +203,7 @@ module.exports = function( app ) {
         var desc = req.body['class-description']
 
         validateTitles(res, route, [code, name], function(err, route) {
-           if (err) { 
+           if (err) {
                 directTo(res, url.format({
                     pathname: route,
                     query: {
