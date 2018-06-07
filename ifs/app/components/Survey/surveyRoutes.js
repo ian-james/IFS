@@ -65,6 +65,7 @@ module.exports = function (app, iosocket ) {
         });
     });
 
+    // TODO: Comment this route
     app.get ('/survey/:id', (req, res) => {
         let id = req.params.id;
         Survey.getSurvey (id, (err, surveyData) => {

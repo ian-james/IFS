@@ -126,7 +126,7 @@ function loadSurveyFile( surveyData, callback ) {
 }
 
 let loadSurveyQuestions = (surveyData, callback) => {
-    console.log (surveyData.id);
+    console.log ("ID: " + surveyData.id);
     let template = buildDefaultMatrixPage (surveyData);
     callback (null, template);
 };
