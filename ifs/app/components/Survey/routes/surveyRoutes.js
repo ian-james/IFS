@@ -2,15 +2,15 @@ var path = require('path');
 var fs = require('fs');
 var async = require('async');
 var _ = require('lodash');
+const componentPath = path.join(__components,"Survey");
 
 var db = require( __configs + 'database');
-var viewPath = path.join( __dirname + "/");
+var viewPath = path.join( __components, 'Survey/views/');
 var Logger = require( __configs + "loggingConfig");
-var Survey = require( __components + "/Survey/survey");
-var Question = require( __components + "Survey/question")
+var Survey = require( __components + "/Survey/models/Survey");
+var Question = require( __components + "Survey/models/Question")
 var Errors = require(__components + "Errors/errors");
 
-var SurveyManager = require( __components + "Survey/surveyManager");
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var SurveyResponse = require(__components + "Survey/surveyResponse");
@@ -20,25 +20,12 @@ var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
 var moment = require('moment');
 
+const surveyController = require(path.join(componentPath, '/controllers/surveyController'));
+
 module.exports = function (app, iosocket ) {
 
-    app.get('/surveys', function(req,res) {
+    app.get('/surveys', surveyController.surveyList);
 
-        SurveyManager.getUserSurveyProfileAndSurveyType(req.user.id, function(err, surveyData) {
-            var keys = ['surveyId','lastRevision', 'currentSurveyIndex', 'surveyName','title', 'surveyField'];
-            var ans = _.map(surveyData, obj=> _.pick(obj,keys));
-
-            ans = _.map(ans, function( obj ) {
-                var rev = obj['lastRevision'];
-                if( rev )
-                    obj['lastRevision'] = moment(obj['lastRevision']).format("hh:mm a DD-MM-YYYY");
-                return obj;
-            });
-
-            res.render(viewPath + 'surveyList', { 'title': "Survey List", "surveys": ans});
-        });
-
-    });
     /**
      * Method gets the full survey and displays it.
      * @param  {[type]} req  [description]

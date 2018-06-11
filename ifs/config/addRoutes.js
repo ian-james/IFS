@@ -32,10 +32,10 @@ module.exports = function (app, iosocket) {
     require(componentsPath + '/TipManager/tipRoutes')(app);
 
     // Survey page routes
-    require(componentsPath + '/Survey/surveyRoutes')(app,iosocket);
+    require(componentsPath + '/Survey/routes')(app,iosocket);
 
-    // Testing Routes, leave commented out in commits
-    require(componentsPath + '/Survey/surveyBuildRoutes')(app);
+    /*// Testing Routes, leave commented out in commits
+    require(componentsPath + '/Survey/surveyBuildRoutes')(app);*/
 
     // Feedback pages routes
     require(componentsPath + '/Feedback/feedbackRoutes')(app, iosocket);

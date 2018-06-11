@@ -4,13 +4,13 @@ var async = require('async');
 var _ = require('lodash');
 
 var db = require( __configs + 'database');
-var viewPath = path.join( __dirname + "/");
+var viewPath = path.join( __components, 'Survey/views/');
 var Logger = require( __configs + "loggingConfig");
-var Survey = require( __components + "/Survey/survey");
-var Question = require( __components + "Survey/question")
+var Survey = require( __components + "Survey/models/Survey");
+var Question = require( __components + "Survey/models/Question")
 var Errors = require(__components + "Errors/errors");
 
-var SurveyManager = require( __components + "Survey/surveyManager");
+var SurveyManager = require( __components + "Survey/helpers/surveyManager");
 var SurveyBuilder = require( __components + "Survey/surveyBuilder");
 var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var SurveyResponse = require(__components + "Survey/surveyResponse");

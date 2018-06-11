@@ -17,7 +17,7 @@ function getQuestion( questionSurveyId, questionIndex, callback ) {
 
 function getQuestions( surveyId, callback ) {
     var req = "SELECT * FROM " + dbcfg.question_table + " WHERE surveyId = ?";
-    db.query(req, questionData, function(err,data){
+    db.query(req, surveyId, function(err,data){
         callback(err,data);
     });
 }

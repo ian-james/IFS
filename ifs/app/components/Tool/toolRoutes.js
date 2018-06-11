@@ -5,9 +5,9 @@ var _ = require('lodash');
 var Logger = require( __configs + "loggingConfig");
 
 var Constants = require( __components + "Constants/programConstants");
-var SurveyManager = require( __components + "Survey/surveyManager");
+var SurveyManager = require( __components + "Survey/helpers/surveyManager");
 var SurveyBuilder = require(__components + "Survey/surveyBuilder");
-var Survey = require( __components + "Survey/survey");
+var Survey = require( __components + "Survey/models/Survey");
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 var TipManager = require(__components + 'TipManager/tipManager.js');

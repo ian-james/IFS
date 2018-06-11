@@ -9,7 +9,8 @@ var Logger = require( __configs + "loggingConfig");
 
 var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var Constants = require( __components + "Constants/programConstants");
-var Survey = require( __components + "/Survey/survey");
+var Survey = require( __components + "Survey/models/Survey");
+var Question = require( __components + "Survey/models/Question");
 
 /**
  * Default parameters for our surveys, add more as necessary.
@@ -126,9 +127,9 @@ function loadSurveyFile( surveyData, callback ) {
 }
 
 let loadSurveyQuestions = (surveyData, callback) => {
-    console.log ("ID: " + surveyData.id);
     let template = buildDefaultMatrixPage (surveyData);
-    callback (null, template);
+    Question.getQuestions (surveyData.id, callback);
+    //callback (null, template);
 };
 
 /**
