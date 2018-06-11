@@ -3,6 +3,8 @@ var fs = require('fs');
 var async = require('async');
 var _ = require('lodash');
 
+const componentPath = path.join(__components,"Survey");
+
 var db = require( __configs + 'database');
 var viewPath = path.join( __components, 'Survey/views/');
 var Logger = require( __configs + "loggingConfig");
@@ -12,58 +14,17 @@ var Errors = require(__components + "Errors/errors");
 
 var SurveyManager = require( __components + "Survey/helpers/surveyManager");
 var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
-var SurveyPreferences = require( __components + "Survey/surveyPreferences");
+var SurveyPreferences = require( __components + "Survey/models/SurveyPreferences");
 var SurveyResponse = require(__components + "Survey/surveyResponse");
 
-module.exports = function (app) {
-     /**
-     * Information is stored to quickly create survey information
-     * This information shouldn't change unless a new survey is added.
-     * @return {[type]} [description]
-     */
-    function getStaticSurveyData(){
-        //Note Survey Questions is not part of the survey database, its parts of question databasde
-        // Thus it's last in the allData variable, so it can be easily extracted.
-        var surveyNames = ["CPSEPS","GSE","SEWS", "AGQ", "OSE", "SCEQ"];
-        var surveyAuthors = ["Unknown", "Unknown","Unknown","Unknown","Unknown","Unknown"];
-        var surveyTitle = ["Computer Programming Self-Efficacy Survey",
-                           "General Self-Efficacy Survey",
-                           "Self-Efficacy Writing Scale",
-                           "Achievement Goal Questionnaire",
-                           "Online Student Engagement Scale",
-                           "Student Course Engagement Questionnaire"];
-        var surveyQuestions = ["data/surveys/CPSEPS.json", "data/surveys/GSE.json",
-                            "data/surveys/SEWS.json", "data/surveys/AGQ.json",
-                            "data/surveys/OSE.json", "data/surveys/SCEQ.json" ];
-        var numQs = [28,10,16,12, 19,23];
-        var field = ["programming", "general", "writing", "general","general", "general"];
-        var freq = ['reg','reg','reg','set', 'reg', 'set'];
-         var surveyFiles = [ "data/surveys/surveyCPSEPS.json", "data/surveys/surveyGSE.json",
-                            "data/surveys/surveySEWS.json", "data/surveys/surveyAGQ.json",
-                            "data/surveys/surveyOSE.json", "data/surveys/surveySCEQ.json" ];
-        var allData = _.zip(surveyNames, surveyAuthors, surveyTitle,numQs,field,freq, surveyFiles, surveyQuestions);
-        return allData;
-    }
+const staticSurvey = require(path.join(componentPath, 'helpers/staticSurvey'));
+const surveyBuildController = require(path.join(componentPath, 'controllers/surveyBuildController'));
 
-    /**
-     * Create  basic Survey information and store it in database.
-     *     Creation of Survey Information needs to occur before buildSurvey
-     * @param  {[type]} req  [description]
-     * @param  {Array}  res) {                   var surveyNames [description]
-     * @return {[type]}      [description]
-     */
-    app.get( '/createSurveys', function(req,res) {
-        var allData = getStaticSurveyData();
-        // pop  survey questions files
-        async.map(allData,
-            Survey.insertSurvey,
-            function(err){
-                if(err)
-                    Logger.error("CREATE SURVEYS Insert failed with error", err);
-                res.end();
-            }
-        );
-    });
+module.exports = function (app) {
+
+
+
+    app.get('/createSurveys', surveyBuildController.createSurveys);
 
     /**
      * Generate an all matrix survey for a set of questions, read from **surveyQuestions**.json
