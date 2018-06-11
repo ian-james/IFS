@@ -11,7 +11,7 @@ var userOptDB = require(__components + "Setup/userOptDB.js");
 
 var _ = require('lodash');
 
-var surveyManager = require(__components + "Survey/surveyManager.js");
+var surveyManager = require(__components + "Survey/helpers/surveyManager.js");
 
 // POST/GET requests
 module.exports = function(app) {

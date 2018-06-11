@@ -11,7 +11,7 @@ var Question = require( __components + "Survey/models/Question")
 var Errors = require(__components + "Errors/errors");
 
 var SurveyManager = require( __components + "Survey/helpers/surveyManager");
-var SurveyBuilder = require( __components + "Survey/surveyBuilder");
+var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
 var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var SurveyResponse = require(__components + "Survey/surveyResponse");
 

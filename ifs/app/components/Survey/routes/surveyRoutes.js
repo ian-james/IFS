@@ -11,7 +11,7 @@ var Survey = require( __components + "/Survey/models/Survey");
 var Question = require( __components + "Survey/models/Question")
 var Errors = require(__components + "Errors/errors");
 
-var SurveyBuilder = require( __components + "Survey/surveyBuilder");
+var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
 var SurveyPreferences = require( __components + "Survey/surveyPreferences");
 var SurveyResponse = require(__components + "Survey/surveyResponse");
 
@@ -26,31 +26,15 @@ module.exports = function (app, iosocket ) {
 
     app.get('/surveys', surveyController.surveyList);
 
+    app.get('/survey:surveyName', surveyController.getSpecificSurvey);
+
     /**
      * Method gets the full survey and displays it.
      * @param  {[type]} req  [description]
      * @param  {[type]} res) {                   var surveyName [description]
      * @return {[type]}      [description]
      */
-    app.get('/survey:surveyName', function(req,res) {
-        var surveyName = req.params.surveyName;
-        Survey.getSurvey(surveyName, function(err,surveyData) {
-            if( err ) {
-                Logger.error(err);
-            }
-            else if(surveyData.length >= 1 && surveyData[0].surveyName == surveyName)
-            {
-                SurveyBuilder.loadSurveyFile( surveyData[0], function(err,data){
-                    var sqs = JSON.stringify(data);
-                    res.render(viewPath + "questionsLayout", { "title": 'Survey', "surveyQuestions": sqs} );
-                });
-            }
-            else {
-                // Could throw an error here indicating failure to reach survey
-                res.end();
-            }
-        });
-    });
+    //app.get('/surveys:surveyName', function(req,res) {});
 
     // TODO: Comment this route
     app.get ('/survey/:id', (req, res) => {

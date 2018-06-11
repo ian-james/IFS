@@ -6,7 +6,7 @@ var Logger = require( __configs + "loggingConfig");
 
 var Constants = require( __components + "Constants/programConstants");
 var SurveyManager = require( __components + "Survey/helpers/surveyManager");
-var SurveyBuilder = require(__components + "Survey/surveyBuilder");
+var SurveyBuilder = require(__components + "Survey/helpers/surveyBuilder");
 var Survey = require( __components + "Survey/models/Survey");
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');

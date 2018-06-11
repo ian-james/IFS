@@ -11,7 +11,7 @@ var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
-var SurveyBuilder = require( __components + "Survey/surveyBuilder");
+var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
 var Survey = require( __components + "/Survey/models/Survey");
 
 var dbHelpers = require(__components + "Databases/dbHelpers");
