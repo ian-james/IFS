@@ -13,7 +13,7 @@ module.exports = {
      */
     createSurveyMeta: function( options ) {
         return {
-            surveyTitle:""
+            surveyTitle:"",
             questionsAnswered: []
         };
     },
@@ -27,7 +27,7 @@ module.exports = {
          return {
             allowedToAsk: true,
             pauseAsking: false,
-            nQuestionsPerAsk: 2
+            nQuestionsPerAsk: 2,
             lastTimeAsked: 0,
         };
     },

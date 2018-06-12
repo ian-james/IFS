@@ -26,7 +26,8 @@ function getSurveyId( surveyId, callback ) {
 }
 
 function getSurveyByTitle( surveyTitle, callback ) {
-    var q = dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("title"); 
+    //var q = dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("title"); 
+    let q = 'select survey.*, (select COUNT(*) from questions where questions.surveyId=survey.id) as numQ from survey where survey.title = ?;';
     db.query(q, surveyTitle, callback);
 }
 

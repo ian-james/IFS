@@ -90,8 +90,8 @@ module.exports =  {
                         }
 
                         var surveyIndex = surveyPrefData[0].currentSurveyIndex;
-                        var surveyLastIndex = surveyPrefData[0].lastIndex;
-
+                        const surveyLastIndex = data[0].numQ;
+                        console.log(surveyLastIndex);
                         var resultsToDb = [];
                         var qids = [];
                         var answers = [];
@@ -106,7 +106,6 @@ module.exports =  {
                             qids = qids.concat(_.keys(results[k]));
                             answers = answers.concat(_.values(results[k]));
                         }
-
                         // Get the index of the last question answered.
                         for (var i = 0; i < qids.length && i < answers.length; i++) {
 
@@ -116,7 +115,6 @@ module.exports =  {
                                 lastId = Math.max(lastId, parseInt(m[1]));
                             }
                         }
-
                         // IF all the questions where submitted we increment the surveyIndex because it will need to be a 'new'
                         //  survey. Even if the old survey was in progress.
                         if (resultsToDb.length == surveyLastIndex)
@@ -152,7 +150,7 @@ module.exports =  {
                         });
 
                         // Check if survey was finished update counter, user survey preferences.
-                        if (lastId == surveyLastIndex) {
+                        if (qids.length == surveyLastIndex) {
                             SurveyPreferences.incrementSurveyIndex(userId, surveyId, function (err, qData) {
                                 if (err)
                                     Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
