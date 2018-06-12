@@ -1,6 +1,7 @@
 var _ = require('lodash');
 var fs = require('fs');
 var async = require('async');
+const path = require('path');
 
 var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
@@ -11,6 +12,7 @@ var SurveyPreferences = require( __components + "Survey/models/SurveyPreferences
 var Constants = require( __components + "Constants/programConstants");
 var Survey = require( __components + "Survey/models/Survey");
 var Question = require( __components + "Survey/models/Question");
+
 
 /**
  * Default parameters for our surveys, add more as necessary.
@@ -308,3 +310,4 @@ module.exports.buildDefaultMatrixSurvey =  defaultMatrixSurvey;
 module.exports.setDisplaySurveyOptions = setDefaultDisplaySurveyOptions;
 module.exports.setSignupSurveyPreferences = setSignupSurveyPreferences;
 module.exports.loadSurveyQuestions = loadSurveyQuestions;
+module.exports.buildDefaultMatrixPage = buildDefaultMatrixPage;

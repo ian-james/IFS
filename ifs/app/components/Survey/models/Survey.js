@@ -1,10 +1,12 @@
 /**
  * This is CRUD calls for surveys
  */
+const path = require('path');
+const componentPath = path.join(__components, "Survey");
 var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
-
+const SurveyBuilder = require(path.join(componentPath, "helpers/surveyBuilder"));
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 function getSurveys( callback ) {

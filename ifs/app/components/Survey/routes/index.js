@@ -12,5 +12,7 @@ module.exports = (app, iosocket) => {
  app.get('/survey:surveyName', surveyController.getSpecificSurvey);
 
  app.post( '/survey/sentData', surveyController.sendSurveyData);
+
+ app.get ('/survey/:surveyID', surveyController.getMatrixFromDB);
  
 };
