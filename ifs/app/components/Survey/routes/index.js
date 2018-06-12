@@ -5,6 +5,7 @@ const surveyController = require(path.join(componentPath, '/controllers/surveyCo
 module.exports = (app, iosocket) => {
  // Admin related routes - keeping this for legacy purposes atm, might remove later
  require('./surveyBuildRoutes.js')(app);
+ 
  // General survey routes
  app.get('/surveys', surveyController.surveyList);
 
