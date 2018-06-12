@@ -23,7 +23,7 @@ module.exports =  {
     /* Returns a list of surveys */
     surveyList: (req, res) => {
         SurveyManager.getUserSurveyProfileAndSurveyType(req.user.id, function (err, surveyData) {
-            const keys = ['surveyId', 'lastRevision', 'currentSurveyIndex', 'surveyName', 'title', 'surveyField'];
+            const keys = ['id', 'surveyId', 'lastRevision', 'currentSurveyIndex', 'surveyName', 'title', 'surveyField'];
             let ans = _.map(surveyData, obj => _.pick(obj, keys));
 
             ans = _.map(ans, function (obj) {

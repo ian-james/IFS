@@ -36,7 +36,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getUserSurveyProfileAndSurveyType: function(userId, callback) {
-        var q = "select sp.*, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
+        var q = "select sp.*, s.id, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
         db.query(q,userId,callback);
     },
 

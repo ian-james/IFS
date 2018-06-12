@@ -29,7 +29,7 @@ block content
                                         span(uk-icon="icon: check").uk-margin-small-right.uk-margin-small-top.uk-text-success
                                 
                                 td.uk-table-expand
-                                    a(href="survey" + s.surveyName, class="uk-button") #{ s.title }
+                                    a(href="survey/" + s.id, class="uk-button") #{ s.title }
                                 td
                                     #{s.lastRevision}
             else
