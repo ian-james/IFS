@@ -44,7 +44,7 @@ let matrixRowSerializer = (row) => {
   return ({"value": row.id.toString(), "text": row.text});
 }
 
-let serialize = (surveyMeta, surveyQuestions, serializer) => {
+let serialized = (surveyMeta, surveyQuestions, serializer) => {
   const template = buildDefaultSurveyData(surveyMeta);
   const page = buildMatrixSurvey(surveyMeta);
 
@@ -56,5 +56,7 @@ let serialize = (surveyMeta, surveyQuestions, serializer) => {
   return template;
 };
 
-module.exports.serializeSurvey = serialize;
+
+module.exports.serializeSurvey = serialized;
 module.exports.matrixSerializer = matrixRowSerializer;
+module.exports.pulseSurvey = getPulseSurveySerialized;
