@@ -59,4 +59,4 @@ let serialized = (surveyMeta, surveyQuestions, serializer) => {
 
 module.exports.serializeSurvey = serialized;
 module.exports.matrixSerializer = matrixRowSerializer;
-module.exports.pulseSurvey = getPulseSurveySerialized;
+//module.exports.pulseSurvey = getPulseSurveySerialized;
