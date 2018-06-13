@@ -192,6 +192,42 @@
                     "params": ""
                 }
             ]
+        },
+        {
+            "displayName": "Python Formatting",
+            "description": "Finds errors in python files",
+            "technicalDesc": "A Python script that checks with a python linter",
+            "author": "Grant Douglas",
+            "copyright": "Copyright © 2018",
+            "license": "ISC License",
+            "licenseFile": "./tools/programmingTools/python_tools/LICENSE.txt",
+            "progName": "./tools/programmingTools/python_tools/pythonParser.py",
+            "cmdToolName": "pycodestyle",
+            "runType": "programming",
+            "route": "",
+            "filesAllowed": "zipFile",
+            "parseCmd": "",
+            "defaultArg": "-t pycodestyle",
+            "fileArgs": "-d",
+            "options":  [
+                {
+                    "displayName": "Language standard (python3, python2)",
+                    "type": "select",
+                    "name": "opt-pythonStandard",
+                    "values": [ "python3"],
+                    "arg": "-s",
+                    "params": ""
+                },
+                {
+                    "displayName": "Number of formatting errors",
+                    "type": "checkbox",
+                    "name": "opt-pycodestyleErrCount",
+                    "values": "",
+                    "arg": "",
+                    "params": ""
+                }
+               
+            ]
         }
     ]
 }
