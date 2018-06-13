@@ -110,11 +110,7 @@ module.exports = {
         return nextSurvey;
     },    
 
-    getAllowedSurveys: function(surveyPrefData) {
-        return _.filter(surveyPrefData, function(s) {
-            return s.allowedToAsk;
-        });
-    },
+
 
     getActiveSurveys: function(surveyPrefData ) {
         return _.filter(surveyPrefData, function(s) {
@@ -148,14 +144,6 @@ module.exports = {
     getSurveyInFreq: function( surveyPrefData, currentFields) {
         return _.filter(surveyPrefData, function(s) {
             return currentFields.includes(s.surveyFreq)
-        });
-    },
-
-    getSurveyFieldMatches: function( surveyPrefData, field, matchingFields) {
-        return _.filter(surveyPrefData, function(s) {
-            if( !_.has(s,field) )
-                return false;
-            return matchingFields.includes(s[field]);
         });
     },
 

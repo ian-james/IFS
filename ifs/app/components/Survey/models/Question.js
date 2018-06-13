@@ -33,13 +33,21 @@ function deleteQuestion( questionData, callback ) {
     });
 }
 
-let getQuestionCount = (id, callback) => {
+/*let getQuestionCount = (id, callback) => {
     var q = 'SELECT COUNT(id) as numQ from ' + dbcfg.question_table + ' WHERE surveyId = ?';
     db.query(q, id, (err, data) => {
         callback (err, data);
     })
+};*/
+
+let selectNRandomQuestions =  (surveyId, n, callback) => {
+    const q = 'SELECT * from ' + dbcfg.question_table + ' WHERE surveyId = ? ORDER BY RAND() LIMIT ?';
+    db.query (q, [surveyId, n], (err, data) => {
+        callback (err, data);
+    });
 };
 
 module.exports.getQuestions = getQuestions;
 module.exports.insertQuestion = insertQuestion;
 module.exports.deleteQuestion = deleteQuestion;
+module.exports.selectRandomQuestions = selectNRandomQuestions;

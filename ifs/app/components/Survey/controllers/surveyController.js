@@ -13,7 +13,7 @@ const event = require(__components + "InteractionEvents/buildEvent.js");
 const tracker = require(__components + "InteractionEvents/trackEvents.js");
 const SurveyResponse = require(__components + "Survey/models/SurveyResponse");
 const Errors = require(__components + "Errors/errors");
-const Serializers = require(path.join(componentPath, 'helpers/matrixSerializer.js'));
+const Serializers = require(path.join(componentPath, 'helpers/Serializer.js'));
 /* Models */
 const Survey = require(__components + "/Survey/models/Survey");
 const SurveyPreferences = require(path.join(componentPath, 'models/surveyPreferences'));
@@ -182,5 +182,15 @@ module.exports = {
         });
       })
     });
+  },
+
+  getPulseSurvey: async (req, res) => {
+    console.log('in proper function');
+    let surveyData = await SurveyBuilder.getPulseSurvey('programming', req.user.id);
+    
+    surveyData = JSON.stringify(surveyData);
+    console.log(surveyData);
+
+    res.end();
   },
 };

@@ -14,5 +14,7 @@ module.exports = (app, iosocket) => {
  app.post( '/survey/sentData', surveyController.sendSurveyData);
 
  app.get ('/survey/:surveyID', surveyController.getMatrixFromDB);
+
+ app.get ('/pulsetest', surveyController.getPulseSurvey);
  
 };

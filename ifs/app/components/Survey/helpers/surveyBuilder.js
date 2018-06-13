@@ -3,103 +3,149 @@ var fs = require('fs');
 var async = require('async');
 const path = require('path');
 
-var db = require( __configs + 'database');
+var db = require(__configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
-var Logger = require( __configs + "loggingConfig");
+var Logger = require(__configs + "loggingConfig");
 
-var SurveyPreferences = require( __components + "Survey/models/SurveyPreferences");
-var Constants = require( __components + "Constants/programConstants");
-var Survey = require( __components + "Survey/models/Survey");
-var Question = require( __components + "Survey/models/Question");
-
+var SurveyPreferences = require(__components + "Survey/models/SurveyPreferences");
+var Constants = require(__components + "Constants/programConstants");
+var Survey = require(__components + "Survey/models/Survey");
+var Question = require(__components + "Survey/models/Question");
+const Serializers = require(path.join(__components, 'Survey/helpers/Serializer'));
+const SurveyManager = require(path.join(__components, 'Survey/helpers/surveyManager'));
 
 /**
  * Default parameters for our surveys, add more as necessary.
  * @param  {[type]} surveyData [description]
  * @return {[type]}            [description]
  */
-function buildDefaultSurveyData( surveyData ) {
-    return {
-        "title": surveyData.title,
-        "showProgressBar": "bottom",
-        "goNextPageAutomatic": false,
-        "showNavigationButtons": true,
-        "pages":[]
-    };
-}
-
-function setDefaultDisplaySurveyOptions( questionsPerPage = 4, splitQuestionTypes = true, range = [0,100]) {
-    var opts = Constants.surveyDisplayDefaultOptions();
-
-    range[0] = range[0] || opts.range[0];
-    range[1] = range[1] || opts.range[1];
-
-    opts['range'] = range || opts.range;
-    opts['questionsPerPage'] = questionsPerPage || opts['questionsPerPage'];
-    opts['splitQuestionTypes'] = splitQuestionTypes || opts['splitQuestionTypes'];
-
-    return opts;
-}
-
-/**
- * Builds a single row for a matrix type question
- * which is just text and value
- * @param  {[type]} qText  [description]
- * @param  {[type]} qValue [description]
- * @return {[type]}        [description]
- */
-function buildDefaultMatrixRow( qText, qValue ) {
-    var v = qValue || "FIX:ME";
-     return { "value": v, "text": qText };
-}
+let buildMatrixSurvey = (surveyData) => {
+  return {
+    "questions": [{
+      "type": "matrix",
+      "name": surveyData[0].surveyName || "NAME-ME",
+      "title": surveyData[0].title || "Title-Me",
+      "columns": [{
+          "value": 1,
+          "text": "Strongly Disagree"
+        },
+        {
+          "value": 2,
+          "text": "Disagree"
+        },
+        {
+          "value": 3,
+          "text": "Neutral"
+        },
+        {
+          "value": 4,
+          "text": "Agree"
+        },
+        {
+          "value": 5,
+          "text": "Strongly Agree"
+        }
+      ],
+      "rows": []
+    }]
+  };
+};
 
 /**
- * Builds a single page, with a single question type (Matrix)
- * It loads everything but the rows(ie questions)
- * but the scoring system is setup.
+ * Default parameters for our surveys, add more as necessary.
  * @param  {[type]} surveyData [description]
  * @return {[type]}            [description]
  */
-function buildDefaultMatrixPage( surveyData ) {
-    return {
-        "questions": [
-            {
-                "type": "matrix",
-                "name": surveyData.name || "NAME-ME",
-                "title": surveyData.title || "Title-Me",
-                "columns": [
-                    { "value": 1, "text": "Strongly Disagree" },
-                    { "value": 2, "text": "Disagree" },
-                    { "value": 3, "text": "Neutral" },
-                    { "value": 4, "text": "Agree" },
-                    { "value": 5, "text": "Strongly Agree" }
-                ],
-                "rows": []
-            }
-        ]
-    };
+let buildDefaultSurveyData = (surveyData) => {
+  return {
+    "title": surveyData[0].title,
+    "showProgressBar": "bottom",
+    "goNextPageAutomatic": false,
+    "showNavigationButtons": true,
+    "pages": []
+  };
 }
 
-
-/**
- * Builds a survey with every question as a matrix format.
- *  You can use buildSection to organize the survey once saved.
- * @param  {[type]} surveyData      [description]
- * @param  {[type]} surveyQuestions [description]
- * @return {[type]}                 [description]
+/*
+ * Filters surveys by those that are allowed to be asked
+ * 
  */
-function defaultMatrixSurvey( surveyData, surveyQuestions) {
-    var survey = buildDefaultSurveyData(surveyData);
+let getAllowedSurveys = (surveyPrefData) => {
+  return _.filter(surveyPrefData, (s) => {
+      return s.allowedToAsk;
+  });
+};
 
-    var mpage = buildDefaultMatrixPage(surveyData);
+/*
+ * Filters preferences to specific related tools
+ * 
+ */
+let getSurveyFieldMatches = (surveyPrefData, field, matchingFields) => {
+  return _.filter(surveyPrefData, (s) => {
+      if( !_.has(s,field) )
+          return false;
+      return matchingFields.includes(s[field]);
+  });
+};
 
-    for(var i = 0; i < surveyQuestions.length;i++ )
-        mpage.questions[0].rows.push( buildDefaultMatrixRow(surveyQuestions[i]));
 
-    survey.pages.push(mpage);
-    return survey;
+let buildPulseSurvey = async (toolType, userId) => {
+
+  SurveyManager.getUserSurveyProfileAndSurveyType(userId, (err, surveyPref) => {
+    if (err) {
+      return [];
+    }
+    /* Get list of allowed surveys based on user preferences */
+    let surveyOpt = getSurveyFieldMatches(surveyPref,"surveyField",[toolType, "general"]);
+    surveyOpt = getSurveyFieldMatches(surveyOpt,"surveyFreq",["reg"]);
+    let allowedSurveys = getAllowedSurveys(surveyOpt);
+    
+    /* Select a random survey out of those selected */
+    if (!allowedSurveys) {
+      return [];
+    } 
+
+    /* Pick a random survey out of those selected */
+    const selectedSurvey = _.sample(allowedSurveys);
+    const surveyId = selectedSurvey.id;
+    /* Get questions from the selected survey */
+    Question.selectRandomQuestions(surveyId, 2, (err, questions) => {
+      let surveyData = Serializers.serializeSurvey([selectedSurvey], questions, Serializers.matrixSerializer);
+      console.log('DATA IN BUILD: ' + JSON.stringify(surveyData));
+      return surveyData;
+    });
+  });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function setDefaultDisplaySurveyOptions(questionsPerPage = 4, splitQuestionTypes = true, range = [0, 100]) {
+  var opts = Constants.surveyDisplayDefaultOptions();
+
+  range[0] = range[0] || opts.range[0];
+  range[1] = range[1] || opts.range[1];
+
+  opts['range'] = range || opts.range;
+  opts['questionsPerPage'] = questionsPerPage || opts['questionsPerPage'];
+  opts['splitQuestionTypes'] = splitQuestionTypes || opts['splitQuestionTypes'];
+
+  return opts;
+}
+
 
 /**
  * CHeck if object has type matrix
@@ -107,7 +153,7 @@ function defaultMatrixSurvey( surveyData, surveyQuestions) {
  * @return {Boolean}     [description]
  */
 function isMatrix(obj) {
-    return obj && obj.hasOwnProperty('type') && obj.type == "matrix";
+  return obj && obj.hasOwnProperty('type') && obj.type == "matrix";
 }
 
 /**
@@ -116,23 +162,16 @@ function isMatrix(obj) {
  * @param  {Function} callback   [description]
  * @return {[type]}              [description]
  */
-function loadSurveyFile( surveyData, callback ) {
-    fs.readFile(surveyData.fullSurveyFile,'utf-8',function(err,data){
-        if( err ) {
-            Logger.error(err);
-        }
-        else{
-            data = JSON.parse(data);
-            callback(null,data);
-        }
-    });
+function loadSurveyFile(surveyData, callback) {
+  fs.readFile(surveyData.fullSurveyFile, 'utf-8', function (err, data) {
+    if (err) {
+      Logger.error(err);
+    } else {
+      data = JSON.parse(data);
+      callback(null, data);
+    }
+  });
 }
-
-let loadSurveyQuestions = (surveyData, callback) => {
-    let template = buildDefaultMatrixPage (surveyData);
-    Question.getQuestions (surveyData.id, callback);
-    //callback (null, template);
-};
 
 /**
  * Separate a Matrix type question into multiple sections
@@ -141,18 +180,18 @@ let loadSurveyQuestions = (surveyData, callback) => {
  * @param  {[type]} matrixQuestion [description]
  * @return {[type]}                [description]
  */
-function separateMatrixType( matrixQuestion ){
-    var questions = matrixQuestion.rows;
-    if( questions && questions.length >= 1) {
-        var separatedQs = [];
-        for(var i = 0; i < questions.length;i++ ) {
-            var template = _.clone( matrixQuestion );
-            template.rows = [ questions[i] ];
-            separatedQs.push(template);
-        }
-        return separatedQs;
+function separateMatrixType(matrixQuestion) {
+  var questions = matrixQuestion.rows;
+  if (questions && questions.length >= 1) {
+    var separatedQs = [];
+    for (var i = 0; i < questions.length; i++) {
+      var template = _.clone(matrixQuestion);
+      template.rows = [questions[i]];
+      separatedQs.push(template);
     }
-    return matrixQ;
+    return separatedQs;
+  }
+  return matrixQ;
 }
 
 /**
@@ -161,18 +200,18 @@ function separateMatrixType( matrixQuestion ){
  * @param  {[type]} questions [description]
  * @return {[type]}           [description]
  */
-function mergeMatrixType( questions ) {
-    if( questions && questions.length >= 1 && isMatrix(questions[0]) ){
-        var sectionName = questions[0].name;
-        var template = questions[0];
-        for(var i = 1; i < questions.length;i++ ) {
-            if( isMatrix(questions[i]) && questions[i].name == sectionName){
-                template.rows = template.rows.concat( questions[i].rows );
-            }
-        }
-        return template;
+function mergeMatrixType(questions) {
+  if (questions && questions.length >= 1 && isMatrix(questions[0])) {
+    var sectionName = questions[0].name;
+    var template = questions[0];
+    for (var i = 1; i < questions.length; i++) {
+      if (isMatrix(questions[i]) && questions[i].name == sectionName) {
+        template.rows = template.rows.concat(questions[i].rows);
+      }
     }
-    return questions;
+    return template;
+  }
+  return questions;
 }
 
 /**
@@ -180,19 +219,19 @@ function mergeMatrixType( questions ) {
  * @param  {[type]} survey [description]
  * @return {[type]}        [description]
  */
-function pullSurveyQuestions( survey ) {
-    var questions = []
-    if(survey && survey.pages) {
-        for(var i =0;i<survey.pages.length;i++) {
-            for(var y =0;y< survey.pages[i].questions.length;y++) {
-                if( isMatrix(survey.pages[i].questions[y] ) )
-                    questions = questions.concat( separateMatrixType(survey.pages[i].questions[y]) );
-                else
-                    questions.push( survey.pages[i].questions[y] );
-            }
-        }
+function pullSurveyQuestions(survey) {
+  var questions = []
+  if (survey && survey.pages) {
+    for (var i = 0; i < survey.pages.length; i++) {
+      for (var y = 0; y < survey.pages[i].questions.length; y++) {
+        if (isMatrix(survey.pages[i].questions[y]))
+          questions = questions.concat(separateMatrixType(survey.pages[i].questions[y]));
+        else
+          questions.push(survey.pages[i].questions[y]);
+      }
     }
-    return questions;
+  }
+  return questions;
 }
 
 /**
@@ -203,61 +242,63 @@ function pullSurveyQuestions( survey ) {
  * @param  {[type]} options [description]
  * @return {[type]}         [description]
  */
-function buildSurveySection( survey , options) {
-    var surveyOut = buildDefaultSurveyData(survey);
-    if(survey && survey.pages) {
-        // Get Questions from Survey Format
-        var questions = pullSurveyQuestions(survey);
+function buildSurveySection(survey, options) {
+  var surveyOut = buildDefaultSurveyData(survey);
+  if (survey && survey.pages) {
+    // Get Questions from Survey Format
+    var questions = pullSurveyQuestions(survey);
 
-        // Setup short form survey Properties.
-        // Questions per page, organize by question Type.
-        var range = options['range'] || [0,questions.length];
-        var questionsPerPage = options['questionsPerPage'] || questions.length;
-        var splitQuestionTypes = options['splitQuestionTypes'] || true;
+    // Setup short form survey Properties.
+    // Questions per page, organize by question Type.
+    var range = options['range'] || [0, questions.length];
+    var questionsPerPage = options['questionsPerPage'] || questions.length;
+    var splitQuestionTypes = options['splitQuestionTypes'] || true;
 
-        var pages = [];
-        var page= []
-        var buildingType =undefined;
-        var questionsInRange = questions.slice(range[0], range[1]);
+    var pages = [];
+    var page = []
+    var buildingType = undefined;
+    var questionsInRange = questions.slice(range[0], range[1]);
 
-        // Internal function to handle separting pages.
-        var resetPageInfo = function() {
-            if(page.length > 0){
-                if(isMatrix(page[0]) ) {
-                    page = mergeMatrixType(page);
-                    pages.push({ "questions":[page] });
-                }
-                else {
-                    pages.push({"questions":page});
-                }
-            }
-            buildType = undefined;
-            page = [];
+    // Internal function to handle separting pages.
+    var resetPageInfo = function () {
+      if (page.length > 0) {
+        if (isMatrix(page[0])) {
+          page = mergeMatrixType(page);
+          pages.push({
+            "questions": [page]
+          });
+        } else {
+          pages.push({
+            "questions": page
+          });
         }
-
-        // Go through all the question and put them into pages.
-        for( var i = 0; i < questionsInRange.length;i++ ){
-
-            if( !buildingType )
-                buildingType = questionsInRange[i].type;
-
-            // Add question to the page because either question type matches
-            // or we don't can't about matching question types.
-            if(!splitQuestionTypes || (splitQuestionTypes && buildingType == questionsInRange[i].type)) {
-                page.push(questionsInRange[i]);
-                if( page.length >= questionsPerPage || i+1 == questionsInRange.length ) {
-                    resetPageInfo();
-                }
-            }
-            else  {
-                resetPageInfo();
-                buildingType = questionsInRange[i].type;
-                page.push(questionsInRange[i]);
-            }
-        }
-        surveyOut.pages = pages;
+      }
+      buildType = undefined;
+      page = [];
     }
-    return surveyOut;
+
+    // Go through all the question and put them into pages.
+    for (var i = 0; i < questionsInRange.length; i++) {
+
+      if (!buildingType)
+        buildingType = questionsInRange[i].type;
+
+      // Add question to the page because either question type matches
+      // or we don't can't about matching question types.
+      if (!splitQuestionTypes || (splitQuestionTypes && buildingType == questionsInRange[i].type)) {
+        page.push(questionsInRange[i]);
+        if (page.length >= questionsPerPage || i + 1 == questionsInRange.length) {
+          resetPageInfo();
+        }
+      } else {
+        resetPageInfo();
+        buildingType = questionsInRange[i].type;
+        page.push(questionsInRange[i]);
+      }
+    }
+    surveyOut.pages = pages;
+  }
+  return surveyOut;
 }
 
 /**
@@ -268,12 +309,12 @@ function buildSurveySection( survey , options) {
  * @param  {Function} callback   [description]
  * @return {[type]}              [description]
  */
-function getSurveySection( surveyData, options, callback ) {
+function getSurveySection(surveyData, options, callback) {
 
-    loadSurveyFile(surveyData, function(err,survey){
-        var jsonSurvey = buildSurveySection(survey,options);
-        callback(null, jsonSurvey );
-    });
+  loadSurveyFile(surveyData, function (err, survey) {
+    var jsonSurvey = buildSurveySection(survey, options);
+    callback(null, jsonSurvey);
+  });
 }
 
 /**
@@ -282,32 +323,33 @@ function getSurveySection( surveyData, options, callback ) {
  * @param {[type]}   userId   [description]
  * @param {Function} callback [description]
  */
-function setSignupSurveyPreferences(userId,callback ) {
-    Survey.getSurveys( function(err,surveyData ){
-        if(!err) {
-            var surveyPrefsData = [];
-            for(var i = 0; i < surveyData.length;i++){
-                surveyPrefsData.push([ userId, surveyData[i].id, null, surveyData[i].totalQuestions]);
-            }
+function setSignupSurveyPreferences(userId, callback) {
+  Survey.getSurveys(function (err, surveyData) {
+    if (!err) {
+      var surveyPrefsData = [];
+      for (var i = 0; i < surveyData.length; i++) {
+        surveyPrefsData.push([userId, surveyData[i].id, null, surveyData[i].totalQuestions]);
+      }
 
-            async.map(surveyPrefsData,
-                SurveyPreferences.insertSurveyPrefs,
-                function(err,data){
-                    callback(err,data);
-                }
-            );
+      async.map(surveyPrefsData,
+        SurveyPreferences.insertSurveyPrefs,
+        function (err, data) {
+          callback(err, data);
         }
-        else{
-            callback(err,null);
-        }
-    });
+      );
+    } else {
+      callback(err, null);
+    }
+  });
 }
 
 // Exported functions.
+module.exports.buildMatrixSurvey = buildMatrixSurvey;
+module.exports.buildDefaultSurveyData = buildDefaultSurveyData;
+module.exports.getAllowedSurveys = getAllowedSurveys;
+module.exports.getPulseSurvey = buildPulseSurvey;
+
 module.exports.getSurveySection = getSurveySection;
-module.exports.loadSurveyFile = loadSurveyFile;
-module.exports.buildDefaultMatrixSurvey =  defaultMatrixSurvey;
 module.exports.setDisplaySurveyOptions = setDefaultDisplaySurveyOptions;
 module.exports.setSignupSurveyPreferences = setSignupSurveyPreferences;
-module.exports.loadSurveyQuestions = loadSurveyQuestions;
-module.exports.buildDefaultMatrixPage = buildDefaultMatrixPage;
+//module.exports.loadSurveyQuestions = loadSurveyQuestions;

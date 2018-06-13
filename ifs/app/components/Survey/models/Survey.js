@@ -46,6 +46,7 @@ function deleteSurvey( surveyData, callback ) {
     db.query(q,surveyData, callback );
 }
 
+
 module.exports.insertSurvey = insertSurvey;
 module.exports.deleteSurvey = deleteSurvey;
 module.exports.getSurvey = getSurvey;
