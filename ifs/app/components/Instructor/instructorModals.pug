@@ -1,0 +1,115 @@
+script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+script.
+    var test = "hello";
+    $(document).ready(function(){
+        $("#psycoptions").hide();
+        $("#othoptions").hide();
+        $("#ctype").change(function() {
+            var value = $("#ctype").val();
+            if(value == "computer science")
+            {
+                $("#csoptions").show();
+                $("#psycoptions").hide();
+                $("#othoptions").hide();
+            }
+            else if(value == "psychology"){
+                $("#csoptions").hide();
+                $("#psycoptions").show();
+                $("#othoptions").hide();
+            }
+            else{
+                $("#csoptions").hide();
+                $("#psycoptions").hide();
+                $("#othoptions").show();
+            }
+        });
+    });
+div#create-course(uk-modal='')
+    .uk-modal-dialog.uk-modal-body
+        button.uk-modal-close-default(type='button', uk-close='')
+        h2.uk-modal-title Create Course
+        div.uk-overflow-container
+            form(class='uk-form' method="post" action="" + formAction )#uploadForm
+                label(for="Course name").uk-form-label
+                    | Course Name
+                div.uk-form-controls
+                    input(type="text" name="cname", id="cname", placeholder="e.g Introduction to Programming", required).uk-input
+                br
+                label(for="Course code").uk-form-label
+                    | Class Code
+                div.uk-form-controls
+                    input(type="text" name="ccode", id="ccode", placeholder="e.g CIS*1500", required).uk-input
+                br
+                label(for="Course year").uk-form-label
+                    | Year
+                div.uk-form-controls
+                    - var d  = new Date();
+                    - var year = d.getFullYear();
+                    input(type="text" name="cyear", id="cyear", placeholder=year, required).uk-input
+                br
+                label(for="Course semester").uk-form-label
+                    | Course Semester
+                div.uk-form-controls
+                    select(id="csemester" name="csemester", required).uk-select
+                        option(value="fall", selected) Fall
+                        option(value="winter") Winter
+                        option(value="summer") Summer
+                br
+                label(for="Course type").uk-form-label
+                    | Course Type
+                div.uk-form-controls
+                    select(id="ctype" name="ctype", required).uk-select
+                        option(value="computer science", selected) Computer Science
+                        option(value="psychology") Psychology
+                        option(value="other") Other
+                br
+                div#csoptions
+                    | compsci
+                br
+                div#psycoptions 
+                    | psychology
+                br
+                div#othoptions
+                    | other
+                label(for="Course description").uk-form-label
+                    | Course Description
+                div.uk-form-controls
+                    input(type="text" name="cdesc", id="cdesc", placeholder="e.g This course is about...", required).uk-input
+        button.uk-button.uk-button-primary.uk-margin-small-right(type='button') Save
+        button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
+
+
+
+div#create-assignment(uk-modal='')
+    .uk-modal-dialog.uk-modal-body
+        button.uk-modal-close-default(type='button', uk-close='')
+        h2.uk-modal-title Create Assignment
+        div.uk-overflow-container
+            form(class='uk-form' method="post" action="" + formAction )#uploadForm
+                label(for="Course name").uk-form-label
+                    | Course Name
+                div.uk-form-controls
+                    input(type="text" name="cname", id="cname", placeholder="e.g Introduction to Programming", required).uk-input
+                br
+                label(for="Assignment name").uk-form-label
+                    | Assignment name
+                div.uk-form-controls
+                    input(type="text" name="aname", id="aname", placeholder="e.g a1-1500", required).uk-input
+                br
+                label(for="Assignment title").uk-form-label
+                    | Assignment title
+                div.uk-form-controls
+                    input(type="text" name="atitle", id="atitle", placeholder="e.g Programming tic tac toe", required).uk-input
+                br
+                label(for="Description").uk-form-label
+                    | Description
+                div.uk-form-controls
+                    input(type="text" name="atitle", id="atitle", placeholder="e.g This assignment is about..", required).uk-input
+                br
+                label(for="Due date").uk-form-label
+                    | Due date
+                div.uk-form-controls
+                    input(type="date" name="adate", id="adate", placeholder="yyyy-mm-dd", required).uk-input
+                br
+        button.uk-button.uk-button-primary.uk-margin-small-right(type='button') Save
+        button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel

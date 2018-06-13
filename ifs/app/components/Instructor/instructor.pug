@@ -4,28 +4,104 @@ block content
     div.uk-container
         h2.uk-text-left #{title}
         hr
-        div.uk-margin
-            if !classes
+        div.uk-margin.uk-padding-small
+            div.uk-margin-large-bottom
+                a.btn.btn-primary(href='#create-course', uk-toggle='').uk-float-right
+                    i.glyphicon.glyphicon-plus(aria-hidden='true')
+                    |  Create Course
+                a.btn.btn-primary(href='#create-assignment', uk-toggle='').uk-float-right.uk-margin-small-right
+                    i.glyphicon.glyphicon-plus(aria-hidden='true')
+                    |  Create Assignment
+            div(uk-grid style='clear:both;').uk-grid-small.uk-grid-match
+                each cs in classes
+                    div(class="uk-width-1-2@m")
+                        div.uk-card.uk-card-default.uk-box-shadow-hover-xlarge
+                            div.uk-card-header
+                                div(uk-grid).uk-grid-small.uk-flex-middle
+                                    div.uk-width-auto
+                                        // Icons used are created by inipagi they are used under the creative commons license
+                                        // A link to the icons: https://dribbble.com/shots/3390690-Free-40-Education-Icons
+                                        - var location = "../../shared/img/icons/" + cs.disciplineType + ".png"
+                                        img(src=location alt=cs.disciplineType uk-tooltip=cs.disciplineType).avatar
+                                    div.uk-width-expand
+                                        h3.uk-card-title.uk-margin-remove-bottom #{cs.code}
+                                        p.uk-text-meta.uk-margin-remove-top= cs.name
+                                a(href="/register").uk-float-right
+                                    span.glyphicon(class="glyphicon-signal").uk-margin-small-right
+                                    | Statistics
+                                a(href="/register").uk-float-right.uk-margin-small-right
+                                    span.glyphicon(class="glyphicon-edit").uk-margin-small-right
+                                    | Edit
+                else
+                    h3 You don't have any classes created.
+            if !assignments
                 p.uk-text-lead
-                    | No classes to show create one?
+                    | No assignments to show!
             else
-                 div(uk-grid).uk-grid-small.uk-grid-match.uk-padding-small
-                    each cs in classes
-                        div(class="uk-width-1-2@m")
-                            div.uk-card.uk-card-default
-                                div.uk-card-header
-                                    div(uk-grid).uk-grid-small.uk-flex-middle
-                                        div.uk-width-auto
-                                            img(src="../../shared/img/jfraser.png").avatar
-                                        div.uk-width-expand
-                                            h3.uk-card-title.uk-margin-remove-bottom #{cs.code}
-                                            p.uk-text-meta.uk-margin-remove-top= cs.name
-                                    a(href="/register").uk-float-right
-                                        span(uk-icon="icon: world").uk-margin-small-right
-                                        | Statistics
-                                    a(href="/register").uk-float-right.uk-margin-small-right
-                                        span(uk-icon="icon: pencil").uk-margin-small-right
-                                        | Edit
+                div.uk-margin
+                    div.uk-card.uk-card-default
+                        div.uk-card-body
+                            h4.uk-card-title Assignments
+                                table.uk-table.uk-table-divider.uk-table-hover
+                                    thead
+                                        tr
+                                            th Title
+                                            th Due date
+                                            th Manage
+                                    tbody
+                                        each assign in assignments
+                                            tr
+                                                td #{assign.title}
+                                                // Clean up date then parse it properly so that the other page wont mess up
+                                                - var date = assign.deadline.toLocaleDateString().split("-");
+                                                - if (parseInt(date[1]) < 10) date[1] = '0' + date[1];
+                                                - if (parseInt(date[2]) < 10) date[2] = '0' + date[2];
+                                                - var date = date[0] + '-' + date[1]  + '-' + date[2];
+                                                td #{date}
+                                                td
+                                                    form(class='uk-form' method="post" action="/instructor-manage-assignment")
+                                                        input(type="hidden" name="assignment-id" value=assign.id)
+                                                        input(type="hidden" name="assignment-name" value=assign.name)
+                                                        input(type="hidden" name="assignment-title" value=assign.title)
+                                                        input(type="hidden" name="assignment-description" value=assign.description)
+                                                        input(type="hidden" name="assignment-deadline" value=date)
+                                                        button.btn.btn-sm.btn-success(type="submit").uk-margin-small-right
+                                                            i.glyphicon.glyphicon-edit(aria-hidden='true')
+                                                            |  Manage
+
+            if !stats
+                p.uk-text-lead
+                    | No statistics to show!
+            else
+                div(data-uk-grid-margin).uk-grid.uk-grid-match
+                    div.uk-width-1-3
+                        div.uk-card.uk-card-default
+                            div.uk-card-body
+                                h4.uk-card-title Your General Statistics
+                                ul.uk-list.uk-list-striped
+                                    li Total Students: #{stats.students}
+                                    li Students Online This week: #{stats.otw}
+                                    li Weekly Submissions: #{stats.weekSub}
+
+                    div.uk-width-2-3
+                        div.uk-card.uk-card-default
+                            div.uk-card-body
+                                h4.uk-card-title Some other data
+                                div.uk-panel.uk-panel-scrollable
+                                    ul.uk-list.uk-list-striped
+                                        li Total Students: #{stats.students}
+                                        li Students Online This week: #{stats.otw}
+                                        li Weekly Submissions: #{stats.weekSub}
+                                        li Total Students: #{stats.students}
+                                        li Students Online This week: #{stats.otw}
+                                        li Weekly Submissions: #{stats.weekSub}
+                                        li Total Students: #{stats.students}
+                                        li Students Online This week: #{stats.otw}
+                                        li Weekly Submissions: #{stats.weekSub}
+                                        li Total Students: #{stats.students}
+                                        li Students Online This week: #{stats.otw}
+                                        li Weekly Submissions: #{stats.weekSub}
+            include instructorModals.pug
                                     
 
 

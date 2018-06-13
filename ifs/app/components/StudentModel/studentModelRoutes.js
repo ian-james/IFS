@@ -116,9 +116,6 @@ module.exports = function(app, iosocket) {
      */
     function mostUsedChart(req, res, options) {
         // fetches top 5 most used at the moment (could add a actual dropdown in the future)
-        console.log("SHOULD PPRINT HERE");
-        console.log(options.runType);
-        console.log(options);
         studentModel.getMyMostUsedTools(req.user.id, options.runType, 5, function(err,data) {
             if(!err) {
                 var tool = _.map(data, "tool");

@@ -1,0 +1,59 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container
+        h2.uk-text-left #{title}
+        hr
+        div.uk-margin.uk-padding-small
+            div.uk-margin-large-bottom
+                form(class='uk-form' method="post" action="")
+                    label(for="Assignment name").uk-form-label
+                        | Assignment Name
+                    div.uk-form-controls
+                        input(type="text" name="aname", id="aname", value=aname, required).uk-input
+                    br
+                    label(for="Assignment title").uk-form-label
+                        | Assignment Title
+                    div.uk-form-controls
+                        input(type="text" name="atitle", id="atitle", value=atitle, required).uk-input
+                    br
+                    label(for="Assignment description").uk-form-label
+                        | Assignment Description
+                    div.uk-form-controls
+                        input(type="text" name="adescription", id="adescription", value=adescription, required).uk-input
+                    br
+                    label(for="Assignment deadline").uk-form-label
+                        | Assignment Deadline
+                    div.uk-form-controls
+                        input(type="date" name="adate", id="adate", value=adeadline, required).uk-input
+                    br
+                    h5 #[strong Statistics]
+                    each option in aoptions
+                        div.uk-grid
+                            div.tool-title
+                                strong #{option.name}
+                            div.uk-width-expand
+                                div.uk-float-right
+                                    label.switch-wrapper
+                                        input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true" ng-checked=option.enabled)
+                                        div(uk-toggle="target: #" +  option.fieldName + "; animation: uk-animation-slide-top-small").switch.switch-round
+                        span(ng-if=option.enabled)
+                            div(id=option.fieldName).uk-background-muted
+                                ul.uk-list.uk-list-divider.uk-padding-small
+                                    li
+                                        div.uk-clearfix
+                                            div.uk-float-left
+                                                include instructorInput.pug
+                        // nick's crappy fix for it not showing if its not enabled.. it works i guess?
+                        span(ng-if="!" + option.enabled) 
+                            div(id=option.fieldName hidden='').uk-background-muted
+                                ul.uk-list.uk-list-divider.uk-padding-small
+                                    li
+                                        div.uk-clearfix
+                                            div.uk-float-left
+                                                include instructorInput.pug
+                    button.uk-button.uk-button-primary.uk-margin-small-right.uk-margin-medium-top(type='button') Save
+                    a.uk-button.uk-button-danger.uk-margin-medium-top(href='/instructor') Cancel
+                                    
+
+
