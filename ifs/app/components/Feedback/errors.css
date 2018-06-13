@@ -65,7 +65,9 @@
 
 .formatting {
     display: inline-block;
-    color: #007F00 !important;
+    background-color: #ebb987 !important;
+    font-style: italic !important;
+    border-radius: 3px !important;
 }
 
 /* mark up for popover cards */

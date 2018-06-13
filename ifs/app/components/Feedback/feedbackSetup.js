@@ -71,7 +71,6 @@ function readFeedbackFormat( feedback , options) {
         {
             var file = files[i];
 
-
             file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
 
             //TODO: Positional setup information should be moved to the feedback filtering and organization

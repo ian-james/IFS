@@ -57,6 +57,8 @@ module.exports = function (app, iosocket) {
             return !(_.startsWith(key,'tool-') /*|| _.startsWith(key,'enabled-')*/)
         });
 
+        console.log("data: " + JSON.stringify(options));
+
         tracker.trackEvent( iosocket, eventDB.submissionEvent(req.user.sessionId, req.user.id, "info-options", options));
     }
 
@@ -193,13 +195,25 @@ module.exports = function (app, iosocket) {
 
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
+        // saves the tools that were selected
         var user = eventDB.eventID(req);
         saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
+
         submissionEvent.addSubmission( user, function(subErr, succSubmission) {
+
+            //obtain last submission from the requesting user
             var submissionRequest = submissionEvent.getLastSubmissionId(user.userId, user.sessoinId);
+
             db.query(submissionRequest.request,submissionRequest.data, function(err,submissionIdRes){
+
+                // get submission ID
                 var submissionId = event.returnData( submissionIdRes[0] );
+
+
+                //submit all tools and options to user_interactions database
                 emitJobOptions( req, iosocket, req.body);
+
+                //deal with uploaded files
                 var uploadedFiles = Helpers.handleFileTypes( req, res );
 
                 if( Errors.hasErr(uploadedFiles) ) {
@@ -210,6 +224,7 @@ module.exports = function (app, iosocket) {
                     return;
                 }
 
+                //get the tool selection and add target files
                 var userSelection = req.body;
                 userSelection['files'] = uploadedFiles;
 
@@ -226,9 +241,10 @@ module.exports = function (app, iosocket) {
                 //Upload files names and job requests, jobRequests remains to ease testing and debugging.
                 var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
                 var filesFile = Helpers.writeResults( uploadedFiles, { 'filepath': uploadedFiles[0].filename, 'file': 'fileUploads.json'});
-                req.session.jobRequestFile = requestFile;
+                req.session.jobRequestFile = requestFile;   
                 req.session.uploadFilesFile = filesFile;
 
+                //store tool used and command run into user_interaction table
                 emitJobRequests(req,iosocket,tools);
 
                 res.writeHead(202, { 'Content-Type': 'application/json' });

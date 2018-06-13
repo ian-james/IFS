@@ -51,7 +51,7 @@ def parse( text, options ):
 	types = options['splitTypes']
 
 	for line in text.splitlines():
-		sNum = 0
+		
 		feedback = {}
 		feedback['toolName'] = options['tool']
 		sections = line.split("|")
@@ -63,9 +63,9 @@ def parse( text, options ):
 		feedback['feedback'] = sections[3]
 		feedback['type'] = 'formatting'
 
+
 		# append feedback
 		results.append(feedback)
-
 
 	return results
 
@@ -111,6 +111,8 @@ def createCmd(options):
 	else:
 		return ""
 
+
+
 	return cmdStr
 
 
@@ -123,7 +125,7 @@ def main(argv):
 				'errorLevel':'all',
 				'flags': [],
 				'std': 'Python 3',
-				'dir':'unzipped',
+				'dir':'',
 				'splitSeq': "##",
 				'splitTypes': [ "filename", "lineNum", "type", "category", "feedback"],
 				'outFile':'stdout.txt',
@@ -193,6 +195,7 @@ def main(argv):
 					errors = errFile.read()
 
 					result = parse( errors, options )
+
 
 					if( options['ifs'] ):
 						result = decorateData( result, options )

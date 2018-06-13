@@ -1,5 +1,5 @@
 var queue = require('./kueServer');
-var cjob = require('./childJob');
+var cjob = require('./childJob');   //not used???
 var Logger = require( __configs + "loggingConfig" );
 
 var Q = require('q');
@@ -20,6 +20,7 @@ function jobConfig(jobType, jobName) {
 function makeJob(toolOptions, jobOpts) {
     var deferred = Q.defer();
 
+    //The job to to run in the queue
     var job = queue.queue.create(jobOpts.jobType, {
             name:jobOpts.jobName,
             title:jobOpts.jobName,
@@ -29,6 +30,7 @@ function makeJob(toolOptions, jobOpts) {
         .attempts(jobOpts.attempts)
         .backoff( jobOpts.backoff )
         .ttl(jobOpts.timeOfLife);
+
 
     job.on('enqueue', function() {
         deferred.notify({ msg:"Task Received", "tool": job.data.name, progress: 0});
