@@ -27,6 +27,10 @@ function query(queryStr, args, callback) {
    //Logger.info("Database query started");
    pool.getConnection(function(err,connection) {
         if(connection){
+	        connection.on('error', function(err) {
+	            console.log("DB Connection error handled");
+	            handleConnectionError(err,connection);
+	        });
             connection.query( queryStr, args, function(err,data) {
                 if(err) {
                     console.log("ERROR FOR STRING: ", queryStr);
@@ -41,10 +45,10 @@ function query(queryStr, args, callback) {
             callback(err,null);
         }
 
-        connection.on('error', function(err) {
-            console.log("DB Connection error handled");
-            handleConnectionError(err,connection);
-        });
+        //connection.on('error', function(err) {
+            //console.log("DB Connection error handled");
+            //handleConnectionError(err,connection);
+        //});
    });
 }
 

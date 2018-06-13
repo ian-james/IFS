@@ -1,35 +1,40 @@
-/*
+var db = require( __configs + 'database');
+var dbcfg = require(__configs + 'databaseConfig');
+var Errors = require(__components + "Errors/errors");
+var Logger = require( __configs + "loggingConfig");
+var _ = require('lodash');
 
- module.exports = {
-    makeEvent: function( userId, et, name, data, time = Date.now() ) {
-        return {
-            "eventType": et,
-            "name": name,
-            "time": time,
-            "user": userId,
-            "data": data
-        };
+/* Retrieve or insert interactions events */
+
+var dbHelpers = require(__components + "Databases/dbHelpers");
+
+module.exports = {
+
+    /* Inserting Events */
+    insertInteractionEvent: function( eventData ) {
+        dbHelpers.insertEvent(dbcfg.users_interation_table,eventData);
     },
 
-    trackEvent(iosocket, event ) {
-        console.log("SENDING EVENT", event );
-        iosocket.emit("trackEvent", event);
+    /* Retrieval by types of events */
+    getUserEvents: function( user, callback ){
+        dbHelpers.selectWhere(dbcfg.users_interation_table, "userId", user, callback);
     },
 
-    submissionEvent: function( userId, name, data ){
-        return this.makeEvent( userId, "submission", name,  data );
+    getEventType: function(eventType, callback) {
+        dbHelpers.selectWhere(dbcfg.users_interation_table, "eventType", eventType, callback);
     },
 
-    surveyEvent: function (userId, name, data ){
-        return this.makeEvent( userId, "survey", name,  data );
+    getByName: function(eventName, callback) {
+        dbHelpers.selectWhere(dbcfg.users_interation_table, "name",eventName, callback);
     },
 
-    viewEvent:  function (userId, name, data ){
-        return this.makeEvent( userId, "view", name,  data );
-    },
+    /**
+     *  Handles null and empty responses from data base.
+     */
 
-    changeEvent: function( userId, name, data) {
-        return this.makeEvent( userId, "change", name,data);
-    }
+    returnData: function(data){
+        if( _.isEmpty(data) || !_.has(data,'value'))
+            return "Not available";
+        return data.value;
+    },
 };
-*/

@@ -178,7 +178,6 @@ def createCmd( options ):
 
 # main program that takes arguments
 def main(argv):
-
     idirectory =''
     # Many default options set for cppCheck, most of which will be used in gcc and ctags
     # outFiles are temporary files
@@ -250,11 +249,11 @@ def main(argv):
                         result = decorateData( result, options )
                     print( result )
             except:
-                sys.stderr.write("Unable to successfully retrieve compiler information")
+                sys.stderr.write("Unable to successfully retrieve compiler information\n")
         else:
             sys.stderr.write( 'Invalid tool selected, please select a valid tool name.\n')
     else:
-        sys.stderr.write( 'Please rovide a project directory to evaluate using -d <dir>.\n')
+        sys.stderr.write( 'Please provide a project directory to evaluate using -d <dir>.\n')
         sys.exit()
 
 if __name__ == '__main__':
