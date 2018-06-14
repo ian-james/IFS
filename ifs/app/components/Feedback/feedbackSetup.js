@@ -17,7 +17,7 @@ function loadFiles( directory, options ) {
     if( fs.lstatSync(directory).isDirectory() ) {
 
         // TODO: How should this be handled
-        options = options || {'groups': ["c", "cpp", "cc", "cxx", "h", "hpp"] };
+        options = options || {'groups': ["c", "cpp", "cc", "cxx", "h", "hpp", "py"] };
 
         var files = Helpers.findFilesSync(directory);
         var fileGroups = _.groupBy(files, Helpers.getExt);
@@ -36,6 +36,7 @@ function loadFiles( directory, options ) {
 
 /* This function loads the selected tool, loads file content and requests highlight */
 function readFeedbackFormat( feedback , options) {
+
 
     try {
         var feedbackFormat = JSON.parse(feedback);
@@ -69,6 +70,7 @@ function readFeedbackFormat( feedback , options) {
         for( var i = 0; i < files.length; i++ )
         {
             var file = files[i];
+
             file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
 
             //TODO: Positional setup information should be moved to the feedback filtering and organization

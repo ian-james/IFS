@@ -86,6 +86,8 @@ module.exports = {
      * @return No return
      */
     insertEvent: function(table, eventData) {
+
+        console.log("eventData: " + table)
         this.insertEventC(table, eventData, function(err,data) {
             if(err)
                 Logger.error(err);

@@ -63,6 +63,13 @@
     border-radius: 3px !important;
 }
 
+.formatting {
+    display: inline-block;
+    background-color: #ebb987 !important;
+    font-style: italic !important;
+    border-radius: 3px !important;
+}
+
 /* mark up for popover cards */
 .spelling-display, .error-display {
     display: inline-block;
@@ -100,3 +107,5 @@
     color: orange !important;
     font-style: italic !important;
 }
+
+
