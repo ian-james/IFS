@@ -77,6 +77,7 @@ def parse( text, options ):
         feedback['toolName'] = options['tool']
         sections = line.split( options['splitSeq'])
 
+
         # Check that we can put each parsed section into an expect tag type.
         if( len(sections) == len(types) ):
             for section in sections:
@@ -199,6 +200,7 @@ def main(argv):
                 'srcDir': "./src"
                 }
 
+
     # define command line arguments and check if the script call is validq
     opts, args = getopt.getopt(argv,'t:i:l:e:f:s:u:d:h',
         ['tool=','ifsOff=','language=', 'errorLevel=', 'flags=', 'std=',  'suppress=', 'directory=', 'help'])
@@ -239,6 +241,7 @@ def main(argv):
                 outFile = os.path.normpath( os.path.join( idirectory, options['outFile']) )
 
                 outErrFile = os.path.normpath( os.path.join( idirectory, options['outErrFile']) )
+
                 code, out, err = getProcessInfo( cmd, outFile, outErrFile )
 
                 with open(outErrFile, 'r') as errFile:
