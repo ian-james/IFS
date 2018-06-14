@@ -26,7 +26,14 @@ import shlex
 import glob
 from glob import glob
 
-def PathSplit(fileNames, includePaths, includeLineNum):
+
+#Checks for the form of includes being passed in. Checks for adherance based on the following conditions:
+#If the include statement has <> surroundng the path, ignore.
+#If the include statement has "" surrounding the path:
+#If the path contains / characters, flag as containing absolute or relative paths.
+#INPUT: Three lists: [file name], [#include command], [line num]. Each list contains potentially multiple elements.
+#OUTPUT: A list of list containing [[file name, line number], ...] detailing the incorrectly formed #include flags
+def PathValidate(fileNames, includePaths, includeLineNum):
     i=0
     j=0
     improperPaths = []
@@ -34,7 +41,7 @@ def PathSplit(fileNames, includePaths, includeLineNum):
         j=0
         for entry in entries:
             result = str.split(entry)
-            #print result[1]
+            
             #Ensure the first and last characters of the include file have " indicating a custom include file
             if (result[1][0] == '"') and (result[1][-1:] == '"'):
                 if "/" in result[1]:
@@ -44,11 +51,14 @@ def PathSplit(fileNames, includePaths, includeLineNum):
                         output += folder
                     
                     improperPaths.append([output,includeLineNum[i][j]])
-                    #print includeLineNum[i][j]
+
             j=j+1
         i=i+1
     return improperPaths
 
+#Take the list of lists from PathFind and split them into 3 discrete lists  
+#INPUT: A list of include data where the format is [file name, [#include commands], [line nums], file name, [#include commands], [line nums], ...]
+#OUTPUT: Three lists: [file name], [#include command], [line num]. Each list contains potentially multiple elements in the same order that the input list contained.
 def PathCollect(includes):
     fileNames = []
     includePaths = []
@@ -73,6 +83,9 @@ def PathCollect(includes):
             includeName = splitEntry[1]
     return fileNames, includePaths, includeLineNum  
 
+#Find each instance of an #include command and save what file and line it is located on
+#INPUT: A directory in the form of a string to find files in
+#OUTPUT: A list of include data where the format is [file name, [#include commands], [line nums], file name, [#include commands], [line nums], ...]
 def PathFind(dir):
     includeList = []
     lineList = []
@@ -80,17 +93,17 @@ def PathFind(dir):
     lineNumber = 0
     for file in projectFiles:
         fp  = open(file, "r")
-        #print(file)
-        #print(fp).read()
+        #Remove newlines and related characters
         lines = [line.strip() for line in fp]
-        #print lines
+        
         includeKey = "#include"
-        includeList.append(file)  
+        includeList.append(file)
+        #Get all include commands  and save the to a list
         includeList.append([s for s in lines if includeKey.lower() in s.lower()])
         i=1
+        #Find line number of line where #include commands are
         for line in lines:
             if includeKey.lower() in line.lower():
-                #print includeKey, " in file ", file, " at line ", i
                 lineList.append(i)
             i=i+1
         includeList.append(lineList)
@@ -98,21 +111,10 @@ def PathFind(dir):
     
     #print includeList
     return includeList
-            
-    #for entries in fileNames:
-        #print entries
-    #for entries in includePaths:
-        #print entries
-    #for entries in includeLineNum:
-        #print entries
-    
-    #for p in includeList:
-        #print p
-    
-    
-    #includeList = str.split("#include \"some/stuff/testfile.h\"")
-    #result = includeList[1]#.strip('\"')
-    #print result
+
+#Create the JSON string which IFS will read from the terminal as the output from the program call.    
+#INPUT: A list of list containing [[file name, line number], ...] detailing the incorrectly formed #include flags
+#OUTPUT: A JSON string detailing the feedback in the form IFS expects.
 def decorateData(result):
     json_string = '{\n'
     json_string += '"feedback": [\n'
@@ -131,16 +133,17 @@ def decorateData(result):
     json_string += '}\n'
     return json_string
 
-    
+#Find all instances of absolute or relative paths in #include commands in a .c or .h file
+#INPUT: Command line args: -t includecheck -d <directory/to/parse> 
+#OUTPUT: A JSON string containing the feedback of the file, line number and severity of the absolutely or relatively coded #include commands in the expected IFS form 
 def main(argv):
     idirectory = ''
     #Make sure a file directory is provided
     if (len(argv) <= 1):
         print "Please provide a directory to search for C files."
         sys.exit()
-    #elif 
-        #print "Path provided is not a valid directory. Please provide a valid directory to search for C files."
     else:
+        #Get command line arguments and put them into list
         options = { 'tool': 'pathcheck',
                     'dir':''
                     }
@@ -148,7 +151,9 @@ def main(argv):
         # define command line arguments and check if the script call is valid
         opts, args = getopt.getopt(argv,'t:d:h',
             ['tool=','directory=', 'help'])
-
+        
+        #Set options and tool being selected
+        #Currentl only grabs includecheck.py but can be expanded in the future
         for opt, arg in opts:
             if opt in ('--tool', '-t'):
                 options['tool'] = arg
@@ -157,14 +162,19 @@ def main(argv):
                 if not (os.path.isdir(idirectory)):
                     sys.stderr.write( 'Error. Directory ' + idirectory + ' does not exist.\n' )
                     sys.exit()
-        #PathCheck(argv[1], "")
+
+
         if idirectory != '':
             options['dir'] = idirectory
+        
+        #Get and format data into proper JSON format    
         includeList = PathFind(idirectory)
         fileNames, includePaths, includeLineNum = PathCollect(includeList)
-        improperPaths = PathSplit(fileNames, includePaths, includeLineNum)
+        improperPaths = PathValidate(fileNames, includePaths, includeLineNum)
         json_string = decorateData(improperPaths)
+        
+        #Output final result to terminal. This is how IFS gains the feedback from includecheck.py
         print json_string
-    #PathCheck(argv[1], "")
+
 if __name__ == '__main__':
     main(sys.argv[1:])
