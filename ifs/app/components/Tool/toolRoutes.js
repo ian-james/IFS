@@ -77,9 +77,9 @@ module.exports = function (app) {
    * @return {[type]}      [description]
    */
   app.get('/tool', function (req, res, next) {
-    var userId = req.user.id || req.passport.user;
+    const userId = req.user.id || req.passport.user;
 
-    TipManager.selectTip(req, res, userId, function () {
+    TipManager.selectTip(req, res, userId, () => {
       SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
         res.render(viewPath + "tool", {
           "title": req.session.toolSelect + ' Tool Screen',
