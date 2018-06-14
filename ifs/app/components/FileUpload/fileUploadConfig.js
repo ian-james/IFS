@@ -43,6 +43,7 @@ function acceptableMimeType() {
             'text/x-c++src',
             'text/x-c++hdr',
             'text/x-python',
+            'text/x-python-script',
             'application/json',
             'application/zip',
             'application/x-compressed-zip',
