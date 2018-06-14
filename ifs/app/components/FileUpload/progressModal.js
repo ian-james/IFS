@@ -107,9 +107,6 @@ $(function() {
             
             title.text("Files failed to upload");
         }).always( function() {
-
-            document.getElementById("submissionInput").value = "";
-
             setTimeout(function () {
                 uploadProgressBar.setAttribute('hidden', 'hidden');
             }, 1000);
