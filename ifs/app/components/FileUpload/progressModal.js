@@ -6,19 +6,38 @@ $(function() {
         event.preventDefault();
         return false;
     });
-    
+
     $("#evaluate").click(function(event) {   
         // Prevent submission from happening.
         event.preventDefault();
 
         //If there are no files uploaded, show an error message and exit
         let files = document.getElementById('submissionInput').files;
-        
+
         if (files.length == 0) {
             var errMessage = $(".errorMessage");
             errMessage.text("Please upload at least one file");
             errMessage.parent().show();
             return false;
+        }
+
+        // Counts the num of tools checked to be used.
+        var enabledCheckboxes = $('[id^="enabled-"]:checked').length;
+ 
+        if(enabledCheckboxes)
+            $("#uploadForm").submit();
+        else {
+            // Don't submit and setup an error message
+              //TODO JF: Leaving this for now, it needs an alert message to indicate no files selected.
+              // If this did run, it woould be caught by the server and a flash is presented but
+              // an alert could happen here too before even submitting. Not sure how UIKit would do that.        
+
+            var errMessage = $(".errorMessage");
+            errMessage.text("Please select at least one tool");
+            errMessage.parent().show();
+
+            return false;
+            //$("#submissionInput").value = "";
         }
 
         // Disable modal Alert

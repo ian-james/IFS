@@ -19,8 +19,6 @@ $('#error').bind("DOMSubtreeModified",function(){
 $("#toolPreference").submit(function(event) {
     var val = $(document.activeElement).text();
 
-    console.log("hello!");
-
     $.ajax({
         type: "post",
         url:'/tool/preferences',
@@ -29,10 +27,7 @@ $("#toolPreference").submit(function(event) {
         	tool: val
         },
         success: function (data, textStatus) {
-        	if (data.redirect) {
-        		window.location.href = data.redirect;
-        		location.reload(true);
-        	}
+        	location.reload(true);
         },
         error: function (req, err){
             location.reload(true);

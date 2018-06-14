@@ -4,6 +4,11 @@ var fs = require("fs");
 var _ = require('lodash');
 var Logger = require( __configs + "loggingConfig");
 
+var url = require('url');
+var defaultTool = require(__components + 'Preferences/setupDefaultToolType.js');
+var event = require(__components + "InteractionEvents/buildEvent.js" );
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
+
 var Constants = require( __components + "Constants/programConstants");
 var SurveyManager = require( __components + "Survey/surveyManager");
 var SurveyBuilder = require(__components + "Survey/surveyBuilder");
@@ -12,7 +17,7 @@ var Survey = require( __components + "Survey/survey");
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 var TipManager = require(__components + 'TipManager/tipManager.js');
 
-module.exports = function(app) {
+module.exports = function(app, iosocket) {
 
     /**
      * Takes the tool preferences and the tools and updates the curren default and preferred values.
@@ -117,6 +122,8 @@ module.exports = function(app) {
         preferencesDB.setStudentPreferences(req.user.id, "Option", "pref-toolSelect", pref , function(err,result){
             tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
             defaultTool.setupDefaultTool(req, pref);
+
+            console.log(pref);
 
             res.redirect(url.format({
                 pathname: '/tool'

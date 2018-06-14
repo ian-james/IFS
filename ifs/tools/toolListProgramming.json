@@ -194,6 +194,41 @@
             ]
         },
         {
+            "displayName": "Statistics",
+            "description": "Identifies certain characteristics about a piece of code and gathers statistics.",
+            "technicalDesc": "A Python script that checks C/C++ code for gathering statistics",
+            "author": "Nicholas Domenichini",
+            "copyright": "Copyright © 2018",
+            "license": "ISC License",
+            "licenseFile": "./tools/programmingTools/c_stats/LICENSE.txt",
+            "progName": "./tools/programmingTools/c_stats/stats.py",
+            "cmdToolName": "stats",
+            "runType": "programming",
+            "route": "",
+            "filesAllowed": "zipFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-d",
+            "options":  [
+                {
+                    "displayName": "Count total number of lines",
+                    "type": "checkbox",
+                    "name": "opt-countTotalLines",
+                    "values": "",
+                    "arg": "-t totalLines",
+                    "params": ""
+                },
+                {
+                    "displayName": "Count total number of comments",
+                    "type": "checkbox",
+                    "name": "opt-countTotalComments",
+                    "values": "",
+                    "arg": "-c totalComments",
+                    "params": ""
+                }
+            ]
+        },
+        {
             "displayName": "Python Formatting",
             "description": "Finds errors in python files",
             "technicalDesc": "A Python script that checks with a python linter",
