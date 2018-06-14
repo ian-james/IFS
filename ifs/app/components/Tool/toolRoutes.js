@@ -4,15 +4,31 @@ var fs = require("fs");
 var _ = require('lodash');
 var Logger = require(__configs + "loggingConfig");
 
+<<<<<<< HEAD
 var Constants = require(__components + "Constants/programConstants");
 var SurveyManager = require(__components + "Survey/helpers/surveyManager");
 var SurveyBuilder = require(__components + "Survey/helpers/surveyBuilder");
 var Survey = require(__components + "Survey/models/Survey");
+=======
+var url = require('url');
+var defaultTool = require(__components + 'Preferences/setupDefaultToolType.js');
+var event = require(__components + "InteractionEvents/buildEvent.js" );
+var tracker = require(__components + "InteractionEvents/trackEvents.js" );
+
+var Constants = require( __components + "Constants/programConstants");
+var SurveyManager = require( __components + "Survey/surveyManager");
+var SurveyBuilder = require(__components + "Survey/surveyBuilder");
+var Survey = require( __components + "Survey/survey");
+>>>>>>> origin/development
 
 var preferencesDB = require(__components + 'Preferences/preferenceDB.js');
 var TipManager = require(__components + 'TipManager/tipManager.js');
 
+<<<<<<< HEAD
 module.exports = function (app) {
+=======
+module.exports = function(app, iosocket) {
+>>>>>>> origin/development
 
   /**
    * Takes the tool preferences and the tools and updates the curren default and preferred values.
@@ -87,5 +103,19 @@ module.exports = function (app) {
         });
       });
     });
-  });
+
+    app.post('/tool/preferences', function(req, res, next){
+        let pref = req.body.tool;
+
+        preferencesDB.setStudentPreferences(req.user.id, "Option", "pref-toolSelect", pref , function(err,result){
+            tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
+            defaultTool.setupDefaultTool(req, pref);
+
+            console.log(pref);
+
+            res.redirect(url.format({
+                pathname: '/tool'
+            }));
+        });
+    });
 }

@@ -1,0 +1,33 @@
+/* Tool classes */
+.tool-title {
+    font-size: 1.4em;
+}
+
+.upload-panel {
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.uk-button {
+	margin-right: 10px;
+}
+
+#buttonWrapper {
+	margin-top: 20px;
+	text-align: center;
+}
+
+#evaluate {
+	margin-bottom: 20px;
+	text-align:center;
+}
+
+#fileList {
+	display: none;
+	padding: 10px;
+}
+
+#fileListDiv {
+    padding-left: 15px;
+    margin-bottom: 20px;
+}
