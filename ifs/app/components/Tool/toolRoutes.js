@@ -110,4 +110,17 @@ module.exports = function(app) {
             });
         });
     });
+
+    app.post('/tool/preferences', function(req, res, next){
+        let pref = req.body.tool;
+
+        preferencesDB.setStudentPreferences(req.user.id, "Option", "pref-toolSelect", pref , function(err,result){
+            tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
+            defaultTool.setupDefaultTool(req, pref);
+
+            res.redirect(url.format({
+                pathname: '/tool'
+            }));
+        });
+    });
 }
