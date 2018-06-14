@@ -89,12 +89,14 @@ let getSurveyFieldMatches = (surveyPrefData, field, matchingFields) => {
   });
 };
 
-
-let buildPulseSurvey = async (toolType, userId) => {
-
+/* Builds a survey json out of 2 random questions from an allowed survey that's randomly 
+ * selected.  
+ * 
+ */
+let buildPulseSurvey =  (toolType, userId, callback) => {
   SurveyManager.getUserSurveyProfileAndSurveyType(userId, (err, surveyPref) => {
     if (err) {
-      return [];
+      callback([]);
     }
     /* Get list of allowed surveys based on user preferences */
     let surveyOpt = getSurveyFieldMatches(surveyPref,"surveyField",[toolType, "general"]);
@@ -103,17 +105,16 @@ let buildPulseSurvey = async (toolType, userId) => {
     
     /* Select a random survey out of those selected */
     if (!allowedSurveys) {
-      return [];
+      callback ([]);
     } 
 
     /* Pick a random survey out of those selected */
     const selectedSurvey = _.sample(allowedSurveys);
     const surveyId = selectedSurvey.id;
-    /* Get questions from the selected survey */
+    /* Get questions from the selected survey, return in callback - 2 limit hardcoded */
     Question.selectRandomQuestions(surveyId, 2, (err, questions) => {
       let surveyData = Serializers.serializeSurvey([selectedSurvey], questions, Serializers.matrixSerializer);
-      console.log('DATA IN BUILD: ' + JSON.stringify(surveyData));
-      return surveyData;
+      callback(surveyData);
     });
   });
 }

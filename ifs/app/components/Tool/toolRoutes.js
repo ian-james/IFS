@@ -87,25 +87,9 @@ module.exports = function(app) {
                     res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
                 }
                 else {
-                    SurveyManager.setupSurvey(req.session.toolSelect.toLowerCase(), surveyPrefData, function(err, selectedSurveyData) {
-                        if( err || !selectedSurveyData ) {
-                            res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tools', "surveyQuestions":[] } );
-                        }
-                        else {
-                            var opts = Constants.surveyDisplayDefaultOptions();
-                            var surveyId = selectedSurveyData.data.surveyId;
-                            var options = selectedSurveyData.options;
-
-                            // Set pulse survey size
-                            options.range[1] = Math.min( options.range[0] + opts.pulseQuestions, options.range[1]);
-                            var surveyData = selectedSurveyData;
-                            
-                            SurveyBuilder.getSurveySection(surveyData.data, options, function( err, data ) {
-                                data = data ? JSON.stringify(data) : [];
-                                res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":data } );
-                            });
-                        }
-                    });
+                    SurveyBuilder.getPulseSurvey((survey) => {
+                        res.render( viewPath + "tool", { "title": req.session.toolSelect + ' Tool Screen', "surveyQuestions":data } );
+                    })
                 }
             });
         });

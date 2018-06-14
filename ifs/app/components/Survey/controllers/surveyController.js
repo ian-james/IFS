@@ -184,13 +184,9 @@ module.exports = {
     });
   },
 
-  getPulseSurvey: async (req, res) => {
-    console.log('in proper function');
-    let surveyData = await SurveyBuilder.getPulseSurvey('programming', req.user.id);
-    
-    surveyData = JSON.stringify(surveyData);
-    console.log(surveyData);
-
-    res.end();
+  getPulseSurvey: (req, res) => {
+    let retVal = SurveyBuilder.getPulseSurvey('programming', req.user.id, (results) => {
+      res.send(results);
+    });  
   },
 };
