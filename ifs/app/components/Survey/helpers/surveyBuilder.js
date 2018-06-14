@@ -95,7 +95,7 @@ let getSurveyFieldMatches = (surveyPrefData, field, matchingFields) => {
  */
 let buildPulseSurvey =  (toolType, userId, callback) => {
   SurveyManager.getUserSurveyProfileAndSurveyType(userId, (err, surveyPref) => {
-    if (err) {
+    if (err || !__EXPERIMENT_ON) {
       callback([]);
     }
     /* Get list of allowed surveys based on user preferences */
@@ -114,7 +114,7 @@ let buildPulseSurvey =  (toolType, userId, callback) => {
     /* Get questions from the selected survey, return in callback - 2 limit hardcoded */
     Question.selectRandomQuestions(surveyId, 2, (err, questions) => {
       let surveyData = Serializers.serializeSurvey([selectedSurvey], questions, Serializers.matrixSerializer);
-      callback(surveyData);
+      callback(JSON.stringify(surveyData));
     });
   });
 }

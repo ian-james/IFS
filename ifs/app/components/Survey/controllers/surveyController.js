@@ -93,8 +93,8 @@ module.exports = {
             const surveyLastIndex = data[0].numQ;
             console.log(surveyLastIndex);
             const resultsToDb = [];
-            const qids = [];
-            const answers = [];
+            let qids = [];
+            let answers = [];
             let lastId = 0;
 
             // For each Question section, get question key and value into a single array.
@@ -102,7 +102,7 @@ module.exports = {
             const ks = Object.keys(results);
 
             for (let i = 0; i < ks.length; i++) {
-              const k = ks[i];
+              let k = ks[i];
               qids = qids.concat(_.keys(results[k]));
               answers = answers.concat(_.values(results[k]));
             }
