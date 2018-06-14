@@ -1,17 +1,17 @@
-var _ = require('lodash');
-var fs = require('fs');
-var async = require('async');
+const _ = require('lodash');
+const fs = require('fs');
+const async = require('async');
 const path = require('path');
 
-var db = require(__configs + 'database');
-var dbcfg = require(__configs + 'databaseConfig');
-var Errors = require(__components + "Errors/errors");
-var Logger = require(__configs + "loggingConfig");
+const db = require(__configs + 'database');
+const dbcfg = require(__configs + 'databaseConfig');
+const Errors = require(__components + "Errors/errors");
+const Logger = require(__configs + "loggingConfig");
 
-var SurveyPreferences = require(__components + "Survey/models/SurveyPreferences");
-var Constants = require(__components + "Constants/programConstants");
-var Survey = require(__components + "Survey/models/Survey");
-var Question = require(__components + "Survey/models/Question");
+const SurveyPreferences = require(__components + "Survey/models/SurveyPreferences");
+const Constants = require(__components + "Constants/programConstants");
+const Survey = require(__components + "Survey/models/Survey");
+const Question = require(__components + "Survey/models/Question");
 const Serializers = require(path.join(__components, 'Survey/helpers/Serializer'));
 const SurveyManager = require(path.join(__components, 'Survey/helpers/surveyManager'));
 
@@ -119,8 +119,8 @@ let buildPulseSurvey =  (toolType, userId, callback) => {
   });
 }
 
-function setDefaultDisplaySurveyOptions(questionsPerPage = 4, splitQuestionTypes = true, range = [0, 100]) {
-  var opts = Constants.surveyDisplayDefaultOptions();
+let setDefaultDisplaySurveyOptions = (questionsPerPage = 4, splitQuestionTypes = true, range = [0, 100]) => {
+  let opts = Constants.surveyDisplayDefaultOptions();
 
   range[0] = range[0] || opts.range[0];
   range[1] = range[1] || opts.range[1];
@@ -138,7 +138,7 @@ function setDefaultDisplaySurveyOptions(questionsPerPage = 4, splitQuestionTypes
  * @param  {[type]}  obj [description]
  * @return {Boolean}     [description]
  */
-function isMatrix(obj) {
+let isMatrix = (obj) => {
   return obj && obj.hasOwnProperty('type') && obj.type == "matrix";
 }
 
@@ -150,12 +150,12 @@ function isMatrix(obj) {
  * @param  {[type]} matrixQuestion [description]
  * @return {[type]}                [description]
  */
-function separateMatrixType(matrixQuestion) {
-  var questions = matrixQuestion.rows;
+let separateMatrixType = (matrixQuestion) => {
+  const questions = matrixQuestion.rows;
   if (questions && questions.length >= 1) {
-    var separatedQs = [];
-    for (var i = 0; i < questions.length; i++) {
-      var template = _.clone(matrixQuestion);
+    const separatedQs = [];
+    for (let i = 0; i < questions.length; i++) {
+      const template = _.clone(matrixQuestion);
       template.rows = [questions[i]];
       separatedQs.push(template);
     }
@@ -170,11 +170,11 @@ function separateMatrixType(matrixQuestion) {
  * @param  {[type]} questions [description]
  * @return {[type]}           [description]
  */
-function mergeMatrixType(questions) {
+let mergeMatrixType = (questions) => {
   if (questions && questions.length >= 1 && isMatrix(questions[0])) {
-    var sectionName = questions[0].name;
-    var template = questions[0];
-    for (var i = 1; i < questions.length; i++) {
+    const sectionName = questions[0].name;
+    const template = questions[0];
+    for (let i = 1; i < questions.length; i++) {
       if (isMatrix(questions[i]) && questions[i].name == sectionName) {
         template.rows = template.rows.concat(questions[i].rows);
       }
@@ -194,14 +194,14 @@ function mergeMatrixType(questions) {
 let setSignupSurveyPreferences = (userId, callback) => {
   Survey.getSurveys(function (err, surveyData) {
     if (!err) {
-      var surveyPrefsData = [];
-      for (var i = 0; i < surveyData.length; i++) {
+      const surveyPrefsData = [];
+      for (let i = 0; i < surveyData.length; i++) {
         surveyPrefsData.push([userId, surveyData[i].id, null, surveyData[i].totalQuestions]);
       }
 
       async.map(surveyPrefsData,
         SurveyPreferences.insertSurveyPrefs,
-        function (err, data) {
+         (err, data) => {
           callback(err, data);
         }
       );
