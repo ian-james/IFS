@@ -215,8 +215,6 @@ module.exports = function (app, iosocket) {
                 //submit all tools and options to user_interactions database
                 emitJobOptions( req, iosocket, req.body);
 
-                console.log("6845698546524+9865246534695465241698524635424");
-
                 //deal with uploaded files
                 var uploadedFiles = Helpers.handleFileTypes( req, res );
 
@@ -227,8 +225,6 @@ module.exports = function (app, iosocket) {
                     res.status(500).send(JSON.stringify({"msg":err}));
                     return;
                 }
-
-                  console.log("AWSDeaedgrfghjgfdxrgyuhj");
 
                 //get the tool selection and add target files
                 var userSelection = req.body;
