@@ -103,21 +103,17 @@ let buildPulseSurvey =  (toolType, userId, callback) => {
     let surveyOpt = getSurveyFieldMatches(surveyPref,"surveyField",[toolType, "general"]);
     surveyOpt = getSurveyFieldMatches(surveyOpt,"surveyFreq",["reg"]);
     let allowedSurveys = getAllowedSurveys(surveyOpt);
-    
-    /* Select a random survey out of those selected */
-    if (!allowedSurveys || allowedSurveys.length == 0) {
-      callback ([]);
-      return;
-    } 
 
     /* Pick a random survey out of those selected */
     const selectedSurvey = _.sample(allowedSurveys);
-    if (!selectedSurvey || selectedSurvey.length == 0) {
+
+    if (!selectedSurvey) {
       callback([]);
       return;
     }
-
+    
     const surveyId = selectedSurvey.id;
+
     /* Get questions from the selected survey, return in callback - 2 limit hardcoded */
     Question.selectRandomQuestions(surveyId, 2, (err, questions) => {
       let surveyData = Serializers.serializeSurvey([selectedSurvey], questions, Serializers.matrixSerializer);
