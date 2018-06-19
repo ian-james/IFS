@@ -1,10 +1,12 @@
 /**
  * This is CRUD calls for surveys
  */
+const path = require('path');
+const componentPath = path.join(__components, "Survey");
 var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
-
+const SurveyBuilder = require(path.join(componentPath, "helpers/surveyBuilder"));
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 function getSurveys( callback ) {
@@ -24,7 +26,8 @@ function getSurveyId( surveyId, callback ) {
 }
 
 function getSurveyByTitle( surveyTitle, callback ) {
-    var q = dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("title"); 
+    //var q = dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("title"); 
+    let q = 'select survey.*, (select COUNT(*) from questions where questions.surveyId=survey.id) as numQ from survey where survey.title = ?;';
     db.query(q, surveyTitle, callback);
 }
 
@@ -42,6 +45,7 @@ function deleteSurvey( surveyData, callback ) {
     var q = dbHelpers.buildDelete(dbcfg.survey_table)  + dbHelpers.buildWS("surveyName"); 
     db.query(q,surveyData, callback );
 }
+
 
 module.exports.insertSurvey = insertSurvey;
 module.exports.deleteSurvey = deleteSurvey;

@@ -11,8 +11,8 @@ var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
-var SurveyBuilder = require( __components + "Survey/surveyBuilder");
-var Survey = require( __components + "/Survey/survey");
+var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
+var Survey = require( __components + "/Survey/models/Survey");
 
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -36,7 +36,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getUserSurveyProfileAndSurveyType: function(userId, callback) {
-        var q = "select sp.*, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
+        var q = "select sp.*, s.id, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
         db.query(q,userId,callback);
     },
 
@@ -110,11 +110,7 @@ module.exports = {
         return nextSurvey;
     },    
 
-    getAllowedSurveys: function(surveyPrefData) {
-        return _.filter(surveyPrefData, function(s) {
-            return s.allowedToAsk;
-        });
-    },
+
 
     getActiveSurveys: function(surveyPrefData ) {
         return _.filter(surveyPrefData, function(s) {
@@ -148,14 +144,6 @@ module.exports = {
     getSurveyInFreq: function( surveyPrefData, currentFields) {
         return _.filter(surveyPrefData, function(s) {
             return currentFields.includes(s.surveyFreq)
-        });
-    },
-
-    getSurveyFieldMatches: function( surveyPrefData, field, matchingFields) {
-        return _.filter(surveyPrefData, function(s) {
-            if( !_.has(s,field) )
-                return false;
-            return matchingFields.includes(s[field]);
         });
     },
 
