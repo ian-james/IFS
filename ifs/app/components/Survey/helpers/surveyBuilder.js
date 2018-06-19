@@ -97,6 +97,7 @@ let buildPulseSurvey =  (toolType, userId, callback) => {
   SurveyManager.getUserSurveyProfileAndSurveyType(userId, (err, surveyPref) => {
     if (err || !__EXPERIMENT_ON) {
       callback([]);
+      return;
     }
     /* Get list of allowed surveys based on user preferences */
     let surveyOpt = getSurveyFieldMatches(surveyPref,"surveyField",[toolType, "general"]);
@@ -104,12 +105,18 @@ let buildPulseSurvey =  (toolType, userId, callback) => {
     let allowedSurveys = getAllowedSurveys(surveyOpt);
     
     /* Select a random survey out of those selected */
-    if (!allowedSurveys) {
+    if (!allowedSurveys || allowedSurveys.length == 0) {
       callback ([]);
+      return;
     } 
 
     /* Pick a random survey out of those selected */
     const selectedSurvey = _.sample(allowedSurveys);
+    if (!selectedSurvey || selectedSurvey.length == 0) {
+      callback([]);
+      return;
+    }
+
     const surveyId = selectedSurvey.id;
     /* Get questions from the selected survey, return in callback - 2 limit hardcoded */
     Question.selectRandomQuestions(surveyId, 2, (err, questions) => {

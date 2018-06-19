@@ -183,10 +183,4 @@ module.exports = {
       })
     });
   },
-
-  getPulseSurvey: (req, res) => {
-    let retVal = SurveyBuilder.getPulseSurvey('programming', req.user.id, (results) => {
-      res.send(results);
-    });  
-  },
 };

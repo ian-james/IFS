@@ -15,6 +15,6 @@ module.exports = (app, iosocket) => {
 
  app.get ('/survey/:surveyID', surveyController.getMatrixFromDB);
 
- app.get ('/pulsetest', surveyController.getPulseSurvey);
+ //app.get ('/pulsetest', surveyController.getPulseSurvey);
  
 };
