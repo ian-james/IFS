@@ -29,6 +29,7 @@ module.exports = {
   getSurveyResponsesByQuestion: (req, res) => {
     const questionID = req.params.questionID;
     SurveyResponses.getQuestionResponses(questionID, (err, responses) => {
+      const responseCount = responses.length;
       /* Reduce the reponses to a count */
       const countObj = _.countBy(responses, 'questionAnswer');
       /* Add 0 count for missing keys */
@@ -38,8 +39,10 @@ module.exports = {
         }
       }
       Object.keys(countObj).sort();
-      const dataArray = _.values(countObj);
-      console.log(dataArray);
+      let dataArray = _.values(countObj);
+      /* Convert to percentage */
+      dataArray = _.map(dataArray, val => ((val / responseCount) * 100));
+      console.log (dataArray);
       res.json(dataArray);
     });
   },

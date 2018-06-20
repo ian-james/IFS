@@ -8,7 +8,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   $scope.selectedSurvey = $scope.surveys[0];
   $scope.selectedQuestion = $scope.questions[0];
   /* Current chart type */
-  $scope.chartType = 'bar';
+  $scope.type = 'bar';
   /* Chart meta data */
   $scope.author = '-';
   $scope.numQuestions = '-';
@@ -43,6 +43,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     $http.get('/surveys/responses/' + questionID)
       .then((res) => {
         $scope.graphData.data = res.data;
+        $scope.graphData.options.title.text = $scope.selectedQuestion.text;
         console.log($scope.graphData);
       });
   };
@@ -55,7 +56,15 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
 
   /* Mutate chart type between bar and pie */
   $scope.switchChartType = () => {
-    $scope.chartType = ($scope.chartType == 'bar') ? 'pie' : 'bar';
+    $scope.type = ($scope.type == 'bar') ? 'pie' : 'bar';
+    /*if ($scope.type == 'bar') {
+      console.log('Now pie');
+      $scope.type = 'pie'
+    } else {
+      console.log('now bar');
+      $scope.type = 'bar';
+    }*/
+    $scope.graphData.type = $scope.chartType;
   };
 
   $scope.init = () => {
@@ -63,6 +72,8 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     $scope.graphData.labels = $scope.labels;
     $scope.graphData.type = $scope.chartType;
     $scope.graphData.data = [];
+    $scope.graphData.options = {};
+    $scope.graphData.options.title = { display: true };
   };
 
   $scope.init();
