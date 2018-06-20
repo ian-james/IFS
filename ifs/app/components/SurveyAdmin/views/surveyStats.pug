@@ -1,0 +1,48 @@
+extends ../../../shared/views/pageLayout.pug
+
+block scripts
+
+block content
+    div(ng-controller="surveyStatCtrl").uk-container
+        h2.uk-card-title Survey Stats
+        p.uk-text-meta View Reponse Rate for Surveys by Question
+        .uk-grid-small.uk-grid
+            .uk-width-1-3
+                div.uk-card.uk-card-default
+                    .uk-card-header
+                        h3.uk-card-title Survey Selection
+                    .uk-card-body
+                        .uk-margin
+                            label.uk-form-label Available Surveys
+                            select(data-ng-options="survey as survey.title for survey in surveys track by survey.id" ng-model="selectedSurvey" ng-change="getSurveyQuestions()").uk-select
+                    .uk-card-footer
+                        table.uk-table
+                            thead
+                                tr
+                                    th Information
+                                    th
+                            tbody
+                                tr
+                                    td # of Questions
+                                    td(ng-bind="numQuestions").uk-text-primary
+                                tr
+                                    td Field
+                                    td(ng-bind="field").uk-text-primary  
+                                tr
+                                    td Author
+                                    td(ng-bind="author").uk-text-primary
+            .uk-width-expand
+                div.uk-card.uk-card-default
+                    .uk-card-header
+                        h3.uk-card-title Question Selection
+                    .uk-card-body
+                        .uk-margin
+                            label.uk-form-label Available Questions
+                            select(data-ng-options="question as question.text for question in questions track by question.id" ng-model="selectedQuestion" ng-change="getQuestionResponses()").uk-select
+                    .uk-card-footer
+                        p LOOK AT THIS BANGING CHART
+                        div(ng-if="graphData.data && graphData.data.length > 0")
+                            canvas(class="chart-base" id="bar" chart-type="graphData.type" chart-labels="graphData.labels" chart-data="graphData.data")
+    br
+    br
+    script(src="../components/SurveyAdmin/views/scripts/surveyStatCtrl.js")
