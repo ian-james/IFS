@@ -11,4 +11,11 @@ function insertSurveyResponse( surveyResponseData, callback ) {
     db.query(req, surveyResponseData, callback);
 }
 
+const getResponsesForQuestion = (questionID, callback) => {
+    const q = 'SELECT * from ' + dbcfg.survey_results_table + ' WHERE questionId = ?';
+    db.query(q, [questionID], callback);
+}
+
+
 module.exports.insertSurveyResponse = insertSurveyResponse;
+module.exports.getQuestionResponses = getResponsesForQuestion;
