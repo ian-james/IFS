@@ -23,14 +23,19 @@ module.exports = function( app ) {
      * @return {[type]}        [description]
      */
     function requiresAdmin(req, res, next) {
-        // it is now checked upon sign on, no longer have to check here.
         var user = _.get(req, "session.passport.user",req.user);
         if (req && req.user) {
-            if (user.admin) {
-                next();
-            } else {
-                res.sendStatus(400);
-            }
+            adminDB.getRole(req.user.id, function(err, role) {
+                if (role && role.length > 0){
+                    if(role[0].value == "admin")
+                        next();
+                    else
+                        res.sendStatus(400);
+                }
+                else {
+                    res.sendStatus(400);
+                }
+            });
         }
         else {
             res.redirect('/login');

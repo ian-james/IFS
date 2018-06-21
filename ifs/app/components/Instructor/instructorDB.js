@@ -8,11 +8,120 @@ var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 module.exports = {
+
+    /**
+     * Ensure that the user has access to the assignment
+     * @param  integer assignmentId The assignment id
+     * @param  integer instId       The instructor id
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    checkAssignmentAccess: function(assignmentId, instId, callback){
+        var q = `SELECT COUNT(*) as found FROM class WHERE id
+                 in(SELECT classId FROM assignment WHERE 
+                 id=${assignmentId}) AND instructorId=${instId}`;
+        db.query(q, [], callback);
+    },
+
+     /**
+     * Ensure that the user has access to the class.
+     * @param  integer classId The assignment id
+     * @param  integer instId       The instructor id
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    checkClassAccess: function(classId, instId, callback){
+        var q = `SELECT COUNT(*) as found FROM class WHERE
+                id=${classId} AND instructorId=${instId}`;
+        db.query(q, [], callback);
+    },   
+
+    /**
+     * Get the options for a certain discipline for a assignment
+     * @param  string discipline_type The discipline
+     * @param  boolean All            Fetch all results
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    fetchAssignmentOptions: function(discipline_type, all, callback){
+        if(!all)
+            dbHelpers.selectWhere(dbcfg.assignment_options_table, "disciplineType", discipline_type, callback);
+        else
+        {
+            var q = dbHelpers.buildSelect(dbcfg.assignment_options_table);
+            db.query(q,[],callback);
+        }
+    },
+
+    /**
+     * Get the options for a certain discipline for a class
+     * @param  string discipline   The discipline
+     * @param  boolean all         Fetch all results
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    fetchClassOptions: function(discipline, all, callback) {
+        if(!all)
+            dbHelpers.selectWhere( dbcfg.class_options_table, "disciplineType", discipline, callback);
+        else
+        {
+            var q = dbHelpers.buildSelect(dbcfg.class_options_table);
+            db.query(q,[],callback);           
+        }
+    },
+
+    /**
+     * Fetches an assignment based on an assignmentId
+     * @param integer assignmentId The assignment id
+     * @param {Function} callback  [description]
+     * @return {[type]}            [description]
+     */
+    getAssignment: function(assignmentId, callback){
+        dbHelpers.selectWhere(dbcfg.assignment_table, "id", assignmentId, callback);
+    },
     
-    // should be in its own file not here and not in admin
-    getRole: function( userId , callback ) {
-        var q = "select role value from user_role ur, users u, roles r  where ur.userId = u.id and r.id = ur.roleId and u.id = ?";
-        db.query(q,userId,callback);
+    /**
+     * Get the assignments for a specific instructor
+     * @param  integer instId   The instructor id
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    getAssignments: function(instId, callback){
+        var q = `SELECT * FROM assignment WHERE classId in (SELECT 
+                class.id FROM class WHERE instructorId=${instId}) ORDER BY deadline ASC`;
+        db.query(q,[],callback);
+    },
+
+    /**
+     * Get the assignments choices for a specific assignment
+     * @param  integer aId   The assignment id
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    getAssignmentChoices: function(aId, callback){
+        dbHelpers.selectWhere(dbcfg.assignment_choices_table, "assignmentId", aId, callback);
+    },
+
+    /**
+     * Get the discipline of an assignment.
+     * @param  integer aId   The assignment id.
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    getAssignmentDiscipline: function(aId, callback){
+        var q = `SELECT disciplineType as discipline FROM class WHERE id in 
+                (SELECT classId FROM assignment WHERE id=${aId})`;
+        db.query(q,[],callback);
+    },
+
+    /**
+     * Fetches a class based on an classId
+     * @param integer classId The class id
+     * @param {Function} callback  [description]
+     * @return {[type]}            [description]
+     */
+    getClass: function(classId, callback){
+        dbHelpers.selectWhere(dbcfg.class_table, "id", classId, callback);
     },
 
     /**
@@ -24,38 +133,29 @@ module.exports = {
     getClasses: function(instId, callback) {
         dbHelpers.selectWhere( dbcfg.class_table, "instructorId" , instId, callback);
     },
-    
-    getAssignments: function(instId, callback){
-        var q = `SELECT * FROM assignment WHERE classId in (SELECT 
-                class.id FROM class WHERE instructorId=${instId}) ORDER BY deadline ASC`;
-        db.query(q,[],callback);
+
+    /**
+     * Get a random tip to display on the instructor dashboard.
+     * @param   {Function} callback [description]
+     * @return {[type]}              none
+     */
+    getRandomTip: function(callback){
+    //    var q = "SELECT * FROM ifs_tips"
+       var q = "SELECT * FROM ifs_tips WHERE instructor=1 ORDER by RAND() LIMIT 1";
+       db.query(q,[],callback);
     },
 
-    getAssignmentDiscipline: function(aId, callback){
-        var q = `SELECT disciplineType as discipline FROM class WHERE id in 
-                (SELECT classId FROM assignment WHERE id=${aId})`;
-        db.query(q,[],callback);
-    },
 
-    fetchAssignmentOptions: function(discipline_type, callback){
-        dbHelpers.selectWhere(dbcfg.assignment_options_table, "disciplineType", discipline_type, callback);
+    /**
+     * Get the role of the user
+     * @param  integer userId The user id
+     * @param  {Function} callback [description]
+     * @return {[type]}            [description]
+     */
+    getRole: function( userId , callback ) {
+        var q = "select role value from user_role ur, users u, roles r  where ur.userId = u.id and r.id = ur.roleId and u.id = ?";
+        db.query(q,userId,callback);
     },
-
-    getAssignmentChoices: function(aId, callback){
-        dbHelpers.selectWhere(dbcfg.assignment_choices_table, "assignmentId", aId, callback);
-    },
-
-    fetchClassOptions: function(discipline, callback) {
-        dbHelpers.selectWhere( dbcfg.class_options_table, "disciplineType", discipline, callback);
-    },
-
-    checkAssignmentAccess: function(assignmentId, instId, callback){
-        var q = `SELECT COUNT(*) as found FROM  class WHERE id
-                 in(SELECT classId FROM assignment WHERE 
-                 id=${assignmentId}) AND instructorId=${instId}`
-        db.query(q, [], callback);
-    },
-
     
     /*************************************************
      ********* Instructor Dashboard Stats ************

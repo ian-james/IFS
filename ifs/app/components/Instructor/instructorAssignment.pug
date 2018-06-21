@@ -1,6 +1,17 @@
 extends ../../shared/views/pageLayout.pug
 
 block content
+    // - Jquery
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    // - Select 2
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css', rel='stylesheet')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js')
+    script.
+        $(document).ready(function() {
+            $('.js-example-basic-single').select2({
+                tags: true
+            });
+        });
     div.uk-container
         h2.uk-text-left #{title}
         hr
@@ -27,6 +38,13 @@ block content
                     div.uk-form-controls
                         input(type="date" name="adate", id="adate", value=adeadline, required).uk-input
                     br
+                    label(for="Assignment skills").uk-form-label
+                        | Assignment Skills
+                    div.uk-form-controls
+                        select.js-example-basic-single(name='state' multiple="multiple").uk-input
+                            option(value='for') Being able to create a for loop.
+                            option(value='if') Being able to create a if statement.
+                    br
                     h5 #[strong Statistics]
                     each option in aoptions
                         div.uk-grid
@@ -52,8 +70,8 @@ block content
                                         div.uk-clearfix
                                             div.uk-float-left
                                                 include instructorInput.pug
-                    button.uk-button.uk-button-primary.uk-margin-small-right.uk-margin-medium-top(type='button') Save
-                    a.uk-button.uk-button-danger.uk-margin-medium-top(href='/instructor') Cancel
+                    input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
+                    a.uk-button.uk-button-danger(href='/instructor') Cancel
                                     
 
 

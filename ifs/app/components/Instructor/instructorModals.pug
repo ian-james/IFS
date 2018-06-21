@@ -1,29 +1,7 @@
 script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
-script.
-    var test = "hello";
-    $(document).ready(function(){
-        $("#psycoptions").hide();
-        $("#othoptions").hide();
-        $("#ctype").change(function() {
-            var value = $("#ctype").val();
-            if(value == "computer science")
-            {
-                $("#csoptions").show();
-                $("#psycoptions").hide();
-                $("#othoptions").hide();
-            }
-            else if(value == "psychology"){
-                $("#csoptions").hide();
-                $("#psycoptions").show();
-                $("#othoptions").hide();
-            }
-            else{
-                $("#csoptions").hide();
-                $("#psycoptions").hide();
-                $("#othoptions").show();
-            }
-        });
-    });
+script
+    include instructorModals.js
+
 div#create-course(uk-modal='')
     .uk-modal-dialog.uk-modal-body
         button.uk-modal-close-default(type='button', uk-close='')
@@ -55,6 +33,11 @@ div#create-course(uk-modal='')
                         option(value="winter") Winter
                         option(value="summer") Summer
                 br
+                label(for="Course description").uk-form-label
+                    | Course Description
+                div.uk-form-controls
+                    input(type="text" name="cdesc", id="cdesc", placeholder="e.g This course is about...", required).uk-input
+                br
                 label(for="Course type").uk-form-label
                     | Course Type
                 div.uk-form-controls
@@ -63,20 +46,24 @@ div#create-course(uk-modal='')
                         option(value="psychology") Psychology
                         option(value="other") Other
                 br
-                div#csoptions
-                    | compsci
-                br
-                div#psycoptions 
-                    | psychology
-                br
-                div#othoptions
-                    | other
-                label(for="Course description").uk-form-label
-                    | Course Description
-                div.uk-form-controls
-                    input(type="text" name="cdesc", id="cdesc", placeholder="e.g This course is about...", required).uk-input
-        button.uk-button.uk-button-primary.uk-margin-small-right(type='button') Save
-        button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
+                // - making 3 different divs and hiding them appropriately
+                div#csoptionsC
+                    each option in coptions
+                        - if (option.disciplineType == 'computer science')
+                            include instructorInput.pug
+                            br
+                div#psycoptionsC
+                    each option in coptions
+                        - if (option.disciplineType == 'psychology')
+                            include instructorInput.pug
+                            br
+                div#othoptionsC
+                    each option in coptions
+                        - if (option.disciplineType == 'other')
+                            include instructorInput.pug  
+                            br  
+                input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
+                button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
 
 
 
@@ -89,7 +76,11 @@ div#create-assignment(uk-modal='')
                 label(for="Course name").uk-form-label
                     | Course Name
                 div.uk-form-controls
-                    input(type="text" name="cname", id="cname", placeholder="e.g Introduction to Programming", required).uk-input
+                     select(id="cnameA" name="cnameA").uk-select
+                        each cs in classes
+                            - var opt  = {'ccode' : cs.code, 'cdiscipline' : cs.disciplineType};
+                            - var optVal = JSON.stringify(opt);
+                            option(value=optVal) #{cs.code}
                 br
                 label(for="Assignment name").uk-form-label
                     | Assignment name
@@ -111,5 +102,21 @@ div#create-assignment(uk-modal='')
                 div.uk-form-controls
                     input(type="date" name="adate", id="adate", placeholder="yyyy-mm-dd", required).uk-input
                 br
-        button.uk-button.uk-button-primary.uk-margin-small-right(type='button') Save
-        button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
+                // - making 3 different divs and hiding them appropriately
+                div#csoptionsA
+                    each option in aoptions
+                        - if (option.disciplineType == 'computer science')
+                            include instructorInput.pug
+                            br
+                div#psycoptionsA
+                    each option in aoptions
+                        - if (option.disciplineType == 'psychology')
+                            include instructorInput.pug
+                            br
+                div#othoptionsA
+                    each option in aoptions
+                        - if (option.disciplineType == 'other')
+                            include instructorInput.pug  
+                            br  
+                input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
+                button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel

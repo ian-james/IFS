@@ -15,23 +15,40 @@ var instructorDB = require(__components + "Instructor/instructorDB.js");
 
 module.exports = function( app ) {
 
-    /*
-        Simple function to make sure that the user is an instructor
-    */
+    /**
+     * This functions checks a user's role to identify if they're an instructor.
+     * Only appplies to pages /instructor/*, so the rest of the time you'll be a normal user.
+     * @param  {[type]}   req  [description]
+     * @param  {[type]}   res  [description]
+     * @param  {Function} next [description]
+     * @return {[type]}        [description]
+     */
     function isInstr(req, res, next) {
         var user = _.get(req, "session.passport.user",req.user);
         if (req && req.user) {
-            if (user.instr) {
-                next();
-            } else {
-                res.sendStatus(400);
-            }
+            instructorDB.getRole(req.user.id, function(err, role) {
+                if (role && role.length > 0){
+                    if(role[0].value == "instructor")
+                        next();
+                    else
+                        res.sendStatus(400);
+                }
+                else {
+                    res.sendStatus(400);
+                }
+            });
         }
         else {
             res.redirect('/login');
         }
     }
 
+    /**
+     * Checks to see if a option is enabled for a certain course.
+     * @param  integer   optionId  The option id.
+     * @param  array     choices   The choices.
+     * @return {[type]}        [description]
+     */
     function checkEnabled(optionId, choices){
         for (var i = 0; i < choices.length; i++){
             if(optionId == choices[i].optionId)
@@ -44,14 +61,18 @@ module.exports = function( app ) {
 
     app.route('/instructor')
     .get(function(req,res) {
-        var classes = {}, assignments = {}, stats = {};
+        var classes = {}, assignments = {}, stats = {}, aoptions={}, coptions={}, tips={};
 
         async.parallel([
             async.apply(instructorDB.getClasses, req.user.id),
             async.apply(instructorDB.getAssignments, req.user.id),
+            async.apply(instructorDB.fetchAssignmentOptions, "", true),
+            async.apply(instructorDB.fetchClassOptions, "", true),
+            instructorDB.getRandomTip,
             async.apply(instructorDB.countInstStudents, req.user.id),
             async.apply(instructorDB.countInstStudentsOTW, req.user.id),
-            async.apply(instructorDB.countWeeklySubmission, req.user.id)
+            async.apply(instructorDB.countWeeklySubmission, req.user.id),
+            
         ], 
         function(err, results) {
             if (results){
@@ -59,26 +80,33 @@ module.exports = function( app ) {
                     if(results[i]){
                         switch(i) {
                             case 0:
-                                classes = results[i];
+                                classes = results[i]; // set classes
                                 break;
                             case 1:
-                                assignments = results[i];
+                                assignments = results[i]; // set assignments
+                                break;
+                            case 2:
+                                aoptions = results[i]; // set assignment options
+                                break;
+                            case 3:
+                                coptions = results[i]; // set class options
+                                break;
+                            case 4:
+                                tips = results[i]; // set tips
                                 break;
                             default:
-                                _.extend(stats, results[i][0]);
+                                _.extend(stats, results[i][0]); // get statistics
                         }
                     }
                 }
             }
-            res.render(viewPath + "instructor", { title: 'Instructor Panel', classes: classes, assignments: assignments,  stats: stats});
+            res.render(viewPath + "instructor", { title: 'Instructor Panel', classes: classes, assignments: assignments,
+                       stats: stats, aoptions: aoptions, coptions: coptions, tips: tips[0]});
         });
 
     });
 
     app.route('/instructor-manage-assignment')
-    .get(function(req,res){
-
-    })
     .post(function(req,res,next){
         var id = req.body['assignment-id'];
         var name = req.body['assignment-name'];
@@ -94,7 +122,7 @@ module.exports = function( app ) {
                 if(result[0].found == '1') {
                     instructorDB.getAssignmentDiscipline(id, function(err, disResult){
                         if(!err && disResult){
-                            instructorDB.fetchAssignmentOptions(disResult[0].discipline, function(err, options){
+                            instructorDB.fetchAssignmentOptions(disResult[0].discipline, false, function(err, options){
                                 if (!err && options){
                                     instructorDB.getAssignmentChoices(id, function(err, choices){
                                         if (!err && choices){
@@ -130,8 +158,15 @@ module.exports = function( app ) {
 
 
 
-    app.route('/instructor-course-stats')
-    .get(function(req, res) {
+    app.route('/instructor-course-dash')
+    .post(function(req, res, next){
+        var id = req.body['class-id'];
+        var code = req.body['class-code'];
+        var name = req.body['class-name'];
+        var discipline = req.body['class-discipline'];
+        var description = req.body['class-description'];
+
+        res.render(viewPath + "instructorCourse", {title: 'Course Dashboard'});
     });
 
 };
