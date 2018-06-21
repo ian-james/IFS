@@ -10,7 +10,7 @@ const chartHelpers = require('./../../Chart/chartHelpers.js');
 module.exports = {
   /* Basic page display - all data requests handle by angular */ 
   viewStats: (req, res) => {
-    res.render(path.join(viewPath,'surveyStats'), {});
+    res.render(path.join(viewPath,'surveyStats'), {title: 'Survey Responses'});
   },
   /* Get all metadata for available surveys */
   getSurveysMeta: (req, res) => {

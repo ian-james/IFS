@@ -16,8 +16,6 @@ block content
                             label.uk-form-label Available Surveys
                             select(data-ng-options="survey as survey.title for survey in surveys track by survey.id" ng-model="selectedSurvey" ng-change="getSurveyQuestions()").uk-select
                     .uk-card-footer
-                        button(ng-click="switchChartType()").uk-button.uk-button-primary.uk-width-1-1 Change Graph Type
-                    .uk-card-footer
                         table.uk-table
                             thead
                                 tr
@@ -44,6 +42,30 @@ block content
                     .uk-card-footer
                         div(ng-if="graphData.data && graphData.data.length > 0")
                             canvas(class="chart-base" id="bar" chart-options="graphData.options" chart-type="type" chart-labels="graphData.labels" chart-data="graphData.data")
+
+                    .uk-card-footer
+                        h2.uk-card-title Graph Options
+                        .uk-grid
+                            .uk-width-1-2
+                                label.uk-form-label Start Date
+                                .uk-form-controls 
+                                    input(type="date" ng-model="startDate" value="{{startDate}}" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}").uk-input.uk-margin-bottom
+                            .uk-width-1-2
+                                label.uk-form-label Graph Type
+                                .uk-form-controls
+                                    select(ng-model="type" ng-options="g for g in availableTypes" ng-init="type=availableTypes[0]").uk-select.uk-margin-bottom
+                            .uk-width-1-2
+                                label.uk-form-label End Date
+                                .uk-form-controls 
+                                    input(type="date" ng-model="endDate" value="{{endDate}}" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}").uk-input.uk-margin-bottom
+                            .uk-width-1-2
+                                label.uk-form-label Response type
+                                .uk-form-controls
+                                    select(ng-model="selectedResponseType" ng-options="t for t in responseType" ng-init="selectedResponseType=responseType[0]").uk-select.uk-margin-bottom
+                            .uk-width-1-2
+                                button.uk-button.uk-button-primary Update 
+
+
     br
     br
     script(src="../components/SurveyAdmin/views/scripts/surveyStatCtrl.js")
