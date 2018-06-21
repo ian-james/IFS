@@ -18,10 +18,6 @@ block content
                         - var formTitle = "form" + cs.id;
                         form(name=formTitle method="post" action="/instructor-course-dash" style="cursor:pointer;")
                             input(type="hidden" name="class-id" value=cs.id)
-                            input(type="hidden" name="class-code" value=cs.code)
-                            input(type="hidden" name="class-name" value=cs.name)
-                            input(type="hidden" name="class-discipline" value=cs.disciplineType)
-                            input(type="hidden" name="class-desciption" value=cs.description)
                             div.uk-card.uk-card-default.uk-box-shadow-hover-xlarge(onclick="javascript:document.forms." + formTitle + ".submit()")
                                 div.uk-card-header
                                     div(uk-grid).uk-grid-small.uk-flex-middle
@@ -68,10 +64,6 @@ block content
                                                 td
                                                     form(class='uk-form' method="post" action="/instructor-manage-assignment")
                                                         input(type="hidden" name="assignment-id" value=assign.id)
-                                                        input(type="hidden" name="assignment-name" value=assign.name)
-                                                        input(type="hidden" name="assignment-title" value=assign.title)
-                                                        input(type="hidden" name="assignment-description" value=assign.description)
-                                                        input(type="hidden" name="assignment-deadline" value=date)
                                                         button.btn.btn-sm.btn-success(type="submit").uk-margin-small-right
                                                             i.glyphicon.glyphicon-edit(aria-hidden='true')
                                                             |  Manage

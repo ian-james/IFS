@@ -120,29 +120,37 @@ module.exports = function( app ) {
                 // lets check to make sure they have permission. prevents against
                 // client side scripting
                 if(result[0].found == '1') {
-                    instructorDB.getAssignmentDiscipline(id, function(err, disResult){
-                        if(!err && disResult){
-                            instructorDB.fetchAssignmentOptions(disResult[0].discipline, false, function(err, options){
-                                if (!err && options){
-                                    instructorDB.getAssignmentChoices(id, function(err, choices){
-                                        if (!err && choices){
-                                            for (var i = 0; i < options.length; i++)
-                                                options[i].enabled = checkEnabled(options[i].id, choices);
-                                            res.render(viewPath + "instructorAssignment", {title: 'Assignment management',
-                                            aid: id, aname: name, atitle: title, adescription: description, adeadline: deadline,
-                                            aoptions: options});
+                    instructorDB.getAssignment(id, function(err, assignment){
+                        if(!err && assignment){
+                            var assign = assignment[0];
+                            instructorDB.getAssignmentDiscipline(id, function(err, disResult){
+                                if(!err && disResult){
+                                    instructorDB.fetchAssignmentOptions(disResult[0].discipline, false, function(err, options){
+                                        if (!err && options){
+                                            instructorDB.getAssignmentChoices(id, function(err, choices){
+                                                if (!err && choices){
+                                                    for (var i = 0; i < options.length; i++)
+                                                        options[i].enabled = checkEnabled(options[i].id, choices);
+                                                    res.render(viewPath + "instructorAssignment", {title: 'Assignment management',
+                                                    aid: id, aname: assign.name, atitle: assign.title, adescription: assign.description, 
+                                                    adeadline: assign.deadline, aoptions: options});
+                                                }
+                                                else{
+                                                    res.sendStatus(400);
+                                                }
+                                            });
                                         }
-                                        else{
+                                        else{ // once again something we need went wrong lets give them an error :p
                                             res.sendStatus(400);
                                         }
                                     });
                                 }
-                                else{ // once again something we need went wrong lets give them an error :p
+                                else { // something is wrong lets just give them an error
                                     res.sendStatus(400);
                                 }
                             });
                         }
-                        else { // something is wrong lets just give them an error
+                        else{
                             res.sendStatus(400);
                         }
                     });
@@ -150,6 +158,9 @@ module.exports = function( app ) {
                 else{ // no permission get them out of here
                     res.sendStatus(400);
                 }
+            }
+            else {
+                res.sendStatus(400);
             }
         });
 
@@ -161,10 +172,22 @@ module.exports = function( app ) {
     app.route('/instructor-course-dash')
     .post(function(req, res, next){
         var id = req.body['class-id'];
-        var code = req.body['class-code'];
-        var name = req.body['class-name'];
-        var discipline = req.body['class-discipline'];
-        var description = req.body['class-description'];
+
+        instructorDB.checkClassAccess(id, req.user.id, function(err, result){
+            if(!err & result){
+                if(result[0].found == "1"){ // lets fetch the actual class to make sure there was no tampering
+                    instructorDB.getClass(id, function(error,course){
+                        if (!error & course){
+                            var cs = course[0];
+                            console.log(cs.name);
+                        }
+                    });
+                }
+                else { // no access get them out of here
+                    res.sendStatus(400)
+                }
+            }
+        });
 
         res.render(viewPath + "instructorCourse", {title: 'Course Dashboard'});
     });
