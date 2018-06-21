@@ -60,6 +60,22 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     $scope.numQuestions = $scope.selectedSurvey.totalQuestions;
   };
 
+  $scope.updateGraphData = () => {
+    if ($scope.selectedQuestion) {
+      const questionID = $scope.selectedQuestion.id;
+      $http.post('/surveys/responses/' + questionID, {'startDate': $scope.startDate, 'endDate': $scope.endDate, 'responseType': $scope.selectedResponseType})
+        .then((res) => {
+          if (res.data) {
+            if (res.data.length > 0) {
+              $scope.graphData.data = res.data;
+            } 
+          } 
+        }); 
+    } else {
+      console.log('No set question');
+    }
+  }
+
   $scope.init = () => {
     $scope.initSurveys();
     /* Set date ranges */

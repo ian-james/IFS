@@ -1,16 +1,19 @@
 const path = require('path');
 const _ = require('lodash');
+const moment = require('moment');
 
 const viewPath = path.join(__components, 'SurveyAdmin/views/');
 const Survey = require('./../../Survey/models/Survey');
 const Question = require('./../../Survey/models/Question');
 const SurveyResponses = require('./../../Survey/models/SurveyResponse');
-const chartHelpers = require('./../../Chart/chartHelpers.js');
+const ChartHelpers = require('./../../Chart/chartHelpers.js');
 
 module.exports = {
-  /* Basic page display - all data requests handle by angular */ 
+  /* Basic page display - all data requests handle by angular */
   viewStats: (req, res) => {
-    res.render(path.join(viewPath,'surveyStats'), {title: 'Survey Responses'});
+    res.render(path.join(viewPath, 'surveyStats'), {
+      title: 'Survey Responses'
+    });
   },
   /* Get all metadata for available surveys */
   getSurveysMeta: (req, res) => {
@@ -42,8 +45,42 @@ module.exports = {
       let dataArray = _.values(countObj);
       /* Convert to percentage */
       dataArray = _.map(dataArray, val => ((val / responseCount) * 100));
-      console.log (dataArray);
       res.json(dataArray);
     });
+  },
+  /* Filters responses based on settings sent by ser */
+  getFilteredResponses: (req, res) => {
+    const questionID = req.params.questionID;
+    const startDate = moment(req.body.startDate).format('YYYY-MM-DD');
+    const endDate = moment(req.body.endDate).format('YYYY-MM-DD');
+
+    if (ChartHelpers.validateDate(startDate) && ChartHelpers.validateDate(endDate) && moment(endDate).isAfter(startDate)) {
+      SurveyResponses.getQuestionResponses(questionID, (err, responses) => {
+        
+        /* Filter SQL result by date range */
+        const filteredResponse = _.filter(responses, (response) => {
+          const answeredOn = moment(response.answeredOn).format('YYYY-MM-DD');
+          return (moment(answeredOn).isSameOrAfter(startDate) && moment(answeredOn).isSameOrBefore(endDate));
+        });
+
+        /* Transform results into percentages for the chart */
+        const responseCount = filteredResponse.length;
+        const countObj = _.countBy(filteredResponse, 'questionAnswer');
+        /* Add 0 count for missing keys */
+        for (i = 1; i <= 5; i++) {
+          if (countObj[i] == null) {
+            countObj[i] = 0;
+          }
+        }
+        Object.keys(countObj).sort();
+        let dataArray = _.values(countObj);
+        /* Convert to percentage */
+        dataArray = _.map(dataArray, val => ((val / responseCount) * 100));
+
+        res.json(dataArray);
+      });
+    } else {
+      res.json([]);
+    }
   },
 };

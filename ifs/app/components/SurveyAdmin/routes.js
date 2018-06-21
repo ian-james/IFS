@@ -6,4 +6,5 @@ module.exports = (app, iosocket) => {
   app.get('/surveys/meta/', SurveyAdminController.getSurveysMeta);
   app.get('/surveys/questions/:surveyID', SurveyAdminController.getSurveyQuestions);
   app.get('/surveys/responses/:questionID', SurveyAdminController.getSurveyResponsesByQuestion);
+  app.post('/surveys/responses/:questionID', SurveyAdminController.getFilteredResponses);
 };

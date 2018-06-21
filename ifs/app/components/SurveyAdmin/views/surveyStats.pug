@@ -63,7 +63,7 @@ block content
                                 .uk-form-controls
                                     select(ng-model="selectedResponseType" ng-options="t for t in responseType" ng-init="selectedResponseType=responseType[0]").uk-select.uk-margin-bottom
                             .uk-width-1-2
-                                button.uk-button.uk-button-primary Update 
+                                button(ng-click="updateGraphData()").uk-button.uk-button-primary Update 
 
 
     br
