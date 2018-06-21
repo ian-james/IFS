@@ -46,7 +46,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   /* Gets all responses for a particular question and updates the scope values */
   $scope.getQuestionResponses = () => {
     const questionID = $scope.selectedQuestion.id;
-    $http.get('/surveys/responses/' + questionID)
+    $http.post('/surveys/responses/' + questionID, {'startDate': $scope.startDate, 'endDate': $scope.endDate, 'responseType': $scope.selectedResponseType})
       .then((res) => {
         $scope.graphData.data = res.data;
         $scope.graphData.options.title.text = $scope.selectedQuestion.text;
@@ -71,10 +71,8 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
             } 
           } 
         }); 
-    } else {
-      console.log('No set question');
-    }
-  }
+    } 
+  };
 
   $scope.init = () => {
     $scope.initSurveys();
