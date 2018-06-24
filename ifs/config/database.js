@@ -34,6 +34,7 @@ function query(queryStr, args, callback) {
                 if(err) {
                     console.log("ERROR FOR STRING: ", err, " >>> " , queryStr);
                     callback(err);
+                    return;
                 }
                 callback(err, data);
             });

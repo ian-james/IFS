@@ -176,16 +176,14 @@ module.exports = function (app, iosocket) {
             return (_.startsWith(key,'opt-') || _.startsWith(key,'enabled-'))
         });
 
-        preferencesDB.clearStudentFormPreferences(userId,toolType, function( err, clearResult ) {
-            // Whether clearing successeds or failes, change preferences that where selected.
-            async.eachOf(preferences, function( value,key, callback ) {
-                preferencesDB.setStudentPreferences(userId, toolType,  key, value, callback);
-            }, function(err){
-                if(err)
-                    Logger.error(err);
-                else
-                    Logger.log("Finished writing feedback to DB.");
-            });
+        async.eachOf(preferences, function( value,key, callback ) {
+            console.log("SETTING ", key , " and ", value );
+            preferencesDB.setStudentPreferences(userId, toolType,  key, value, callback);
+        }, function(err){
+            if(err)
+                Logger.error(err);
+            else
+                Logger.log("Finished writing feedback to DB.");
         });
     }
 

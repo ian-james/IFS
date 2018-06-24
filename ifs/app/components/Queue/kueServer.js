@@ -13,7 +13,6 @@ exports.getQueue = function() {
 exports.setupQueue = function(app) {
 
     kueUIExpress(app, '/kue/', '/kue-api/');
-    console.log(kue.app);
     app.use('/kue-api/', kue.app);
 
     // Watch for stuck jobs, as PER REQUEST on GITHUB
