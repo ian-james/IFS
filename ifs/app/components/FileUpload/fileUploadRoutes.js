@@ -177,7 +177,6 @@ module.exports = function (app, iosocket) {
         });
 
         async.eachOf(preferences, function( value,key, callback ) {
-            console.log("SETTING ", key , " and ", value );
             preferencesDB.setStudentPreferences(userId, toolType,  key, value, callback);
         }, function(err){
             if(err)
@@ -224,10 +223,8 @@ module.exports = function (app, iosocket) {
                 var filesFile = Helpers.writeResults( uploadedFiles, { 'filepath': uploadedFiles[0].filename, 'file': 'fileUploads.json'});
                 req.session.jobRequestFile = requestFile;
                 req.session.uploadFilesFile = filesFile;
-                console.log("HERE");
 
                 emitJobRequests(req,iosocket,tools);
-                console.log("HERE2");
 
                 res.writeHead(202, { 'Content-Type': 'application/json' });
 
