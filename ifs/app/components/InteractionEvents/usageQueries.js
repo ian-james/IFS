@@ -11,9 +11,50 @@ var submissionDB = require(__components + "InteractionEvents/submissionEvents.js
 var prefDB = require(__components + "InteractionEvents/preferenceEvents.js" );
 var feedbackDB = require(__components + "InteractionEvents/feedbackEvents.js" );
 var surveyDB = require(__components + "InteractionEvents/surveyEvents.js" );
+//var skillDB = require(__components + "InteractionEvents/skillEvents.js" );
+var taskDB = require(__components + "InteractionEvents/taskEvent.js" );
 var feedbackInteractionDB = require(__components + "InteractionEvents/feedbackInteractionEvents.js" );
 
 module.exports = {
+
+    getPhDQueries: function( req ) {
+        var id = req.user.id;
+        var sessionId = req.user.sessionId;
+
+        return [
+            // Submissions
+            sessionDB.getTotalSessions(id),                                         // Total Number of session for user.
+            sessionDB.getTotalDaysLoggedIn(id),                                     // Number of days used.
+            submissionDB.getTotalSubmissionsCount(id),                              // Number of submissions
+            //*Errors Fixed
+            
+            // Feedback
+            feedbackDB.getCountFeedbackItems(id),                                   //Feedback Generated
+            feedbackInteractionDB.getToolFeedbackViewed(id),                        //Feedback Viewed
+            feedbackInteractionDB.getToolFeedbackViewedMore(id),                    //Feedback ViewedMore
+            feedbackInteractionDB.getFeedbackToViewedRatio(id,sessionId),           // Feedback Submission/Viewed Ratio
+
+            //Survey
+            surveyDB.getTotalSurveyQuestionsAnswered(id),                           // Survey Questions Answer
+            surveyDB.getTotalSurveysCompleted(id),                                  // Surveys Answered
+
+            // Task 
+            taskDB.getTotalTasksMarkedComplete(id),
+            taskDB.getTotalTasks(id),
+
+            // Skills
+            //skillDB.getTotalSkillsRating( studentId );
+            //skillDB.getSkillsDifferenceOverTime(studentId );
+            
+            //OSSM/OSM Views
+            feedbackInteractionDB.getTotalSinglePageViews(id, "studentModel"),
+            feedbackInteractionDB.getTotalSinglePageViews(id, "socialModel"),
+            //Tool Changes
+            //Preferences Changed
+        ];
+    },
+
+
 
     getAllQueries: function(req) {
         var arr = [];

@@ -34,7 +34,7 @@ app.set( 'view engine', 'pug');
 // Add path information
 require("./addResourcePaths.js")(app);
 
-// A logging middleware 
+// A logging middleware
 // Winston Middleware but customized
 var dbcfgPath = __dirname + "/";
 var myLogger = require( __configs + "loggingConfig");
@@ -46,6 +46,8 @@ if( app.get('env') != "test" ) {
 
 // This section creates our session store data, it is outside the other add* requires because it is shared.
 var redisOpts = require( __components  + "/Queue/kuaServerConfig").testKue;
+var kueServerSetup = require( __components  + "Queue/kueServer").setupQueue(app);
+
 var session = require('express-session');
 var redis = require('redis');
 var redisStore = require('connect-redis')(session);
@@ -94,9 +96,6 @@ require( "./passport") (passport);
 app.use( passport.initialize() );
 app.use( passport.session() );
 
-// Add middleware 
-//require("./addMiddleware.js") (app,mySession);
-
 var server = http.Server(app);
 var io = require('socket.io')(server,{'transports':['polling', 'websocket'], pingInterval:25000,pingTimeout:60000});
 
@@ -110,12 +109,12 @@ function onAuthorizeSuccess(data, accept){
 
 function onAuthorizeFail(data, message, error, accept){
 
-  console.log("onAuthoFailM-", message);
+  //console.log("onAuthoFailM-", message);
   if(error)
     throw new Error(message);
   // We use this callback to log all of our failed connections.
-  console.log('failed connection to socket.io:', message);
-  accept(null, false);  
+  //console.log('failed connection to socket.io:', message);
+  accept(null, false);
 }
 
 

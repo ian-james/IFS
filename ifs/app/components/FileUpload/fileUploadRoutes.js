@@ -177,16 +177,13 @@ module.exports = function (app, iosocket) {
             return (_.startsWith(key,'opt-') || _.startsWith(key,'enabled-'))
         });
 
-        preferencesDB.clearStudentFormPreferences(userId,toolType, function( err, clearResult ) {
-            // Whether clearing successeds or failes, change preferences that where selected.
-            async.eachOf(preferences, function( value,key, callback ) {
-                preferencesDB.setStudentPreferences(userId, toolType,  key, value, callback);
-            }, function(err){
-                if(err)
-                    Logger.error(err);
-                else
-                    Logger.log("Finished writing feedback to DB.");
-            });
+        async.eachOf(preferences, function( value,key, callback ) {
+            preferencesDB.setStudentPreferences(userId, toolType,  key, value, callback);
+        }, function(err){
+            if(err)
+                Logger.error(err);
+            else
+                Logger.log("Finished writing feedback to DB.");
         });
     }
 
@@ -268,7 +265,7 @@ module.exports = function (app, iosocket) {
                     res.end();
 
                 }, function(err){
-                    Logger.error("Failed to make jobs:", err );
+                    //Logger.error("Failed to make jobs:", err );
 
                     // NOTE: Abusing XHR communication because I can't get the below code to communicate.
                     // Want to just sent error to XHR but nothing gets communicated. So added 'err':true

@@ -30,7 +30,7 @@ module.exports = {
     'user_registration_table':          'user_registration',
     'verify_table':                     'verify',
 
-    // Class 
+    // Class
     'student_table':                    'student',
     'class_table':                      'class',
     'student_class_table':              'student_class',

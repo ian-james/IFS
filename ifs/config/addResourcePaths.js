@@ -15,7 +15,7 @@ module.exports = function (app) {
     app.use(express.static(path.join( __dirname, "/../app/")));
 
     // IFS version
-    app.use("/version.js", express.static(path.join(__dirname, "/../config/version.js")));
+    //app.use("/version.js", express.static(path.join(__dirname, "/../config/version.js")));
 
     // Survey JS information
     app.use("/surveyjs",express.static(nodeModulesPath + "/survey-jquery/"));

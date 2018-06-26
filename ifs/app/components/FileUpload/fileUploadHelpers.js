@@ -398,7 +398,10 @@ module.exports = {
         var uploadDir = path.dirname(options.filepath);
         var file = path.join(uploadDir, filename);
         Logger.info("Writing", file, "now", file);
-        fs.writeFileSync(file, JSON.stringify(obj), 'utf-8');
+        fs.writeFile(file, JSON.stringify(obj), 'utf-8', (err) => {
+            if(err)
+                Logger.error("Unable to write file " + file + " reason: " + err );
+        });
         return file;
     },
 

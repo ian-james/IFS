@@ -20,7 +20,7 @@ function jobConfig(jobType, jobName) {
 function makeJob(toolOptions, jobOpts) {
     var deferred = Q.defer();
 
-    var job = queue.queue.create(jobOpts.jobType, {
+    var job = queue.getQueue().create(jobOpts.jobType, {
             name:jobOpts.jobName,
             title:jobOpts.jobName,
             tool: toolOptions,
@@ -53,7 +53,7 @@ function makeJob(toolOptions, jobOpts) {
             done: true,
             job: job.data,
             success: false,
-            result: null
+            result: []
         });
     })
     .removeOnComplete(jobOpts.removeIfDone).save(function(err) {

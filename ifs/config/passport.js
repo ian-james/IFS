@@ -197,7 +197,6 @@ module.exports = function (passport) {
                             });
 
                             var loginQuery = dbHelpers.buildInsert(dbcfg.login_table) + dbHelpers.buildValues(["userId", "sessionId"]);
-                            console.log("LQ = ", loginQuery);
                             db.query( loginQuery, [ uid, rows[0].sessionId + 1],  function(err,r5) {
                                 if (err)
                                     Logger.error(err);

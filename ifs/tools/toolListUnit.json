@@ -1,0 +1,280 @@
+{
+    "tools": [
+         {
+            "displayName": "Spell Checker",
+            "description": "Checks for spelling errors in a text.",
+            "technicalDesc": "A simple Python script that uses Hunspell to process text and provide suggestions for spelling correction.",
+            "author": "Keefer Rourke",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/spell_check/LICENSE.txt",
+            "progName": "./tools/languageTools/spell_check/spell_check.py",
+            "cmdToolName": "spellCheck",
+            "runType": "writing",
+            "route": "",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "-d 256",
+            "fileArgs": "-i",
+            "options" : [
+                {
+                    "displayName": "Dictionary",
+                    "type": "select",
+                    "values": ["en_US", "en_CA","en_GB"],
+                    "name": "opt-spellDictionary",
+                    "arg": "-l",
+                    "params":""
+                }
+            ]
+        },
+        {
+            "displayName": "Grammar Checker",
+            "description": "Checks for grammatical errors in a text.",
+            "technicalDesc": "A simple Python script that uses LanguageTool to process text and provide suggestions for grammar correction.",
+            "author": "Keefer Rourke",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/grammar/LICENSE.txt",
+            "progName": "./tools/languageTools/grammar/grammar.py",
+            "cmdToolName": "grammar",
+            "runType": "writing",
+            "route": "",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-i",
+            "options" : [
+                {
+                    "displayName": "Dictionary",
+                    "type": "select",
+                    "values": ["en-US", "en-CA"],
+                    "name": "opt-gramDictionary",
+                    "arg": "-l",
+                    "params": ""
+                }
+            ]
+        },
+        {
+            "displayName": "APA Style Checker",
+            "description": "Checks for common errors in APA-formatted papers.",
+            "technicalDesc": "A simple Python script that uses regular expressions to check for common errors in APA style writing.",
+            "author": "Keefer Rourke",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/apa/LICENSE.txt",
+            "progName": "./tools/languageTools/apa/apa_check.py",
+            "cmdToolName": "apaCheck",
+            "runType": "writing",
+            "route": "",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-i",
+            "options" : []
+        },
+        {
+            "displayName": "Language Tone Checker",
+            "description": "Provides suggestions for strengthening language and tone.",
+            "technicalDesc": "A Python script that uses python3-proselint to process text and provides suggestions for strengthening language and tone.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/prose/LICENSE.txt",
+            "progName": "./tools/languageTools/prose/proseLinter.py",
+            "cmdToolName": "proseLinter.py",
+            "runType": "writing",
+            "route": "",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" : []
+        },
+        {
+            "displayName": "Word Use Checker",
+            "description": "Highlights commonly misused words in phrases.",
+            "technicalDesc": "A Python script that uses the Unix tool diction to flag commonly misused words in phrases.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/diction_style/LICENSE.txt",
+            "progName": "./tools/languageTools/diction_style/dictionStyle.py",
+            "cmdToolName": "dictionStyle.py",
+            "runType": "writing",
+            "route": "",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" : []
+        },
+        {
+            "displayName": "Word Cloud",
+            "description": "Produces a word-frequency cloud.",
+            "technicalDesc": "A Python script that calculates word frequency and organizes results for wordcloud2.js.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/word_cloud/LICENSE.txt",
+            "progName": "./tools/languageTools/word_cloud/termFreq.py",
+            "cmdToolName": "termFreq",
+            "runType": "visual",
+            "route": "/cloud",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" :  [ {
+                    "displayName": "Words In Cloud",
+                    "type": "select",
+                    "values": [5,10,20],
+                    "name": "opt-wordCloud",
+                    "arg": "-t",
+                    "params":""
+                 }
+            ]
+        },
+        {
+            "displayName": "Text Summary",
+            "description": "Attempts to summarize text to 10 or fewer sentences.",
+            "technicalDesc": "A Python script that identifies the most prevalent sentences in your writing based on term frequency.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/text_summary/LICENSE.txt",
+            "progName":"./tools/languageTools/text_summary/textSummarization.py",
+            "cmdToolName": "textSummarization",
+            "runType": "visual",
+            "route": "/cloud",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "options" :  [
+                {
+                    "displayName": "Sentences in Summary",
+                    "type": "select",
+                    "values": [1,3,5,10],
+                    "name": "opt-txtSummaryLineCount",
+                    "arg": "-s",
+                    "params":""
+                 }
+            ]
+        },
+        {
+            "displayName": "Writing Statistics",
+            "description": "Generates readability statistics for a text.",
+            "technicalDesc": "A Python script that uses Style to evaluate readability of written text.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/style/LICENSE.txt",
+            "progName": "./tools/languageTools/style/style.py",
+            "cmdToolName": "style.py",
+            "route": "",
+            "runType": "stats",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "hidden": true,
+            "options" : []
+        },
+        {
+            "displayName": "Writing Evaluation",
+            "description": "Evaluates text writing for common mistakes and appropriate language.",
+            "technicalDesc": "A Javascript script that uses Retext to evaluate written text.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2018",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/retextWriter/LICENSE.txt",
+            "progName": "node ./tools/languageTools/retextWriter/retextWriter.js",
+            "cmdToolName": "retextWriter.js",
+            "route": "",
+            "runType": "writing",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "hidden": true,
+            "options" : [
+                 {
+                    "displayName": "Syntax and Structure",
+                    "type": "checkbox",
+                    "name": "opt-retextEquality",
+                    "values": "",
+                    "arg": "-x",
+                    "params": ""
+                },
+                {
+                    "displayName": "Equality and Profanities",
+                    "type": "checkbox",
+                    "name": "opt-retextProfanity",
+                    "values": "",
+                    "arg": "-y",
+                    "params": ""
+                },
+                {
+                    "displayName": "Advanced Writing",
+                    "type": "checkbox",
+                    "name": "opt-retextContractions",
+                    "values": "",
+                    "arg": "-z",
+                    "params": ""
+                }
+            ]
+        }
+        ,
+        {
+            "displayName": "Failure Tool",
+            "description": "Evaluates text writing for common mistakes and appropriate language.",
+            "technicalDesc": "A Javascript script that uses Retext to evaluate written text.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2018",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/retextWriter/LICENSE.txt",
+            "progName": "node ./tools/languageTools/unitTestTools/createErrorTool/createError.js",
+            "cmdToolName": "createError.js",
+            "route": "",
+            "runType": "writing",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "",
+            "hidden": true,
+            "options" : [
+                 {
+                    "displayName": "Bad Data",
+                    "type": "checkbox",
+                    "name": "opt-badData",
+                    "values": "",
+                    "arg": "-b",
+                    "params": ""
+                },
+                {
+                    "displayName": "Bad JSON Data",
+                    "type": "checkbox",
+                    "name": "opt-jsonData",
+                    "values": "",
+                    "arg": "-j",
+                    "params": ""
+                },
+                {
+                    "displayName": "Create Error",
+                    "type": "checkbox",
+                    "name": "opt-error",
+                    "values": "",
+                    "arg": "-e",
+                    "params": ""
+                },
+                {
+                    "displayName": "No Data",
+                    "type": "checkbox",
+                    "name": "opt-noData",
+                    "values": "",
+                    "arg": "-n",
+                    "params": ""
+                }
+            ]
+        }
+    ]
+}
