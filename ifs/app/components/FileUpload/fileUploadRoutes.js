@@ -17,7 +17,7 @@ var Helpers = require("./fileUploadHelpers");
 var upload = require("./fileUploadConfig").upload;
 
 // Feedback
-var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFilterSystem');
+//var FeedbackFilterSystem = require(__components + 'FeedbackFiltering/feedbackFilterSystem');
 
 var dbcfg = require(__configs + 'databaseConfig');
 var db = require( __configs + 'database');

@@ -178,6 +178,50 @@
             "fileArgs": "-f",
             "hidden": true,
             "options" : []
+        },
+        {
+            "displayName": "Writing Evaluation",
+            "description": "Evaluates text writing for common mistakes and appropriate language.",
+            "technicalDesc": "A Javascript script that uses Retext to evaluate written text.",
+            "author": "Jamey Fraser",
+            "copyright": "Copyright © 2018",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/retextWriter/LICENSE.txt",
+            "progName": "node ./tools/languageTools/retextWriter/retextWriter.js",
+            "cmdToolName": "retextWriter.js",
+            "route": "",
+            "runType": "writing",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-f",
+            "hidden": true,
+            "options" : [
+                 {
+                    "displayName": "Syntax and Structure",
+                    "type": "checkbox",
+                    "name": "opt-retextEquality",
+                    "values": "",
+                    "arg": "-x",
+                    "params": ""
+                },
+                {
+                    "displayName": "Equality and Profanities",
+                    "type": "checkbox",
+                    "name": "opt-retextProfanity",
+                    "values": "",
+                    "arg": "-y",
+                    "params": ""
+                },
+                {
+                    "displayName": "Advanced Writing",
+                    "type": "checkbox",
+                    "name": "opt-retextContractions",
+                    "values": "",
+                    "arg": "-z",
+                    "params": ""
+                }
+            ]
         }
     ]
 }
