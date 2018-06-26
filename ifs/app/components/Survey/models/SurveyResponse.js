@@ -14,8 +14,14 @@ function insertSurveyResponse( surveyResponseData, callback ) {
 const getResponsesForQuestion = (questionID, callback) => {
     const q = 'SELECT * from ' + dbcfg.survey_results_table + ' WHERE questionId = ?';
     db.query(q, [questionID], callback);
-}
+};
 
+const getQResponses = (questionID, callback) => {
+    let q = 'SELECT survey_result.answeredOn, survey_result.questionAnswer, survey_result.userId, survey_result.pulse_response, preferences.toolValue AS toolPref ';
+    q += 'from survey_result join preferences on survey_result.userId = preferences.userId where preferences.toolName="pref-toolSelect" AND survey_result.questionId = ?';
+    db.query(q, [questionID], callback);
+}
 
 module.exports.insertSurveyResponse = insertSurveyResponse;
 module.exports.getQuestionResponses = getResponsesForQuestion;
+module.exports.getQResponses = getQResponses;

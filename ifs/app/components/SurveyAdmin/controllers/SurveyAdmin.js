@@ -28,37 +28,18 @@ module.exports = {
       res.json(questions);
     });
   },
-  /* Returns all responses for a particular question */
-  getSurveyResponsesByQuestion: (req, res) => {
-    const questionID = req.params.questionID;
-    SurveyResponses.getQuestionResponses(questionID, (err, responses) => {
-      const responseCount = responses.length;
-      /* Reduce the reponses to a count */
-      const countObj = _.countBy(responses, 'questionAnswer');
-      /* Add 0 count for missing keys */
-      for (i = 1; i <= 5; i++) {
-        if (countObj[i] == null) {
-          countObj[i] = 0;
-        }
-      }
-      Object.keys(countObj).sort();
-      let dataArray = _.values(countObj);
-      /* Convert to percentage */
-      dataArray = _.map(dataArray, val => ((val / responseCount) * 100));
-      res.json(dataArray);
-    });
-  },
   /* Filters responses based on settings sent by ser */
   getFilteredResponses: (req, res) => {
     const questionID = req.params.questionID;
     const startDate = moment(req.body.startDate).format('YYYY-MM-DD');
     const endDate = moment(req.body.endDate).format('YYYY-MM-DD');
     const responseType = req.body.responseType;
-    console.log(responseType);
+    const toolPref = req.body.toolPref;
+    console.log(toolPref);
 
     if (ChartHelpers.validateDate(startDate) && ChartHelpers.validateDate(endDate) && moment(endDate).isAfter(startDate)) {
-      SurveyResponses.getQuestionResponses(questionID, (err, responses) => {
-        
+      SurveyResponses.getQResponses(questionID, (err, responses) => {
+
         /* Filter SQL result by date range */
         let filteredResponse = _.filter(responses, (response) => {
           const answeredOn = moment(response.answeredOn).format('YYYY-MM-DD');
@@ -67,10 +48,16 @@ module.exports = {
 
         /* Filter by survey response type */
         if (responseType != 'both') {
-          const filterValue = (responseType == 'pulse' ? 1 : 0);
+          const filterValue = (responseType == 'pulse') ? 1 : 0;
           filteredResponse = _.filter(filteredResponse, 
             response => (response.pulse_response == filterValue));
         }
+
+        /* Filter by tool preference */
+        if (toolPref != 'both') {
+            filteredResponse = _.filter(filteredResponse, response => (response.toolPref == toolPref));
+        }
+
         /* Transform results into percentages for the chart */
         const responseCount = filteredResponse.length;
         const countObj = _.countBy(filteredResponse, 'questionAnswer');

@@ -15,6 +15,8 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   $scope.endDate;
   $scope.responseType = ['both', 'manual', 'pulse'];
   $scope.selectedResponseType;
+  $scope.availableToolPref = ['both', 'Programming', 'Writing'];
+  $scope.selectedToolPref;
   /* Chart meta data */
   $scope.author = '-';
   $scope.numQuestions = '-';
@@ -46,7 +48,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   /* Gets all responses for a particular question and updates the scope values */
   $scope.getQuestionResponses = () => {
     const questionID = $scope.selectedQuestion.id;
-    $http.post('/surveys/responses/' + questionID, {'startDate': $scope.startDate, 'endDate': $scope.endDate, 'responseType': $scope.selectedResponseType})
+    $http.post('/surveys/responses/' + questionID, $scope.buildPrefObject())
       .then((res) => {
         $scope.graphData.data = res.data;
         $scope.graphData.options.title.text = $scope.selectedQuestion.text;
@@ -60,10 +62,21 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     $scope.numQuestions = $scope.selectedSurvey.totalQuestions;
   };
 
+  /* Returns an object with selected preferences */
+  $scope.buildPrefObject = () => (
+    {
+      'startDate': $scope.startDate,
+      'endDate': $scope.endDate,
+      'responseType': $scope.selectedResponseType,
+      'toolPref': $scope.selectedToolPref
+    }
+  );
+
+  //{'startDate': $scope.startDate, 'endDate': $scope.endDate, 'responseType': $scope.selectedResponseType}
   $scope.updateGraphData = () => {
     if ($scope.selectedQuestion) {
       const questionID = $scope.selectedQuestion.id;
-      $http.post('/surveys/responses/' + questionID, {'startDate': $scope.startDate, 'endDate': $scope.endDate, 'responseType': $scope.selectedResponseType})
+      $http.post('/surveys/responses/' + questionID, $scope.buildPrefObject())
         .then((res) => {
           if (res.data) {
             if (res.data.length > 0) {
