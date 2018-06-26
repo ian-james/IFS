@@ -97,6 +97,8 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     $scope.graphData.type = $scope.chartType;
     $scope.graphData.data = [];
     $scope.graphData.options = {};
+    $scope.graphData.options.scales = {};
+    $scope.graphData.options.scales.yAxes = [{ticks: {min: 0}}];
     $scope.graphData.options.title = { display: true };
   };
 
