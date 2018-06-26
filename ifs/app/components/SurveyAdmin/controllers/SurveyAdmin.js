@@ -53,16 +53,24 @@ module.exports = {
     const questionID = req.params.questionID;
     const startDate = moment(req.body.startDate).format('YYYY-MM-DD');
     const endDate = moment(req.body.endDate).format('YYYY-MM-DD');
+    const responseType = req.body.responseType;
+    console.log(responseType);
 
     if (ChartHelpers.validateDate(startDate) && ChartHelpers.validateDate(endDate) && moment(endDate).isAfter(startDate)) {
       SurveyResponses.getQuestionResponses(questionID, (err, responses) => {
         
         /* Filter SQL result by date range */
-        const filteredResponse = _.filter(responses, (response) => {
+        let filteredResponse = _.filter(responses, (response) => {
           const answeredOn = moment(response.answeredOn).format('YYYY-MM-DD');
           return (moment(answeredOn).isSameOrAfter(startDate) && moment(answeredOn).isSameOrBefore(endDate));
         });
 
+        /* Filter by survey response type */
+        if (responseType != 'both') {
+          const filterValue = (responseType == 'pulse' ? 1 : 0);
+          filteredResponse = _.filter(filteredResponse, 
+            response => (response.pulse_response == filterValue));
+        }
         /* Transform results into percentages for the chart */
         const responseCount = filteredResponse.length;
         const countObj = _.countBy(filteredResponse, 'questionAnswer');

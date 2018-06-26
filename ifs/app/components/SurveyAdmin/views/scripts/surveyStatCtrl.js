@@ -13,7 +13,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   /* Filter bindings */
   $scope.startDate;
   $scope.endDate;
-  $scope.responseType = ['Both', 'Manual', 'Pulse'];
+  $scope.responseType = ['both', 'manual', 'pulse'];
   $scope.selectedResponseType;
   /* Chart meta data */
   $scope.author = '-';
