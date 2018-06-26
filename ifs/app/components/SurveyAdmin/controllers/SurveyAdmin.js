@@ -35,7 +35,6 @@ module.exports = {
     const endDate = moment(req.body.endDate).format('YYYY-MM-DD');
     const responseType = req.body.responseType;
     const toolPref = req.body.toolPref;
-    console.log(toolPref);
 
     if (ChartHelpers.validateDate(startDate) && ChartHelpers.validateDate(endDate) && moment(endDate).isAfter(startDate)) {
       SurveyResponses.getQResponses(questionID, (err, responses) => {
