@@ -19,7 +19,7 @@ var Helpers = require('./fileUploadHelpers');
 
 function acceptableFileTypes() {
     return {
-        'Programming':['md', 'json', "c", "cpp", "cc", "cxx", "h", "hpp", 'zip', 'tar'],
+        'Programming':['md', 'json', "c", "cpp", "cc", "cxx", "h", "hpp", 'zip', 'tar', 'py'],
         'Writing': ['txt', 'text', 'doc', 'docx', 'odt', 'pdf']
     };
 }
@@ -42,6 +42,8 @@ function acceptableMimeType() {
             'text/x-chdr',
             'text/x-c++src',
             'text/x-c++hdr',
+            'text/x-python',
+            'text/x-python-script',
             'application/json',
             'application/zip',
             'application/x-compressed-zip',
@@ -49,7 +51,8 @@ function acceptableMimeType() {
             'application/x-gzip',
             'application/x-tar',
             'application/x-gzip',
-            'application/gzip'
+            'application/gzip',
+            'application/octet-stream'
         ]
     };
 }

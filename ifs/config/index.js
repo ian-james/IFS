@@ -98,7 +98,7 @@ app.use( passport.session() );
 
 var server = http.Server(app);
 var io = require('socket.io')(server,{'transports':['polling', 'websocket'], pingInterval:25000,pingTimeout:60000});
-
+global.ioGlob = io; //Controller issues TOFIX: Kevin
 var passportSocketIO = require('passport.socketio');
 
 function onAuthorizeSuccess(data, accept){

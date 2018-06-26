@@ -32,14 +32,23 @@ function getJsonTool( toolsJson, targetTool ){
 // user selected options to create jobs for the Queue
 function createJobRequests( toolFile, selectedOptions ) {
 
-    var toolList = readToolFileList(toolFile);
+
+    //JSON object of all the tools available
+    var toolList = readToolFileList(toolFile)
+
+    //JSON object of tools that are being used
     toolList.tools = removeInactiveTools(toolList.tools,selectedOptions);
 
+    //Seems like its the exact same as before, more investigation required
     selectedOptions = removeEnabledFormData( selectedOptions );
 
+    //format the JSON object of the selected options
     var toolOptions = parseFormSelection( selectedOptions );
 
+    //adds extra params to the tool list
     var res = insertOptions(toolList.tools, toolOptions);
+
+    //create the jobRequests file with what is going to be ran
     var jobReq =  buildJobs(res, selectedOptions.files, {prefixArg: false} );
 
     return jobReq;

@@ -9,13 +9,8 @@ module.exports = {
     // WARNING: the password here is stored in plain-text. It is recommended
     // that the database user has permissions restricted only to access and
     // modify the database specified below.
-    'connection': {
-        'host' :                        'localhost',
-        'user' :                        'root',
-        'password' :                    'mysqlRootPassword',
-        'connectionLimit':              500
-    },
-    // database name
+    //
+    // database must match dbConnectionConfig
     'database':                         'IFS',
 
     // databse tables

@@ -77,6 +77,7 @@ def parse( text, options ):
         feedback['toolName'] = options['tool']
         sections = line.split( options['splitSeq'])
 
+
         # Check that we can put each parsed section into an expect tag type.
         if( len(sections) == len(types) ):
             for section in sections:
@@ -178,7 +179,6 @@ def createCmd( options ):
 
 # main program that takes arguments
 def main(argv):
-
     idirectory =''
     # Many default options set for cppCheck, most of which will be used in gcc and ctags
     # outFiles are temporary files
@@ -199,6 +199,7 @@ def main(argv):
                 'includeDir': "./include",
                 'srcDir': "./src"
                 }
+
 
     # define command line arguments and check if the script call is validq
     opts, args = getopt.getopt(argv,'t:i:l:e:f:s:u:d:h',
@@ -240,6 +241,7 @@ def main(argv):
                 outFile = os.path.normpath( os.path.join( idirectory, options['outFile']) )
 
                 outErrFile = os.path.normpath( os.path.join( idirectory, options['outErrFile']) )
+
                 code, out, err = getProcessInfo( cmd, outFile, outErrFile )
 
                 with open(outErrFile, 'r') as errFile:
@@ -250,11 +252,11 @@ def main(argv):
                         result = decorateData( result, options )
                     print( result )
             except:
-                sys.stderr.write("Unable to successfully retrieve compiler information")
+                sys.stderr.write("Unable to successfully retrieve compiler information\n")
         else:
             sys.stderr.write( 'Invalid tool selected, please select a valid tool name.\n')
     else:
-        sys.stderr.write( 'Please rovide a project directory to evaluate using -d <dir>.\n')
+        sys.stderr.write( 'Please provide a project directory to evaluate using -d <dir>.\n')
         sys.exit()
 
 if __name__ == '__main__':

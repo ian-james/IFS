@@ -19,7 +19,7 @@ var mkdirp = require('mkdirp');
 var cp = require('cp-file');
 var Logger = require( path.join( __dirname, "/loggingConfig") );
 
-var SurveyBuilder = require( __components + "Survey/surveyBuilder");
+var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
 var preferencesDB = require( __components + "Preferences/preferenceDB.js");
 var studentProfile = require(__components + "StudentProfile/studentProfileDB")
 

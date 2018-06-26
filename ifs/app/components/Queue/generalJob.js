@@ -1,5 +1,5 @@
 var queue = require('./kueServer');
-var cjob = require('./childJob');
+var cjob = require('./childJob');   //not used???
 var Logger = require( __configs + "loggingConfig" );
 
 var Q = require('q');
@@ -19,7 +19,6 @@ function jobConfig(jobType, jobName) {
 
 function makeJob(toolOptions, jobOpts) {
     var deferred = Q.defer();
-
     var job = queue.getQueue().create(jobOpts.jobType, {
             name:jobOpts.jobName,
             title:jobOpts.jobName,

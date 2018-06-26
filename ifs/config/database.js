@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var dbcfg = require('./databaseConfig');
+var dbcfg = require('./dbConnectionConfig.js');
 var Logger = require( __configs + "loggingConfig");
 var Errors = require(__components + "Errors/errors");
 
@@ -29,6 +29,10 @@ function query(queryStr, args, callback) {
    //console.log("DATABASE QUERY STARTED", queryStr);
    pool.getConnection(function(err,connection) {
         if(connection){
+	        connection.on('error', function(err) {
+	            console.log("DB Connection error handled");
+	            handleConnectionError(err,connection);
+	        });
             connection.query( queryStr, args, function(err,data) {
                 connection.release();
                 if(err) {

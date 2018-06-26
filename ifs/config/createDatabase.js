@@ -3,12 +3,13 @@
 */
 
 var mysql = require('mysql');
+var dbConnect = require('./dbConnectionConfig.js')
 var dbcfg = require('./databaseConfig');
 
 var Logger = require('./loggingConfig') ;
 
 try {
-    var connection = mysql.createConnection( dbcfg.connection );
+    var connection = mysql.createConnection( dbConnect.connection );
 
     // Tell mysql to use the database
     if(connection) {
@@ -76,7 +77,7 @@ try {
             fullSurveyFile VARCHAR(80) NOT NULL, \
             PRIMARY KEY(id) \
         )");
-        
+
         // survey results table; foreign keys in survey and users tables
         Logger.info("Create the Table:", dbcfg.survey_results_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.survey_results_table + " ( \
@@ -217,7 +218,7 @@ try {
             FOREIGN Key (submissionId) REFERENCES " + dbcfg.database + "." + dbcfg.submission_table + "(id), \
             FOREIGN Key (feedbackId) REFERENCES " + dbcfg.database + "." + dbcfg.feedback_table + "(id) \
         )");
-        
+
         Logger.info("Create the Table:", dbcfg.feedback_rating_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.feedback_rating_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \

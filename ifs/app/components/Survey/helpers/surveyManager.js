@@ -11,15 +11,15 @@ var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
-var SurveyBuilder = require( __components + "Survey/surveyBuilder");
-var Survey = require( __components + "/Survey/survey");
+var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
+var Survey = require( __components + "Survey/models/survey");
 
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 module.exports = {
 
     /**
-     * Retrieves all preference information for all surveys 
+     * Retrieves all preference information for all surveys
      * @param  {[type]}   userId   [description]
      * @param  {Function} callback [description]
      * @return  Array of survey data from DB.
@@ -36,12 +36,12 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getUserSurveyProfileAndSurveyType: function(userId, callback) {
-        var q = "select sp.*, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
+        var q = "select sp.*, s.id, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
         db.query(q,userId,callback);
     },
 
     setAbleAllSurveyPreferences: function( userId, ableValue, callback ) {
-        var q = dbHelpers.buildUpdate(dbcfg.survey_preferences_table) + " set allowedToAsk = ? " + dbHelpers.buildWS("userId") 
+        var q = dbHelpers.buildUpdate(dbcfg.survey_preferences_table) + " set allowedToAsk = ? " + dbHelpers.buildWS("userId")
         db.query(q,[ableValue,userId], callback);
     },
 
@@ -58,7 +58,7 @@ module.exports = {
             //return s.lastRevision < timeBetweenQuestions;
             return true;
         });
-        
+
     },
 
     /**
@@ -108,13 +108,9 @@ module.exports = {
         var nextSurvey = completed.pop();
         nextSurvey.currentIndex =0;
         return nextSurvey;
-    },    
-
-    getAllowedSurveys: function(surveyPrefData) {
-        return _.filter(surveyPrefData, function(s) {
-            return s.allowedToAsk;
-        });
     },
+
+
 
     getActiveSurveys: function(surveyPrefData ) {
         return _.filter(surveyPrefData, function(s) {
@@ -151,14 +147,6 @@ module.exports = {
         });
     },
 
-    getSurveyFieldMatches: function( surveyPrefData, field, matchingFields) {
-        return _.filter(surveyPrefData, function(s) {
-            if( !_.has(s,field) )
-                return false;
-            return matchingFields.includes(s[field]);
-        });
-    },
-
     /**
      * [setupSurvey description]
      * @param  Array   surveyPrefData    Data from Survey_Preferences table.
@@ -174,7 +162,7 @@ module.exports = {
         var survey = null;
 
         survey = this.selectSurvey(surveyOptions);
-        
+
         if( survey  && survey.length != 0) {
             var opts = SurveyBuilder.setDisplaySurveyOptions(null,null,[survey.currentIndex, survey.lastIndex]);
             callback(null,{"data":survey, options:opts});

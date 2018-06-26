@@ -6,9 +6,9 @@ ifs/uploads/
 ifs/errorFile.pop
 npm-debug.log
 ifs/logs/
-ifs/config/databaseConfig.js
 ifs/app/shared/img/user/*
 ifs/users/
+ifs/config/databaseConfig.js
 
 # vim swap files
 *.sw[a-p]

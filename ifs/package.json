@@ -29,7 +29,7 @@
   "homepage": "https://github.com/ian-james/ifs#readme",
   "dependencies": {
     "adm-zip": "^0.4.7",
-    "alex": "^5.1.0",
+    "amqplib": "^0.5.2",
     "angular": "^1.6.1",
     "angular-chart.js": "^1.1.1",
     "angular-file-upload": "^2.4.1",
@@ -62,7 +62,7 @@
     "kue-ui-express": "^1.0.2",
     "less": "^2.7.2",
     "lodash": "^4.17.4",
-    "mark.js": "github:julmot/mark.js",
+    "mark.js": "^8.11.1",
     "method-override": "^2.3.7",
     "mkdirp": "^0.5.1",
     "moment": "^2.18.1",
