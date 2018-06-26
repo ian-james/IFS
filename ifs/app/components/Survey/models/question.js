@@ -5,19 +5,9 @@ var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
-/*
-function getQuestion( questionSurveyId, questionIndex, callback ) {
-    var req = "SELECT * FROM " + dbcfg.question_table + " (surveyId, language, text, visualFile, type) values (?,?,?,?,?)";
-    db.query(req, questionData, function(err,data){
-        console.log("INSERT Question");
-        callback(err,data);
-    });
-}
-*/
-
 function getQuestions( surveyId, callback ) {
-    var req = "SELECT * FROM " + dbcfg.question_table + " WHERE surveyId = ?";
-    db.query(req, questionData, function(err,data){
+    var req = "SELECT * FROM " + dbcfg.question_table + " WHERE surveyId = ? ORDER BY id ASC";
+    db.query(req, surveyId, function(err,data){
         callback(err,data);
     });
 }
@@ -43,6 +33,21 @@ function deleteQuestion( questionData, callback ) {
     });
 }
 
+/*let getQuestionCount = (id, callback) => {
+    var q = 'SELECT COUNT(id) as numQ from ' + dbcfg.question_table + ' WHERE surveyId = ?';
+    db.query(q, id, (err, data) => {
+        callback (err, data);
+    })
+};*/
+
+let selectNRandomQuestions =  (surveyId, n, callback) => {
+    const q = 'SELECT * from ' + dbcfg.question_table + ' WHERE surveyId = ? ORDER BY RAND() LIMIT ?';
+    db.query (q, [surveyId, n], (err, data) => {
+        callback (err, data);
+    });
+};
+
 module.exports.getQuestions = getQuestions;
 module.exports.insertQuestion = insertQuestion;
 module.exports.deleteQuestion = deleteQuestion;
+module.exports.selectRandomQuestions = selectNRandomQuestions;

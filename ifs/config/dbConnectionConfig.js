@@ -11,7 +11,7 @@ module.exports = {
     // modify the database specified below.
     'connection': {
         'host' :                        'localhost',
-        'user' :                        'USERNAME',
+        'user' :                        'USER',
         'password' :                    'PASSWORD',
         'connectionLimit':              500
     },
