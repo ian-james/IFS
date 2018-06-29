@@ -90,6 +90,9 @@ app.use(mySession);
 var flash = require('express-flash');
 app.use(flash());
 
+// Add XLS Middleware
+const J2XParser = require('json2xls');
+app.use(J2XParser.middleware);
 
 //Require passport routes
 require( "./passport") (passport);

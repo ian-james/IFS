@@ -18,7 +18,7 @@ const Serializers = require(path.join(componentPath, 'helpers/Serializer.js'));
 const Survey = require(__components + "/Survey/models/survey");
 const SurveyPreferences = require(path.join(componentPath, 'models/surveyPreferences'));
 const Question = require(__components + "Survey/models/question");
-
+const DE = require('./../../DataExport/dataExport');
 
 module.exports = {
   /* Returns a list of surveys */
@@ -33,6 +33,7 @@ module.exports = {
           obj['lastRevision'] = moment(obj['lastRevision']).format("hh:mm a DD-MM-YYYY");
         return obj;
       });
+
       res.render(viewPath + 'surveyList', {
         'title': "Survey List",
         "surveys": ans
