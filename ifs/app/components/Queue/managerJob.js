@@ -29,7 +29,10 @@ function loadAllTools(job, done) {
 
     var promises = [];
     var jobsInfo = job.data.tool;
+
+    //creates a promise for each job to be executed
     for(var i = 0;i < jobsInfo.length;i++) {
+        console.log("makeJob: " + cjob.makeJob( jobsInfo[i]) );
         promises.push( cjob.makeJob( jobsInfo[i] ));
     }
 

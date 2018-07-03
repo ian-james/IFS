@@ -2,6 +2,9 @@ var  kue =  require('kue');
 var Logger = require( __configs + "loggingConfig" );
 var kOptions = require("./kuaServerConfig.js").testKue;
 var kueUIExpress = require('kue-ui-express');
+var cluster = require('cluster');
+
+var clusterWorkerSize = require('os').cpus().length;
 
 var queue = kue.createQueue(kOptions.kueOpts);
 console.log("************************** STARTING KUE SERVER ");
@@ -11,6 +14,7 @@ exports.getQueue = function() {
 };
 
 exports.setupQueue = function(app) {
+
 
     kueUIExpress(app, '/kue/', '/kue-api/');
     app.use('/kue-api/', kue.app);
