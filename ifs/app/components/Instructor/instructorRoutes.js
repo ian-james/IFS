@@ -106,13 +106,12 @@ module.exports = function( app ) {
 
     });
 
+    /********************************
+     ** The manage assignment page **
+     ********************************/
     app.route('/instructor-manage-assignment')
     .post(function(req,res,next){
         var id = req.body['assignment-id'];
-        var name = req.body['assignment-name'];
-        var title = req.body['assignment-title'];
-        var description = req.body['assignment-description'];
-        var deadline = req.body['assignment-deadline'];
 
         instructorDB.checkAssignmentAccess(id, req.user.id, function(err, result){
             // make a check in case it fails and display some other page????
@@ -120,7 +119,7 @@ module.exports = function( app ) {
                 // lets check to make sure they have permission. prevents against
                 // client side scripting
                 if(result[0].found == '1') {
-                    instructorDB.getAssignment(id, function(err, assignment){
+                    instructorDB.getAssignment(id, function(err, assignment){ // get the assignment its safer than passing all that data
                         if(!err && assignment){
                             var assign = assignment[0];
                             instructorDB.getAssignmentDiscipline(id, function(err, disResult){
@@ -168,16 +167,19 @@ module.exports = function( app ) {
     });
 
 
-
+    /*********************************
+     *** The course dashboard page ***
+     *********************************/
     app.route('/instructor-course-dash')
     .post(function(req, res, next){
         var id = req.body['class-id'];
-
         instructorDB.checkClassAccess(id, req.user.id, function(err, result){
-            if(!err & result){
+            console.log(result);
+            if(!err && result){
                 if(result[0].found == "1"){ // lets fetch the actual class to make sure there was no tampering
-                    instructorDB.getClass(id, function(error,course){
-                        if (!error & course){
+                    
+                    instructorDB.getClass(id, function(error,course){ // get the class information its safer to just get by id
+                        if (!error && course){
                             var cs = course[0];
                             console.log(cs.name);
                         }
