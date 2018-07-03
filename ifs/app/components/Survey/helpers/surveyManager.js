@@ -12,14 +12,14 @@ var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
 var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
-var Survey = require( __components + "/Survey/models/Survey");
+var Survey = require( __components + "Survey/models/survey");
 
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 module.exports = {
 
     /**
-     * Retrieves all preference information for all surveys 
+     * Retrieves all preference information for all surveys
      * @param  {[type]}   userId   [description]
      * @param  {Function} callback [description]
      * @return  Array of survey data from DB.
@@ -41,7 +41,7 @@ module.exports = {
     },
 
     setAbleAllSurveyPreferences: function( userId, ableValue, callback ) {
-        var q = dbHelpers.buildUpdate(dbcfg.survey_preferences_table) + " set allowedToAsk = ? " + dbHelpers.buildWS("userId") 
+        var q = dbHelpers.buildUpdate(dbcfg.survey_preferences_table) + " set allowedToAsk = ? " + dbHelpers.buildWS("userId")
         db.query(q,[ableValue,userId], callback);
     },
 
@@ -58,7 +58,7 @@ module.exports = {
             //return s.lastRevision < timeBetweenQuestions;
             return true;
         });
-        
+
     },
 
     /**
@@ -108,7 +108,7 @@ module.exports = {
         var nextSurvey = completed.pop();
         nextSurvey.currentIndex =0;
         return nextSurvey;
-    },    
+    },
 
 
 
@@ -162,7 +162,7 @@ module.exports = {
         var survey = null;
 
         survey = this.selectSurvey(surveyOptions);
-        
+
         if( survey  && survey.length != 0) {
             var opts = SurveyBuilder.setDisplaySurveyOptions(null,null,[survey.currentIndex, survey.lastIndex]);
             callback(null,{"data":survey, options:opts});

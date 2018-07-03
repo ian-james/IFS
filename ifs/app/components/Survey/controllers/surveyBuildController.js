@@ -9,8 +9,8 @@ const staticSurvey = require(path.join(componentPath, 'helpers/staticSurvey'));
 const SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
 const Errors = require(__components + "Errors/errors");
 
-const Survey = require(__components + "Survey/models/Survey");
-const Question = require(__components + "Survey/models/Question")
+const Survey = require(__components + "Survey/models/survey");
+const Question = require(__components + "Survey/models/question")
 
 module.exports = {
 

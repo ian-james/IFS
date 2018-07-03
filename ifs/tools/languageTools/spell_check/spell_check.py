@@ -80,7 +80,7 @@ def spcheck(to_check, lang, limit, hun):
                 char_pos = line.find(word, char_pos)
 
                 if not hun.spell(word):
-                    sug = [ x for x in hun.suggest(word) ]
+                    sug = [ x.decode('utf-8') for x in hun.suggest(word) ]
                     suggestion = (line_num, word_num, char_num+char_pos, char_pos, word_pos, (word, sug))
                     misspelled.append(suggestion)
 

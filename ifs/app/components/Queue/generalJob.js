@@ -19,9 +19,7 @@ function jobConfig(jobType, jobName) {
 
 function makeJob(toolOptions, jobOpts) {
     var deferred = Q.defer();
-
-    //The job to to run in the queue
-    var job = queue.queue.create(jobOpts.jobType, {
+    var job = queue.getQueue().create(jobOpts.jobType, {
             name:jobOpts.jobName,
             title:jobOpts.jobName,
             tool: toolOptions,
@@ -30,7 +28,6 @@ function makeJob(toolOptions, jobOpts) {
         .attempts(jobOpts.attempts)
         .backoff( jobOpts.backoff )
         .ttl(jobOpts.timeOfLife);
-
 
     job.on('enqueue', function() {
         deferred.notify({ msg:"Task Received", "tool": job.data.name, progress: 0});
@@ -55,7 +52,7 @@ function makeJob(toolOptions, jobOpts) {
             done: true,
             job: job.data,
             success: false,
-            result: null
+            result: []
         });
     })
     .removeOnComplete(jobOpts.removeIfDone).save(function(err) {

@@ -1,4 +1,4 @@
-var queue = require('./kueServer').queue;
+var queue = require('./kueServer');
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 var job = require('./generalJob');
@@ -9,6 +9,7 @@ var fs = require('fs');
 var _ = require('lodash');
 
 const jobType = 'cJob';
+const JobConCurrent = 10;
 
 /* Tool Options
     Should present a number of values in the obj, should be validated in some way.
@@ -61,18 +62,17 @@ function runSingleTool( job, done )
         if(data) {
             error = true;
             job.emit('failed');
-            done({"code":-1, "response":new Error(data)});
             return;
         }
     });
 
     // Event on close to indicate progress has finished and close the stream.
     child.on('close', function(code) {
-        
         job.progress(100,100);
         ws.end();
         if(error) {
-            done({"code":-1, "response":new Error("Failed to execute assessment tool: ", job.data.name)});
+            var err = {"code":-1, "response":new Error("Failed to execute assessment tool: " + job.data.name)};
+            done(JSON.stringify(err));
             job.emit('failed');
         }
         else {
@@ -84,7 +84,7 @@ function runSingleTool( job, done )
 
 function runChildJob(){
 
-    queue.process(jobType, function(job,done) {
+    queue.getQueue().process(jobType, JobConCurrent, function(job,done) {
         runSingleTool( job, done );
     });
 }

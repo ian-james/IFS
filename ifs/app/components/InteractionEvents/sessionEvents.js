@@ -40,7 +40,21 @@ module.exports = {
 
     //************************************************/
 
-    
+    getDaysLoggedIn: function( userId ) {
+        return  {
+            'name': "daysLoggedIn",
+            'data': [userId],
+            'request': "select DISTINCT DATE(date) as days  from user_interactions where userId = ?  GROUP BY Date( date ) )"
+        };
+    },
+
+    getTotalDaysLoggedIn: function( userId ) {
+        return  {
+            'name': "totalDaysLoggedIn",
+            'data': [userId],
+            'request': "select SUM(a.days) as value from ( select COUNT(DISTINCT DATE(date)) as days  from user_interactions where userId = ?  and date >= DATE(NOW()) - INTERVAL ? Day GROUP BY Date( date ) ) a"
+        };
+    },
     
     getCountDaysLoggedInThisWeek: function(userId ){
         return this.getCountDaysLoggedBeforeToday(userId,7);

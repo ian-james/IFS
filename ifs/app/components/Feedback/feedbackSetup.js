@@ -50,7 +50,6 @@ function readFeedbackFormat( feedback , options) {
             if( r.length > 0 ) {
                 files = _.sortBy(r, ['originalname']);
             }
-
         }
         else
             files = _.sortBy(files, ['filename']);

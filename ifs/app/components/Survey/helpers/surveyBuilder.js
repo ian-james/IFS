@@ -8,10 +8,10 @@ const dbcfg = require(__configs + 'databaseConfig');
 const Errors = require(__components + "Errors/errors");
 const Logger = require(__configs + "loggingConfig");
 
-const SurveyPreferences = require(__components + "Survey/models/SurveyPreferences");
+const SurveyPreferences = require(__components + "Survey/models/surveyPreferences");
 const Constants = require(__components + "Constants/programConstants");
-const Survey = require(__components + "Survey/models/Survey");
-const Question = require(__components + "Survey/models/Question");
+const Survey = require(__components + "Survey/models/survey");
+const Question = require(__components + "Survey/models/question");
 const Serializers = require(path.join(__components, 'Survey/helpers/Serializer'));
 const SurveyManager = require(path.join(__components, 'Survey/helpers/surveyManager'));
 
@@ -69,7 +69,7 @@ let buildDefaultSurveyData = (surveyData) => {
 
 /*
  * Filters surveys by those that are allowed to be asked
- * 
+ *
  */
 let getAllowedSurveys = (surveyPrefData) => {
   return _.filter(surveyPrefData, (s) => {
@@ -79,7 +79,7 @@ let getAllowedSurveys = (surveyPrefData) => {
 
 /*
  * Filters preferences to specific related tools
- * 
+ *
  */
 let getSurveyFieldMatches = (surveyPrefData, field, matchingFields) => {
   return _.filter(surveyPrefData, (s) => {
@@ -89,9 +89,9 @@ let getSurveyFieldMatches = (surveyPrefData, field, matchingFields) => {
   });
 };
 
-/* Builds a survey json out of 2 random questions from an allowed survey that's randomly 
- * selected.  
- * 
+/* Builds a survey json out of 2 random questions from an allowed survey that's randomly
+ * selected.
+ *
  */
 let buildPulseSurvey =  (toolType, userId, callback) => {
   SurveyManager.getUserSurveyProfileAndSurveyType(userId, (err, surveyPref) => {
@@ -111,7 +111,7 @@ let buildPulseSurvey =  (toolType, userId, callback) => {
       callback([]);
       return;
     }
-    
+
     const surveyId = selectedSurvey.id;
 
     /* Get questions from the selected survey, return in callback - 2 limit hardcoded */

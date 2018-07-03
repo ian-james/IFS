@@ -11,13 +11,14 @@ const SurveyBuilder = require(path.join(componentPath, "helpers/surveyBuilder"))
 const Logger = require(__configs + "loggingConfig");
 const event = require(__components + "InteractionEvents/buildEvent.js");
 const tracker = require(__components + "InteractionEvents/trackEvents.js");
-const SurveyResponse = require(__components + "Survey/models/SurveyResponse");
+const SurveyResponse = require(__components + "Survey/models/surveyResponse");
 const Errors = require(__components + "Errors/errors");
 const Serializers = require(path.join(componentPath, 'helpers/Serializer.js'));
 /* Models */
-const Survey = require(__components + "/Survey/models/Survey");
+const Survey = require(__components + "/Survey/models/survey");
 const SurveyPreferences = require(path.join(componentPath, 'models/surveyPreferences'));
-const Question = require(__components + "Survey/models/Question");
+const Question = require(__components + "Survey/models/question");
+const DE = require('./../../DataExport/dataExport');
 
 module.exports = {
   /* Returns a list of surveys */
