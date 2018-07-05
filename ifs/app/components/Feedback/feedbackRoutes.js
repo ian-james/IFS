@@ -1,5 +1,6 @@
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
+var high = require('highlight.js');
 
 var fs = require('fs');
 var Feedback = require('./feedbackSetup');
@@ -9,6 +10,12 @@ var Logger = require( __configs + "loggingConfig");
 var _ = require('lodash');
 
 var feedbackEvents = require(__components + "InteractionEvents/feedbackEvents");
+
+
+
+import * as util from 'util';
+
+
 
 module.exports = function( app ) {
 
@@ -48,6 +55,8 @@ module.exports = function( app ) {
                     '"feedback":' + JSON.stringify(data) + '\n'
                     +"}\n";
 
+                    console.log("opt: " + JSON.stringify(opt));
+
                     var page = getDefaultPage();
                     var feedback = Feedback.setupFeedback(feedbackFile, opt);
                     var result = _.assign(page,feedback);
@@ -80,7 +89,12 @@ module.exports = function( app ) {
 
     app.get('/feedback', function(req, res) {
         var opt = {};
+
         showFeedback(req,res,opt, function(results) {
+            
+            console.log("asdsdfsdf: " + util.inspect(high.highlightAuto(JSON.stringify(results.files[0].content))));
+           
+
             res.render( viewPath + "feedback", results );
         });
     });

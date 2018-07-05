@@ -64,8 +64,8 @@ block content
                         uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
                             div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
                                 if toolType == 'programming'
-                                    pre.prettyprint
-                                        code !{file.markedUp}
+                                    pre
+                                        code !{file.markedUp} 
                                 else
                                     pre
                                         code !{file.markedUp}
@@ -77,3 +77,4 @@ block content
     script(src="components/Feedback/feedbackController.js")
     script(src="/components/InteractionEvents/browserFeedbackEvents.js")
     script(src="/components/InteractionEvents/popoverFeedbackEvents.js")
+

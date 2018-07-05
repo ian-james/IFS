@@ -5,7 +5,9 @@ var cjob = require('./childJob');
 var job = require('./generalJob');
 var path = require('path');
 var Logger = require( __configs  + "loggingConfig");
+var now = require("performance-now");
 var _ = require('lodash');
+var cluster = require('cluster');
 
 // This is just a regular reference, it needed a name for managerJob.
 const jobType = 'mJob';
@@ -27,21 +29,36 @@ function makeManagerJob(toolOptions) {
 function loadAllTools(job, done) {
     job.emit('start');
 
+
+    var t0 = now();
+    var t1 = now();
+
     var promises = [];
     var jobsInfo = job.data.tool;
 
+
     //creates a promise for each job to be executed
     for(var i = 0;i < jobsInfo.length;i++) {
-        console.log("makeJob: " + cjob.makeJob( jobsInfo[i]) );
         promises.push( cjob.makeJob( jobsInfo[i] ));
     }
 
     cjob.runJob();
 
     var count = 0;
+
+    var p = Q.all(promises);
+
+    console.log(p);
+
+
     // Wait for everything to finish before emitting that parent is done.
     Q.allSettled(promises)
     .then(function(res) {
+        t1 = now();
+
+
+        console.log("time taken to run jobs is: " + (t1 - t0) + " milliseconds");
+
         // return everything that passed and was fulfilled
         var passed =[], failed = [];
 
@@ -70,6 +87,7 @@ function loadAllTools(job, done) {
         }
         var Err = passed.length == 0 ? new Error('No jobs successfully completed.') : null;
         done(Err, { 'passed': passed, 'failed': failed });
+
     },
 
     function(reason) {
@@ -93,6 +111,8 @@ function loadAllTools(job, done) {
             Logger.info("Received:", notice );
         }
     });
+
+
 }
 
 /* This function is mostly to simplify the calling interface

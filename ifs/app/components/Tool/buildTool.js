@@ -106,10 +106,7 @@ function parseFormSelection( formData ) {
                 tool = { 'progName': progName, 'options':[] };
                
             }
-            else if(_.startsWith(key, "enabled-") )
-            {
-                continue;
-            }
+            
             else if(tool) {
                 var r = {};
                 r['name'] = key;
