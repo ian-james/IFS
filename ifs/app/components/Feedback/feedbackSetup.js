@@ -2,6 +2,7 @@ var fs = require('fs');
 var _ = require('lodash');
 var he = require('he');
 var path = require('path');
+var high = require('highlight.js');
 
 var fbHighlighter = require('./feedbackHighlighter');
 var Logger = require( __configs + "loggingConfig");
@@ -80,16 +81,34 @@ function readFeedbackFormat( feedback , options) {
         {
             var file = files[i];
 
-            file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+            //file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
 
             //TODO: Positional setup information should be moved to the feedback filtering and organization
             // This decopules the task of highlights and positioning.
             if( toolIsSelected ) {
-                setupFilePositionInformation(file, selectedTool,feedbackItems);
-                file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+
+                console.log(feedbackItems[0].runType);
+                if (feedbackItems[0].runType == "writing")
+                {
+                    file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+                    setupFilePositionInformation(file, selectedTool,feedbackItems);
+                    file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+                }
+                else
+                {
+                    console.log(JSON.stringify(feedbackItems));  
+                    file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+                    file.content= high.highlightAuto(he.decode(file.content)).value;
+                    console.log(JSON.stringify(file));
+                    setupFilePositionInformation(file, selectedTool,feedbackItems);
+                    file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+                }
+                
             }
-            else
+            else{
+                file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
                 file.markedUp = file.content;
+            }
         }
 
         var result =  { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
@@ -108,6 +127,7 @@ function readFeedbackFormat( feedback , options) {
     return { "err": "Unable to process files, no feedback could be provided."};
 
 }
+
 
 function readFiles( filename , options) {
     var feedback = fs.readFileSync( filename, 'utf-8');
