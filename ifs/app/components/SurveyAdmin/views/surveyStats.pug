@@ -38,10 +38,10 @@ block content
                     .uk-card-body
                         .uk-margin
                             label.uk-form-label Available Questions
-                            select(data-ng-options="question as question.text for question in questions track by question.id" ng-model="selectedQuestion" ng-change="getQuestionResponses()").uk-select
+                            select(id="question_selector" data-ng-options="question as question.text for question in questions track by question.id" ng-model="selectedQuestions" ng-change="getQuestionResponses()" multiple).uk-select
                     .uk-card-footer
                         div(ng-if="graphData.data && graphData.data.length > 0")
-                            canvas(class="chart-base" id="bar" chart-options="graphData.options" chart-type="type" chart-labels="graphData.labels" chart-data="graphData.data")
+                            canvas(class="chart-base" id="bar" chart-options="graphData.options" chart-type="type" chart-labels="graphData.labels" chart-series="series" chart-data="graphData.data")
 
                     .uk-card-footer
                         h2.uk-card-title Graph Options
@@ -74,3 +74,6 @@ block content
     br
     br
     script(src="../components/SurveyAdmin/views/scripts/surveyStatCtrl.js")
+    link(href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js")
+    script(src="../components/SurveyAdmin/views/scripts/multiselect.js")

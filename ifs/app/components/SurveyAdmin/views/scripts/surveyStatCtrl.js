@@ -6,7 +6,8 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   $scope.graphData = {};
   /* Current selections */
   $scope.selectedSurvey = $scope.surveys[0];
-  $scope.selectedQuestion = $scope.questions[0];
+  $scope.selectedQuestions = [];
+  $scope.series = [];
   /* Current chart type */
   $scope.availableTypes = ['bar', 'pie'];
   $scope.type = 'bar';
@@ -47,13 +48,16 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   
   /* Gets all responses for a particular question and updates the scope values */
   $scope.getQuestionResponses = () => {
-    const questionID = $scope.selectedQuestion.id;
-    $http.post('/surveys/responses/' + questionID, $scope.buildPrefObject())
-      .then((res) => {
-        $scope.graphData.data = res.data;
-        $scope.graphData.options.title.text = $scope.selectedQuestion.text;
-        console.log($scope.graphData);
-      });
+    $scope.graphData.data = [];
+    $scope.graphData.series = [];
+    for (let question of $scope.selectedQuestions) {
+      const questionID = question.id;
+      $http.post('/surveys/responses/' + questionID, $scope.buildPrefObject())
+        .then((res) => {
+          $scope.graphData.data.push(res.data);
+          $scope.series.push(question.text);
+        });
+    };
   };
 
   $scope.updateMetaData = () => {
@@ -100,6 +104,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     $scope.graphData.options.scales = {};
     $scope.graphData.options.scales.yAxes = [{ticks: {min: 0}}];
     $scope.graphData.options.title = { display: true };
+    $scope.graphData.options.legend = {display: true};
   };
 
   $scope.init();
