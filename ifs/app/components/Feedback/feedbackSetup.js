@@ -76,7 +76,6 @@ function readFeedbackFormat( feedback , options) {
         // 
         // 
         
-        console.log("fileLen: " + files.length);
         for( var i = 0; i < files.length; i++ )
         {
             var file = files[i];
@@ -87,19 +86,19 @@ function readFeedbackFormat( feedback , options) {
             // This decopules the task of highlights and positioning.
             if( toolIsSelected ) {
 
-                console.log(feedbackItems[0].runType);
+  
                 if (feedbackItems[0].runType == "writing")
                 {
+                    // Normal highlighting scheme for writing file
                     file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
                     setupFilePositionInformation(file, selectedTool,feedbackItems);
                     file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
                 }
                 else
                 {
-                    console.log(JSON.stringify(feedbackItems));  
+                    // Syntax highlighting for programming file
                     file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
                     file.content= high.highlightAuto(he.decode(file.content)).value;
-                    console.log(JSON.stringify(file));
                     setupFilePositionInformation(file, selectedTool,feedbackItems);
                     file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
                 }

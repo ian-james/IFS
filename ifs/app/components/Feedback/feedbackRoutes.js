@@ -51,8 +51,6 @@ module.exports = function( app ) {
                     '"feedback":' + JSON.stringify(data) + '\n'
                     +"}\n";
 
-                    console.log("opt: " + JSON.stringify(opt));
-
                     var page = getDefaultPage();
                     var feedback = Feedback.setupFeedback(feedbackFile, opt);
                     var result = _.assign(page,feedback);

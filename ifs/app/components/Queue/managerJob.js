@@ -7,7 +7,8 @@ var path = require('path');
 var Logger = require( __configs  + "loggingConfig");
 var now = require("performance-now");
 var _ = require('lodash');
-var cluster = require('cluster');
+var cluster = require('cluster')
+var spawn = require('child_process').spawn;
 
 // This is just a regular reference, it needed a name for managerJob.
 const jobType = 'mJob';
@@ -26,6 +27,43 @@ function makeManagerJob(toolOptions) {
    and waits for the feedback.
 */
 
+function cTest(jobList)
+{
+    // console.log(jobList);
+
+    var argStr = "";
+    var cmdArr = [];
+
+    for (var i = 0; i < jobList.length; i++)
+    {
+        argStr = "\"" + jobList[i].runCmd + "\"";
+        cmdArr.push(argStr);
+
+    }
+
+    console.log(cmdArr);
+
+    var child = spawn("./test", cmdArr);
+
+    child.stdout.on('data', function(data) {
+        console.log('stdout: ' + data);
+        //Here is where the output goes
+    });
+
+    child.stderr.on('data', function(data) {
+        console.log('stderr: ' + data);
+        //Here is where the error output goes
+    });
+
+    child.on('close', function(code) {
+        console.log('closing code: ' + code);
+        //Here you can get the exit code of the script
+    });
+
+
+
+}
+
 function loadAllTools(job, done) {
     job.emit('start');
 
@@ -41,6 +79,8 @@ function loadAllTools(job, done) {
     for(var i = 0;i < jobsInfo.length;i++) {
         promises.push( cjob.makeJob( jobsInfo[i] ));
     }
+
+    cTest(jobsInfo);
 
     cjob.runJob();
 
