@@ -76,21 +76,6 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     }
   );
 
-  //{'startDate': $scope.startDate, 'endDate': $scope.endDate, 'responseType': $scope.selectedResponseType}
-  $scope.updateGraphData = () => {
-    if ($scope.selectedQuestion) {
-      const questionID = $scope.selectedQuestion.id;
-      $http.post('/surveys/responses/' + questionID, $scope.buildPrefObject())
-        .then((res) => {
-          if (res.data) {
-            if (res.data.length > 0) {
-              $scope.graphData.data = res.data;
-            } 
-          } 
-        }); 
-    } 
-  };
-
   $scope.init = () => {
     $scope.initSurveys();
     /* Set date ranges */
