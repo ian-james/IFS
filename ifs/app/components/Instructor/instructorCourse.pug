@@ -1,0 +1,22 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    div.uk-container
+        h2.uk-text-left #{title}
+        hr
+        ul.uk-subnav.uk-subnav-pill(uk-switcher='animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium, connect: .switch')
+            li
+                a(href='#') Statistics
+            li
+                a(href='#') Manage
+            
+        ul.uk-switcher.switch.uk-margin
+            li Hello!
+            li Hello again!
+            li Bazinga!
+    
+        ul.uk-switcher.switch.uk-margin
+            li Test!
+            li test 2!
+            li test 3!
+

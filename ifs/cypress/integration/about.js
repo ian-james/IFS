@@ -5,10 +5,10 @@
  *  Author: Rhys Young
  */
 
-describe('About page tests', function() {
+describe('Quick about page tests', function() {
     it('Visit login page', function() {
         // pages should take no more than 3 seconds to load
-        cy.visit('http://localhost:8000', {timeout: 3000})
+        cy.visit('http://localhost:3000', {timeout: 3000})
     })
 
     it('Click about', function(){
