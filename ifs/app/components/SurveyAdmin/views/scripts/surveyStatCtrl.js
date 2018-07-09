@@ -89,7 +89,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     $scope.graphData.options.scales = {};
     $scope.graphData.options.scales.yAxes = [{ticks: {min: 0}}];
     $scope.graphData.options.title = { display: true };
-    $scope.graphData.options.legend = {display: true};
+    $scope.graphData.options.legend = { display: true };
   };
 
   $scope.init();
