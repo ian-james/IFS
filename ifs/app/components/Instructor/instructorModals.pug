@@ -1,0 +1,122 @@
+script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+script
+    include instructorModals.js
+
+div#create-course(uk-modal='')
+    .uk-modal-dialog.uk-modal-body
+        button.uk-modal-close-default(type='button', uk-close='')
+        h2.uk-modal-title Create Course
+        div.uk-overflow-container
+            form(class='uk-form' method="post" action="" + formAction )#uploadForm
+                label(for="Course name").uk-form-label
+                    | Course Name
+                div.uk-form-controls
+                    input(type="text" name="cname", id="cname", placeholder="e.g Introduction to Programming", required).uk-input
+                br
+                label(for="Course code").uk-form-label
+                    | Class Code
+                div.uk-form-controls
+                    input(type="text" name="ccode", id="ccode", placeholder="e.g CIS*1500", required).uk-input
+                br
+                label(for="Course year").uk-form-label
+                    | Year
+                div.uk-form-controls
+                    - var d  = new Date();
+                    - var year = d.getFullYear();
+                    input(type="text" name="cyear", id="cyear", placeholder=year, required).uk-input
+                br
+                label(for="Course semester").uk-form-label
+                    | Course Semester
+                div.uk-form-controls
+                    select(id="csemester" name="csemester", required).uk-select
+                        option(value="fall", selected) Fall
+                        option(value="winter") Winter
+                        option(value="summer") Summer
+                br
+                label(for="Course description").uk-form-label
+                    | Course Description
+                div.uk-form-controls
+                    input(type="text" name="cdesc", id="cdesc", placeholder="e.g This course is about...", required).uk-input
+                br
+                label(for="Course type").uk-form-label
+                    | Course Type
+                div.uk-form-controls
+                    select(id="ctype" name="ctype", required).uk-select
+                        option(value="computer science", selected) Computer Science
+                        option(value="psychology") Psychology
+                        option(value="other") Other
+                br
+                // - making 3 different divs and hiding them appropriately
+                div#csoptionsC
+                    each option in coptions
+                        - if (option.disciplineType == 'computer science')
+                            include instructorInput.pug
+                            br
+                div#psycoptionsC
+                    each option in coptions
+                        - if (option.disciplineType == 'psychology')
+                            include instructorInput.pug
+                            br
+                div#othoptionsC
+                    each option in coptions
+                        - if (option.disciplineType == 'other')
+                            include instructorInput.pug  
+                            br  
+                input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
+                button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
+
+
+
+div#create-assignment(uk-modal='')
+    .uk-modal-dialog.uk-modal-body
+        button.uk-modal-close-default(type='button', uk-close='')
+        h2.uk-modal-title Create Assignment
+        div.uk-overflow-container
+            form(class='uk-form' method="post" action="" + formAction )#uploadForm
+                label(for="Course name").uk-form-label
+                    | Course Name
+                div.uk-form-controls
+                     select(id="cnameA" name="cnameA").uk-select
+                        each cs in classes
+                            - var opt  = {'ccode' : cs.code, 'cdiscipline' : cs.disciplineType};
+                            - var optVal = JSON.stringify(opt);
+                            option(value=optVal) #{cs.code}
+                br
+                label(for="Assignment name").uk-form-label
+                    | Assignment name
+                div.uk-form-controls
+                    input(type="text" name="aname", id="aname", placeholder="e.g a1-1500", required).uk-input
+                br
+                label(for="Assignment title").uk-form-label
+                    | Assignment title
+                div.uk-form-controls
+                    input(type="text" name="atitle", id="atitle", placeholder="e.g Programming tic tac toe", required).uk-input
+                br
+                label(for="Description").uk-form-label
+                    | Description
+                div.uk-form-controls
+                    input(type="text" name="atitle", id="atitle", placeholder="e.g This assignment is about..", required).uk-input
+                br
+                label(for="Due date").uk-form-label
+                    | Due date
+                div.uk-form-controls
+                    input(type="date" name="adate", id="adate", placeholder="yyyy-mm-dd", required).uk-input
+                br
+                // - making 3 different divs and hiding them appropriately
+                div#csoptionsA
+                    each option in aoptions
+                        - if (option.disciplineType == 'computer science')
+                            include instructorInput.pug
+                            br
+                div#psycoptionsA
+                    each option in aoptions
+                        - if (option.disciplineType == 'psychology')
+                            include instructorInput.pug
+                            br
+                div#othoptionsA
+                    each option in aoptions
+                        - if (option.disciplineType == 'other')
+                            include instructorInput.pug  
+                            br  
+                input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
+                button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel

@@ -1,0 +1,12 @@
+{
+    "ignore": [
+        "data/*",
+        "uploads/*",
+        "logs/*",
+        "tests/*",
+        "tools/*",
+        "users/",
+        "app/shared/img/user/*"
+    ],
+    "verbose" : true
+}
