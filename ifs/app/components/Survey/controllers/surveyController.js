@@ -18,7 +18,7 @@ const Serializers = require(path.join(componentPath, 'helpers/Serializer.js'));
 const Survey = require(__components + "/Survey/models/survey");
 const SurveyPreferences = require(path.join(componentPath, 'models/surveyPreferences'));
 const Question = require(__components + "Survey/models/question");
-const DE = require('./../../DataExport/dataExport');
+
 
 module.exports = {
   /* Returns a list of surveys */
