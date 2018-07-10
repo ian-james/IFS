@@ -1,5 +1,4 @@
 const J2CParser = require('json2csv').Parser;
-const J2XParser = require('json2xls');
 
 /* Passed an array of objects and an optional array of fields, return a CSV representation
  * @param data Array of objects
