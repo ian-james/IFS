@@ -1,22 +1,30 @@
 const path = require ('path');
 var viewPath = path.join(__components + "/Announcements/views/");
-const Announcements = require('./../models/announcements');
+const AnnouncementsO = require('./../models/announcements');
 const Errors = require(__components + "Errors/errors");
 const Format = require('./../helpers/formatAnnounces');
+const { Announcement, getFreshAnnouncementCount } = require('../../../models/announcements');
+const { addExposure } = require('../../../models/announcementExposure');
 
-const createAnnounce = (req, res) => {
+
+const getNewAnnouncementCount = async (req, res) => {
+  const count = await getFreshAnnouncementCount(req.user.id);
+  res.send(count);
+};
+
+const createAnnounce = async (req, res) => {
   const title = req.body.title;
   const body = req.body.body;
-  const expiry = req.body.expiry;
-  console.log(req.body);
-  Announcements.createAnnouncement([title, body, expiry], (err, results) => {
-    res.send([]);
-  });
-  /* Validate input + permissions */
-  
-  /* Save to databsae */
+  const expiryDate = req.body.expiry;
 
-  /* Alert user (redirect to announcement view?) */
+  /* TODO: Validation */
+  const announce = await Announcement.query()
+    .insert ({
+        title: title,
+        body: body,
+        expiryDate: expiryDate
+    });
+  res.redirect('/announcements/' + announce.id);
 };
 
 const updateAnnounce = (req, res) => {
@@ -32,32 +40,34 @@ const deleteAnnounce = (req, res) => {
   /* Delete */
 };
 
-const getAnnounce = (req, res) => {
+const getAnnounce = async (req, res) => {
   const id = req.params.id;
-  Announcements.getAnnouncement(id, (err, announce) => {
-    if (err) {
-      Error.logErr(err);
-      res.render(viewPath + 'announcement', []);
-      return;
-    }
-    const announcement = Format.formatDateFields(announce, ['createdAt', 'updatedAt']);
-    console.log(announcement);
-    res.render(viewPath + 'announcement', 
-      { 'announcement': announcement[0] });
+
+  
+  const announce = await Announcement.query()
+    .where('id', id)
+    .first();
+  
+  if (announce) {
+    await addExposure(req.user.id, id);
+  }
+  
+  Format.formatDate([announce], ['createdAt', 'updatedAt']);
+  res.render(viewPath + 'announcement', { 
+    announcement: announce
   });
 };
 
-const getAnnounces = (req, res) => {
-  Announcements.getAnnouncements((err, announces) => {
-    if (err) {
-      Error.logErr(err);
-      res.render(viewPath + 'announcements', []);
-      return;
-    }
-    const announcements = Format.formatDateFields(announces, ['createdAt', 'updatedAt']);
-    Format.generateBlurbs(announces, 'body');
-    res.render(viewPath + 'announcements', 
-      { 'announcements': announcements });
+const getAnnounces = async (req, res) => {
+  
+  const announces = await Announcement.query()
+    .orderBy('updatedAt', 'DESC');
+  
+  Format.formatDateFields(announces, ['createdAt', 'updatedAt']);
+  Format.generateBlurbs(announces, 'body');
+
+  res.render(viewPath + 'announcements', {
+    announcements: announces
   });
 };
 
@@ -69,3 +79,4 @@ module.exports.getAnnounces = getAnnounces;
 module.exports.getAnnounce = getAnnounce;
 module.exports.adminAnnounceCreate = adminCreate;
 module.exports.createAnnounce = createAnnounce;
+module.exports.getNewAnnouncementCount = getNewAnnouncementCount

@@ -18,7 +18,6 @@ const formatDateFields = (objectsArr = [], fields = []) => {
 const generateBlurbs = (objectsArr = [], field, limit = 250) => {
   for (let object of objectsArr) {
     if (object[field].length > limit) {
-      console.log('longer!'); 
       object.blurb = object[field].substring(0, limit) + '...';
     };
   }

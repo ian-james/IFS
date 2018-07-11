@@ -138,6 +138,11 @@ require("./serverSocketIO.js")(app,io);
 // Add Developer Routes
 require("./addRoutes.js")(app, io);
 
+// Setup objection to use Knex
+const { Model } = require('objection');
+const { knex } = require('./database');
+Model.knex(knex);
+
 // Error handling in common format (err,req,res,next)
 var errorHandler = require('errorhandler');
 if(app.get('env') === 'development'){
