@@ -6,4 +6,8 @@ module.exports = (app, iosocket) => {
 
  app.get('/announcements', Announce.getAnnounces);
  
+ app.get('/announcements/:id', Announce.getAnnounce);
+
+ app.post('/announcements/create', Announce.createAnnounce);
+ 
 };

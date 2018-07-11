@@ -12,6 +12,7 @@ var validator = require('validator');
 var sanitization = require(__configs + "sanitization");
 
 var adminDB = require(__components + "Admin/adminDB.js");
+const Announce = require(__components + 'Announcements/controllers/announceController');
 
 module.exports = function( app ) {
     /**
@@ -535,4 +536,6 @@ module.exports = function( app ) {
                 }
             });
     });
+
+    app.get('/admin/createAnnounce', Announce.adminAnnounceCreate);
 };
