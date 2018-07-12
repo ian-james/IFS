@@ -201,7 +201,7 @@ def main(argv):
     if idirectory != '':
         options['dir'] = idirectory
 
-        
+
         newFile = idirectory.split("/")
         newerFile = newFile[0] + "/" + newFile[1]
 
@@ -222,7 +222,7 @@ def main(argv):
                 if( options['ifs'] ):
                     result = decorateData( result, options )
 
-                file = open(newerFile + "/feedback_cppCheck_unzipped", "w")
+                file = open(newerFile + "/feedback_gcc_unzipped", "w")
                 file.write(result)
                 file.close()
                 
