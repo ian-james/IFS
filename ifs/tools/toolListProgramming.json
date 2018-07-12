@@ -8,13 +8,13 @@
             "copyright": "Copyright © 2017",
             "license": "ISC License",
             "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
-            "progName": "./tools/programmingTools/c_tools/programmingParser.py",
+            "progName": "./tools/programmingTools/c_tools/gccParser.py",
             "cmdToolName": "gcc",
             "runType": "programming",
             "route": "",
             "filesAllowed": "zipFile",
             "parseCmd": "",
-            "defaultArg": "-t gcc",
+            "defaultArg": "",
             "fileArgs": "-d",
             "options":  [
                 {
@@ -75,13 +75,13 @@
             "copyright": "Copyright © 2017",
             "license": "ISC License",
             "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
-            "progName": "./tools/programmingTools/c_tools/programmingParser.py",
+            "progName": "./tools/programmingTools/c_tools/clangParser.py",
             "cmdToolName": "clang",
             "runType": "programming",
             "route": "",
             "filesAllowed": "zipFile",
             "parseCmd": "",
-            "defaultArg": "-t clang",
+            "defaultArg": "",
             "fileArgs": "-d",
             "options":  [
                 {
@@ -142,13 +142,13 @@
             "copyright": "Copyright © 2017",
             "license": "ISC License",
             "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
-            "progName": "./tools/programmingTools/c_tools/programmingParser.py",
+            "progName": "./tools/programmingTools/c_tools/cppcheckParser.py",
             "cmdToolName": "cppCheck",
             "runType": "programming",
             "route": "",
             "filesAllowed": "zipFile",
             "parseCmd": "",
-            "defaultArg": "-t cppcheck",
+            "defaultArg": "",
             "fileArgs": "-d",
             "options":  [
                 {
@@ -210,7 +210,7 @@
            "defaultArg": "-t includecheck",
            "fileArgs": "-d",
            "options":  [
-               
+
            ]
        },
 	   {
@@ -281,7 +281,7 @@
                     "arg": "",
                     "params": ""
                 }
-               
+
             ]
         }
     ]
