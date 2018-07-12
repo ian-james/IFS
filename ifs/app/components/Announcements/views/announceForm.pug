@@ -12,12 +12,13 @@ block content
                 div.uk-margin
                     label.uk-form-label Announcement Text
                     .uk-form-controls
-                        textarea(id="bodyEdit" ng-model="body" rows="5").uk-textarea Type text here
+                        div(wysiwyg ng-model="body")
                 div.uk-margin
                     label.uk-form-label Expiry date
                     .uk-form-controls
                         input(ng-model="expiry" id="expiry" type="date" )
                 div.uk-margin
                     button(ng-click="handleSubmit()").uk-button.uk-button-primary Create Announcement
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/angular-wysiwyg/1.2.4/angular-wysiwyg.min.js")
     script(src="../components/Announcements/views/scripts/createCtrl.js")
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.13/jquery.tinymce.min.js ")
+    

@@ -1,4 +1,5 @@
 const { Model } = require('objection');
+const { AnnouncementExposure } = require('./announcementExposure');
 
 class Announcement extends Model {
   /* Name getter */
@@ -8,7 +9,6 @@ class Announcement extends Model {
   /* Relationships */
   static get relationMappings() {
     /* Require this here to avoid circular require loops */
-    const { AnnouncementExposure } = require('./announcementExposure');
     return {
       exposures: {
         relation: Model.HasManyRelation,
@@ -28,9 +28,13 @@ class Announcement extends Model {
  */
 getFreshAnnouncementCount = async (userId) => {
   const count = await Announcement.query()
-    .leftOuterJoin('announcement_exposure','announcements.id', 'announcement_exposure.announcementId')
-    .where('announcement_exposure.userId', userId)
-    .count({ unseen: 'announcements.id' })
+    .count({ unseen: 'id' })
+    .whereNotExists( () => {
+      return AnnouncementExposure.query().select('*')
+        .where('userId', userId)
+        .andWhere('announcementId', 'announcements.id')
+        .first();
+    })
     .first();
   return count;
 };

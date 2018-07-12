@@ -30,6 +30,11 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                         a(href="/feedback")
                             span(uk-icon="icon: commenting").uk-margin-small-right
                             span(class="uk-visible@m") Feedback
+                    li
+                        a(href="/announcements")
+                            span(uk-icon="icon: bell").uk-margin-small-right
+                            span(class="uk-visible@m") Announcements
+                            span(ng-controller="annBadge" ng-bind="unseen").badge.badge-light.uk-margin-small-left
                     // Drop down menu
                     li.uk-inline
                         a(href="#")
@@ -60,3 +65,4 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                                     a(href="/logout")
                                         span(uk-icon="icon: sign-out").uk-margin-small-right
                                         | Logout
+    script(src="../components/Announcements/views/scripts/announcementBadgeCtrl.js")

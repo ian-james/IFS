@@ -1,4 +1,4 @@
-
+angular.module('myApp', ['wysiwyg.module']);
 
 app.controller('announceCreate', function($scope, $http) {
   $scope.title = '';
@@ -11,7 +11,7 @@ app.controller('announceCreate', function($scope, $http) {
     return {
       title: $scope.title,
       body: $scope.body,
-      expiry: $scope.expiry
+      expiryDate: $scope.expiry.toISOString()
     };
   };
 

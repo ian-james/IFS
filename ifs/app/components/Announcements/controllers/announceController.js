@@ -1,5 +1,6 @@
 const path = require ('path');
-var viewPath = path.join(__components + "/Announcements/views/");
+const moment = require('moment');
+const viewPath = path.join(__components + "/Announcements/views/");
 const AnnouncementsO = require('./../models/announcements');
 const Errors = require(__components + "Errors/errors");
 const Format = require('./../helpers/formatAnnounces');
@@ -15,7 +16,10 @@ const getNewAnnouncementCount = async (req, res) => {
 const createAnnounce = async (req, res) => {
   const title = req.body.title;
   const body = req.body.body;
-  const expiryDate = req.body.expiry;
+  let expiryDate = req.body.expiryDate;
+  console.log('EXPIRY: ' + expiryDate);
+  //expiryDate = moment(expiryDate).toString();
+  //console.log('MOMENT: ' + expiryDate);
 
   /* TODO: Validation */
   const announce = await Announcement.query()
@@ -43,16 +47,15 @@ const deleteAnnounce = (req, res) => {
 const getAnnounce = async (req, res) => {
   const id = req.params.id;
 
-  
   const announce = await Announcement.query()
     .where('id', id)
     .first();
   
   if (announce) {
     await addExposure(req.user.id, id);
+    Format.formatDateFields([announce], ['createdAt', 'updatedAt']);
   }
   
-  Format.formatDate([announce], ['createdAt', 'updatedAt']);
   res.render(viewPath + 'announcement', { 
     announcement: announce
   });

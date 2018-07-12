@@ -32,5 +32,6 @@ const addExposure = async (userId, announcementId) => {
   }
 }
 
+
 module.exports.AnnouncementExposure = AnnouncementExposure;
 module.exports.addExposure = addExposure;
