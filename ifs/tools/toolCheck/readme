@@ -1,0 +1,9 @@
+This tool can batch test other tools, which can be specified as all or individually. The test files default to pTestDir= programming and wTestDir = writing.
+
+Pass in either a directory or file and it will be tested with all the tool listed in the options.
+
+It only determines if an crash/error will occur with the tool. 
+
+Not whether it's correct.
+
+If you want to commit  test files, please add them into the test folder not directly into these folders.

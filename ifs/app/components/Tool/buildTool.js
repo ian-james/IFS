@@ -263,6 +263,7 @@ function basicParse( toolListItem, userOptions ){
 }
 
 
+/*
 function writeToolList( files, obj )
 {
     // Get upload directory
@@ -274,6 +275,7 @@ function writeToolList( files, obj )
     fs.writeFileSync( file , JSON.stringify(obj), 'utf-8');
     return file;
 }
+*/
 
 
 // Exports below

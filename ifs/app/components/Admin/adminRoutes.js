@@ -106,7 +106,7 @@ module.exports = function( app ) {
     }
 
     function validateTitles(res, route, titles, cb) {
-	// Commenting out as settings need allow many blacklisted items 
+	// Commenting out as settings need allow many blacklisted items
 	cb(false,route);
         /*var error = false
         for (var i = 0; i < titles.length; i++) {
@@ -120,9 +120,9 @@ module.exports = function( app ) {
     }
 
     function validateDesc(res, route, desc, cb) {
-	// Commenting out as settings need allow many blacklisted items 
+	// Commenting out as settings need allow many blacklisted items
 	cb(false,route);
-	
+
 	/*
         var error = false
         if (!sanitization.validateText(desc, 'par')) {
@@ -198,7 +198,7 @@ module.exports = function( app ) {
         var desc = req.body['class-description']
 
         validateTitles(res, route, [code, name], function(err, route) {
-           if (err) { 
+           if (err) {
                 directTo(res, url.format({
                     pathname: route,
                     query: {
@@ -521,8 +521,6 @@ module.exports = function( app ) {
                                     var values = _.values(submission);
                                     values.unshift(data[0].aId);
                                     values.unshift(data[0].classId);
-
-                                    console.log("VALUES ", values );
 
                                     adminDB.insertSkill(values, function(err,result) {
                                         directTo(res);

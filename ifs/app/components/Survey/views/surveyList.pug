@@ -1,0 +1,36 @@
+extends ../../../shared/views/pageLayout.pug
+
+block scripts
+    script(src="/socket.io/socket.io.js")
+
+block content
+    div().uk-container
+        div(uk-alert).uk-alert-danger
+            p.uk-align-center.errorMessage #{messages.errorMessage}
+
+        div
+            h2 IFS Surveys
+            if surveys && surveys.length > 0
+                table.uk-table.uk-table-hover
+                    caption
+                    thead
+                        tr
+                            th Completed
+                            th Survey Name
+                            th Last Updated
+                        tr
+                    tbody
+                        each s in surveys
+                            tr
+                                td.uk-table-shrink
+                                    if(s.currentSurveyIndex <= 0)
+                                        span(uk-icon="icon: close").uk-margin-small-right.uk-margin-small-top.uk-text-danger
+                                    else
+                                        span(uk-icon="icon: check").uk-margin-small-right.uk-margin-small-top.uk-text-success
+                                
+                                td.uk-table-expand
+                                    a(href="survey/" + s.id, class="uk-button") #{ s.title }
+                                td
+                                    #{s.lastRevision}
+            else
+                h4 Unable to retrieve experiment surveys.
