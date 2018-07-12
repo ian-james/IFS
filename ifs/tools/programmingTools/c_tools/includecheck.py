@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
-# This script parses gcc based output into JSON.
-# Works for GCC -fno-diagnostics-show-caret  and cppcheck (template=gcc) and
+# This script parses c files to find absolutely/relatively addressed paths and reports output into JSON.
+# Works for GCC -fno-diagnostics-show-caret and cppcheck (template=gcc) and
 # Copyright (c) 2018 John Harmer jharmer@uoguelph.ca
 #
 # Permission to use, copy, modify, and/or distribute this software for any
@@ -144,7 +144,7 @@ def main(argv):
         sys.exit()
     else:
         #Get command line arguments and put them into list
-        options = { 'tool': 'pathcheck',
+        options = { 'tool': 'includecheck',
                     'dir':''
                     }
 
