@@ -23,8 +23,7 @@ import sys, getopt, os
 import io, json
 import re
 import string
-from subprocess import call
-from subprocess import Popen, PIPE
+import subprocess
 import shlex
 import glob
 
@@ -51,19 +50,16 @@ def getProcessInfo( cmd, outFile, errorFile ):
 
     #print("cmd is", cmd )
 
-    with open(outFile, 'w') as fout:
-        with open(errorFile,'w') as ferr:
+    args = shlex.split(cmd)
+    # Expand the wildcard to be processed as expected, gets the requested files.
+    args = args[:-1] + glob.glob(args[-1])
 
-            args = shlex.split(cmd)
-            # Expand the wildcard to be processed as expected, gets the requested files.
-            args = args[:-1] + glob.glob(args[-1])
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
 
-            # Note this requires python 3.3
-            proc = Popen(args, stdout=fout, stderr=ferr)
-            out, err = proc.communicate();
-            exitcode = proc.returncode
-
-            return exitcode, out, err
+    
+    
+    return out, err
 
 # Parsing the output of a couple simple formats
 # Each format has a specific character split sequence such as '##' or ':'
@@ -205,6 +201,10 @@ def main(argv):
     if idirectory != '':
         options['dir'] = idirectory
 
+        
+        newFile = idirectory.split("/")
+        newerFile = newFile[0] + "/" + newFile[1]
+
         cmd = createCmd( options )
 
         if( cmd ):
@@ -213,15 +213,20 @@ def main(argv):
 
                 outErrFile = os.path.normpath( os.path.join( idirectory, options['outErrFile']) )
 
-                code, out, err = getProcessInfo( cmd, outFile, outErrFile )
+                out, err = getProcessInfo( cmd, outFile, outErrFile )
 
-                with open(outErrFile, 'r') as errFile:
-                    errors = errFile.read()
-                    result = parse( errors, options )
+                errors = err
 
-                    if( options['ifs'] ):
-                        result = decorateData( result, options )
-                    print( result )
+                result = parse( errors, options )
+                
+                if( options['ifs'] ):
+                    result = decorateData( result, options )
+
+                file = open(newerFile + "/feedback_cppCheck_unzipped", "w")
+                file.write(result)
+                file.close()
+                
+                print( result )
             except:
                 sys.stderr.write("Unable to successfully retrieve compiler information\n")
         else:
