@@ -537,5 +537,8 @@ module.exports = function( app ) {
             });
     });
 
-    app.get('/admin/createAnnounce', Announce.adminAnnounceCreate);
+    /* Announcement CRUD admin links */
+    app.get('/admin/announcements/', Announce.manageAnnounce)
+    app.get('/admin/announcements/new', Announce.adminAnnounceCreate);
+    app.delete('/admin/announcements/:id', Announce.deleteAnnounce);
 };

@@ -8,9 +8,10 @@ module.exports = (app, iosocket) => {
  
  app.get('/announcements/newCount', Announce.getNewAnnouncementCount);
  
+ app.get('/announcements/list', Announce.listAnnounces);
+
  app.get('/announcements/:id', Announce.getAnnounce);
 
  app.post('/announcements/create', Announce.createAnnounce);
 
- 
 };

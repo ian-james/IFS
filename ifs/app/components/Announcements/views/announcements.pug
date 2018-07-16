@@ -11,7 +11,7 @@ block content
                     each announce in announcements
                         a(href="/announcements/" + announce.id)
                             h3.uk-margin-remove-bottom #{announce.title}
-                        span.uk-text-meta #{announce.updatedAt}
+                        span.uk-text-meta #{announce.updated_at}
                         if (announce.blurb)
                             p #{announce.blurb}
                         else

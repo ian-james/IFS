@@ -1,11 +1,8 @@
-angular.module('myApp', ['wysiwyg.module']);
-
 app.controller('announceCreate', function($scope, $http) {
-  $scope.title = '';
-  $scope.body = 'Enter Announcement Body';
+  $scope.title;
+  $scope.body;
   $scope.expiry = new Date();
   $scope.expiryDayMinimum = 14; // By default, announcements will expire in 14 days
-
 
   $scope.buildFormData = function () {
     return {
@@ -20,10 +17,11 @@ app.controller('announceCreate', function($scope, $http) {
     const formData = $scope.buildFormData();
     $.post('/announcements/create', formData)
       .done ((results) => {
-        
+        const id = results.id;
+        window.location.href = `/announcements/${id}`;
       })
-      .fail((results) => {
-      
+      .fail((res) => {
+        
       });
   };
 
