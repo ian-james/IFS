@@ -13,9 +13,9 @@ block content
                             h3.uk-margin-remove-bottom #{announce.title}
                         span.uk-text-meta #{announce.updated_at}
                         if (announce.blurb)
-                            p #{announce.blurb}
+                            p !{announce.blurb}
                         else
-                            p #{announce.body}
+                            p !{announce.body}
                         a(href="/announcements/" + announce.id ) Read More
                         hr
 

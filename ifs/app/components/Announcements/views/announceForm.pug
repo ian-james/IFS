@@ -8,18 +8,19 @@ block content
                 div.uk-margin
                     label.uk-form-label Title
                     .uk-form-controls
-                        input(ng-model="title" text='#{announce.title}').uk-input
+                        input(ng-model="title" text='#{ announce.title }').uk-input
                 div.uk-margin
                     label.uk-form-label Announcement Text
                     .uk-form-controls
-                        textarea(rows=5 ng-model="body").uk-textarea
-                            if announce
-                                #{announce.body} 
+                        summernote(ng-model="body" height="300")
                 div.uk-margin
                     label.uk-form-label Expiry date
                     .uk-form-controls
                         input(ng-model="expiry" id="expiry" type="date" )
                 div.uk-margin
                     button(ng-click="handleSubmit()").uk-button.uk-button-primary Create Announcement
-    script(src="../../components/Announcements/views/scripts/createCtrl.js")
-    
+    script(src="/announce/createCtrl.js")
+    script(src="/snote/angular-summernote.min.js")
+    link(href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet")
+    script(src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js")
+    script(src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js")

@@ -1,3 +1,4 @@
+app.requires = ['summernote'];
 app.controller('announceCreate', function($scope, $http) {
   $scope.title;
   $scope.body;
