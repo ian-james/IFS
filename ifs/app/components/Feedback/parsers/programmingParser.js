@@ -13,6 +13,7 @@ var wordTok = new natural.WordTokenizer();
  */
 function FileInfo() {
     this.numLines = 0;
+    this.charCount = [];
     this.isSet = function() {
         return this.numLines != 0;
     }
@@ -106,6 +107,13 @@ function ProgrammingParser() {
                 return this.sentences[ position.lineNum -1];
         }
         return "";
+    };
+
+    // External Tool: assumes -1 for lineNum
+    this.getCharNumFromLineNumCharPos = function ( position ) {
+        if( position.lineNum-1 <0 )
+            return -1;
+        return this.fileInfo.charCount[ position.lineNum-1 ] + (position.charPos ? position.charPos : 0 );
     };
 
     /**
