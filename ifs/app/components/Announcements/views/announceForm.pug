@@ -9,10 +9,12 @@ block content
                     label.uk-form-label Title
                     .uk-form-controls
                         input(ng-model="title" text='#{ announce.title }').uk-input
+                    div(ng-if="!validTitle").uk-text-danger Title must not be empty
                 div.uk-margin
                     label.uk-form-label Announcement Text
                     .uk-form-controls
                         summernote(ng-model="body" height="300")
+                    div(ng-if="!validBody").uk-text-danger Body content must not be empty
                 div.uk-margin
                     label.uk-form-label Expiry date
                     .uk-form-controls

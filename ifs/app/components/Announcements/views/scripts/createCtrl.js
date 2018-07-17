@@ -1,9 +1,11 @@
 app.requires = ['summernote'];
 app.controller('announceCreate', function($scope, $http) {
-  $scope.title;
-  $scope.body;
+  $scope.title = '';
+  $scope.body = '';
   $scope.expiry = new Date();
   $scope.expiryDayMinimum = 14; // By default, announcements will expire in 14 days
+  $scope.validTitle = true;
+  $scope.validBody = true;
 
   $scope.buildFormData = function () {
     return {
@@ -14,9 +16,11 @@ app.controller('announceCreate', function($scope, $http) {
   };
 
   $scope.handleSubmit = function() {
-    /* TODO: Validate */
     const formData = $scope.buildFormData();
-    $.post('/announcements/create', formData)
+    $scope.validTitle = ($scope.title.length == 0) ? false : true;
+    $scope.validBody = ($scope.body.length == 0) ? false : true;
+    if ($scope.validTitle && $scope.validBody) {
+      $.post('/announcements/create', formData)
       .done ((results) => {
         const id = results.id;
         window.location.href = `/announcements/${id}`;
@@ -24,6 +28,7 @@ app.controller('announceCreate', function($scope, $http) {
       .fail((res) => {
         
       });
+    }
   };
 
   $scope.init = function() {
