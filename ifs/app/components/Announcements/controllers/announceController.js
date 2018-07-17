@@ -16,6 +16,7 @@ const createAnnounce = async (req, res) => {
   const title = req.body.title;
   const body = req.body.body;
   let expiryDate = req.body.expiryDate;
+  expiryDate = moment(expiryDate).format('YYYY-MM-DD'); // for mysql
 
   const announce = await Announcement.query()
     .insert ({
