@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
       t.increments('id').primary();
       t.string('title', 100).notNull();
       t.text('body').notNull();
-      t.dateTime('expiryDate').defaultTo(null);
+      t.date('expiryDate').defaultTo(null);
       t.integer('classId').unsigned().references('id').inTable('class').onDelete('CASCADE');
       t.timestamps(true, true);
     }),
