@@ -35,7 +35,6 @@
     "angular-file-upload": "^2.4.1",
     "angular-sanitize": "^1.6.1",
     "angular-summernote": "^0.8.1",
-    "angular-trix": "^1.0.2",
     "angular-ui-bootstrap": "^2.4.0",
     "async": "^2.1.4",
     "bcrypt-nodejs": "0.0.3",
