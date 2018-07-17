@@ -101,7 +101,7 @@ app.use( passport.session() );
 
 var server = http.Server(app);
 var io = require('socket.io')(server,{'transports':['polling', 'websocket'], pingInterval:25000,pingTimeout:60000});
-global.ioGlob = io; //Controller issues TOFIX: Kevin
+global.ioGlob = io;
 var passportSocketIO = require('passport.socketio');
 
 function onAuthorizeSuccess(data, accept){
@@ -137,6 +137,11 @@ require("./serverSocketIO.js")(app,io);
 
 // Add Developer Routes
 require("./addRoutes.js")(app, io);
+
+// Setup objection to use Knex
+const { Model } = require('objection');
+const { knex } = require('./database');
+Model.knex(knex);
 
 // Error handling in common format (err,req,res,next)
 var errorHandler = require('errorhandler');

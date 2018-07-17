@@ -58,4 +58,7 @@ module.exports = {
     'feedback_rating_table':            'feedback_rating',
     'feedback_input_table':             'feedback_input',
     'ifs_tips_table':                   'ifs_tips',
+    
+    // Announcements
+    'announcements_table':              'announcements'
 };
