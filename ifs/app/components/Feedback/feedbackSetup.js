@@ -9,6 +9,8 @@ var Logger = require( __configs + "loggingConfig");
 var Helpers = require( __components+ "FileUpload/fileUploadHelpers");
 
 var FileParser = require('./feedbackParser').FileParser;
+var ProgrammingParser = require('./parsers/programmingParser').ProgrammingParser;
+var WritingParser = require('./parsers/writingParser').WritingParser;
 
 /* This function is used when given a directory as the file path.
    It assumes this is a programming project folder and will create File Objects
@@ -17,7 +19,7 @@ function loadFiles( directory, options ) {
     if( fs.lstatSync(directory).isDirectory() ) {
 
         // TODO: How should this be handled
-        options = options || {'groups': ["c", "cpp", "cc", "cxx", "h", "hpp", "py"] };
+        options = options || {'groups': ["c", "cpp", "cc", "cxx", "h", "hpp"] };
 
         var files = Helpers.findFilesSync(directory);
         var fileGroups = _.groupBy(files, Helpers.getExt);
@@ -37,7 +39,6 @@ function loadFiles( directory, options ) {
 /* This function loads the selected tool, loads file content and requests highlight */
 function readFeedbackFormat( feedback , options) {
 
-
     try {
         var feedbackFormat = JSON.parse(feedback);
 
@@ -50,6 +51,7 @@ function readFeedbackFormat( feedback , options) {
             if( r.length > 0 ) {
                 files = _.sortBy(r, ['originalname']);
             }
+
         }
         else
             files = _.sortBy(files, ['filename']);
@@ -69,7 +71,6 @@ function readFeedbackFormat( feedback , options) {
         for( var i = 0; i < files.length; i++ )
         {
             var file = files[i];
-
             file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
 
             //TODO: Positional setup information should be moved to the feedback filtering and organization
@@ -105,10 +106,6 @@ function readFiles( filename , options) {
 }
 
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
-    var fileParser = new FileParser();
-    fileParser.setupContent( file.content );
-    fileParser.tokenize();
-
     // Setup positionsal information for all
     for( var i = 0; i < feedbackItems.length; i++ ) {
         var feedbackItem = feedbackItems[i];
@@ -121,27 +118,42 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 
             if (!feedbackItem.target) {
                 // Try to fill out positional information first.
-                if( !feedbackItem.charNum ) {
-                    feedbackItem.charNum = fileParser.getCharNumFromLineNumCharPos(feedbackItem);
-                }
 
                 // Without a target you have to use the line or a range
                 if( !feedbackItem.target ) {
                     // if we are marking up a programming file, then only get the line
                     if (feedbackItem.runType == "programming") {
-                        feedbackItem.target = fileParser.getLine(feedbackItem, false);
+                        var programmingParser = new ProgrammingParser();
+                        programmingParser.setupContent(file.content);
+                        programmingParser.tokenize();
+                        // Try to fill out positional information first.
+                        if( !feedbackItem.charNum ) {
+                            feedbackItem.charNum = programmingParser.getCharNumFromLineNumCharPos(feedbackItem);
+                        }
+                        feedbackItem.target = programmingParser.getLine(feedbackItem, false);
                     }
-                    else if( feedbackItem.hlBeginChar ) {
+                    else{
+                        var writingParser = new WritingParser();
+                        writingParser.setupContent(file.content);
+                        writingParser.tokenize();
 
-                        // Section to highlight
-                        feedbackItem.target = fileParser.getRange( feedbackItem );
-                    }
-                    else if( feedbackItem.charPos ) {
-                        // You can get a target better than the line.
-                        feedbackItem.target = fileParser.getLineSection( feedbackItem );
-                    }
-                    else {
-                        feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                        // Try to fill out positional information first.
+                        if( !feedbackItem.charNum ) {
+                            feedbackItem.charNum = writingParser.getCharNumFromLineNumCharPos(feedbackItem);
+                        }
+
+                        if( feedbackItem.hlBeginChar ) {
+                            // Section to highlight
+                            feedbackItem.target = fileParser.getRange( feedbackItem );
+                        }
+                        else if( feedbackItem.charPos ) {
+                            // You can get a target better than the line.
+                            feedbackItem.target = fileParser.getLineSection( feedbackItem );
+                        }
+                        else {
+                            feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                        }
+
                     }
                 }
             }
