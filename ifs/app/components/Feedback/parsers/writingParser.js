@@ -19,31 +19,54 @@
     NOTE: THis file should be separted remove functionality from Position "Interface".
 */
 
+/**
+ * Writing Parser
+ * Pretty much a 1:1 version of the  fileParser.
+ * Just cleaned up
+ */
+
 const fs = require('fs');
 var natural = require('natural');
 var sentTok = new natural.SentenceTokenizer();
 var wordTok = new natural.WordTokenizer();
 
+/**
+ * A Position Class.
+ */
 function Position() {
-    this.charNum = 0; //Global
-    this.wordNum = 0; //Global
-    this.lineNum = 0; //Global
-    this.charPos = 0; //Relative Character position per line.
-    this.wordPos = 0; // Relative
-}
+    // Globals
+    this.charNum = 0;
+    this.wordNum = 0;
+    this.lineNum = 0;
 
+    // Relative
+    this.charPos = 0; 
+    this.wordPos = 0;
+}
+/**
+ * A FileInfo Class.
+ */
 function FileInfo() {
     this.numLines = 0;
     this.charCount = [];
     this.wordCount = [];
     this.totalWords = 0;
 
+    /**
+     * isSet
+     * Description: Checks to make sure the number of lines isnt 0.
+     * @return {boolean}
+     */
     this.isSet = function() {
         return this.numLines != 0;
     };
 }
 
-function FileParser() {
+/**
+ * FileParser
+ * A simple WritingParser Class.
+ */
+function WritingParser() {
     this.senTokenizer = sentTok;
     this.wordTokenizer =  wordTok;
     this.file = "";
@@ -53,24 +76,48 @@ function FileParser() {
     this.location = new Position();
     this.fileInfo = new FileInfo();
 
+    /**
+     * setup
+     * Sets up the file
+     * @param {string} filename 
+     */
     this.setup = function(filename) {
         this.file = filename;
     };
 
+    /**
+     * setupContent
+     * Sets up the content
+     * @param {string} content 
+     */
     this.setupContent = function( content ) {
         this.content = content;
     }
 
+    /**
+     * isReady
+     * Checks to make sure the file and content are empty.
+     * @return {boolean}
+     */
     this.isReady = function() {
         return this.file != "" && this.content != "";
     };
 
+    /**
+     * readFile
+     * Reads the file and sets content equal to it
+     * @return {boolean}
+     */
     this.readFile = function ( ) {
         if( this.file )
             this.content = fs.readFileSync( this.file, 'utf-8');
         return this.content == "";
     };
 
+    /**
+     * tokenize
+     * Tokenizes the string
+     */
     this.tokenize = function() {
         if( this.content == "")
             this.readFile();
@@ -104,16 +151,36 @@ function FileParser() {
     this.hasPos = function(obj) { return obj.hasOwnProperty('position'); };
     this.hasTarget= function(obj) { return obj.hasOwnProperty('target'); };
 
+
+    /**
+     * atSameLineWord
+     * Checks to make sure two objects are at the same word number.
+     * @param {object} a 
+     * @param {object} b 
+     * @return {boolean}
+     */
     this.atSameLineWord = function(a,b) {
         return a.wordNum == b.wordNum && a.lineNum == b.lineNum;
     }
 
+    /**
+     * validCharPos
+     * Checks to make sure a character is within the scope 
+     * @param {object} position 
+     * @return {boolean}
+     */
     this.validCharPos = function ( position ) {
         if( this.hasCh(position) )
             return position.charNum >= 0 && position.charNum < this.fileInfo.charCount[ this.fileInfo.numLines ];
         return false;
     };
 
+    /**
+     * validLineNum
+     * Checks to make sure that a line number is within the scope.
+     * @param {object} position 
+     * @return {booelan}
+     */
     this.validLineNum = function (position) {
         if( this.hasLine(position) ) {
             return  position.lineNum <= this.fileInfo.numLines && position.lineNum >= 0;
@@ -121,6 +188,12 @@ function FileParser() {
         return false;
     };
 
+    /**
+     * validWordNum
+     * Checks to make sure that a word is within the scope.
+     * @param {object} position 
+     * @return {boolean}
+     */
     this.validWordNum = function (position) {
         if( this.hasWord(position)  && this.validLineNum( position ) ) {
                 return position.wordNum >=0  && position.wordNum <= this.fileInfo.totalWords;
@@ -128,18 +201,36 @@ function FileParser() {
         return false;
     };
 
-    // Straight forward Get
+    /**
+     * getCharNum
+     * Fetches the char num of a given position.
+     * @param {object} position 
+     * @return {integer}
+     */
     this.getCharNum = function( position ) {
         return position.charNum;
     };
 
     // External Tool: assumes -1 for lineNum
+    /**
+     * getCharNumFromLineNumCharPos
+     * Gets the char number from the line number and character position.
+     * @param {object} position 
+     * @return {integer}
+     */
     this.getCharNumFromLineNumCharPos = function ( position ) {
         if( position.lineNum-1 <0 )
             return -1;
         return this.fileInfo.charCount[ position.lineNum-1 ] + (position.charPos ? position.charPos : 0 );
     };
 
+    /**
+     * getLine
+     * Returns the line given a position.
+     * @param {object} position 
+     * @param {boolean} is0Based 
+     * @return {string}
+     */
     this.getLine = function( position, is0Based = true ) {
         if( this.validLineNum(position ) ) {
                 if(position.lineNum - 1 < 0)
@@ -150,6 +241,13 @@ function FileParser() {
         return "";
     };
 
+    /**
+     * getLineI
+     * Returns a line given a number.
+     * @param {integer} i 
+     * @param {boolean} is0Based
+     * @return {string}
+     */
     this.getLineI = function( i, is0Based = true ) {
         if( i < this.fileInfo.numLines && i >= 0 ) {
             var ni = is0Based ? i-1 : i;
@@ -171,6 +269,14 @@ function FileParser() {
         return line;
     };
 
+    /**
+     * getLineSectionEnd
+     * Gets the end of a line section.
+     * @param {integer} line 
+     * @param {integer} start 
+     * @param {integer} end 
+     * @return {string}
+     */
     this.getLineSectionEnd = function( line, start, end = -1 ) {
         var s = Math.min(start,line.length);
         if( end >= 0 ) {
@@ -179,6 +285,12 @@ function FileParser() {
         return line.substr( s );
     }
 
+    /**
+     * getRange
+     * Gets a range given a position.
+     * @param {object} position 
+     * @return {string}
+     */
     this.getRange = function( position ) {
         if( position.hasOwnProperty('hlBeginChar') && position.hasOwnProperty('hlEndChar') &&
             position.hasOwnProperty('hlBeginLine') && position.hasOwnProperty('hlEndLine') ) {
@@ -215,4 +327,4 @@ function FileParser() {
     }
 }
 
-module.exports.FileParser = FileParser;
+module.exports.WritingParser = WritingParser;

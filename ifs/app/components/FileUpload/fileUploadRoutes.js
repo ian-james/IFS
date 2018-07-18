@@ -278,6 +278,8 @@ module.exports = function (app, iosocket) {
 
                 res.writeHead(202, { 'Content-Type': 'application/json' });
 
+                
+
                 // Add the jobs to the queue, results are return in object passed:[], failed:[]
                 manager.makeJob(tools).then( function( jobResults ) {
                     console.log("testing");
@@ -304,6 +306,7 @@ module.exports = function (app, iosocket) {
                     Logger.log("Manager's progress is ", prog.progress, "%");
                 })
                 .catch( function(err){
+                    console.log(err);
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "toolError", {"msg":e}) );
                     saveUploadErrorFiles( req.user.id, user.sessionId, uploadedFiles[0].destination, function(d,e) {
                         Logger.log("Saving Tool Error upload files for user:", req.user.id);
@@ -312,6 +315,7 @@ module.exports = function (app, iosocket) {
                         error: e
                     });
                 });
+
 
                 manager.runJob();
             });

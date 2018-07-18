@@ -103,7 +103,6 @@ function ProgrammingParser() {
         if( this.validLineNum(position ) ) {
                 if(position.lineNum - 1 < 0)
                     return "";
-
                 return this.sentences[ position.lineNum -1];
         }
         return "";
