@@ -11,8 +11,8 @@ module.exports = {
     // modify the database specified below.
     'connection': {
         'host' :                        'localhost',
-        'user' :                        'root',
-        'password' :                    'cowscows',
+        'user' :                        'ifs-admin',
+        'password' :                    'testing123',
         'connectionLimit':              500
     },
     // database name

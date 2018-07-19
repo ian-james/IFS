@@ -36,7 +36,7 @@ module.exports = function (app, iosocket) {
         optionName = _.replace(optionName, toolPrefix, "");
         var r = _.find(tools, _.matchesProperty('displayName', optionName));
         if (r)
-          r['prefValue'] = toolPreferences[i].toolValue == "true";
+          r['prefValue'] = toolPreferences[i].toolValue == "false";
       } else if (_.startsWith(optionName, optionPrefix)) {
         var r = undefined;
         for (var y = 0; y < tools.length && !r; y++) {
