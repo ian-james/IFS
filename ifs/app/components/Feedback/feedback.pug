@@ -63,7 +63,7 @@ block content
                     each file, findex in files
                         uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
                             div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
-                                if toolType == 'programming'
+                                if runType == 'programming'
                                     pre(class="hljs")
                                         code !{file.markedUp} 
                                 else

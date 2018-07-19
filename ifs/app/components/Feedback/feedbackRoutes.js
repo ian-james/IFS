@@ -28,7 +28,6 @@ module.exports = function( app ) {
      * @return {[type]}     [description]
      */
     function  showFeedback( req,res, opt, callback ) {
-
         if(!req.session.uploadFilesFile) {
             req.flash('errorMessage', "Feedback is not currently available, please upload again.");
             res.location("/tool");
@@ -48,7 +47,8 @@ module.exports = function( app ) {
                 var filesContent = fs.readFile( req.session.uploadFilesFile, 'utf-8', (err,filesContent) => {
                     var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +
-                    '"feedback":' + JSON.stringify(data) + '\n'
+                    '"feedback":' + JSON.stringify(data) + ',\n' +
+                    '"runType": ' + JSON.stringify(req.session.toolSelect) + '\n'
                     +"}\n";
 
                     var page = getDefaultPage();
@@ -66,6 +66,7 @@ module.exports = function( app ) {
 
                             var visualTools = Feedback.setupVisualFeedback(visualTools);
                             results = _.assign(result,visualTools);
+                            _.extend(results, {'runType': req.session.toolSelect.toLowerCase()})
                             callback(results);
                         });
                     });
@@ -84,16 +85,7 @@ module.exports = function( app ) {
     app.get('/feedback', function(req, res) {
         var opt = {};
 
-        showFeedback(req,res,opt, function(results) {
-
-           // console.log("results: " + results.files[0].markedUp);
-
-            //var r = high.highlightAuto(he.decode(results.files[0].content));
-           // results.files[0].content = r.value;
-            //results.files[0].markedUp = r.value;
-           // console.log(JSON.stringify(results.files[0].markedUp));
-           //console.log(JSON.stringify(results));
-           
+        showFeedback(req,res,opt, function(results) {      
             res.render( viewPath + "feedback", results );
         });
     });

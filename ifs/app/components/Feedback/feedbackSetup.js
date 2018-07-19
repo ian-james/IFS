@@ -38,16 +38,11 @@ function loadFiles( directory, options ) {
 /* This function loads the selected tool, loads file content and requests highlight */
 function readFeedbackFormat( feedback , options) {
 
-
     try {
         var feedbackFormat = JSON.parse(feedback);
-
         var feedbackItems = feedbackFormat.feedback;
-
-
-
+        var toolType = feedbackFormat.runType;
         var files = feedbackFormat.files;
-
 
         // setup Project and organize.
         if(files && files.length > 0 && fs.lstatSync(files[0].filename).isDirectory()) {
@@ -62,8 +57,6 @@ function readFeedbackFormat( feedback , options) {
         // A Unique list of tools used for UI
         var toolsUsed = _.uniq(_.map(feedbackItems,'toolName'));
 
-        
-
         // Suggestions are stringified json, convert back to array.
         for(var i = 0; i < feedbackItems.length; i++){
             feedbackItems[i]['suggestions'] = JSON.parse(feedbackItems[i]['suggestions']);
@@ -72,10 +65,8 @@ function readFeedbackFormat( feedback , options) {
         // Tool should always be selected unless it's defaulted too.
         var toolIsSelected = ( options && options['tool'] || toolsUsed.length >= 1);
         var selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
+       
         // For each file, read in the content and mark it up for display.
-        // 
-        // 
-        
         for( var i = 0; i < files.length; i++ )
         {
             var file = files[i];
@@ -85,7 +76,6 @@ function readFeedbackFormat( feedback , options) {
             //TODO: Positional setup information should be moved to the feedback filtering and organization
             // This decopules the task of highlights and positioning.
             if( toolIsSelected ) {
-
   
                 if (feedbackItems[0].runType == "writing")
                 {
@@ -106,7 +96,10 @@ function readFeedbackFormat( feedback , options) {
             }
             else{
                 file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-                file.markedUp = file.content;
+                if (toolType.toLowerCase() != "writing")
+                    file.markedUp = high.highlightAuto(he.decode(file.content)).value;
+                else
+                    file.markedUp = file.content;
             }
         }
 
