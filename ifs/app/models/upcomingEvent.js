@@ -5,19 +5,21 @@ class UpcomingEvent extends Model {
   static get tableName() {
     return 'upcoming_event';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { Course } = require('./course');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      class: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Course,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'upcoming_event.classId',
+          to: 'class.id'
         },
       },
     };
-  };*/
+  };
 };
 
 module.exports = UpcomingEvent;

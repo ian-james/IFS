@@ -5,19 +5,20 @@ class UserRegistration extends Model {
   static get tableName() {
     return 'user_registration';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { User } = require('./user');
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'user_registration.userId',
+          to: 'user.id'
         },
       },
     };
-  };*/
+  };
 };
 
 module.exports = UserRegistration;

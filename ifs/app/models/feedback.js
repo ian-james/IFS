@@ -5,19 +5,57 @@ class Feedback extends Model {
   static get tableName() {
     return 'feedback';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { User } = require('./user');
+    const { Submission } = require('./submission');
+    const { FeedbackInput } = require('./feedbackInput');
+    const { FeedbackInteraction } = require('./feedbackInteraction');
+    const { FeedbackRating } = require('./feedbackRating');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'feedback.userId',
+          to: 'users.id'
         },
       },
+      submission: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Submission,
+        join: {
+          from: 'feedback.submissionId',
+          to: 'submission.id'
+        },
+      },
+      inputs: {
+        relation: Model.HasManyRelation,
+        modelClass: FeedbackInput,
+        join: {
+          from: 'feedback.id',
+          to: 'feedback_input.feedbackId'
+        },
+      },
+      interactions: {
+        relation: Model.HasManyRelation,
+        modelClass: FeedbackInteraction,
+        join: {
+          from: 'feedback.id',
+          to: 'feedback_interactions.feedbackId'
+        }
+      },
+      ratings: {
+        relation: Model.HasManyRelation,
+        modelClass: FeedbackRating,
+        join: {
+          from: 'feedback.id',
+          to: 'feedback_ratings.feedbackId'
+        } 
+      }
     };
-  };*/
+  };
 };
 
 module.exports = Feedback;

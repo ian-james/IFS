@@ -5,19 +5,30 @@ class SurveyPreference extends Model {
   static get tableName() {
     return 'survey_preferences';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { Survey } = require('./survey');
+    const { User } = require('./user');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      survey: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Survey,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'survey_preferences.surveyId',
+          to: 'survey.id'
         },
       },
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: 'survey_preferences.userId',
+          to: 'user.id'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = SurveyPreference;

@@ -5,19 +5,21 @@ class Questions extends Model {
   static get tableName() {
     return 'questions';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { Survey } = require('./survey');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      survey: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Survey,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'questions.surveyId',
+          to: 'survey.id'
         },
       },
     };
-  };*/
+  };
 };
 
 module.exports = Questions;

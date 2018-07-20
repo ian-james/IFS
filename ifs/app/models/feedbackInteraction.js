@@ -1,23 +1,43 @@
 const { Model } = require('objection');
 
-class FeedbackInteractions extends Model {
+class FeedbackInteraction extends Model {
   /* Name getter */
   static get tableName() {
     return 'feedback_interactions';
   }
-  /* Relationships 
+  /* Relationships */ 
   static get relationMappings() {
+    const { User } = require('./user');
+    const { Submission } = require('./submission');
+    const { Feedback } = require('./feedback');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'feedback_interactions.userId',
+          to: 'user.id'
         },
       },
-    };
-  };*/
-};
+      submission: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Submission,
+        join: {
+          from: 'feedback_interactions.submissionId',
+          to: 'submission.id'
+        },
+      },
+      feedback: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Feedback,
+        join: {
+          from: 'feedback_interactions.feedbackId',
+          to: 'feedback.id'
+        },
+      },
+    }
+  }
+}
 
-module.exports = FeedbackInteractions;
+module.exports = FeedbackInteraction;

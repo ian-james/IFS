@@ -11,7 +11,7 @@ module.exports = {
     // modify the database specified below.
     //
     // database must match dbConnectionConfig
-    'database':                         'IFS',
+    'database':                         'IFS2',
 
     // databse tables
     // All users

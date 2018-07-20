@@ -5,19 +5,39 @@ class CourseSkill extends Model {
   static get tableName() {
     return 'class_skill';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { Course } = require('./course');
+    const { Assignment } = require('./assignment');
+    const { StudentSkill } = require('./studentSkill');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      course: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Course,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'class_skill.classId',
+          to: 'class.id'
         },
       },
+      assignment: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Assignment,
+        join: {
+          from: 'class_skill.assignmentId',
+          to: 'assignment.id'
+        },
+      },
+      studentsWithSkill: {
+        relation: Model.HasManyRelation,
+        modelClass: StudentSkill,
+        join: {
+          from: 'class_skill.id',
+          to: 'student_skill.classSkillId'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = CourseSkill;

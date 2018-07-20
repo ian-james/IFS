@@ -8,15 +8,25 @@ class Assignment extends Model {
   /* Relationships */
   static get relationMappings() {
     const { AssignmentTask } = require ('./assigmentTask');
+    const { Course } = require('./course');  
     return {
-      exposures: {
+      tasks: {
         relation: Model.HasManyRelation,
         modelClass: AssignmentTask,
         join: {
           from: 'assignment.id',
-          to: 'assignmentTask.assignmentId'
+          to: 'assignment_task.assignmentId'
         },
       },
+      class: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Course,
+        join: {
+          from: 'assignment.classId',
+          to: 'class.id'
+        },
+      },
+
     };
   };
 };

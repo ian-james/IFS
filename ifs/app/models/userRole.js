@@ -5,19 +5,30 @@ class UserRole extends Model {
   static get tableName() {
     return 'user_role';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { User } = require('./user');
+    const { Role } = require('./role');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'user_role.userId',
+          to: 'user.id'
         },
       },
+      role: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Role,
+        join: {
+          from: 'user_role.roleId',
+          to: 'role.id'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = UserRole;

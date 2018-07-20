@@ -5,19 +5,21 @@ class Verify extends Model {
   static get tableName() {
     return 'verify';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { User } = require('./user');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'verify.userId',
+          to: 'user.id'
         },
       },
     };
-  };*/
+  };
 };
 
 module.exports = Verify;

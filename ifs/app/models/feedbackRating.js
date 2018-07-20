@@ -5,19 +5,30 @@ class FeedbackRating extends Model {
   static get tableName() {
     return 'feedback_rating';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { User } = require('./user');
+    const { Feedback } = require('./feedback');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'feedback_ratings.userId',
+          to: 'user.id'
         },
       },
+      feedback: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Feedback,
+        join: {
+          from: 'feedback_ratings.feedbackId',
+          to: 'feedback.id'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = FeedbackRating;

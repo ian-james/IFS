@@ -5,19 +5,30 @@ class StudentSkill extends Model {
   static get tableName() {
     return 'student_skill';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { Student } = require('./student');
+    const { CourseSkill } = require('./courseSkill');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      student: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Student,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'student_skill.studentId',
+          to: 'student.id'
         },
       },
+      classSkill: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: CourseSkill,
+        join: {
+          from: 'student_skill.classSkillId',
+          to: 'class_skill.id'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = StudentSkill;

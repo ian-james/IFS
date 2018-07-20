@@ -5,19 +5,30 @@ class FeedbackStats extends Model {
   static get tableName() {
     return 'feedback_stats';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { User } = require('./user');
+    const { Submission } = require('./submission');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'feedback_stats.userId',
+          to: 'user.id'
         },
       },
+      submission: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Submission,
+        join: {
+          from: 'feedback_stats.submissionId',
+          to: 'submission.id'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = FeedbackStats;

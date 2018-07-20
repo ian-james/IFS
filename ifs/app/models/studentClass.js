@@ -5,19 +5,30 @@ class StudentClass extends Model {
   static get tableName() {
     return 'student_class';
   }
-  /* Relationships 
+  /* Relationships */ 
   static get relationMappings() {
+    const { Student } = require('./student');
+    const { Course } = require('./course');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      student: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Student,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'student_class.studentId',
+          to: 'student.id'
         },
       },
+      class: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Course,
+        join: {
+          from: 'student_class.classId',
+          to: 'class.id'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = StudentClass;

@@ -60,6 +60,7 @@ $(function() {
         // Create an AJAX request with all the upload form data
         // available. Upon completion feedback button is available 
         // to progress or alert with error message.
+    
         $.ajax({ 
             type: "POST",
             url:'/tool_upload',

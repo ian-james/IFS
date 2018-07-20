@@ -5,19 +5,29 @@ class FeedbackInput extends Model {
   static get tableName() {
     return 'feedback_input';
   }
-  /* Relationships 
+  /* Relationships */
   static get relationMappings() {
+    const { User } = require('./user');
+    const { Feedback } = require('./feedback');
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      user: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'feedback_input.userId',
+          to: 'user.id'
         },
       },
+      feedback: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Feedback,
+        join: {
+          from: 'feedback_input.feedbackId',
+          to: 'feedback.id'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = FeedbackInput;

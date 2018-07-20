@@ -5,6 +5,20 @@ class Roles extends Model {
   static get tableName() {
     return 'roles';
   }
+  static get relationMappings() {
+    const { UserRole } = require('./user');
+
+    return {
+      users: {
+        relation: Model.HasManyRelation,
+        modelClass: UserRole,
+        join: {
+          from: 'role.id',
+          to: 'user_role.roleId'
+        },
+      },
+    }
+  }
 };
 
 module.exports = Roles;

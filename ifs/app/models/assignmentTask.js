@@ -5,19 +5,30 @@ class AssignmentTask extends Model {
   static get tableName() {
     return 'assignment_task';
   }
-  /* Relationships 
+
   static get relationMappings() {
+    const { Assignment } = require('./assignment');
+    const { StudentAsssignmentTask } = require('./studentAssignmentTask');
+
     return {
-      exposures: {
-        relation: Model.HasManyRelation,
-        modelClass: AnnouncementExposure,
+      assignment: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Assignment,
         join: {
-          from: 'announcements.id',
-          to: 'announcement_exposure.announcementId'
+          from: 'assignment_task.assignmentId',
+          to: 'assignment.id'
         },
       },
+      studentTasks: {
+        relation: Model.HasManyRelation,
+        modelClass: StudentAsssignmentTask,
+        join: {
+          from: 'assignment_task.id',
+          to: 'student_assignment_task.assignmentTaskId'
+        }
+      }
     };
-  };*/
+  };
 };
 
 module.exports = AssignmentTask;
