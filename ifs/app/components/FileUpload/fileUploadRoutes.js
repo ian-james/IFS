@@ -206,6 +206,11 @@ module.exports = function (app, iosocket) {
         });
     }
 
+    // app.post('/tool_upload', function(req, res, next) {
+    //     console.log('got here');
+    //     res.send(JSON.stringify({"test": "weeeee"}));
+    // });
+
     app.post('/tool_upload', upload.any(), function(req,res,next) {
 
         // saves the tools that were selected
@@ -213,8 +218,6 @@ module.exports = function (app, iosocket) {
         saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
 
         submissionEvent.addSubmission( user, function(subErr, succSubmission) {
-
-
 
             //obtain last submission from the requesting user
             var submissionRequest = submissionEvent.getLastSubmissionId(user.userId, user.sessoinId);
@@ -242,9 +245,10 @@ module.exports = function (app, iosocket) {
                         });
                     }
                     //req.flash('errorMessage', err );
-                    res.status(500).send(JSON.stringify({"msg":err}));
+                    res.status(500).send(JSON.stringify({"msg":"fails at uploadFiles"}));
                     return;
                 }
+
 
                 //get the tool selection and add target files
                 var userSelection = req.body;
@@ -263,15 +267,11 @@ module.exports = function (app, iosocket) {
                     return;
                 }
 
-
-
                 //Upload files names and job requests, jobRequests remains to ease testing and debugging.
                 var requestFile = Helpers.writeResults( tools, { 'filepath': uploadedFiles[0].filename, 'file': 'jobRequests.json'});
                 var filesFile = Helpers.writeResults( uploadedFiles, { 'filepath': uploadedFiles[0].filename, 'file': 'fileUploads.json'});
                 req.session.jobRequestFile = requestFile;
                 req.session.uploadFilesFile = filesFile;
-
-
 
                 //store tool used and command run into user_interaction table
                 emitJobRequests(req,iosocket,tools);
@@ -309,11 +309,13 @@ module.exports = function (app, iosocket) {
                         Logger.log("Saving Tool Error upload files for user:", req.user.id);
                     });
                     res.status(500).send({
-                        error: e
+                        error: err
                     });
                 });
 
+
                 manager.runJob();
+
             });
         });
     })
