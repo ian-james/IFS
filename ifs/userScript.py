@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import MySQLdb, sys
 
+
 class Database:
 
 	host = 'localhost'

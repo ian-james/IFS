@@ -14,7 +14,7 @@ class MyTaskSet(TaskSet):
 
 	def login(self):
 		response = self.client.post("/login", data={"username": self.email, "password":self.password})
-		logging.info('Login with %s email and %s password', self.email, self.password)
+		# logging.info('Login with %s email and %s password', self.email, self.password)
 
 	@task(2)
 	def toolUpload(self):
@@ -38,9 +38,7 @@ class MyTaskSet(TaskSet):
 			 'time': '1531856360202',
 			 'fileList': '["a4.c"]' })
 
-			print("currUser is " + self.email)
-
-			if test.status_code == 500:
+			if test.status_code == 104:
 				print(test.text)
 
 

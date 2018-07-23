@@ -499,3 +499,4 @@ USERS = [("test5@uoguelph.ca ", "testing123"),
 ("test503@uoguelph.ca ", "testing123"),
 ("test504@uoguelph.ca ", "testing123")
 ]
+
