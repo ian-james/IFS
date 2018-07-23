@@ -11,6 +11,6 @@ ifs/users/
 ifs/config/databaseConfig.js
 ifs/package-lock.json
 ifs/config/dbConnectionConfig.js
-
+package-lock.json
 # vim swap files
 *.sw[a-p]
