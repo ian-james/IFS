@@ -60,11 +60,16 @@ $(function() {
         // Create an AJAX request with all the upload form data
         // available. Upon completion feedback button is available 
         // to progress or alert with error message.
+        var date = new Date();
+        date = Math.floor(date / 100);
         $.ajax({ 
             type: "POST",
             url:'/tool_upload',
             multiple: true,
             data: new FormData($('#uploadForm')[0]),
+            headers: {
+                'token': date
+            },
             processData: false,
             contentType: false,
             xhr: function() {
