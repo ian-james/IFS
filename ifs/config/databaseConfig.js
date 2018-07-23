@@ -60,5 +60,6 @@ module.exports = {
     'ifs_tips_table':                   'ifs_tips',
     
     // Announcements
-    'announcements_table':              'announcements'
+    'announcements_table':              'announcements',
+    'announcement_exposure_table':       'announcemnt_exposure'
 };
