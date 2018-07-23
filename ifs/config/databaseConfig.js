@@ -61,5 +61,5 @@ module.exports = {
     
     // Announcements
     'announcements_table':              'announcements',
-    'announcement_exposure_table':       'announcemnt_exposure'
+    'announcement_exposure_table':       'announcement_exposure'
 };

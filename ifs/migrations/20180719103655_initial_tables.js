@@ -18,7 +18,7 @@ exports.up = function(knex, Promise) {
     .createTable(dbcfg.feedback_table, (t) => {
       t.increments('id').primary()
       t.integer('userId').unsigned().references('id').inTable('users').notNull()
-      t.integer('sessionId').unsigned().notNull()
+      t.integer('sessionId').unsigned().notNull().defaultTo(0)
       t.integer('submissionId').unsigned().references('id').inTable('submission').notNull()
       t.text('toolName').notNull()
       t.text('filename').notNull()
@@ -247,5 +247,35 @@ exports.up = function(knex, Promise) {
 };
 
 exports.down = function(knex, Promise) {
-  
-};
+  return knex.schema
+    .dropTable('verify')
+    .dropTable('user_role')
+    .dropTable('user_registration')
+    .dropTable('user_interactions')
+    .dropTable('upcoming_event')
+    .dropTable('survey_result')
+    .dropTable('survey_preferences')
+    .dropTable('student_skill')
+    .dropTable('student_class')
+    .dropTable('student_assignment_task')
+    .dropTable('preferences')
+    .dropTable('questions')
+    .dropTable('survey')
+    .dropTable('login')
+    .dropTable('feedback_stats')
+    .dropTable('feedback_rating')
+    .dropTable('feedback_interactions')
+    .dropTable('feedback_input')
+    .dropTable('class_skill')
+    .dropTable('assignment_task')
+    .dropTable('assignment')
+    .dropTable('feedback')
+    .dropTable('submission')
+    .dropTable('student')
+    .dropTable('announcement_exposure')
+    .dropTable('announcements')
+    .dropTable('class')
+    .dropTable('ifs_tips')
+    .dropTable('roles')
+    .dropTable('users')
+}; 
