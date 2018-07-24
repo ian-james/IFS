@@ -1,0 +1,12 @@
+extends ../../../shared/views/pageLayout.pug
+block content
+    .uk-container.uk-container-small.uk-margin
+        a(href="/announcements") Back to Announcements
+        .uk-card.uk-card-default.uk-margin
+            div.uk-padding-small
+                if (!announcement)
+                    h2 Invalid announcement or announcement has expired
+                else
+                    h3.uk-margin-remove-bottom #{announcement.title}
+                    .uk-text-meta #{announcement.updated_at}
+                    div.uk-margin-top.uk-margin-bottom !{announcement.body}    

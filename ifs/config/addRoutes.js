@@ -67,4 +67,7 @@ module.exports = function (app, iosocket) {
 
     // Test features can be placed here.
     require(componentsPath + "/Test/testRoutes")(app);
+
+    // Announcement Routes 
+    require (componentsPath + '/Announcements/routes')(app,iosocket);
 }

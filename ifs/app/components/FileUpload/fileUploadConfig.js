@@ -83,13 +83,13 @@ var storage = multer.diskStorage({
         var dest = "./users";
 
         // Little Time Hack to keep all the submission files in the same output folder but also timebased.
-        var submissionTime = Date.now();
-        submissionTime = Math.floor( submissionTime / 100 );
+        var submissionTime = req.headers.token;
         var userID = req.user.id;
 
         var submissionFolder = path.join( dest,userID.toString() );
 
 				submissionFolder = path.join(submissionFolder, String(submissionTime));
+        
         fse.ensureDir(submissionFolder, function(err) {
             if(err) {
                 Logger.error("Unable to create or clean folder for submission");
