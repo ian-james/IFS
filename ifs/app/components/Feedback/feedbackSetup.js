@@ -2,6 +2,7 @@ var fs = require('fs');
 var _ = require('lodash');
 var he = require('he');
 var path = require('path');
+var high = require('highlight.js');
 
 var fbHighlighter = require('./feedbackHighlighter');
 var Logger = require( __configs + "loggingConfig");
@@ -41,8 +42,8 @@ function readFeedbackFormat( feedback , options) {
 
     try {
         var feedbackFormat = JSON.parse(feedback);
-
         var feedbackItems = feedbackFormat.feedback;
+        var toolType = feedbackFormat.runType;
         var files = feedbackFormat.files;
 
         // setup Project and organize.
@@ -67,20 +68,42 @@ function readFeedbackFormat( feedback , options) {
         // Tool should always be selected unless it's defaulted too.
         var toolIsSelected = ( options && options['tool'] || toolsUsed.length >= 1);
         var selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
+       
         // For each file, read in the content and mark it up for display.
         for( var i = 0; i < files.length; i++ )
         {
             var file = files[i];
-            file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+
+            //file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
 
             //TODO: Positional setup information should be moved to the feedback filtering and organization
             // This decopules the task of highlights and positioning.
             if( toolIsSelected ) {
-                setupFilePositionInformation(file, selectedTool,feedbackItems);
-                file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+  
+                if (feedbackItems[0].runType == "writing")
+                {
+                    // Normal highlighting scheme for writing file
+                    file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+                    setupFilePositionInformation(file, selectedTool,feedbackItems);
+                    file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+                }
+                else
+                {
+                    // Syntax highlighting for programming file
+                    file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+                    file.content= high.highlightAuto(he.decode(file.content)).value;
+                    setupFilePositionInformation(file, selectedTool,feedbackItems);
+                    file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+                }
+                
             }
-            else
-                file.markedUp = file.content;
+            else{
+                file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+                if (toolType.toLowerCase() != "writing")
+                    file.markedUp = high.highlightAuto(he.decode(file.content)).value;
+                else
+                    file.markedUp = file.content;
+            }
         }
 
         var result =  { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
@@ -99,6 +122,7 @@ function readFeedbackFormat( feedback , options) {
     return { "err": "Unable to process files, no feedback could be provided."};
 
 }
+
 
 function readFiles( filename , options) {
     var feedback = fs.readFileSync( filename, 'utf-8');
