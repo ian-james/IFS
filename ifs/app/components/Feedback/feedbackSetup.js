@@ -8,7 +8,7 @@ var Logger = require( __configs + "loggingConfig");
 
 var Helpers = require( __components+ "FileUpload/fileUploadHelpers");
 
-var FileParser = require('./feedbackParser').FileParser;
+
 var ProgrammingParser = require('./parsers/programmingParser').ProgrammingParser;
 var WritingParser = require('./parsers/writingParser').WritingParser;
 

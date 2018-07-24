@@ -2,7 +2,7 @@ var _ = require('lodash');
 var path = require('path');
 var XRegExp = require('xregexp');
 var buttonMaker = require('./createTextButton');
-var FileParser = require('./feedbackParser').FileParser;
+var FileParser = require('./parsers/writingParser.js').FileParser;
 var Logger = require( __configs + "loggingConfig");
 var he = require("he");
 
