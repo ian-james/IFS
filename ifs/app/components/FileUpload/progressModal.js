@@ -61,7 +61,7 @@ $(function() {
         // available. Upon completion feedback button is available 
         // to progress or alert with error message.
         var date = new Date();
-        date = Math.floor(date / 100);
+        date = Math.floor(date / 100);  
         $.ajax({ 
             type: "POST",
             url:'/tool_upload',
