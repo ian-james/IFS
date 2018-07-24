@@ -4,7 +4,7 @@ div.uk-grid
     div.uk-width-expand
         div.uk-float-right
             label.switch-wrapper
-                input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true" ng-checked="{{tool.prefValue}}")
+                input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" ng-checked="{{tool.prefValue}}")
                 div(uk-toggle="target: #{{tool.cmdToolName}}; animation: uk-animation-slide-top-small").switch.switch-round
 
 span(ng-if="tool.prefValue")

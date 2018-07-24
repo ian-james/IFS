@@ -42,6 +42,8 @@ class MyTaskSet(TaskSet):
 				print(test.text)
 
 
+
+
 class MyLocust(HttpLocust):
     task_set = MyTaskSet
     min_wait = 1000
