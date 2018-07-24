@@ -9,7 +9,7 @@ table.uk-table
                 th File
                 th Line
                 th Char
-                th Target
+                
 
             // writing feeback
             tbody
@@ -22,7 +22,7 @@ table.uk-table
                             td ""
                             td ""
                             td ""
-                            td(style="font-family:monospace") #{f.decodedTarget}
+                            
 
             // programming feedback
             tbody
@@ -33,7 +33,7 @@ table.uk-table
                     td {{ f.filename }}
                     td {{ f.lineNum }}
                     td {{ f.charPos }}
-                    td(style="font-family:monospace") {{f.decodedTarget}}
+                    
     else
         tbody
             tr

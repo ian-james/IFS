@@ -6,7 +6,7 @@ block scripts
     //link(rel="stylesheet" href="/prettyifyTheme/sons-of-obsidian.css")
     link(rel="stylesheet" href="/prettyifyTheme/desert.css")
     //link(rel="stylesheet" href="/prettyifyTheme/sunburst.css")
-
+    link(rel="stylesheet" type="text/css" href="components/Feedback/monokai.css")
     link(rel="stylesheet" href="components/Feedback/errors.css")
     link(rel="stylesheet" href="components/Feedback/feedbackMini.css")
     script(src="/prettyify/run_prettify.js")
@@ -63,9 +63,9 @@ block content
                     each file, findex in files
                         uib-tab(index=findex heading=file.originalname disable="{{tab.disabled}}")
                             div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
-                                if toolType == 'programming'
-                                    pre.prettyprint
-                                        code !{file.markedUp}
+                                if runType == 'programming'
+                                    pre(class="hljs")
+                                        code !{file.markedUp} 
                                 else
                                     pre
                                         code !{file.markedUp}
@@ -77,3 +77,4 @@ block content
     script(src="components/Feedback/feedbackController.js")
     script(src="/components/InteractionEvents/browserFeedbackEvents.js")
     script(src="/components/InteractionEvents/popoverFeedbackEvents.js")
+
