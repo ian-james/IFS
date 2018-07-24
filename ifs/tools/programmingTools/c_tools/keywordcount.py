@@ -4,6 +4,55 @@ import re
 import glob
 from glob import glob
 
+def getKeywordCount(projectFiles):
+	fileIndex = 1
+	list = []
+	list.append([])
+
+	#Set each keyword
+	keywords = getKeywords()
+	list[0] = splitList(keywords)
+	#projectFiles = glob(dir+'/*.c') + glob(dir+'/*.h')
+	for files in projectFiles:
+		if os.path.isfile(files) == False:
+			print "File", file, "to parse does not exist, please enter a valid file"
+			exit()
+		#Set list counters to 0 for each keyword
+		list.append([0 for i in range(32)])
+
+	#Set each keyword
+
+
+	for files in projectFiles:
+		#print files
+		parse = open(files, 'r')
+
+	# Remove all special characters from words to ensure correct matching
+
+		for line in parse:
+			test = re.sub(r'[^A-Za-z0-9 ]+', r' ', line)
+	
+			for word in test.split():
+				#print word
+				result = binarySearch(list[0], word)
+				if result == True:
+					#print "---------Found", word
+					resultCounter(list, word, fileIndex)
+				#else:
+					#print word
+		fileIndex = fileIndex+1
+	talliedTotals = tallyTotals(list)
+	#printCounts(talliedTotals)
+	#print talliedTotals
+	type, flow = separateKeywords(keywords,talliedTotals)
+	
+	print "Total number of type keywords =", sum(type[1])
+	print "Average number of type keywords per module =", sum(type[1]) / float(len(projectFiles))
+	print "Total number of flow keywords =", sum(flow[1])
+	print "Average number of flow keywords per module =", sum(flow[1]) / float(len(projectFiles))
+	
+	
+	
 def separateKeywords(keywords, talliedTotals):
 	type = []
 	type.append([])
@@ -89,10 +138,7 @@ def splitList(the_list):
 
 #def countKeywordTypes(list, keywords)
 
-
-
-def main(argv):
-	fileIndex = 1
+def getKeywords():
 	keywords = ['auto', 't', 
 	'break', 'f', 
 	'case', 'f', 
@@ -125,59 +171,21 @@ def main(argv):
 	'void', 't', 
 	'volatile', 't', 
 	'while', 'f']
+	return keywords
+
+def main(argv):
 
 	if len(sys.argv) < 2:
 		print "Please run with a file to parse as command line argument 1"
 		exit()
-
-	#Create a 2d list to hold the keywords and their counts
-	list = []
-	list.append([])
-
-	#Set each keyword
-	list[0] = splitList(keywords)
 
 
 	#print 'Num of arguments', len(sys.argv)
 	#print 'Arg list:', str(sys.argv)
 
 	projectFiles = glob(argv[0]+'/*.c') + glob(argv[0]+'/*.h')
-	for files in projectFiles:
-		if os.path.isfile(files) == False:
-			print "File", file, "to parse does not exist, please enter a valid file"
-			exit()
-		#Set list counters to 0 for each keyword
-		list.append([0 for i in range(32)])
 
-	#Set each keyword
+	getKeywordCount(projectFiles)
 
-
-	for files in projectFiles:
-		#print files
-		parse = open(files, 'r')
-
-	# Remove all special characters from words to ensure correct matching
-
-		for line in parse:
-			test = re.sub(r'[^A-Za-z0-9 ]+', r' ', line)
-	
-			for word in test.split():
-				#print word
-				result = binarySearch(list[0], word)
-				if result == True:
-					#print "---------Found", word
-					resultCounter(list, word, fileIndex)
-				#else:
-					#print word
-		fileIndex = fileIndex+1
-	talliedTotals = tallyTotals(list)
-	#printCounts(talliedTotals)
-	#print talliedTotals
-	type, flow = separateKeywords(keywords,talliedTotals)
-	
-	print "Total number of type keywords =", sum(type[1])
-	print "Average number of type keywords per module =", sum(type[1]) / float(len(projectFiles))
-	print "Total number of flow keywords =", sum(flow[1])
-	print "Average number of flow keywords per module =", sum(flow[1]) / float(len(projectFiles))
 if __name__ == '__main__':
 	main(sys.argv[1:])

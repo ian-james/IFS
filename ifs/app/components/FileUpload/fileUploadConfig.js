@@ -89,7 +89,8 @@ var storage = multer.diskStorage({
 
         var submissionFolder = path.join( dest,userID.toString() );
 
-        fse.emptyDir(submissionFolder, function(err) {
+				submissionFolder = path.join(submissionFolder, String(submissionTime));
+        fse.ensureDir(submissionFolder, function(err) {
             if(err) {
                 Logger.error("Unable to create or clean folder for submission");
                 return callback(null,dest);
