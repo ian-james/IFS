@@ -2,21 +2,39 @@ from locust import Locust, TaskSet, task, HttpLocust
 from users import *
 import logging, sys
 
-class MyTaskSet(TaskSet):
-	email = "NULL"
-	password = "NULL"
+
+
+class feedback(TaskSet):
+
+	@task(10)
+	def feedPage(self):
+		response = self.client.get("/feedback")
+
+		# print(response.content)
+
+	@task(5)
+	def stop(self):
+		self.interrupt()
+
+
+
+
+
+class toolPage(TaskSet):
+	# tasks = {feedback: 2}
 
 
 	def on_start(self):
-		if len(USERS) > 0:
-			self.email, self.password = USERS.pop()
-			self.login()
+		limit = 500 - 500
 
-	def login(self):
-		response = self.client.post("/login", data={"username": self.email, "password":self.password})
-		# logging.info('Login with %s email and %s password', self.email, self.password)
+		if len(USERS) > limit:
+			username, password = USERS.pop()
+			response = self.client.post("/login", data={"username": username, "password": password})
+			# self.client.get("/login-redirect")
+			print(response.content)
 
-	@task(2)
+
+	@task(10)
 	def toolUpload(self):
 		with open('a4.c', 'rb') as file:
 
@@ -38,13 +56,8 @@ class MyTaskSet(TaskSet):
 			 'time': '1531856360202',
 			 'fileList': '["a4.c"]' })
 
-			if test.status_code == 104:
-				print(test.text)
-
-
-
 
 class MyLocust(HttpLocust):
-    task_set = MyTaskSet
-    min_wait = 1000
-    max_wait = 2000
+    task_set = toolPage
+    min_wait = 10000
+    max_wait = 30000

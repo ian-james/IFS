@@ -13,7 +13,7 @@ module.exports = {
         'host' :                        'localhost',
         'user' :                        'USER',
         'password' :                    'PASSWORD',
-        'connectionLimit':              1000
+        'connectionLimit':              5000
     },
     // database name
     'database':                         'IFS',
