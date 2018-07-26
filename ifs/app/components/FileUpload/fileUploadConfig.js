@@ -86,8 +86,9 @@ var storage = multer.diskStorage({
         var submissionTime = req.headers.token;
         var userID = req.user.id;
 
-        var submissionFolder = path.join( dest, userID.toString() );
-        submissionFolder = path.join(submissionFolder, submissionTime);
+        var submissionFolder = path.join( dest,userID.toString() );
+
+				submissionFolder = path.join(submissionFolder, String(submissionTime));
         
         fse.ensureDir(submissionFolder, function(err) {
             if(err) {

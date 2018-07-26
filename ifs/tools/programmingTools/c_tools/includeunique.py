@@ -27,73 +27,28 @@ import glob
 from glob import glob
 
 
-#Checks for the form of includes being passed in. Checks for adherance based on the following conditions:
-#If the include statement has <> surroundng the path, ignore.
-#If the include statement has "" surrounding the path:
-#If the path contains / characters, flag as containing absolute or relative paths.
-#INPUT: Three lists: [file name], [#include command], [line num]. Each list contains potentially multiple elements.
-#OUTPUT: A list of list containing [[file name, line number], ...] detailing the incorrectly formed #include flags
-def PathValidate(fileNames, includePaths, includeLineNum):
-    i=0
-    j=0
-    improperPaths = []
-    for entries in includePaths:
-        j=0
-        for entry in entries:
-            result = str.split(entry)
-            
-            #Ensure the first and last characters of the include file have " indicating a custom include file
-            if (result[1][0] == '"') and (result[1][-1:] == '"'):
-                if "/" in result[1]:
-                    cutFileNames = fileNames[i].split("/")
-                    output = ""
-					#Only grab the actual file name relevant to the file. Don't grab "unzipped" or anything earlier in the file name
-                    for folder in cutFileNames[4:]:
-                        output += folder
-                    improperPaths.append([output,includeLineNum[i][j]])
+def calcUnique(idirectory):
+    includeList = PathFind(idirectory)
+    resultant = mergeLists(includeList)
+    print "Number of unique includes =",len(resultant)
 
-            j=j+1
-        i=i+1
-    
-    return improperPaths
-
-#Take the list of lists from PathFind and split them into 3 discrete lists  
-#INPUT: A list of include data where the format is [file name, [#include commands], [line nums], file name, [#include commands], [line nums], ...]
-#OUTPUT: Three lists: [file name], [#include command], [line num]. Each list contains potentially multiple elements in the same order that the input list contained.
-def PathCollect(includes):
-    fileNames = []
-    includePaths = []
-    includeLineNum = []
-    errors = []
-    #includePathOnlyFile = []
-    i=0
-    for entries in includes:
-        if i==0:
-            fileNames.append(entries)
-            i=i+1
-        elif i==1:
-            includePaths.append(entries)
-            i=i+1
-        else:
-            includeLineNum.append(entries)
-            i=0
-            
-    for lists in includePaths:
-        for entries in lists:
-            splitEntry = str.split(entries)
-            includeName = splitEntry[1]
-    return fileNames, includePaths, includeLineNum  
+def mergeLists(includeList):
+    newList = []
+    for sublist in includeList:
+        for entry in sublist:
+            if (entry != ""):
+                newList.append(entry)
+    #print newList
+    resultant = list(set(newList))
+    return resultant
 
 #Find each instance of an #include command and save what file and line it is located on
 #INPUT: A directory in the form of a string to find files in
 #OUTPUT: A list of include data where the format is [file name, [#include commands], [line nums], file name, [#include commands], [line nums], ...]
-def PathFind(dir):
+def PathFind(projectFiles):
     includeList = []
     lineList = []
-    projectFiles = [os.path.join(dirpath, f)
-        for dirpath, dirnames, files in os.walk(dir)
-        for f in files if (f.endswith('.c')) or (f.endswith('.h'))]
-    #print projectFiles
+    #projectFiles = glob(dir+'/*.c') + glob(dir+'/*.h')
     lineNumber = 0
     for file in projectFiles:
         fp  = open(file, "r")
@@ -101,17 +56,17 @@ def PathFind(dir):
         lines = [line.strip() for line in fp]
         
         includeKey = "#include"
-        includeList.append(file)
+        #includeList.append(file)
         #Get all include commands  and save the to a list
         includeList.append([s for s in lines if includeKey.lower() in s.lower()])
-        i=1
+        #i=1
         #Find line number of line where #include commands are
-        for line in lines:
-            if includeKey.lower() in line.lower():
-                lineList.append(i)
-            i=i+1
-        includeList.append(lineList)
-        lineList = []   
+        #for line in lines:
+        #    if includeKey.lower() in line.lower():
+        #        lineList.append(i)
+        #    i=i+1
+        #includeList.append(lineList)
+        #lineList = []   
     
     #print includeList
     return includeList
@@ -173,12 +128,15 @@ def main(argv):
         
         #Get and format data into proper JSON format    
         includeList = PathFind(idirectory)
-        fileNames, includePaths, includeLineNum = PathCollect(includeList)
-        improperPaths = PathValidate(fileNames, includePaths, includeLineNum)
-        json_string = decorateData(improperPaths)
+        #fileNames, includePaths, includeLineNum = PathCollect(includeList)
+        #improperPaths = PathValidate(fileNames, includePaths, includeLineNum)
+        #json_string = decorateData(improperPaths)
         
         #Output final result to terminal. This is how IFS gains the feedback from includecheck.py
-        print json_string
-
+        #print json_string
+        #print includeList
+        resultant = mergeLists(includeList)
+        #print resultant
+        print "Number of unique includes =",len(resultant)
 if __name__ == '__main__':
     main(sys.argv[1:])
