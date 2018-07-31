@@ -122,6 +122,7 @@ module.exports = function( app ) {
                     instructorDB.getAssignment(id, function(err, assignment){ // get the assignment its safer than passing all that data
                         if(!err && assignment){
                             var assign = assignment[0];
+                            assign.deadline = assign.deadline.toLocaleDateString();
                             instructorDB.getAssignmentDiscipline(id, function(err, disResult){
                                 if(!err && disResult){
                                     instructorDB.fetchAssignmentOptions(disResult[0].discipline, false, function(err, options){
