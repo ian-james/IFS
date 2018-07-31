@@ -70,4 +70,6 @@ module.exports = function (app, iosocket) {
 
     // Announcement Routes 
     require (componentsPath + '/Announcements/routes')(app,iosocket);
+
+    require(componentsPath + '/Questionnaire/questionnaire') (app, iosocket);
 }

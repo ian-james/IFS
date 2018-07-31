@@ -14,6 +14,8 @@ block content
 
         div(class="uk-width-1-1").uk-section
             div.uk-margin-medium
+                include dashboardQuestionnaire.pug
+            div.uk-margin-medium
                 include dashboardStudentProfile.pug
             span(ng-if="courses && courses.length >= 0")
                 div.uk-clearfix

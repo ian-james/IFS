@@ -61,5 +61,10 @@ module.exports = {
     
     // Announcements
     'announcements_table':              'announcements',
-    'announcement_exposure_table':       'announcement_exposure'
+    'announcement_exposure_table':       'announcement_exposure',
+
+    //Questionnaire Tables
+    'task_decomposition_base_table':    'task_decomposition_base', 
+    'task_decomposition_modules_table': 'task_decomposition_modules',
+    'task_decomposition_tasks_table':   'task_decomposition_tasks' 
 };

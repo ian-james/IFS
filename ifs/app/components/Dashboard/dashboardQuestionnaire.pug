@@ -1,0 +1,13 @@
+div.uk-card.uk-card-default
+	div.uk-card-body
+		h2.uk-card-title Questionnaire
+		p.uk-text-meta Answer a short questionnaire to start planning out your assignment
+		button.uk-button.uk-button-primary.uk-button-large#questionnaire Questionnaire
+
+div(id="questionnaireModal" uk-modal="center: true; bg-close: false; esc-close: false;")
+	div(class="uk-width-1-1 uk-width-2-3@l").uk-modal-dialog
+	button(class="uk-modal-close-default" uk-close)
+	div.uk-modal-header
+		h2(id="modalTitle" uk-modal.title) 
+
+script(src="components/Questionnaire/questionnaireModal.js")
