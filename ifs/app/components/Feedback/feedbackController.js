@@ -23,7 +23,8 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
 
     $scope.setSelectedItem = function(event) {
         // Array of items matching this error are passed
-
+        console.log("-----EVENT------");
+        console.log(event);
         if( event.target.getAttribute("data-feedback")){
             $scope.selectedArray = event.target.getAttribute("data-feedback");
             $scope.selectedArray = $scope.selectedArray.split(",");

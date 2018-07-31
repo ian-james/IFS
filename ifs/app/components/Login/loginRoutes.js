@@ -10,6 +10,7 @@ var Logger = require(__configs + "loggingConfig");
 var dbcfg = require(__configs + "databaseConfig");
 var db = require(__configs + "database");
 var dbHelpers = require(__components + "Databases/dbHelpers");
+var adminDB = require(__components + "Admin/adminDB.js");
 
 var _ = require('lodash');
 
@@ -21,6 +22,16 @@ module.exports = function( app, passport ) {
 
         if(result >= 0 || (user) ) {
             if(user){
+                // Assign them the role they deserve to their session
+                adminDB.getRole( req.user.id, function (err,roles){
+                    if (roles && roles.length > 0){
+                        var permissions = adminDB.getPermissions(roles[0].value);
+                        if (permissions == 1)
+                            _.extend(user, {admin: 1});
+                        else if(permissions == 2)
+                            _.extend(user, {instr: 1});
+                    }
+                });
                 res.locals.user = user;
                 req.user = user;
             }

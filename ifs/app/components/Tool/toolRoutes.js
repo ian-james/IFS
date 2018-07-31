@@ -44,7 +44,7 @@ module.exports = function (app, iosocket) {
           r = _.find(options, _.matchesProperty("name", optionName));
           if (r) {
             if (r.type == "checkbox")
-              r['prefValue'] = "on";
+              r['prefValue'] = toolPreferences[i].toolValue == "on";
             else if (r.type == "select" || r.type == "text")
               r['prefValue'] = toolPreferences[i].toolValue;
           }

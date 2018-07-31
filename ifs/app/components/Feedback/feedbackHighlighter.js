@@ -191,7 +191,9 @@ function markupFile( file, selectedTool, feedbackItems )
                 var options = { 'classes': matchClasses, 'data': idArr , 'id': i, 'feedbackId':feedbackItems[i].id};
 
                 // Create a popover button at position to highlight text and count the offset.
+                // woops wont work with html sucks to suck
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);
+                newStr.mid = newStr.mid.replace(/(<([^>]+)>)/ig,"");
                 var str = newStr.start + newStr.mid + newStr.end;
                 var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset, toolType: feedbackItem.runType } );
 

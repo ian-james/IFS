@@ -43,7 +43,7 @@ module.exports = function (app) {
     }
 
     // Calling the function during the initial route setup.
-    resetTips();
+    // resetTips();
 
    /**
     * Helper function to generate tips at runtime if needed could be removed for production.

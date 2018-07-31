@@ -32,10 +32,14 @@ module.exports = {
     'class_skill_table':                'class_skill',
     'student_skill_table':              'student_skill',
     'upcoming_event_table':             'upcoming_event',
+    'class_choices_table':              'class_choices',
+    'class_options_table':              'class_options',
 
     // Assignments
     'assignment_table':                 'assignment',
     'assignment_task_table':            'assignment_task',
+    'assignment_options_table':         'assignment_options',
+    'assignment_choices_table':         'assignment_choices',
     'student_assignment_task_table':    'student_assignment_task',
 
     // Surveys
