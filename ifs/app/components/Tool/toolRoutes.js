@@ -36,7 +36,7 @@ module.exports = function (app, iosocket) {
         optionName = _.replace(optionName, toolPrefix, "");
         var r = _.find(tools, _.matchesProperty('displayName', optionName));
         if (r)
-          r['prefValue'] = toolPreferences[i].toolValue == "true";
+          r['prefValue'] = false;
       } else if (_.startsWith(optionName, optionPrefix)) {
         var r = undefined;
         for (var y = 0; y < tools.length && !r; y++) {
@@ -44,7 +44,7 @@ module.exports = function (app, iosocket) {
           r = _.find(options, _.matchesProperty("name", optionName));
           if (r) {
             if (r.type == "checkbox")
-              r['prefValue'] = toolPreferences[i].toolValue == "on";
+              r['prefValue'] = "on";
             else if (r.type == "select" || r.type == "text")
               r['prefValue'] = toolPreferences[i].toolValue;
           }

@@ -1,0 +1,21 @@
+extends ../../../shared/views/pageLayout.pug
+block content
+    .uk-container.uk-container-small.uk-margin
+        h1 Announcements
+        .uk-text-meta Recent Announcements from IFS and your Courses
+        .uk-card.uk-card-default.uk-margin-top
+            div.uk-padding-small
+                if (!announcements || announcements.length == 0)
+                    h2 No recent announcements!
+                else
+                    each announce in announcements
+                        a(href="/announcements/" + announce.id)
+                            h3.uk-margin-remove-bottom #{announce.title}
+                        span.uk-text-meta #{announce.updated_at}
+                        if (announce.blurb)
+                            p !{announce.blurb}
+                        else
+                            p !{announce.body}
+                        a(href="/announcements/" + announce.id ) Read More
+                        hr
+

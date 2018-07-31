@@ -12,6 +12,7 @@ var validator = require('validator');
 var sanitization = require(__configs + "sanitization");
 
 var adminDB = require(__components + "Admin/adminDB.js");
+const Announce = require(__components + 'Announcements/controllers/announceController');
 
 module.exports = function( app ) {
     /**
@@ -535,4 +536,9 @@ module.exports = function( app ) {
                 }
             });
     });
+
+    /* Announcement CRUD admin links */
+    app.get('/admin/announcements/', Announce.manageAnnounce)
+    app.get('/admin/announcements/new', Announce.adminAnnounceCreate);
+    app.delete('/admin/announcements/:id', Announce.deleteAnnounce);
 };

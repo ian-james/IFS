@@ -60,4 +60,10 @@ module.exports = function (app) {
 
     // Angular-Chart
     app.use( "/achartjs", express.static(nodeModulesPath + "/angular-chart.js/dist/"));
+
+    // Announcement controllers
+    app.use('/announce', express.static(path.join(__dirname, '../app/components/Announcements/views/scripts')));
+
+    // summernote WYSIWYG editor
+    app.use('/snote', express.static(nodeModulesPath + '/angular-summernote/dist/'));
 }

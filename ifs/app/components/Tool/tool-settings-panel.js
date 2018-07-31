@@ -17,7 +17,7 @@ $('#error').bind("DOMSubtreeModified",function(){
 });
 
 $("#toolPreference").submit(function(event) {
-    var val = $(document.activeElement).text();
+    var val = event.originalEvent.explicitOriginalTarget.innerHTML;
 
     $.ajax({
         type: "post",

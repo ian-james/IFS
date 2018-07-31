@@ -70,4 +70,6 @@ module.exports = function (app, iosocket) {
 
     // Survey Stats/Admin panel
     require(componentsPath + '/SurveyAdmin/routes')(app,iosocket);
+    // Announcement Routes 
+    require (componentsPath + '/Announcements/routes')(app,iosocket);
 }

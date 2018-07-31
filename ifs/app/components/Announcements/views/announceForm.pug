@@ -1,0 +1,28 @@
+extends ../../../shared/views/pageLayout.pug
+block content
+    div.uk-container.uk-container-small.uk-margin
+        h2 Announcement Creation
+        p.uk-text-meta Create a new announcement that will appear globally
+        div(ng-controller="announceCreate").uk-card.uk-card-default.uk-padding
+            form.uk-form-stacked
+                div.uk-margin
+                    label.uk-form-label Title
+                    .uk-form-controls
+                        input(ng-model="title" text='#{ announce.title }').uk-input
+                    div(ng-if="!validTitle").uk-text-danger Title must not be empty
+                div.uk-margin
+                    label.uk-form-label Announcement Text
+                    .uk-form-controls
+                        summernote(ng-model="body" height="300")
+                    div(ng-if="!validBody").uk-text-danger Body content must not be empty
+                div.uk-margin
+                    label.uk-form-label Expiry date
+                    .uk-form-controls
+                        input(ng-model="expiry" id="expiry" type="date" )
+                div.uk-margin
+                    button(ng-click="handleSubmit()").uk-button.uk-button-primary Create Announcement
+    script(src="/announce/createCtrl.js")
+    script(src="/snote/angular-summernote.min.js")
+    link(href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet")
+    script(src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js")
+    script(src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js")

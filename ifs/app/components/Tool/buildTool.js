@@ -32,15 +32,18 @@ function getJsonTool( toolsJson, targetTool ){
 // user selected options to create jobs for the Queue
 function createJobRequests( toolFile, selectedOptions ) {
 
+    console.log("opts1: " + JSON.stringify(selectedOptions));
+
+
 
     //JSON object of all the tools available
     var toolList = readToolFileList(toolFile)
 
     //JSON object of tools that are being used
-    toolList.tools = removeInactiveTools(toolList.tools,selectedOptions);
+    toolList.tools = removeInactiveTools(toolList.tools, selectedOptions);
 
-    //Seems like its the exact same as before, more investigation required
-    selectedOptions = removeEnabledFormData( selectedOptions );
+    //Looks like it does nothing useful, may be useful later
+    // selectedOptions = removeEnabledFormData( selectedOptions );
 
     //format the JSON object of the selected options
     var toolOptions = parseFormSelection( selectedOptions );
@@ -101,7 +104,9 @@ function parseFormSelection( formData ) {
 
                 progName = key.substr( toolMarker.length );
                 tool = { 'progName': progName, 'options':[] };
+               
             }
+            
             else if(tool) {
                 var r = {};
                 r['name'] = key;
@@ -160,6 +165,7 @@ function removeInactiveTools(toolList, formOptions) {
 
 /**
  * Removes enabled checkbox information from form data 
+ * Currently does nothing of use, bring to attention to group if it is needed in the future
  * @param  {[type]} formOptions [description]
  * @return {[type]}             [description]
  */
