@@ -37,9 +37,8 @@ block content
                                         | Edit
                 else
                     h3 You don't have any classes created.
-            if !assignments
-                p.uk-text-lead
-                    | No assignments to show!
+            if assignments.length == 0
+                p.uk-text-lead.uk-text-center No assignments to show!
             else
                 div.uk-margin
                     div.uk-card.uk-card-default

@@ -106,6 +106,22 @@ module.exports = function( app ) {
 
     });
 
+    app.route('/instructor')
+    .post(function(req,res,next){
+        var data = JSON.parse(req.body.formData);
+        if (req.body.form == 'createCourse'){
+            console.log(data);
+            /*instructorDB.insertCourse(data, function(err){
+
+            });*/
+        }
+        else if (req.body['formType'] == 'cass'){
+            console.log("assignment has been submitted");
+        }
+        //res.status(500).send();
+        res.sendStatus(200);
+    });
+
     /********************************
      ** The manage assignment page **
      ********************************/
@@ -177,8 +193,7 @@ module.exports = function( app ) {
         instructorDB.checkClassAccess(id, req.user.id, function(err, result){
             console.log(result);
             if(!err && result){
-                if(result[0].found == "1"){ // lets fetch the actual class to make sure there was no tampering
-                    
+                if(result[0].found == "1"){ // lets fetch the actual class to make sure there was no tampering           
                     instructorDB.getClass(id, function(error,course){ // get the class information its safer to just get by id
                         if (!error && course){
                             var cs = course[0];

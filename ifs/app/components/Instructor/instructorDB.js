@@ -140,7 +140,6 @@ module.exports = {
      * @return {[type]}              none
      */
     getRandomTip: function(callback){
-    //    var q = "SELECT * FROM ifs_tips"
        var q = "SELECT * FROM ifs_tips WHERE instructor=1 ORDER by RAND() LIMIT 1";
        db.query(q,[],callback);
     },
@@ -202,5 +201,11 @@ module.exports = {
          OUTER JOIN class ON class.id = student_class.classId WHERE
          class.instructorId=${instId}) AND date >= Date(NOW()) - INTERVAL 7 DAY`;
         db.query(q,[],callback);
+    },
+
+    insertCourse : function(courseData, callback) {
+        var q = `INSERT INTO class (code, name, description, disciplineType,
+            instructorId, year, semester) values(?,?,?,?,?,?,?)`;
+        db.query(q, courseData, callback);
     }
 }
