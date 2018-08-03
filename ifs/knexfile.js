@@ -9,7 +9,11 @@ module.exports = {
       database: dbcfg.database,
       user: dbcfg.connection.user,
       password: dbcfg.connection.password
-    }
+    },
+    pool: {
+      min: 0,
+      max: 7,
+    },
   },
 
   staging: {

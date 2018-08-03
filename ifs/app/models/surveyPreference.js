@@ -7,8 +7,8 @@ class SurveyPreference extends Model {
   }
   /* Relationships */
   static get relationMappings() {
-    const { Survey } = require('./survey');
-    const { User } = require('./user');
+    const Survey  = require('./survey');
+    const User = require('./user');
 
     return {
       survey: {

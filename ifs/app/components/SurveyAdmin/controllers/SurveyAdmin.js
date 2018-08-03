@@ -7,8 +7,15 @@ const Survey = require('./../../Survey/models/Survey');
 const Question = require('./../../Survey/models/Question');
 const SurveyResponses = require('./../../Survey/models/SurveyResponse');
 const ChartHelpers = require('./../../Chart/chartHelpers.js');
+const { getResponseCount } = require(path.join(__modelPath, 'question'));
+
 
 module.exports = {
+  /* Gets all data for a selected survey in exportable format */
+  downloadSurvey: async (req, res) => {
+    const data = await getResponseCount(9);
+    res.send(data);
+  },
   /* Basic page display - all data requests handle by angular */
   viewStats: (req, res) => {
     res.render(path.join(viewPath, 'surveyStats'), {

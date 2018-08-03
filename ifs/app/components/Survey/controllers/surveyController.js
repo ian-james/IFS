@@ -92,7 +92,7 @@ module.exports = {
 
             const surveyIndex = surveyPrefData[0].currentSurveyIndex;
             const surveyLastIndex = data[0].numQ;
-            console.log(surveyLastIndex);
+
             const resultsToDb = [];
             let qids = [];
             let answers = [];

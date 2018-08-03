@@ -8,13 +8,14 @@ class Survey extends Model {
   /* Relationships */
   static get relationMappings() {
     const { Question } = require('./question');
-    const { SurveyResult } = require('./surveyResult');
-    const { SurveyPreference } = require('./surveyPreference');
+    const SurveyResult = require('./surveyResult');
+    const SurveyPreference = require('./surveyPreference');
 
     return {
       questions: {
         relation: Model.HasManyRelation,
         modelClass: Question,
+        filter: query => query.select('id', 'surveyId', 'text'),
         join: {
           from: 'survey.id',
           to: 'questions.surveyId'
@@ -40,4 +41,6 @@ class Survey extends Model {
   };
 };
 
-module.exports = Survey;
+
+module.exports.Survey = Survey;
+
