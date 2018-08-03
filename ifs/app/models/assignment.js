@@ -9,6 +9,8 @@ class Assignment extends Model {
   static get relationMappings() {
     const { AssignmentTask } = require ('./assigmentTask');
     const { Course } = require('./course');  
+    const {TaskDecompBase} = require('./taskDecompBase');
+    
     return {
       tasks: {
         relation: Model.HasManyRelation,
@@ -26,6 +28,16 @@ class Assignment extends Model {
           to: 'class.id'
         },
       },
+
+      decomp:{
+        relation: Model.HasManyRelation,
+        modelClass: TaskDecompBase,
+        join: {
+          from: 'assignment.id',
+          to: 'task_decomposition_base.assignmentId'
+        }
+      }
+
 
     };
   };

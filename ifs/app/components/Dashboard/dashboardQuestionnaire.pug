@@ -2,12 +2,34 @@ div.uk-card.uk-card-default
 	div.uk-card-body
 		h2.uk-card-title Questionnaire
 		p.uk-text-meta Answer a short questionnaire to start planning out your assignment
-		button.uk-button.uk-button-primary.uk-button-large#questionnaire Questionnaire
+		button.uk-button.uk-button.uk-button-large#questionnaire Questionnaire
 
-div(id="questionnaireModal" uk-modal="center: true; bg-close: false; esc-close: false;")
-	div(class="uk-width-1-1 uk-width-2-3@l").uk-modal-dialog
-	button(class="uk-modal-close-default" uk-close)
-	div.uk-modal-header
-		h2(id="modalTitle" uk-modal.title) 
+
+// This is the modal
+div#questionnaireModal(uk-modal='')
+	div.uk-modal-dialog.uk-modal-body
+		button.uk-modal-close-default(type='button', uk-close='')
+		div.uk-modal-header
+			h2#modalTitle
+		h2#questionNum
+		p#questionText
+		input#assignText.form-control(type='text', placeholder='Assignment 1' name='assignmentName')
+		input#dueDate(type="date" ng-model="lowDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required).uk-input.uk-margin-bottom
+		div.uk-margin.uk-grid-small.uk-child-width-auto.uk-grid#comfort
+			label
+				input.uk-radio(type='radio', name='radio' value='Low', checked='')
+				|  Low
+			label
+				input.uk-radio(type='radio', name='radio' value='Medium')
+				|  Medium
+			label
+				input.uk-radio(type='radio', name='radio' value='High')
+				|  High
+
+		p.uk-text-left
+			button.uk-button.uk-button-default#Prev(type='button' style="float: left") Previous	
+			button.uk-button.uk-button-default#Next(type='button' style="float: right") Next
+
+		
 
 script(src="components/Questionnaire/questionnaireModal.js")
