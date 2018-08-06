@@ -8,11 +8,11 @@ module.exports = {
   /* Post request for creating a new Survey/associating questions */
   createSurveyAndQuestions: async (req, res) => {
     console.log(req.body);
-    
+
     if (!req.files) {
       return res.status(400).send({msg: 'No question set uploaded'});
     }
-    
+
     const questionSet = req.files.fullSurveyFile;
     const questionJSON = JSON.parse(questionSet.data);
     const questions = questionJSON.QuestionText
@@ -26,20 +26,23 @@ module.exports = {
         totalQuestions: questions.length,
         surveyFreq: 'reg',
         fullSurveyFile: questionSet.name
-      })
+      });
+    /* Insert parsed questions associated with new survey */
+    let i = 0;
+    _.map(questions, async (question) => {
+      i++;
+      await Question.query()
+        .insert({
+          surveyId: survey.id,
+          language: 'english',
+          origOrder: i,
+          text: questions[i],
+          visualFile: questionSet.name,
+          type: 'matrix'
+        });
+    });
 
-      for (i = 0; i < questions.length; i++) {
-        await Question.query()
-          .insert({
-            surveyId: survey.id,
-            language: 'english',
-            origOrder: i + 1,
-            text: questions[i],
-            visualFile: questionSet.name,
-            type: 'matrix'
-          });
-      }    
-      res.end();
+    res.end();
   },
   createSurveyForm: (req, res) => {
     res.render(path.join(viewPath,'createForm'), {});

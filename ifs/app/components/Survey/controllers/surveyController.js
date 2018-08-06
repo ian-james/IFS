@@ -174,6 +174,7 @@ module.exports = {
     const id = req.params.surveyID;
 
     Survey.getSurveyId(id, (err, surveyMeta) => {
+      if (err)
       Question.getQuestions(id, (err, questions) => {
         let loadedSurvey = Serializers.serializeSurvey(surveyMeta, questions, Serializers.matrixSerializer);
         loadedSurvey = JSON.stringify(loadedSurvey);

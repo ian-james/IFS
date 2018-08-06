@@ -3,9 +3,9 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const viewPath = path.join(__components, 'SurveyAdmin/views/');
-const Survey = require('./../../Survey/models/Survey');
-const Question = require('./../../Survey/models/Question');
-const SurveyResponses = require('./../../Survey/models/SurveyResponse');
+const { Survey } = require(path.join(__modelPath, 'survey'));
+const Question = require('./../../Survey/models/question');
+const SurveyResponses = require('./../../Survey/models/surveyResponse');
 const ChartHelpers = require('./../../Chart/chartHelpers.js');
 const { getResponseCount } = require(path.join(__modelPath, 'question'));
 
@@ -23,10 +23,15 @@ module.exports = {
     });
   },
   /* Get all metadata for available surveys */
-  getSurveysMeta: (req, res) => {
-    Survey.getSurveys((err, surveys) => {
+  getSurveysMeta: async (req, res) => {
+    try {
+      const surveys = await Survey.query()
+      console.log(surveys);
       res.json(surveys);
-    });
+    } catch(err) {
+      console.log(err);
+      res.send({ err: 'Unable to fetch survey metadata' });
+    }
   },
   /* Returns questions for a particular survey */
   getSurveyQuestions: (req, res) => {
@@ -55,7 +60,7 @@ module.exports = {
         /* Filter by survey response type */
         if (responseType != 'both') {
           const filterValue = (responseType == 'pulse') ? 1 : 0;
-          filteredResponse = _.filter(filteredResponse, 
+          filteredResponse = _.filter(filteredResponse,
             response => (response.pulse_response == filterValue));
         }
 
@@ -67,7 +72,6 @@ module.exports = {
         /* Transform results into percentages for the chart */
         const responseCount = filteredResponse.length;
         const countObj = _.countBy(filteredResponse, 'questionAnswer');
-        /* Add 0 count for missing keys */
         for (i = 1; i <= 5; i++) {
           if (countObj[i] == null) {
             countObj[i] = 0;
