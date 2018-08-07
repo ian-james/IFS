@@ -7,6 +7,7 @@ var viewPath = path.join( __dirname + "/");
 var Logger = require( __configs + "loggingConfig");
 var fs = require('fs');
 var async = require('async');
+var qs = require('querystring');
 
 var validator = require('validator');
 var sanitization = require(__configs + "sanitization");
@@ -108,18 +109,30 @@ module.exports = function( app ) {
 
     app.route('/instructor')
     .post(function(req,res,next){
-        var data = JSON.parse(req.body.formData);
+        var data = qs.parse(req.body.formData);
+        console.log(data);
         if (req.body.form == 'createCourse'){
-            console.log(data);
-            /*instructorDB.insertCourse(data, function(err){
-
-            });*/
+            var arr = [data.ccode, data.cname, data.desc, data.ctype, 
+                       req.user.id, data.cyear, data.csemester];
+            instructorDB.insertCourse(arr, function(err){
+                if(!err) 
+                    res.sendStatus(200);
+                else
+                    res.status(500).send();
+            });
         }
-        else if (req.body['formType'] == 'cass'){
-            console.log("assignment has been submitted");
+        else if (req.body.form == 'createAss'){
+            var courseInfo = JSON.parse(data.cnameA);
+            var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];
+            instructorDB.insertAssignment(arr, function(err){
+                if(!err)
+                    res.sendStatus(200);
+                else
+                    res.status(500).send();
+            });
         }
         //res.status(500).send();
-        res.sendStatus(200);
+        //res.sendStatus(200);
     });
 
     /********************************

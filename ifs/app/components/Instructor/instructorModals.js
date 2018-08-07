@@ -1,6 +1,4 @@
 $(document).ready(function(){
-    $('#cerror').hide();
-
     //  for classes modal
     $('#psycoptionsC').hide();
     $('#othoptionsC').hide();
@@ -46,15 +44,16 @@ $(document).ready(function(){
         }
     }
 
-    displayAssignmentOptions();
+    //displayAssignmentOptions();
     // for assignment modal
-    $('#cnameA').change(function() {
-        displayAssignmentOptions();
-    });
+    // $('#cnameA').change(function() {
+    //    displayAssignmentOptions();
+    // });
 
     $('#ccourse').submit(function(event) {
         event.preventDefault();
-        var strErr = '<div class="uk-alert-danger cerror" uk-alert>';
+        $('.ccerror').remove();
+        var strErr = '<div class="uk-alert-danger ccerror" uk-alert>';
         var endErr = '</div>';
         var err = 0;
         // check to make sure year is a valid number 
@@ -71,8 +70,8 @@ $(document).ready(function(){
         
         if (err) return;
 
-        var formData = $('#ccourse').serialize();
-        console.log(formData);
+        var formData = $("#ccourse :input[value!='']").serialize();
+  
         $.ajax({
             url: '/instructor',
             type: 'post',
@@ -85,12 +84,54 @@ $(document).ready(function(){
                 var modal = UIkit.modal('#create-course');
                 modal.hide();
                 $('#ccourse').trigger('reset');
-                $('.cerror').remove();
+                $('.ccerror').remove();
                 UIkit.notification('Course created.', {'status': 'success'});
+                setTimeout(function(){
+                    window.location.reload(1);
+                 }, 3000);
             },
             statusCode: {
                 500: function() {
                     UIkit.notification('Failed to create course.', {'status': 'danger'});
+                }
+            }
+            
+        });
+
+    });
+
+    $('#cAss').submit(function(event) {
+        event.preventDefault();
+        $('.caerror').remove();
+        var strErr = '<div class="uk-alert-danger caerror" uk-alert>';
+        var endErr = '</div>';
+        var err = 0;
+        
+        if (err) return;
+
+        var formData = $("#cAss :input[value!='']").serialize();
+  
+        $.ajax({
+            url: '/instructor',
+            type: 'post',
+            data: {
+                formData,
+                form: 'createAss'
+            },
+            timeout: 5000,
+            success: function(msg){
+                var modal = UIkit.modal('#create-assignment');
+                modal.hide();
+                $('#cAss').trigger('reset');
+                $('.caerror').remove();
+                UIkit.notification('Assignment created.', {'status': 'success'});
+                setTimeout(function(){
+                    window.location.reload(1);
+                 }, 3000);
+            },
+            statusCode: {
+                500: function() {
+                    UIkit.notification('Failed to create assignment.', {'status': 'danger'});
                 }
             }
             

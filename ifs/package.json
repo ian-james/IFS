@@ -86,6 +86,7 @@
     "pm2": "^2.10.4",
     "pug": "^2.0.0-beta6",
     "q": "^1.4.1",
+    "query-string": "^6.1.0",
     "retext": "^5.0.0",
     "retext-contractions": "^2.1.2",
     "retext-diacritics": "^1.2.1",

@@ -49,21 +49,21 @@ div#create-course(uk-modal='')
                         option(value="other") Other
                 br
                 // - making 3 different divs and hiding them appropriately
-                div#csoptionsC
-                    each option in coptions
-                        - if (option.disciplineType == 'computer science')
-                            include instructorInput.pug
-                            br
-                div#psycoptionsC
-                    each option in coptions
-                        - if (option.disciplineType == 'psychology')
-                            include instructorInput.pug
-                            br
-                div#othoptionsC
-                    each option in coptions
-                        - if (option.disciplineType == 'other')
-                            include instructorInput.pug  
-                            br  
+                    div#csoptionsC
+                        each option in coptions
+                            - if (option.disciplineType == 'computer science')
+                                include instructorInput.pug
+                                br
+                    div#psycoptionsC
+                        each option in coptions
+                            - if (option.disciplineType == 'psychology')
+                                include instructorInput.pug
+                                br
+                    div#othoptionsC
+                        each option in coptions
+                            - if (option.disciplineType == 'other')
+                                include instructorInput.pug  
+                                br  
                 input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
                 button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
 
@@ -74,13 +74,13 @@ div#create-assignment(uk-modal='')
         button.uk-modal-close-default(type='button', uk-close='')
         h2.uk-modal-title Create Assignment
         div.uk-overflow-container
-            form(class='uk-form' method="post" action="/instructor")#uploadForm
+            form(id="cAss" class='uk-form' method="post" action="/instructor")
                 label(for="Course name").uk-form-label
                     | Course Name
                 div.uk-form-controls
                      select(id="cnameA" name="cnameA").uk-select
                         each cs in classes
-                            - var opt  = {'ccode' : cs.code, 'cdiscipline' : cs.disciplineType};
+                            - var opt  = {'ccode' : cs.code, 'cdiscipline' : cs.disciplineType, 'cid' : cs.id};
                             - var optVal = JSON.stringify(opt);
                             option(value=optVal) #{cs.code}
                 br
@@ -97,7 +97,7 @@ div#create-assignment(uk-modal='')
                 label(for="Description").uk-form-label
                     | Description
                 div.uk-form-controls
-                    input(type="text" name="atitle", id="adesc", placeholder="e.g This assignment is about..", required).uk-input
+                    input(type="text" name="adesc", id="adesc", placeholder="e.g This assignment is about..", required).uk-input
                 br
                 label(for="Due date").uk-form-label
                     | Due date
@@ -105,21 +105,20 @@ div#create-assignment(uk-modal='')
                     input(type="date" name="adate", id="adate", placeholder="yyyy-mm-dd", required).uk-input
                 br
                 // - making 3 different divs and hiding them appropriately
-                div#csoptionsA
-                    each option in aoptions
-                        - if (option.disciplineType == 'computer science')
-                            include instructorInput.pug
-                            br
-                div#psycoptionsA
-                    each option in aoptions
-                        - if (option.disciplineType == 'psychology')
-                            include instructorInput.pug
-                            br
-                div#othoptionsA
-                    each option in aoptions
-                        - if (option.disciplineType == 'other')
-                            include instructorInput.pug  
-                            br
-                input(type='hidden', name='formType', value='cass') 
+                    div#csoptionsA
+                        each option in aoptions
+                            - if (option.disciplineType == 'computer science')
+                                include instructorInput.pug
+                                br
+                    div#psycoptionsA
+                        each option in aoptions
+                            - if (option.disciplineType == 'psychology')
+                                include instructorInput.pug
+                                br
+                    div#othoptionsA
+                        each option in aoptions
+                            - if (option.disciplineType == 'other')
+                                include instructorInput.pug  
+                                br
                 input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
                 button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel

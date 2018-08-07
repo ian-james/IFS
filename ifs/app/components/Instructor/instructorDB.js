@@ -204,8 +204,12 @@ module.exports = {
     },
 
     insertCourse : function(courseData, callback) {
-        var q = `INSERT INTO class (code, name, description, disciplineType,
-            instructorId, year, semester) values(?,?,?,?,?,?,?)`;
+        var q = dbHelpers.buildInsert(dbcfg.class_table) + dbHelpers.buildValues(["code","name","description","disciplineType", "instructorId", "year", "semester"]);
         db.query(q, courseData, callback);
+    },
+
+    insertAssignment : function(assignmentData, callback) {
+        var q = dbHelpers.buildInsert(dbcfg.assignment_table) + dbHelpers.buildValues(["classId", "name", "title", "description", "deadline"]);
+        db.query(q, assignmentData, callback);
     }
 }
