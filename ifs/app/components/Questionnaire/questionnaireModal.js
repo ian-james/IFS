@@ -9,6 +9,15 @@ $(function() {
 	var modalList = ["#assignText", "#dueDate", "#comfort"];
 
 	$("#questionnaire").click(function(event) {
+		$.ajax({
+			type: 'GET',
+			url: '/taskDecompBaseRetrieve',
+		}).done(function(data) {
+			$(modalList[0]).val(data[0].question);
+			$(modalList[1]).val(data[0].dueDate.substring(0, 10));
+			$("input[name='radio']:checked").val(data[0].comfort);
+		})
+
 		event.preventDefault();
 
 		// Disable modal Alert
@@ -81,8 +90,7 @@ $(function() {
 		$.ajax({
 			type: 'POST',
 			url: '/taskDecompBaseStore',
-			data: insert
-			
+			data: insert	
 		}).done(function(data) {
 		})
 	}

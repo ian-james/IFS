@@ -17,6 +17,18 @@ var {TaskDecompTask} = require('../../models/taskDecompTask')
 
 
 module.exports = function(app, iosocket) {
+	app.get('/taskDecompBaseRetrieve', async function(req, res) {
+		// Query parameters to be used
+		var userID = req.user.id;
+		var assignId = 1;
+
+		//Check if the user already has an entry in the database for this part of the questionnaire
+		var result = await TaskDecompBase.query()
+		.where('userId', userID)
+		.andWhere('assignmentId', assignId);
+
+		res.send(result);
+	});
 
 	app.post('/taskDecompBaseStore', async function(req, res) {
 
