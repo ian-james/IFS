@@ -12,4 +12,5 @@ module.exports = (app, iosocket) => {
   app.post('/admin/surveys/create', SurveyBuilding.createSurveyAndQuestions);
   app.get('/admin/surveys', SurveyAdminController.manageSurveys)
   app.delete('/admin/surveys/delete/:surveyId', SurveyAdminController.deleteSpecificSurvey);
+  app.get('/admin/surveys/classes', SurveyAdminController.classSurveys);
 };

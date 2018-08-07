@@ -14,6 +14,12 @@ const { getResponseCount } = require(path.join(__modelPath, 'question'));
 
 
 module.exports = {
+  /* Build a new class/survey relationship */
+  classSurveys: async (req, res) => {
+    res.render(path.join(viewPath, 'classSurvey.pug'), {
+      title: 'Class Surveys',
+    });
+  },
   /* Basic route for survey management */
   manageSurveys: async (req, res) => {
     const surveys = await Survey.query()
