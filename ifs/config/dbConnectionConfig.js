@@ -10,7 +10,7 @@ module.exports = {
     // that the database user has permissions restricted only to access and
     // modify the database specified below.
     'connection': {
-        'host' :                        '127.0.0.1',
+        'host' :                        'localhost',
         'user' :                        'IFS',
         'password' :                    'IFSPASS',
         'connectionLimit':              500

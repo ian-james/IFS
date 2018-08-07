@@ -7,7 +7,7 @@ class SurveyResult extends Model {
   }
   /* Relationships */
   static get relationMappings() {
-    const Survey = require('./survey');
+    const { Survey } = require('./survey');
     const User = require('./user');
     const Question = require('./question');
 
@@ -41,4 +41,4 @@ class SurveyResult extends Model {
 };
 
 
-module.exports = SurveyResult;
+module.exports.SurveyResult = SurveyResult;

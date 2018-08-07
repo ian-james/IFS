@@ -8,7 +8,7 @@ class Question extends Model {
   /* Relationships */
   static get relationMappings() {
     const { Survey } = require('./survey');
-    const SurveyResult = require('./surveyResult')
+    const { SurveyResult } = require('./surveyResult')
 
     return {
       survey: {

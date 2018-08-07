@@ -9,8 +9,6 @@ module.exports = (app, iosocket) => {
  // General survey routes
  app.get('/surveys', surveyController.surveyList);
 
- app.get('/survey:surveyName', surveyController.getSpecificSurvey);
-
  app.post( '/survey/sentData', surveyController.sendSurveyData);
 
  app.get ('/survey/:surveyID', surveyController.getMatrixFromDB);

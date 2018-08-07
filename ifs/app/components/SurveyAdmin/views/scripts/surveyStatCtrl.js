@@ -28,7 +28,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   
   /* Grabs a list of all surveys */
   $scope.initSurveys = () => {
-    $http.get('/surveys/meta')
+    $http.get('/admin/surveys/meta')
       .then ((res) => {
         $scope.surveys = res.data;
       });
@@ -38,7 +38,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
   $scope.getSurveyQuestions = () => {
     $scope.selectedQuestion = 0;
     const surveyID = $scope.selectedSurvey.id;
-    $http.get('/surveys/questions/' + surveyID)
+    $http.get('/admin/surveys/questions/' + surveyID)
       .then ((res) => {
           $scope.questions = res.data;
           /* Update meta data information */
@@ -52,7 +52,7 @@ app.controller('surveyStatCtrl', ($scope, $http) => {
     $scope.graphData.series = [];
     for (let question of $scope.selectedQuestions) {
       const questionID = question.id;
-      $http.post('/surveys/responses/' + questionID, $scope.buildPrefObject())
+      $http.post('/admin/surveys/responses/' + questionID, $scope.buildPrefObject())
         .then((res) => {
           $scope.graphData.data.push(res.data);
           $scope.series.push(question.text);

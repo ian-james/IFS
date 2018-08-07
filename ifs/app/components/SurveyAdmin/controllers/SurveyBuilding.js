@@ -24,25 +24,28 @@ module.exports = {
         title: req.body.title,
         surveyField: req.body.surveyField,
         totalQuestions: questions.length,
-        surveyFreq: 'reg',
+        surveyFreq: req.body.surveyFreq,
         fullSurveyFile: questionSet.name
       });
     /* Insert parsed questions associated with new survey */
-    let i = 0;
-    _.map(questions, async (question) => {
-      i++;
+
+    _.map(questions, async (question, index) => {
       await Question.query()
         .insert({
           surveyId: survey.id,
           language: 'english',
-          origOrder: i,
-          text: questions[i],
+          origOrder: index + 1,
+          text: question,
           visualFile: questionSet.name,
           type: 'matrix'
         });
     });
 
-    res.end();
+    const surveys = await Survey.query();
+    res.render(path.join(viewPath, 'surveyList'), {
+      title: 'Survey Management',
+      surveys: surveys
+    });
   },
   createSurveyForm: (req, res) => {
     res.render(path.join(viewPath,'createForm'), {});

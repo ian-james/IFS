@@ -66,4 +66,6 @@ module.exports = function (app) {
 
     // summernote WYSIWYG editor
     app.use('/snote', express.static(nodeModulesPath + '/angular-summernote/dist/'));
+
+    app.use('/surveyscripts', express.static(path.join(__dirname, '../app/components/SurveyAdmin/views/scripts')));
 }

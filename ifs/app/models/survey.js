@@ -8,7 +8,7 @@ class Survey extends Model {
   /* Relationships */
   static get relationMappings() {
     const { Question } = require('./question');
-    const SurveyResult = require('./surveyResult');
+    const { SurveyResult } = require('./surveyResult');
     const SurveyPreference = require('./surveyPreference');
 
     return {
@@ -41,6 +41,14 @@ class Survey extends Model {
   };
 };
 
+const getAvailableSurveys = async () => {
+  const surveys = await Survey.query()
+    .where('allowedToAsk', true);
+  return surveys;
+}
+
 
 module.exports.Survey = Survey;
+module.exports.getAvailableSurveys = getAvailableSurveys;
+
 

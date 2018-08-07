@@ -22,9 +22,9 @@ const Question = require(__components + "Survey/models/question");
 
 module.exports = {
   /* Returns a list of surveys */
-  surveyList: (req, res) => {
+  surveyList: async (req, res) => {
     SurveyManager.getUserSurveyProfileAndSurveyType(req.user.id, function (err, surveyData) {
-      const keys = ['id', 'surveyId', 'lastRevision', 'currentSurveyIndex', 'surveyName', 'title', 'surveyField'];
+      const keys = ['id', 'surveyId', 'lastRevision', 'currentSurveyIndex', 'title', 'surveyField'];
       let ans = _.map(surveyData, obj => _.pick(obj, keys));
 
       ans = _.map(ans, function (obj) {
@@ -38,31 +38,6 @@ module.exports = {
         'title': "Survey List",
         "surveys": ans
       });
-    });
-  },
-  /**
-   * Method gets the full survey and displays it.
-   * @param  {[type]} req  [description]
-   * @param  {[type]} res) {                   var surveyName [description]
-   * @return {[type]}      [description]
-   */
-  getSpecificSurvey: (req, res) => {
-    const surveyName = req.params.surveyName;
-    Survey.getSurvey(surveyName, (err, surveyData) => {
-      if (err) {
-        Logger.error(err);
-      } else if (surveyData.length >= 1 && surveyData[0].surveyName == surveyName) {
-        SurveyBuilder.loadSurveyFile(surveyData[0], function (err, data) {
-          const sqs = JSON.stringify(data);
-          res.render(viewPath + "questionsLayout", {
-            "title": 'Survey',
-            "surveyQuestions": sqs
-          });
-        });
-      } else {
-        // Could throw an error here indicating failure to reach survey
-        res.end();
-      }
     });
   },
   /**
@@ -174,15 +149,21 @@ module.exports = {
     const id = req.params.surveyID;
 
     Survey.getSurveyId(id, (err, surveyMeta) => {
-      if (err)
-      Question.getQuestions(id, (err, questions) => {
-        let loadedSurvey = Serializers.serializeSurvey(surveyMeta, questions, Serializers.matrixSerializer);
-        loadedSurvey = JSON.stringify(loadedSurvey);
+      if (err || !surveyMeta) {
         res.render(viewPath + "questionsLayout", {
           "title": 'Survey',
-          "surveyQuestions": loadedSurvey
+          "surveyQuestions": []
         });
-      })
+      } else {
+        Question.getQuestions(id, (err, questions) => {
+          let loadedSurvey = Serializers.serializeSurvey(surveyMeta, questions, Serializers.matrixSerializer);
+          loadedSurvey = JSON.stringify(loadedSurvey);
+          res.render(viewPath + "questionsLayout", {
+            "title": 'Survey',
+            "surveyQuestions": loadedSurvey
+          });
+        });
+      }
     });
   },
 };
