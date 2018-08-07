@@ -105,7 +105,14 @@ module.exports = function( app, passport ) {
                     res.redirect("/courses");
             }
             else
-                res.redirect('/tool');
+            {
+                if(req.user.instr)
+                    res.redirect('/instructor')
+                else if(req.user.admin)
+                    res.redirect('/admin')
+                else
+                    res.redirect('/dashboard');
+            }
             res.end();
         });
     });
