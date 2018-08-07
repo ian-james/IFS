@@ -13,23 +13,22 @@ div#questionnaireModal(uk-modal='')
 			h2#modalTitle
 		h2#questionNum
 		p#questionText
-		input#assignText.form-control(type='text', placeholder='Assignment 1' name='assignmentName')
+		input#assignText.form-control(type='text', placeholder='Assignment 1' name='assignmentName').uk-input
 		input#dueDate(type="date" ng-model="lowDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required).uk-input.uk-margin-bottom
 		div.uk-margin.uk-grid-small.uk-child-width-auto.uk-grid#comfort
 			label
-				input.uk-radio(type='radio', name='radio' value='Low', checked='')
+				input.uk-radio(type='radio' name='radio' value='Low' style='margin: 1px 0 0' checked)
 				|  Low
 			label
-				input.uk-radio(type='radio', name='radio' value='Medium')
+				input.uk-radio(type='radio' name='radio' value='Medium' style='margin: 1px 0 0')
 				|  Medium
 			label
-				input.uk-radio(type='radio', name='radio' value='High')
+				input.uk-radio(type='radio' name='radio' value='High' style='margin: 1px 0 0')
 				|  High
 
 		p.uk-text-left
 			button.uk-button.uk-button-default#Prev(type='button' style="float: left") Previous	
 			button.uk-button.uk-button-default#Next(type='button' style="float: right") Next
-
 		
 
 script(src="components/Questionnaire/questionnaireModal.js")
