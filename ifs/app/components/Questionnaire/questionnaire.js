@@ -12,33 +12,36 @@ var dbcfg = require(__configs + 'databaseConfig');
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 var {TaskDecompBase} = require('../../models/taskDecompBase')
+var {TaskDecompModule} = require('../../models/taskDecompModule')
+var {TaskDecompTask} = require('../../models/taskDecompTask')
 
 
 module.exports = function(app, iosocket) {
 
-    app.post('/questionnaire', function(req, res) {
+	app.post('/questionnaire', function(req, res) {
 
-       var date = req.body.dueDate;
-       var assignment = req.body.assignment;
-       var comfortLevel = req.body.comfortLevel;
-       var userID = req.user.id;
-       var numComp = 5;
-       var assignId = 1;
+		// query parameters to be used
+		var date = req.body.dueDate;
+		var assignment = req.body.assignment;
+		var comfortLevel = req.body.comfortLevel;
+		var userID = req.user.id;
+		var numComp = 5;
+		var assignId = 1;
 
-       var question = TaskDecompBase.query()
-       .insert({
-            question: assignment,
-            dueDate: date,
-            comfort: comfortLevel
-       })
-       .catch(function(err) { console.log(err.stack) })  
+		// insert query into the task_decompositoon_base table
+		var question = TaskDecompBase.query()
+		.insert({
+			userId: userID,
+			question: assignment,
+			dueDate: date,
+			comfort: comfortLevel,
+			numComponents: numComp,
+			assignmentId: assignId
+		})
+		.catch(function(err) { console.log(err.stack) });  
 
-       console.log(question);
-       res.send(question);
+		// useless return, might want to change
+		res.send(question);
 
-
-       // console.log(userId);
-
-
-    });
+   });
 };
