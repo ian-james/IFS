@@ -47,7 +47,6 @@ const getAvailableSurveys = async () => {
   return surveys;
 }
 
-
 module.exports.Survey = Survey;
 module.exports.getAvailableSurveys = getAvailableSurveys;
 

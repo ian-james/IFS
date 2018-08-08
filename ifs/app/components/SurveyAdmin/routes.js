@@ -13,4 +13,7 @@ module.exports = (app, iosocket) => {
   app.get('/admin/surveys', SurveyAdminController.manageSurveys)
   app.delete('/admin/surveys/delete/:surveyId', SurveyAdminController.deleteSpecificSurvey);
   app.get('/admin/surveys/classes', SurveyAdminController.classSurveys);
+  app.get('/admin/surveys/classes/:classId', SurveyAdminController.classSurveyPreferences);
+  app.get('/admin/surveys/classlist', SurveyAdminController.availClasses);
+  app.post('/admin/surveys/classes', SurveyAdminController.updateClassSurveyPreferences);
 };

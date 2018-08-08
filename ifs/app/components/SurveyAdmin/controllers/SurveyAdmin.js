@@ -7,13 +7,70 @@ const { Survey } = require(path.join(__modelPath, 'survey'));
 const { Question } = require(path.join(__modelPath, 'question'));
 const { SurveyResult } = require(path.join(__modelPath, 'surveyResult'));
 const { SurveyPreference } = require(path.join(__modelPath, 'surveyPreference'));
-//const Question = require('./../../Survey/models/question');
-//const SurveyResponses = require('./../../Survey/models/surveyResponse');
+const { ClassSurvey } = require(path.join(__modelPath, 'classSurvey'));
+const { Course } = require(path.join(__modelPath, 'course'));
 const ChartHelpers = require('./../../Chart/chartHelpers.js');
 const { getResponseCount } = require(path.join(__modelPath, 'question'));
 
 
 module.exports = {
+  /* Update class survey preferences */
+  updateClassSurveyPreferences: async (req, res) => {
+    const data = req.body;
+    const classId = data.classId;
+    for (let pref of data.prefs) {
+      console.log(pref);
+      if (pref.viewable) {
+        const association = await ClassSurvey.query()
+          .where('classId', classId)
+          .andWhere('surveyId', pref.surveyId);
+        if ( !association || association.length == 0) {
+          await ClassSurvey.query()
+          .insert({
+            classId: classId,
+            surveyId: pref.surveyId
+          });
+        }
+      } else {
+        await ClassSurvey.query()
+          .delete()
+          .where('classId', classId)
+          .andWhere('surveyId', pref.surveyId);
+      }
+    }
+    res.end();
+  },
+  /* Gets current class survey preferences for a specific course */
+  classSurveyPreferences: async (req, res) => {
+    const classId = req.params.classId;
+
+    const allSurveys = await Survey.query()
+      .select(['id', 'title', 'surveyField']);
+    const availSurveys = await ClassSurvey.query()
+      .select(['surveyId'])
+      .where('classId', classId);
+    /* Build new data array with t/f preferences */
+    const surveyPreferences = [];
+    for (let survey of allSurveys) {
+      let obj = {};
+      let exists = _.find(availSurveys, (s) => {
+        return s.surveyId == survey.id;
+      });
+      obj = {
+        id: survey.id,
+        title: survey.title,
+        field: survey.surveyField,
+        viewable: (exists) ? true : false
+      };
+      surveyPreferences.push(obj);
+    };
+    res.json(surveyPreferences);
+  },
+  /* Get list of classes for class preferences */
+  availClasses: async (req, res) => {
+    const courses = await Course.query();
+    res.json(courses);
+  },
   /* Build a new class/survey relationship */
   classSurveys: async (req, res) => {
     res.render(path.join(viewPath, 'classSurvey.pug'), {
