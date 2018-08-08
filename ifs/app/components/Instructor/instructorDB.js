@@ -93,6 +93,15 @@ module.exports = {
     },
 
     /**
+     * Get the skills
+     * @param {Function} callback [description]
+     */
+    getSkills: function(callback){
+        var q = `SELECT * from skills`;
+        db.query(q,[], callback);
+    },
+
+    /**
      * Get the assignments choices for a specific assignment
      * @param  integer aId   The assignment id
      * @param  {Function} callback [description]
@@ -112,6 +121,17 @@ module.exports = {
         var q = `SELECT disciplineType as discipline FROM class WHERE id in 
                 (SELECT classId FROM assignment WHERE id=${aId})`;
         db.query(q,[],callback);
+    },
+
+    /**
+     * Get the skills of an assignment.
+     * @param integer aId The assignment id.
+     * @param {Function} callback [description]
+     * @return{[type]}            [description]
+     */
+    getAssignmentSkills: function(aId, callback){
+        var q = `SELECT * FROM class_skill WHERE assignmentId=${aId}`;
+        db.query(q, [], callback);
     },
 
     /**
@@ -203,13 +223,23 @@ module.exports = {
         db.query(q,[],callback);
     },
 
-    insertCourse : function(courseData, callback) {
+    insertCourse: function(courseData, callback) {
         var q = dbHelpers.buildInsert(dbcfg.class_table) + dbHelpers.buildValues(["code","name","description","disciplineType", "instructorId", "year", "semester"]);
         db.query(q, courseData, callback);
     },
 
-    insertAssignment : function(assignmentData, callback) {
+    insertAssignment: function(assignmentData, callback) {
         var q = dbHelpers.buildInsert(dbcfg.assignment_table) + dbHelpers.buildValues(["classId", "name", "title", "description", "deadline"]);
         db.query(q, assignmentData, callback);
+    },
+
+    insertSkill: function(skill, callback) {
+        var q  = dbHelpers.buildInsert(dbcfg.skills_table) + dbHelpers.buildValues(["name"]);
+        db.query(q, [skill], callback);
+    },
+
+    insertClassSkill: function(data, callback){
+        var q = dbHelpers.buildInsert(dbcfg.class_skill_table) + dbHelpers.buildValues(["classId", "assignmentId", "name"]);
+        db.query(q, data, callback);
     }
 }

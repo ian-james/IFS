@@ -58,11 +58,41 @@ module.exports = function( app ) {
         return 0;
     }
 
+    function skillInsert(skills, classId, assignmentId){
+        for(var i = 0; i < skills.length; i++){
+            var data = [classId, assignmentId, skills[i]];
+            instructorDB.insertSkill(skills[i], function(err) {});
+            instructorDB.insertClassSkill(data, function(err) {});
+        } 
+    }
+
+    function parseSkills(s, callback){
+        instructorDB.getSkills(function (err, results){
+            var skills = [];
+            if (!err && results){
+                for (var i = 0; i < results.length; i++){
+                    var skill = {};
+                    skill.s = results[i].name;
+                    skill.enabled = 0;
+                    for (var j = 0; j < s.length; j++){
+                        if(results[i].id == s[j].id)
+                        {
+                            skill.enabled = 1;
+                            break;
+                        }
+                    }
+                    skills.push(skill);
+                }
+            }
+            callback(undefined, skills);
+        });
+    }
+
     app.all('/instructor*', isInstr );
 
     app.route('/instructor')
     .get(function(req,res) {
-        var classes = {}, assignments = {}, stats = {}, aoptions={}, coptions={}, tips={};
+        var classes = {}, assignments = {}, stats = {}, aoptions={}, coptions={}, tips={}, skills = {};
 
         async.parallel([
             async.apply(instructorDB.getClasses, req.user.id),
@@ -70,6 +100,7 @@ module.exports = function( app ) {
             async.apply(instructorDB.fetchAssignmentOptions, "", true),
             async.apply(instructorDB.fetchClassOptions, "", true),
             instructorDB.getRandomTip,
+            instructorDB.getSkills,
             async.apply(instructorDB.countInstStudents, req.user.id),
             async.apply(instructorDB.countInstStudentsOTW, req.user.id),
             async.apply(instructorDB.countWeeklySubmission, req.user.id),
@@ -95,6 +126,9 @@ module.exports = function( app ) {
                             case 4:
                                 tips = results[i]; // set tips
                                 break;
+                            case 5:
+                                skills = results[i];
+                                break;
                             default:
                                 _.extend(stats, results[i][0]); // get statistics
                         }
@@ -102,7 +136,7 @@ module.exports = function( app ) {
                 }
             }
             res.render(viewPath + "instructor", { title: 'Instructor Panel', classes: classes, assignments: assignments,
-                       stats: stats, aoptions: aoptions, coptions: coptions, tips: tips[0]});
+                       stats: stats, aoptions: aoptions, coptions: coptions, tips: tips[0], skills: skills});
         });
 
     });
@@ -110,13 +144,15 @@ module.exports = function( app ) {
     app.route('/instructor')
     .post(function(req,res,next){
         var data = qs.parse(req.body.formData);
-        console.log(data);
+        if (!Array.isArray(data.askills)) data.askills = [data.askills];
         if (req.body.form == 'createCourse'){
             var arr = [data.ccode, data.cname, data.desc, data.ctype, 
                        req.user.id, data.cyear, data.csemester];
-            instructorDB.insertCourse(arr, function(err){
-                if(!err) 
+            instructorDB.insertCourse(arr, function(err, queryInfo){
+                if(!err){
+                    skillInsert(data.cskills, queryInfo.insertId, -1);
                     res.sendStatus(200);
+                }
                 else
                     res.status(500).send();
             });
@@ -124,19 +160,19 @@ module.exports = function( app ) {
         else if (req.body.form == 'createAss'){
             var courseInfo = JSON.parse(data.cnameA);
             var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];
-            instructorDB.insertAssignment(arr, function(err){
-                if(!err)
+            instructorDB.insertAssignment(arr, function(err, queryInfo){
+                if(!err){
+                    skillInsert(data.askills, courseInfo.cid, queryInfo.insertId);
                     res.sendStatus(200);
+                }
                 else
                     res.status(500).send();
             });
         }
-        //res.status(500).send();
-        //res.sendStatus(200);
     });
 
     /********************************
-     ** The manage assignment page **
+     ** The manage assignment page  -- sorry this happened **
      ********************************/
     app.route('/instructor-manage-assignment')
     .post(function(req,res,next){
@@ -152,29 +188,39 @@ module.exports = function( app ) {
                         if(!err && assignment){
                             var assign = assignment[0];
                             assign.deadline = assign.deadline.toLocaleDateString();
-                            instructorDB.getAssignmentDiscipline(id, function(err, disResult){
-                                if(!err && disResult){
-                                    instructorDB.fetchAssignmentOptions(disResult[0].discipline, false, function(err, options){
-                                        if (!err && options){
-                                            instructorDB.getAssignmentChoices(id, function(err, choices){
-                                                if (!err && choices){
-                                                    for (var i = 0; i < options.length; i++)
-                                                        options[i].enabled = checkEnabled(options[i].id, choices);
-                                                    res.render(viewPath + "instructorAssignment", {title: 'Assignment management',
-                                                    aid: id, aname: assign.name, atitle: assign.title, adescription: assign.description, 
-                                                    adeadline: assign.deadline, aoptions: options});
+                            instructorDB.getAssignmentSkills(id, function(err, skills){
+                                if(!err && skills){
+                                    parseSkills(skills, function(err, s){
+                                        if (!err && s) skills = s;
+                                    });
+                                    instructorDB.getAssignmentDiscipline(id, function(err, disResult){
+                                        if(!err && disResult){
+                                            instructorDB.fetchAssignmentOptions(disResult[0].discipline, false, function(err, options){
+                                                if (!err && options){
+                                                    instructorDB.getAssignmentChoices(id, function(err, choices){
+                                                        if (!err && choices){
+                                                            for (var i = 0; i < options.length; i++)
+                                                                options[i].enabled = checkEnabled(options[i].id, choices);
+                                                            res.render(viewPath + "instructorAssignment", {title: 'Assignment management',
+                                                            aid: id, aname: assign.name, atitle: assign.title, adescription: assign.description, 
+                                                            adeadline: assign.deadline, aoptions: options, askills: skills});
+                                                        }
+                                                        else{
+                                                            res.sendStatus(400);
+                                                        }
+                                                    });
                                                 }
-                                                else{
+                                                else{ // once again something we need went wrong lets give them an error :p
                                                     res.sendStatus(400);
                                                 }
                                             });
                                         }
-                                        else{ // once again something we need went wrong lets give them an error :p
+                                        else { // something is wrong lets just give them an error
                                             res.sendStatus(400);
                                         }
                                     });
                                 }
-                                else { // something is wrong lets just give them an error
+                                else {
                                     res.sendStatus(400);
                                 }
                             });

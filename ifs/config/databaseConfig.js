@@ -25,6 +25,9 @@ module.exports = {
     'user_registration_table':          'user_registration',
     'verify_table':                     'verify',
 
+    // Skills
+    'skills_table':                     'skills',
+
     // Class
     'student_table':                    'student',
     'class_table':                      'class',

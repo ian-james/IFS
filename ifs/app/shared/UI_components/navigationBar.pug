@@ -6,7 +6,15 @@
 
 nav(uk-navbar).uk-background-secondary.uk-margin
     div.uk-navbar-left
-        a(href="/dashboard").uk-navbar-item.uk-logo.uk-light IFS
+        if !user || justSignedUp === true
+            a(href="/dashboard").uk-navbar-item.uk-logo.uk-light IFS
+        else
+            if user.admin
+                a(href="/admin").uk-navbar-item.uk-logo.uk-light IFS
+            else if user.instr
+                a(href="/instructor").uk-navbar-item.uk-logo.uk-light IFS
+            else
+                a(href="/dashboard").uk-navbar-item.uk-logo.uk-light IFS
     div.uk-navbar-right
         ul.uk-navbar-nav
             // justSignedUp is passed to the client from /registration-complete;
