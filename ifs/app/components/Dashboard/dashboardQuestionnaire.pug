@@ -6,29 +6,32 @@ div.uk-card.uk-card-default
 
 
 // This is the modal
-div#questionnaireModal(uk-modal='')
-	div.uk-modal-dialog.uk-modal-body
-		button.uk-modal-close-default(type='button', uk-close='')
+div#questionnaireModal(uk-modal ng-controller='questionnaireCtrl')
+	div.uk-modal-dialog
+		button(type='button', uk-close).uk-modal-close-default
 		div.uk-modal-header
-			h2#modalTitle
-		h2#questionNum
-		p#questionText
-		input#assignText.form-control(type='text', placeholder='Assignment 1' name='assignmentName').uk-input
-		input#dueDate(type="date" ng-model="lowDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required).uk-input.uk-margin-bottom
-		div.uk-margin.uk-grid-small.uk-child-width-auto.uk-grid#comfort
-			label
-				input.uk-radio(type='radio' name='radio' value='Low' style='margin: 1px 0 0' checked)
-				|  Low
-			label
-				input.uk-radio(type='radio' name='radio' value='Medium' style='margin: 1px 0 0')
-				|  Medium
-			label
-				input.uk-radio(type='radio' name='radio' value='High' style='margin: 1px 0 0')
-				|  High
+			h2.uk-modal-title {{modalTitle}}
+		div.uk-modal-body
+			h2#questionNum
+			p#questionText
+		//-
+			input#assignText.form-control(type='text', placeholder='Assignment 1' name='assignmentName').uk-input
+			input#dueDate(type="date" ng-model="lowDate" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" required).uk-input.uk-margin-bottom
+			div.uk-margin.uk-grid-small.uk-child-width-auto.uk-grid#comfort
+				label
+					input.uk-radio(type='radio' name='radio' value='Low' style='margin: 1px 0 0' checked)
+					|  Low
+				label
+					input.uk-radio(type='radio' name='radio' value='Medium' style='margin: 1px 0 0')
+					|  Medium
+				label
+					input.uk-radio(type='radio' name='radio' value='High' style='margin: 1px 0 0')
+					|  High
 
-		p.uk-text-left
+		div.uk-modal-footer.uk-text-left
+		//-
 			button.uk-button.uk-button-default#Prev(type='button' style="float: left") Previous	
 			button.uk-button.uk-button-default#Next(type='button' style="float: right") Next
 		
-
+script(src="components/Questionnaire/questionnaireController.js")
 script(src="components/Questionnaire/questionnaireModal.js")

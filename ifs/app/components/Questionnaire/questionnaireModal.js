@@ -24,9 +24,6 @@ $(function() {
 		var div = $("#modalAlert");
 		div.toggleClass("uk-hidden",true);
 
-		var title = $("#modalTitle");
-		title.text("Task Decomposition Modal");
-
 		var questionNum = $("#questionNum");
 		questionNum.text("Question " + (i+1));
 
