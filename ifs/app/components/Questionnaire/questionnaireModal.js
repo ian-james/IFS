@@ -24,11 +24,13 @@ $(function() {
 		var div = $("#modalAlert");
 		div.toggleClass("uk-hidden",true);
 
+		/*
 		var questionNum = $("#questionNum");
 		questionNum.text("Question " + (i+1));
 
 		var questionText = $("#questionText");
 		questionText.text(list[i])
+		*/
 
 		toggleDisplay();
 

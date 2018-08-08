@@ -17,7 +17,7 @@ var {TaskDecompTask} = require('../../models/taskDecompTask')
 
 
 module.exports = function(app, iosocket) {
-	app.get('/taskDecompBaseRetrieve', async function(req, res) {
+	app.get('/taskDecompRetrieve', async function(req, res) {
 		// Query parameters to be used
 		var userID = req.user.id;
 		var assignId = 1;
@@ -29,9 +29,8 @@ module.exports = function(app, iosocket) {
 
 		res.send(result);
 	});
-
+	
 	app.post('/taskDecompBaseStore', async function(req, res) {
-
 		// Query parameters to be used
 		var date = req.body.dueDate;
 		var assignment = req.body.assignment;
