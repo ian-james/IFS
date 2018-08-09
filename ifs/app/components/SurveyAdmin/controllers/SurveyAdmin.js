@@ -19,7 +19,6 @@ module.exports = {
     const data = req.body;
     const classId = data.classId;
     for (let pref of data.prefs) {
-      console.log(pref);
       if (pref.viewable) {
         const association = await ClassSurvey.query()
           .where('classId', classId)
@@ -38,7 +37,7 @@ module.exports = {
           .andWhere('surveyId', pref.surveyId);
       }
     }
-    res.end();
+    res.send({});
   },
   /* Gets current class survey preferences for a specific course */
   classSurveyPreferences: async (req, res) => {

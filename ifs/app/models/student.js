@@ -49,4 +49,13 @@ class Student extends Model {
   };
 };
 
-module.exports = Student;
+const getStudentIdForUser = async (userId) => {
+  const student = await Student.query()
+    .select('id')
+    .where('userId', userId)
+    .first();
+  return student.id;
+}
+
+module.exports.Student = Student;
+module.exports.getStudentIdForUser = getStudentIdForUser;

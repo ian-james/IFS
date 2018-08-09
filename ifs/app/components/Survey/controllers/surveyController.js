@@ -18,11 +18,37 @@ const Serializers = require(path.join(componentPath, 'helpers/Serializer.js'));
 const Survey = require(__components + "/Survey/models/survey");
 const SurveyPreferences = require(path.join(componentPath, 'models/surveyPreferences'));
 const Question = require(__components + "Survey/models/question");
-
+const { optedIn } = require(path.join(__modelPath, 'preferences'));
+const { getAvailableSurveys } = require(path.join(__modelPath,'survey'));
+const { getStudentIdForUser } = require(path.join(__modelPath, 'student'));
 
 module.exports = {
   /* Returns a list of surveys */
   surveyList: async (req, res) => {
+    const userId = req.user.id;
+
+    if (await optedIn(userId)) {
+      const studentId = await getStudentIdForUser(userId);
+      let surveys = await getAvailableSurveys(studentId);
+      /* Format date so pug will play nice */
+      surveys = _.map(surveys, (obj) => {
+        const rev = obj['lastRevision'];
+        if (rev)
+          obj['lastRevision'] = moment(obj['lastRevision']).format("hh:mm a DD-MM-YYYY");
+        return obj;
+      });
+
+      res.render(viewPath + 'surveyList', {
+        'title': "Survey List",
+        "surveys": surveys
+      });
+    } else {
+      res.render(viewPath + 'surveyList', {
+        'title': "Survey List",
+        "surveys": []
+      });
+    }
+    /*
     SurveyManager.getUserSurveyProfileAndSurveyType(req.user.id, function (err, surveyData) {
       const keys = ['id', 'surveyId', 'lastRevision', 'currentSurveyIndex', 'title', 'surveyField'];
       let ans = _.map(surveyData, obj => _.pick(obj, keys));
@@ -38,7 +64,7 @@ module.exports = {
         'title': "Survey List",
         "surveys": ans
       });
-    });
+    });*/
   },
   /**
    * This function receives the survey data from SurveyJS and parses it and

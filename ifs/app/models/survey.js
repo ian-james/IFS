@@ -10,6 +10,7 @@ class Survey extends Model {
     const { Question } = require('./question');
     const { SurveyResult } = require('./surveyResult');
     const SurveyPreference = require('./surveyPreference');
+    const { ClassSurvey } = require('./classSurvey');
 
     return {
       questions: {
@@ -36,14 +37,33 @@ class Survey extends Model {
           from: 'survey.id',
           to: 'survey_preferences.surveyId'
         }
+      },
+      classes: {
+        relation: Model.HasManyRelation,
+        modelClass: ClassSurvey,
+        join: {
+          from: 'survey.id',
+          to: 'class_survey.surveyId'
+        }
       }
     };
   };
 };
 
-const getAvailableSurveys = async () => {
+const getAvailableSurveys = async (studentId) => {
   const surveys = await Survey.query()
-    .where('allowedToAsk', true);
+    .select(['survey.title', 'survey.id', 'survey_preferences.lastRevision', 'survey_preferences.currentSurveyIndex'])
+    .whereIn('survey.id', (builder) => {
+      builder.select('surveyId')
+        .from('class_survey')
+        .whereIn('classId', (b) => {
+          b.select('classId')
+            .from('student_class')
+            .where('student_class.studentId', studentId);
+        })
+    })
+    .leftJoin('survey_preferences', 'survey.id', 'survey_preferences.surveyId');
+  console.log(surveys);
   return surveys;
 }
 

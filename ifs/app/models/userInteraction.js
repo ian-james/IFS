@@ -15,7 +15,7 @@ class UserInteraction extends Model {
         modelClass: User,
         join: {
           from: 'user_interactions.userId',
-          to: 'user.id'
+          to: 'users.id'
         },
       },
     };

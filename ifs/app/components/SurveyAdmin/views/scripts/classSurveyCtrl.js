@@ -14,7 +14,6 @@ app.controller('classSurveyCtrl', ($scope, $http) => {
     $http.get(`/admin/surveys/classes/${$scope.selectedClass.id}`)
       .then((res) => {
         $scope.surveyPref = res.data;
-        console.log($scope.surveyPref);
       })
   }
 
@@ -32,9 +31,7 @@ app.controller('classSurveyCtrl', ($scope, $http) => {
   }
   $scope.updatePreferences = () => {
     let payload = $scope.buildDataObj();
-    console.log('In update');
     payload = JSON.stringify(payload);
-    console.log(payload);
     $.ajax({
       method: 'POST',
       url: '/admin/surveys/classes',
@@ -42,7 +39,11 @@ app.controller('classSurveyCtrl', ($scope, $http) => {
       contentType: 'application/json'
     })
       .then((res) => {
-        console.log('OK');
+        UIkit.notification({
+          message: 'Successfully updated survey preferences',
+          timeout: 2000,
+          status: 'success'
+        });
       });
   }
 
