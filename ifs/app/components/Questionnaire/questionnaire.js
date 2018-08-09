@@ -18,6 +18,13 @@ var {TaskDecompTask} = require('../../models/taskDecompTask')
 
 module.exports = function(app, iosocket) {
 	app.get('/taskDecompRetrieve', async function(req, res) {
+		//The default list to be sent. If anything goes wrong, this is what will be sent. Data is added as queries are done
+		var list = [
+			{num: 'Question 1', text: 'What is the name of the assignment?', fields: [{type: 'text', placeholder: 'Assignment 1', model: ''}]},
+			{num: 'Question 2', text: 'When is the assignment due?', fields: [{type: 'date', model: ''}]},
+			{num: 'Question 3', text: 'How comfortable are you with this assignment?', fields: [{type: 'radio', model: 'Low', options: ['Low', 'Medium', 'High']}]}
+		];
+
 		// Query parameters to be used
 		var userID = req.user.id;
 		var assignId = 1;
@@ -25,9 +32,19 @@ module.exports = function(app, iosocket) {
 		//Check if the user already has an entry in the database for this part of the questionnaire
 		var result = await TaskDecompBase.query()
 		.where('userId', userID)
-		.andWhere('assignmentId', assignId);
+		.andWhere('assignmentId', assignId)
+		.catch(function(err) {
+			res.send(list);
+			console.log(err.stack);
+			return;
+		});
 
-		res.send(result);
+		//Add retrieved data to the list
+		list[0].fields[0].model = result[0].question;
+		list[1].fields[0].model = result[0].dueDate;
+		list[2].fields[0].model = result[0].comfort;
+
+		res.send(list);
 	});
 	
 	app.post('/taskDecompBaseStore', async function(req, res) {

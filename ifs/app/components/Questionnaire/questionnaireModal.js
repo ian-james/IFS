@@ -9,6 +9,7 @@ $(function() {
 	var modalList = ["#assignText", "#dueDate", "#comfort"];
 
 	$("#questionnaire").click(function(event) {
+		/*
 		$.ajax({
 			type: 'GET',
 			url: '/taskDecompBaseRetrieve',
@@ -17,6 +18,7 @@ $(function() {
 			$(modalList[1]).val(data[0].dueDate.substring(0, 10));
 			$("input[name='radio']:checked").val(data[0].comfort);
 		})
+		*/
 
 		event.preventDefault();
 
@@ -85,6 +87,7 @@ $(function() {
 		var comfortLevel = $("input[name='radio']:checked").val();
 		var insert = {'assignment': nameAssignment, 'dueDate': dueDate, 'comfortLevel': comfortLevel}
 
+		/*
 		//Insert into the database
 		$.ajax({
 			type: 'POST',
@@ -92,5 +95,6 @@ $(function() {
 			data: insert	
 		}).done(function(data) {
 		})
+		*/
 	}
 })
