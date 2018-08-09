@@ -35,7 +35,10 @@ module.exports = function(app, iosocket) {
 		.where('userId', userID)
 		.andWhere('assignmentId', assignId)
 		.catch(function(err) {
-			res.send(list);
+			res.send({
+				'list': list,
+				'i': result[0].index
+			});
 			console.log(err.stack);
 			return;
 		});
@@ -53,7 +56,10 @@ module.exports = function(app, iosocket) {
 			})
 			.catch(function(err) { console.log(err.stack) });
 
-			res.send(list);
+			res.send({
+				'list': list,
+				'i': result[0].index
+			});
 			return;
 		}
 
@@ -62,11 +68,15 @@ module.exports = function(app, iosocket) {
 		list[2].fields[0].model = result[0].dueDate;
 		list[3].fields[0].model = result[0].comfort;
 
-		res.send(list);
+		res.send({
+			'list': list,
+			'i': result[0].index
+		});
 	});
 
 	app.post('/taskDecompStore', async function(req, res) {
 		var list = req.body.list;
+		var i = req.body.i;
 
 		// Query parameters to be used
 		console.log(typeof list[2].fields[0].model);
@@ -83,6 +93,7 @@ module.exports = function(app, iosocket) {
 			question: assignment,
 			dueDate: date,
 			comfort: comfortLevel,
+			index: i,
 			numComponents: numComp
 		})
 		.where('userId', userID)
