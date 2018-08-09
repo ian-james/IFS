@@ -48,23 +48,6 @@ module.exports = {
         "surveys": []
       });
     }
-    /*
-    SurveyManager.getUserSurveyProfileAndSurveyType(req.user.id, function (err, surveyData) {
-      const keys = ['id', 'surveyId', 'lastRevision', 'currentSurveyIndex', 'title', 'surveyField'];
-      let ans = _.map(surveyData, obj => _.pick(obj, keys));
-
-      ans = _.map(ans, function (obj) {
-        const rev = obj['lastRevision'];
-        if (rev)
-          obj['lastRevision'] = moment(obj['lastRevision']).format("hh:mm a DD-MM-YYYY");
-        return obj;
-      });
-
-      res.render(viewPath + 'surveyList', {
-        'title': "Survey List",
-        "surveys": ans
-      });
-    });*/
   },
   /**
    * This function receives the survey data from SurveyJS and parses it and
@@ -75,8 +58,11 @@ module.exports = {
    */
   sendSurveyData: (req, res) => {
     try {
-      const title = req.body['title'];
-      const results = req.body['result'];
+      console.log(req.body);
+      const title = req.body.title;
+      const results = req.body.result;
+      const isPulse = req.body.isPulse;
+      console.log(isPulse);
 
       Survey.getSurveyByTitle(title, function (err, data) {
         if (err) {
@@ -124,7 +110,7 @@ module.exports = {
 
             // Organize results for survey response database.
             for (var i = 0; i < qids.length && i < answers.length; i++) {
-              resultsToDb.push([userId, surveyId, qids[i], answers[i], surveyIndex]);
+              resultsToDb.push([userId, surveyId, qids[i], answers[i], surveyIndex, isPulse]);
             }
 
             // Insert the response to the survey into DB.
