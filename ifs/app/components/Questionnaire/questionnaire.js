@@ -20,6 +20,7 @@ module.exports = function(app, iosocket) {
 	app.get('/taskDecompRetrieve', async function(req, res) {
 		//The default list to be sent. If anything goes wrong, this is what will be sent. Data is added as queries are done
 		var list = [
+			{num: 'Basic Task Decomposition', text: 'The following section will ask you questions about basic tasks in this assignment to help you break it down. You may exit this survey at any time.', fields: []},
 			{num: 'Question 1', text: 'What is the name of the assignment?', fields: [{type: 'text', placeholder: 'Assignment 1', model: ''}]},
 			{num: 'Question 2', text: 'When is the assignment due?', fields: [{type: 'date', model: ''}]},
 			{num: 'Question 3', text: 'How comfortable are you with this assignment?', fields: [{type: 'radio', model: 'Low', options: ['Low', 'Medium', 'High']}]}
@@ -39,55 +40,53 @@ module.exports = function(app, iosocket) {
 			return;
 		});
 
+		//If there were no results (the user has not had a chance to do this questionnaire before) then create a new entry and send default list
+		if (result.length == 0) {
+			TaskDecompBase.query()
+			.insert({
+				userId: userID,
+				question: '',
+				dueDate: new Date(),
+				comfort: 'Low',
+				numComponents: 0,
+				assignmentId: assignId
+			})
+			.catch(function(err) { console.log(err.stack) });
+
+			res.send(list);
+			return;
+		}
+
 		//Add retrieved data to the list
-		list[0].fields[0].model = result[0].question;
-		list[1].fields[0].model = result[0].dueDate;
-		list[2].fields[0].model = result[0].comfort;
+		list[1].fields[0].model = result[0].question;
+		list[2].fields[0].model = result[0].dueDate;
+		list[3].fields[0].model = result[0].comfort;
 
 		res.send(list);
 	});
-	
-	app.post('/taskDecompBaseStore', async function(req, res) {
+
+	app.post('/taskDecompStore', async function(req, res) {
+		var list = req.body.list;
+
 		// Query parameters to be used
-		var date = req.body.dueDate;
-		var assignment = req.body.assignment;
-		var comfortLevel = req.body.comfortLevel;
+		console.log(typeof list[2].fields[0].model);
+		var date = list[2].fields[0].model.substring(0, 10) + ' 00:00:00';
+		var assignment = list[1].fields[0].model;
+		var comfortLevel = list[3].fields[0].model;
 		var userID = req.user.id;
 		var numComp = 5;
 		var assignId = 1;
 
-		//Check if the user already has an entry in the database for this part of the questionnaire
-		var result = await TaskDecompBase.query()
+		//Update the base table
+		TaskDecompBase.query()
+		.patch({
+			question: assignment,
+			dueDate: date,
+			comfort: comfortLevel,
+			numComponents: numComp
+		})
 		.where('userId', userID)
-		.andWhere('assignmentId', assignId);
-
-		//If an entry exists, update it, otherwise create a new entry
-		if (result[0]) {
-			TaskDecompBase.query()
-			.patch({
-				question: assignment,
-				dueDate: date,
-				comfort: comfortLevel,
-				numComponents: numComp
-			})
-			.where('userId', userID)
-			.andWhere('assignmentId', assignId)
-			.catch(function(err) { console.log(err.stack) });
-		} else {
-			TaskDecompBase.query()
-			.insert({
-				userId: userID,
-				question: assignment,
-				dueDate: date,
-				comfort: comfortLevel,
-				numComponents: numComp,
-				assignmentId: assignId
-			})
-			.catch(function(err) { console.log(err.stack) });
-		}
-
-		// useless return, might want to change
-		res.send(result);
-
+		.andWhere('assignmentId', assignId)
+		.catch(function(err) { console.log(err.stack) });
    });
 };

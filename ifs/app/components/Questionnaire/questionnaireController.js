@@ -1,38 +1,38 @@
-var i = 0;
-
 app.controller("questionnaireCtrl", function($scope, $http) {
 	$scope.modalTitle = "Task Decomposition"
 	$scope.question = null;
+	$scope.list = null;
+	$scope.i = 0;
 
 	$scope.next = function() {
-		//Ensure we don't go out of bounds
-		if (i+1 > list.length-1) return;
-
-		i++;
-		$scope.question = list[i];
+		$scope.i++;
+		$scope.question = $scope.list[$scope.i];
 		$scope.saveProgress();
 	}
 
 	$scope.prev = function() {
-		//Ensure we don't go out of bounds
-		if (i-1 < 0) return;
-
-		i--;
-		$scope.question = list[i];
+		$scope.i--;
+		$scope.question = $scope.list[$scope.i];
 		$scope.saveProgress();
 	}
 
-	$scope.saveProgress = function() {
+	$scope.finish = function() {
+		UIkit.modal("#questionnaireModal").hide();
+		$scope.saveProgress();
+		$scope.i++;
+	}
 
+	$scope.saveProgress = function() {
+		$http.post('taskDecompStore', {'list': $scope.list}).then(function(res) {
+		});
 	}
 
 	$http.get('taskDecompRetrieve').then(function(res) {
-		list = res.data;
-		for (var entry of list) {
+		$scope.list = res.data;
+		for (var entry of $scope.list)
 			for (var field of entry.fields)
 				if (field.type == 'date')
-					field.model = new Date(field.model);
-		}
-		$scope.question = list[i];
-	})
+					field.model = new Date(field.model);				
+		$scope.question = $scope.list[$scope.i];
+	});
 });

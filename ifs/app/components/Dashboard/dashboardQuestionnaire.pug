@@ -26,8 +26,8 @@ div#questionnaireModal(uk-modal ng-controller='questionnaireCtrl')
 							| {{option}}
 
 		div.uk-modal-footer.uk-text-left
-			button.uk-button.uk-button-default(type='button' style="float: left" ng-click="prev()") Previous	
-			button.uk-button.uk-button-default(type='button' style="float: right" ng-click="next()") Next
+			button.uk-button.uk-button-default(ng-show='i > 0' type='button' style="float: left" ng-click="prev()") Previous	
+			button.uk-button.uk-button-default(ng-show='i < list.length-1' type='button' style="float: right" ng-click="next()") Next
+			button.uk-button.uk-button-primary(ng-show='i == list.length-1' type='button' style="float: right" ng-click="finish()") Finish
 		
 script(src="components/Questionnaire/questionnaireController.js")
-script(src="components/Questionnaire/questionnaireModal.js")
