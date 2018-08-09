@@ -23,7 +23,9 @@ module.exports = function(app, iosocket) {
 			{num: 'Basic Task Decomposition', text: 'The following section will ask you questions about basic tasks in this assignment to help you break it down. You may exit this survey at any time.', fields: []},
 			{num: 'Question 1', text: 'What is the name of the assignment?', fields: [{type: 'text', placeholder: 'Assignment 1', model: ''}]},
 			{num: 'Question 2', text: 'When is the assignment due?', fields: [{type: 'date', model: ''}]},
-			{num: 'Question 3', text: 'How comfortable are you with this assignment?', fields: [{type: 'radio', model: 'Low', options: ['Low', 'Medium', 'High']}]}
+			{num: 'Question 3', text: 'How comfortable are you with this assignment?', fields: [{type: 'radio', model: 'Low', options: ['Low', 'Medium', 'High']}]},
+			{num: 'Assignment Module Decomposition', text: 'The following section will ask you questions about the modules in this assignment to help you break them. You may exit this survey at any time.', fields: []},
+			{num: 'Question 1', text: 'How many modules are there in this assignment?', fields: [{type: 'select', model: '1', label: 'Modules', options: ['1', '2', '3', '4', '5']}]}
 		];
 
 		// Query parameters to be used

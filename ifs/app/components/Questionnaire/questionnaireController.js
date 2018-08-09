@@ -24,6 +24,8 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 
 	$scope.saveProgress = function() {
 		$http.post('taskDecompStore', {'list': $scope.list, 'i': $scope.i}).then(function(res) {
+		},function(err){
+			console.log(err);
 		});
 	}
 
@@ -36,7 +38,9 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 			for (var field of entry.fields)
 				if (field.type == 'date')
 					field.model = new Date(field.model);
-				
+
 		$scope.question = $scope.list[$scope.i];
+	},function(err){
+		console.log(err);
 	});
 });

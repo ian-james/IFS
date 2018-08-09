@@ -24,6 +24,9 @@ div#questionnaireModal(uk-modal ng-controller='questionnaireCtrl')
 						label(style="font-weight:400")
 							input(type="radio" ng-model="field.model" value="{{option}}" style='margin: 0; margin-right: 3px; margin-bottom: 2px').uk-radio
 							| {{option}}
+				div(ng-if="field.type == 'select'")
+					select(ng-model="field.model" ng-options="option for option in field.options").uk-select.uk-form-width-small
+					label(style="margin-bottom:2px; margin-left:5px; font-weight:400; font-size: 1.3rem").uk-text-bottom {{field.label}}
 
 		div.uk-modal-footer.uk-text-left
 			button.uk-button.uk-button-default(ng-show='i > 0' type='button' style="float: left" ng-click="prev()") Previous	
