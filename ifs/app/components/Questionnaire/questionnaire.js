@@ -25,8 +25,9 @@ module.exports = function(app, iosocket) {
 			{num: 'Question 2', text: 'When is the assignment due?', fields: [{type: 'date', model: ''}]},
 			{num: 'Question 3', text: 'How comfortable are you with this assignment?', fields: [{type: 'radio', model: 'Low', options: ['Low', 'Medium', 'High']}]},
 			{num: 'Assignment Module Decomposition', text: 'The following section will ask you questions about the modules in this assignment to help you break them. You may exit this survey at any time.', fields: []},
-			{num: 'Question 1', text: 'How many modules are there in this assignment?', feedsNext: 'textAndSliders', fields: [{type: 'select', model: '1', label: 'Modules', options: ['1', '2', '3', '4', '5']}]},
-			{num: 'Question 2', text: 'What are the names of these modules? Rate your comfortbility with each of them.', fed: 0, prevFed: 0, fields: [{type: 'textAndSliders', models: [['', 5]]}]}
+			{num: 'Question 1', text: 'How many modules are there in this assignment?', feedsNext: 'moduleNames', fields: [{type: 'select', model: '1', label: 'Modules', options: ['1', '2', '3', '4', '5']}]},
+			{num: 'Question 2', text: 'What are the names of these modules?', fed: 0, prevFed: 0, feedsNext: 'moduleDifficulty', fields: [{type: 'text', placeholder: 'Module name', model: ''}]},
+			{num: 'Question 3', text: 'Rate the difficuly level of each of these modules.', prevFed: [''], fields: [{type: 'slider', label: 'Module name', model: 5}]}
 		];
 
 		// Query parameters to be used
