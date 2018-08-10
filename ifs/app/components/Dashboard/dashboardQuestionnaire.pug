@@ -27,6 +27,12 @@ div#questionnaireModal(uk-modal ng-controller='questionnaireCtrl')
 				div(ng-if="field.type == 'select'")
 					select(ng-model="field.model" ng-options="option for option in field.options").uk-select.uk-form-width-small
 					label(style="margin-bottom:2px; margin-left:5px; font-weight:400; font-size: 1.3rem").uk-text-bottom {{field.label}}
+				div(ng-if="field.type == 'textAndSliders'")
+					div(ng-repeat='model in field.models' uk-grid).uk-grid-small
+						div.uk-width-1-2
+							input(type="text" placeholder="Module name" ng-model="model[0]").uk-input
+						div.uk-width-1-2
+							input(type="range" ng-model="model[1]" min="0" max="10" step="1" style="transform: translate(0%, 50%)").uk-range
 
 		div.uk-modal-footer.uk-text-left
 			button.uk-button.uk-button-default(ng-show='i > 0' type='button' style="float: left" ng-click="prev()") Previous	
