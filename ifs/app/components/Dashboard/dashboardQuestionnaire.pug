@@ -14,7 +14,7 @@ div#questionnaireModal(uk-modal ng-controller='questionnaireCtrl')
 		div.uk-modal-body
 			h3#questionNum {{question.num}}
 			p#questionText {{question.text}}
-			div(ng-repeat="field in question.fields")
+			div(ng-repeat="field in question.fields track by $index")
 				div(ng-if="field.type == 'text'")
 					input(type="text" placeholder="{{field.placeholder}}" ng-model="field.model").uk-input
 				div(ng-if="field.type == 'date'")
@@ -28,14 +28,10 @@ div#questionnaireModal(uk-modal ng-controller='questionnaireCtrl')
 					select(ng-model="field.model" ng-options="option for option in field.options").uk-select.uk-form-width-small
 					label(style="margin-bottom:2px; margin-left:5px; font-weight:400; font-size: 1.3rem").uk-text-bottom {{field.label}}
 				div(ng-if="field.type == 'slider'")
-					div(ng-repeat='module in question.fed track by $index' uk-grid)
-						input(type="range" ng-model="field.model" min="0" max="10" step="1").uk-range
-				div(ng-if="field.type == 'textAndSliders'")
-					div(ng-repeat='model in field.models' uk-grid).uk-grid-small
-						div.uk-width-1-2
-							input(type="text" placeholder="Module name" ng-model="model[0]").uk-input
-						div.uk-width-1-2
-							input(type="range" ng-model="model[1]" min="0" max="10" step="1" style="transform: translate(0%, 50%)").uk-range
+					form(style="margin: 0").uk-form-horizontal
+						label(for="testId" style="margin-top: 0; font-size: 1rem").uk-form-label {{field.label}}
+						div.uk-form-controls
+							input(type="range" ng-model="field.model" min="0" max="10" step="1" id="testId").uk-range
 				br
 
 		div.uk-modal-footer.uk-text-left

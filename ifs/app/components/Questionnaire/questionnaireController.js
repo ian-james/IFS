@@ -15,6 +15,7 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 						$scope.list[$scope.i+1].fed = parseInt(field.model);
 						//Clear models if necessary
 						if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
+							console.log($scope.list[$scope.i+1].prevFed, $scope.list[$scope.i+1].fed)
 							$scope.list[$scope.i+1].fields = [];
 							for (var j = 0; j < $scope.list[$scope.i+1].fed; j++) {
 								$scope.list[$scope.i+1].fields.push({type: 'text', placeholder: 'Module name', model: ''});
@@ -23,12 +24,18 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'moduleDifficulty') {
-				console.log('test');
-				$scope.list[$scope.i+1].fields = [];
-				for (var field of $scope.list[$scope.i].fields) {
-					$scope.list[$scope.i+1].fields.push({type: 'slider', label: field.model, model: 5});
+				//Clear models if necessary, else just change the labels
+				if ($scope.list[$scope.i].fields.length != $scope.list[$scope.i+1].fields.length) {
+					$scope.list[$scope.i+1].fields = [];
+					for (var field of $scope.list[$scope.i].fields) {
+						$scope.list[$scope.i+1].fields.push({type: 'slider', label: field.model, model: 5});
+					}
+					console.log($scope.list[$scope.i+1]);
+				} else {
+					for (var j in $scope.list[$scope.i].fields) {
+						$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i].fields[j].model;
+					}
 				}
-				console.log($scope.list[$scope.i+1]);
 			}
 		}
 
@@ -60,9 +67,9 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 
 	$scope.changeFedModels = function() {
 		//Change variables for items where the previously fed and currently fed items need to be kept track of
-		if ($scope.list[$scope.i].feedsNext == 'moduleNames') {
-			$scope.list[$scope.i].prevFed = $scope.list[$scope.i].fed;
-		} 
+		if ($scope.question.feedsNext == 'moduleNames') {
+			$scope.list[$scope.i+1].prevFed = $scope.list[$scope.i+1].fed;
+		}
 	}
 
 	$http.get('taskDecompRetrieve').then(function(res) {
