@@ -95,31 +95,20 @@ module.exports = function( app, passport ) {
         var q = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(['userId']);
         db.query(q, [uid], function(err, data) {
             if (err && data && data.length <= 0 ) {
-                console.log("WENT HERE");
-                console.log(err);
                 res.redirect('/');
             }
 
             if (!data[0].completedSetup){
-                console.log("tf its here?");
                 if(__EXPERIMENT_ON)
                     res.redirect('/setup');
                 else
                     res.redirect("/courses");
             }
             else
-            {
-                console.log("nah went here");
-                if(req.user.instr)
-                    res.redirect('/instructor')
-                else if(req.user.admin)
-                    res.redirect('/admin')
-                else
-                    res.redirect('/dashboard');
-            }
+                res.redirect('/tool');
             res.end();
         });
-    });
+});
 
     app.get('/register', function ( req,res ) {
         res.render(viewPath + 'register', {title: "Signup Screen", message:"ok"});

@@ -66,6 +66,35 @@ module.exports = function( app ) {
         } 
     }
 
+    function taskInsert(arr, assignmentId){
+        var taskName = taskDescription = "";
+        var count = 0;
+        for(var key in arr){
+            if(key.indexOf('tName') != -1)
+            {
+                taskName = arr[key];
+                count = 1;
+            }
+            else if (key.indexOf('tDesc') != -1)
+            {
+                taskDescription = arr[key];
+                count++;
+            }
+            else{
+                count = 0;
+            }
+
+            if(count == 2){
+                var temp = [assignmentId, taskName, taskDescription];
+                instructorDB.taskInsert(temp, function (err) {});
+                count = 0;
+            }
+        }
+        //var tasks = arr.slice(5)
+       // console.log("TASKS ARE HERE");
+      //  console.log(tasks);
+    }
+
     function parseSkills(s, callback){
         instructorDB.getSkills(function (err, results){
             var skills = [];
@@ -75,7 +104,7 @@ module.exports = function( app ) {
                     skill.s = results[i].name;
                     skill.enabled = 0;
                     for (var j = 0; j < s.length; j++){
-                        if(results[i].id == s[j].id)
+                        if(results[i].name == s[j].name)
                         {
                             skill.enabled = 1;
                             break;
@@ -86,6 +115,40 @@ module.exports = function( app ) {
             }
             callback(undefined, skills);
         });
+    }
+
+    function setupDiscipline(d){
+        var disciplines = [];
+        var dOptions = ["computer science", "psychology", "other"];
+        for (var i = 0; i < dOptions.length; i++){
+            var discipline = {};
+            discipline.name = dOptions[i];
+            if (dOptions[i] == d){
+                discipline.enabled = 1;
+            }
+            else {
+                discipline.enabled = 0;
+            }
+            disciplines.push(discipline);
+        }
+        return disciplines;
+    }
+
+    function setupSemester(sem){
+        var semesters = [];
+        var sOptions = ["fall", " winter", "summer"];
+        for (var i = 0; i < sOptions.length; i++){
+            var semester = {};
+            semester.name = sOptions[i];
+            if (sOptions[i] == sem){
+                semester.enabled = 1;
+            }
+            else {
+                semester.enabled = 0;
+            }
+            semesters.push(semester);
+        } 
+        return semesters;
     }
 
     app.all('/instructor*', isInstr );
@@ -144,9 +207,9 @@ module.exports = function( app ) {
     app.route('/instructor')
     .post(function(req,res,next){
         var data = qs.parse(req.body.formData);
-        if (!Array.isArray(data.askills)) data.askills = [data.askills];
         if (req.body.form == 'createCourse'){
-            var arr = [data.ccode, data.cname, data.desc, data.ctype, 
+            if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
+            var arr = [data.ccode, data.cname, data.cdesc, data.ctype, 
                        req.user.id, data.cyear, data.csemester];
             instructorDB.insertCourse(arr, function(err, queryInfo){
                 if(!err){
@@ -158,11 +221,24 @@ module.exports = function( app ) {
             });
         }
         else if (req.body.form == 'createAss'){
+            if (!Array.isArray(data.askills)) data.askills = [data.askills];
             var courseInfo = JSON.parse(data.cnameA);
-            var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];
+            var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];     
             instructorDB.insertAssignment(arr, function(err, queryInfo){
                 if(!err){
                     skillInsert(data.askills, courseInfo.cid, queryInfo.insertId);
+                    taskInsert(data, queryInfo.insertId);
+                    res.sendStatus(200);
+                }
+                else
+                    res.status(500).send();
+            });
+        }
+        else if (req.body.form == 'createEvent'){
+            var courseInfo = JSON.parse(data.cnameE);
+            var arr = [courseInfo.cid, data.ename, data.etitle, data.edesc, data.estartdate, data.eduedate];
+            instructorDB.insertEvent(arr, function(err, queryInfo){
+                if(!err){
                     res.sendStatus(200);
                 }
                 else
@@ -177,7 +253,6 @@ module.exports = function( app ) {
     app.route('/instructor-manage-assignment')
     .post(function(req,res,next){
         var id = req.body['assignment-id'];
-
         instructorDB.checkAssignmentAccess(id, req.user.id, function(err, result){
             // make a check in case it fails and display some other page????
             if(!err && result){
@@ -202,7 +277,7 @@ module.exports = function( app ) {
                                                             for (var i = 0; i < options.length; i++)
                                                                 options[i].enabled = checkEnabled(options[i].id, choices);
                                                             res.render(viewPath + "instructorAssignment", {title: 'Assignment management',
-                                                            aid: id, aname: assign.name, atitle: assign.title, adescription: assign.description, 
+                                                            aid: id, acid: assign.classId, aname: assign.name, atitle: assign.title, adescription: assign.description, 
                                                             adeadline: assign.deadline, aoptions: options, askills: skills});
                                                         }
                                                         else{
@@ -242,6 +317,70 @@ module.exports = function( app ) {
 
     });
 
+    app.route('/instructor-manage-confirm')
+    .post(function(req, res, next){
+        var data = qs.parse(req.body.formData);
+        if (req.body.form == 'updateAss'){
+            if (!Array.isArray(data.askills)) data.askills = [data.askills];
+            var arr = [data.aname, data.atitle, data.adesc, data.adate];
+            instructorDB.updateAssignment(arr, data.aid, function(err){
+                if(!err)
+                {
+                    instructorDB.deleteAssignmentSkills(data.aid, function(err){
+                        if(!err){
+                            skillInsert(data.askills, data.acid, data.aid);
+                        }
+                    });
+                    res.sendStatus(200);
+                }
+                else{
+                    res.status(500).send();
+                }
+            });
+        }
+        else if(req.body.form == 'updateCourse'){
+            if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
+            var arr = [data.ccode, data.cname, data.cdesc, data.ctype, 
+                data.cyear, data.csemester];
+            instructorDB.updateClass(arr, data.cid, function(err){
+                if(!err)
+                {
+                    instructorDB.deleteClassSkills(data.cid, function(err){
+                        if(!err){
+                            skillInsert(data.cskills, data.cid, -1);
+                        }
+                    });
+                    res.sendStatus(200);
+                }
+                else{
+                    res.status(500).send();
+                }
+            });
+        }
+    });
+
+    app.route('/instructor-delete')
+    .post(function(req, res, next){
+        var data = qs.parse(req.body.formData);
+        console.log(data);
+        instructorDB.checkAssignmentAccess(data.aid, req.user.id, function(err, result){
+            if(!err && result){
+                if(result[0].found == "1"){
+                    instructorDB.deleteAssignment(data.aid, req.user.id, function(err){
+                        if(!err){
+                            res.sendStatus(200);
+                        }else{
+                            res.status(500).send();
+                        }
+                    });
+                }
+                else{
+                    res.status(500).send();
+                }
+            }
+        });
+    });
+
 
     /*********************************
      *** The course dashboard page ***
@@ -250,13 +389,26 @@ module.exports = function( app ) {
     .post(function(req, res, next){
         var id = req.body['class-id'];
         instructorDB.checkClassAccess(id, req.user.id, function(err, result){
-            console.log(result);
             if(!err && result){
                 if(result[0].found == "1"){ // lets fetch the actual class to make sure there was no tampering           
                     instructorDB.getClass(id, function(error,course){ // get the class information its safer to just get by id
                         if (!error && course){
                             var cs = course[0];
-                            console.log(cs.name);
+                            var disciplines = setupDiscipline(cs.disciplineType);
+                            var semesters = setupSemester(cs.semester);
+                            instructorDB.getClassSkills(id, function(err, skills){
+                                parseSkills(skills, function(err, s){
+                                    if (!err && s){
+                                        res.render(viewPath + "instructorCourse", {title: 'Course management',
+                                        cid: id, ccode: cs.code, cname: cs.name, cdescription: cs.description, 
+                                        cdiscipline: disciplines, cyear: cs.year, csemesters: semesters, cskills: s});
+                                    }
+                                    else{
+                                        res.sendStatus(400);
+                                    }
+
+                                });
+                            });
                         }
                     });
                 }
@@ -265,8 +417,6 @@ module.exports = function( app ) {
                 }
             }
         });
-
-        res.render(viewPath + "instructorCourse", {title: 'Course Dashboard'});
     });
 
 };

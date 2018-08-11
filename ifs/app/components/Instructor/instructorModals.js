@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    var task = 1;
     //  for classes modal
     $('#psycoptionsC').hide();
     $('#othoptionsC').hide();
@@ -44,11 +45,35 @@ $(document).ready(function(){
         }
     }
 
+
     //displayAssignmentOptions();
     // for assignment modal
     // $('#cnameA').change(function() {
     //    displayAssignmentOptions();
     // });
+
+    $( "#addTask" ).click(function() {
+        var tNameStart = `<div id='task${task}'><label class="uk-form-label" for="Task #${task} Name">Task #${task} Name</label>
+                            <div class="uk-form-controls">`;
+        if (task > 1)
+            tNameStart = '<br>' + tNameStart;                  
+        var tName = '<input class="uk-input" name="tName' + task + '" placeholder="e.g Tutor session" required="required" type="text">';
+        var tNameEnd = '</div><br>';
+        var tDescStart = `<label class="uk-form-label" for="Task #${task} Description">Task #${task} Description</label>
+                            <div class="uk-form-controls">`;
+        var tDesc = '<input class="uk-input" name="tDesc' + task + '" placeholder="e.g Learn C" required="required" type="text">';
+        var tDescEnd = '</div></div>';
+        $('#taskControls').before(tNameStart + tName + tNameEnd + tDescStart + tDesc + tDescEnd);
+        task++;
+    });
+
+    $( "#removeTask" ).click(function() {
+        if (task > 1)
+        {
+            task--;
+            $("#task" + task).remove();
+        }
+    })
 
     $('#ccourse').submit(function(event) {
         event.preventDefault();
@@ -132,6 +157,46 @@ $(document).ready(function(){
             statusCode: {
                 500: function() {
                     UIkit.notification('Failed to create assignment.', {'status': 'danger'});
+                }
+            }
+            
+        });
+
+    });
+
+
+    $('#cEvent').submit(function(event) {
+        event.preventDefault();
+        $('.ceerror').remove();
+        var strErr = '<div class="uk-alert-danger ceerror" uk-alert>';
+        var endErr = '</div>';
+        var err = 0;
+        
+        if (err) return;
+
+        var formData = $("#cEvent :input[value!='']").serialize();
+  
+        $.ajax({
+            url: '/instructor',
+            type: 'post',
+            data: {
+                formData,
+                form: 'createEvent'
+            },
+            timeout: 5000,
+            success: function(msg){
+                var modal = UIkit.modal('#create-event');
+                modal.hide();
+                $('#cEvent').trigger('reset');
+                $('.ceerror').remove();
+                UIkit.notification('Event created.', {'status': 'success'});
+                setTimeout(function(){
+                    window.location.reload(1);
+                 }, 3000);
+            },
+            statusCode: {
+                500: function() {
+                    UIkit.notification('Failed to create event.', {'status': 'danger'});
                 }
             }
             

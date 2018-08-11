@@ -107,6 +107,7 @@
     "retext-spell": "^2.3.1",
     "retext-usage": "^0.5.0",
     "socket.io": "^1.7.3",
+    "sqlstring": "^2.3.1",
     "survey-jquery": "^0.12.5",
     "tokgen": "^1.0.0",
     "uikit": "^3.0.0-beta.18",

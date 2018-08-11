@@ -6,6 +6,7 @@ var db = require( __configs + 'database');
 var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 var dbHelpers = require(__components + "Databases/dbHelpers");
+var SqlString = require('sqlstring');
 
 module.exports = {
 
@@ -155,6 +156,17 @@ module.exports = {
     },
 
     /**
+     * Get the skills of an assignment.
+     * @param integer aId The assignment id.
+     * @param {Function} callback [description]
+     * @return{[type]}            [description]
+     */
+    getClassSkills: function(cId, callback){
+        var q = `SELECT * FROM class_skill WHERE classId=${cId} AND assignmentId=-1`;
+        db.query(q, [], callback);
+    },
+
+    /**
      * Get a random tip to display on the instructor dashboard.
      * @param   {Function} callback [description]
      * @return {[type]}              none
@@ -233,6 +245,11 @@ module.exports = {
         db.query(q, assignmentData, callback);
     },
 
+    insertEvent: function(eventData, callback) {
+        var q = dbHelpers.buildInsert(dbcfg.upcoming_event_table) + dbHelpers.buildValues(["classId", "name", "title", "description", "openDate", "closedDate"]);
+        db.query(q, eventData, callback);
+    },
+
     insertSkill: function(skill, callback) {
         var q  = dbHelpers.buildInsert(dbcfg.skills_table) + dbHelpers.buildValues(["name"]);
         db.query(q, [skill], callback);
@@ -241,5 +258,35 @@ module.exports = {
     insertClassSkill: function(data, callback){
         var q = dbHelpers.buildInsert(dbcfg.class_skill_table) + dbHelpers.buildValues(["classId", "assignmentId", "name"]);
         db.query(q, data, callback);
-    }
+    },
+
+    updateAssignment: function(data, aid, callback){
+        var q = `UPDATE assignment set name='${data[0]}', title='${data[1]}', description='${data[2]}', deadline='${data[3]}' WHERE id=${aid}`
+        db.query(q, [], callback);
+    },
+
+    deleteAssignmentSkills: function(aid, callback){
+        var q = `DELETE from class_skill WHERE assignmentId=${aid}`;
+        db.query(q, [], callback);
+    },
+
+    updateClass: function(data, cid, callback){
+        var q = `UPDATE class set code='${data[0]}', name='${data[1]}', description='${data[2]}', disciplineType='${data[3]}', year='${data[4]}', semester='${data[5]}' WHERE id=${cid}`
+        db.query(q, [], callback);
+    },
+
+    deleteClassSkills: function(cid, callback){
+        var q = `DELETE from class_skill WHERE classId=${cid} AND assignmentId=-1`;
+        db.query(q, [], callback);
+    },
+
+    deleteAssignment: function(aid, uid, callback){
+        var q = `DELETE from assignment WHERE id=${aid}`;
+        db.query(q,[],callback);
+    },
+
+    taskInsert: function(task, callback){
+        var q = dbHelpers.buildInsert(dbcfg.assignment_task_table) + dbHelpers.buildValues(["assignmentId","name","description"])
+        db.query(q,task,callback);
+    },
 }

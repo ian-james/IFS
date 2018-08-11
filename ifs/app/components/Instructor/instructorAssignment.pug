@@ -12,12 +12,14 @@ block content
                 tags: true
             });
         });
+    script
+        include instructorUpdate.js
     div.uk-container
         h2.uk-text-left #{title}
         hr
         div.uk-margin.uk-padding-small
             div.uk-margin-large-bottom
-                form(class='uk-form' method="post" action="")
+                form(id="updateAssignment" class='uk-form' method="post" action="")
                     label(for="Assignment name").uk-form-label
                         | Assignment Name
                     div.uk-form-controls
@@ -31,7 +33,7 @@ block content
                     label(for="Assignment description").uk-form-label
                         | Assignment Description
                     div.uk-form-controls
-                        input(type="text" name="adescription", id="adescription", value=adescription, required).uk-input
+                        input(type="text" name="adesc", id="adescription", value=adescription, required).uk-input
                     br
                     label(for="Assignment deadline").uk-form-label
                         | Assignment Deadline
@@ -41,13 +43,15 @@ block content
                     label(for="Assignment skills").uk-form-label
                         | Assignment Skills
                     div.uk-form-controls
-                        select.skills(name='state' multiple="multiple").uk-input
+                        select.skills(name='askills' multiple="multiple" required).uk-input
                             each skill in askills
                                 if skill.enabled
                                     option(value=skill.s selected) #{skill.s}
                                 else
                                     option(value=skill.s) #{skill.s}
                     br
+                    input(type="hidden" name="aid" value=aid)
+                    input(type="hidden" name="acid" value=acid)
                     // - stats go here...need working on and proper implementation. design is done.
                     //- h5 #[strong Statistics]
                     //- each option in aoptions
@@ -74,8 +78,23 @@ block content
                     //-                     div.uk-clearfix
                     //-                         div.uk-float-left
                     //-                             include instructorInput.pug
+
                     input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
                     a.uk-button.uk-button-danger(href='/instructor') Cancel
+                    h5 #[strong Dangerous Settings]
+                    a.uk-button.uk-button-danger(href='#delete-assignment', uk-toggle='')
+                        | Delete Assignment
+    div#delete-assignment(uk-modal='')
+        .uk-modal-dialog.uk-modal-body
+            button.uk-modal-close-default(type='button', uk-close='')
+            h2.uk-modal-title Delete Assignment
+            div.uk-overflow-container#cContent
+                p
+                    | Are you sure you want to delete "#{aname}"?
+                form(id="dAss" class='uk-form' method="post" action="/instructor-delete")
+                    input(type="hidden" name="aid" value=aid)
+                    button.uk-button.uk-modal-close(type='button') Cancel
+                    input.uk-button.uk-button-danger.uk-margin-small-left(type='submit' value='Delete')
                                     
 
 
