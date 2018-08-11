@@ -36,6 +36,19 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 						$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i].fields[j].model;
 					}
 				}
+			} else if ($scope.list[$scope.i].feedsNext == 'timeEstimates') {
+				//Clear models if necessary, else just change the labels
+				if ($scope.list[$scope.i].fields.length != $scope.list[$scope.i+1].fields.length) {
+					$scope.list[$scope.i+1].fields = [];
+					for (var field of $scope.list[$scope.i-1].fields) {
+						$scope.list[$scope.i+1].fields.push({type: 'timeEstimate', label: field.model, model: [1, 0]});
+					}
+					console.log($scope.list[$scope.i+1]);
+				} else {
+					for (var j in $scope.list[$scope.i].fields) {
+						$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i-1].fields[j].model;
+					}
+				}
 			}
 		}
 
