@@ -33,7 +33,7 @@ module.exports = function(app, iosocket) {
 
 		// Query parameters to be used
 		var userID = req.user.id;
-		var assignId = 1;
+		var assignId = 1; //TODO: this variable is dummy for now and needs to be associated with an actualy assignment ID
 
 		//Check if the user already has an entry in the database for this part of the questionnaire
 		var result = await TaskDecompBase.query()
@@ -48,6 +48,12 @@ module.exports = function(app, iosocket) {
 			return;
 		});
 
+		//Add retrieved data to the list
+		list[1].fields[0].model = result[0].question;
+		list[2].fields[0].model = result[0].dueDate;
+		list[3].fields[0].model = result[0].comfort;
+		var index = result[0].index;
+
 		//If there were no results (the user has not had a chance to do this questionnaire before) then create a new entry and send default list
 		if (result.length == 0) {
 			TaskDecompBase.query()
@@ -59,23 +65,47 @@ module.exports = function(app, iosocket) {
 				numComponents: 0,
 				assignmentId: assignId
 			})
-			.catch(function(err) { console.log(err.stack); });
-
-			res.send({
-				'list': list,
-				'i': result[0].index
+			.catch(function(err) {
+				res.send({
+					'list': list,
+					'i': result[0].index
+				});
+				console.log(err.stack);
+				return;
 			});
-			return;
-		}
+		} else {
+			var baseId = result[0].id;
+			result = await TaskDecompModule.query()
+			.where('baseId', baseId)
+			.catch(function(err) {
+				res.send({
+					'list': list,
+					'i': result[0].index
+				});
+				console.log(err.stack);
+				return;
+			});
 
-		//Add retrieved data to the list
-		list[1].fields[0].model = result[0].question;
-		list[2].fields[0].model = result[0].dueDate;
-		list[3].fields[0].model = result[0].comfort;
+			list[5].fields[0].model = '' + result.length;
+			list[6].fed = list[6].prevFed = result.length;
+
+			console.log(result.length);
+
+			for (var i = 0; i < result.length; i++) {
+				var name = result[i].name;
+				var difficulty = result[i].difficulty;
+				var hours = parseInt(result[i].expectedLength.substring(1, 2));
+				var minutes = parseInt(result[i].expectedLength.substring(3, 5));
+
+				list[6].fields[i] = {type: 'text', placeholder: 'Module name', model: name};
+				list[7].fields[i] = {type: 'slider', label: name, model: difficulty};
+				list[8].fields[i] = {type: 'timeEstimate', label: name, model: [hours, minutes], hours: [1,2,3,4,5], minutes:[0,15,30,45]};
+			}
+		}
 
 		res.send({
 			'list': list,
-			'i': result[0].index
+			'i': index
 		});
 	});
 
@@ -84,13 +114,12 @@ module.exports = function(app, iosocket) {
 		var i = req.body.i;
 
 		// Query parameters to be used
-		console.log(typeof list[2].fields[0].model);
 		var date = list[2].fields[0].model.substring(0, 10) + ' 00:00:00';
 		var assignment = list[1].fields[0].model;
 		var comfortLevel = list[3].fields[0].model;
 		var userID = req.user.id;
-		var numComp = 5;
-		var assignId = 1;
+		var numComp = parseInt(list[5].fields[0].model);
+		var assignId = 1; //TODO: this variable is dummy for now and needs to be associated with an actualy assignment ID
 
 		//Update the base table
 		TaskDecompBase.query()
@@ -104,5 +133,31 @@ module.exports = function(app, iosocket) {
 		.where('userId', userID)
 		.andWhere('assignmentId', assignId)
 		.catch(function(err) { console.log(err.stack); });
+
+		//Get the base id for finding all modules
+		var result = await TaskDecompBase.query()
+		.where('userId', userID)
+		.andWhere('assignmentId', assignId)
+		.catch(function(err) {
+			console.log(err.stack);
+		});
+
+		//Remove all previously stored modules from the database to replace them
+		TaskDecompModule.query()
+		.delete()
+		.where('baseId', result[0].id)
+		.catch(function(err) { console.log(err.stack); });
+
+		//For each module in the assignment, add the appropriate data as a new entry to the database
+		for (var i = 0; i < numComp; i++) {
+			TaskDecompModule.query()
+			.insert({
+				baseId: result[0].id,
+				name: list[6].fields[i].model,
+				expectedLength: list[8].fields[i].model[0]+':'+list[8].fields[i].model[1]+':00',
+				difficulty: list[7].fields[i].model
+			})
+			.catch(function(err) { console.log(err.stack); });
+		}
    });
 };

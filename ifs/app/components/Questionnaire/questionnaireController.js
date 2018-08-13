@@ -13,41 +13,28 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 				for (var field of $scope.list[$scope.i].fields) {
 					if (field.type == 'select') {
 						$scope.list[$scope.i+1].fed = parseInt(field.model);
-						//Clear models if necessary
+						//Clear all fields in further questions if the user inputs a new number of modules
 						if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
-							console.log($scope.list[$scope.i+1].prevFed, $scope.list[$scope.i+1].fed)
 							$scope.list[$scope.i+1].fields = [];
+							$scope.list[$scope.i+2].fields = [];
+							$scope.list[$scope.i+3].fields = [];
 							for (var j = 0; j < $scope.list[$scope.i+1].fed; j++) {
 								$scope.list[$scope.i+1].fields.push({type: 'text', placeholder: 'Module name', model: ''});
+								$scope.list[$scope.i+2].fields.push({type: 'slider', label: '', model: 5});
+								$scope.list[$scope.i+3].fields.push({type: 'timeEstimate', label: '', model: [1, 0], hours: [1,2,3,4,5], minutes:[0,15,30,45]});
 							}
 						}
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'moduleDifficulty') {
-				//Clear models if necessary, else just change the labels
-				if ($scope.list[$scope.i].fields.length != $scope.list[$scope.i+1].fields.length) {
-					$scope.list[$scope.i+1].fields = [];
-					for (var field of $scope.list[$scope.i].fields) {
-						$scope.list[$scope.i+1].fields.push({type: 'slider', label: field.model, model: 5});
-					}
-					console.log($scope.list[$scope.i+1]);
-				} else {
-					for (var j in $scope.list[$scope.i].fields) {
-						$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i].fields[j].model;
-					}
+				//Change labels to match user input
+				for (var j in $scope.list[$scope.i].fields) {
+					$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i].fields[j].model;
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'timeEstimates') {
-				//Clear models if necessary, else just change the labels
-				if ($scope.list[$scope.i].fields.length != $scope.list[$scope.i+1].fields.length) {
-					$scope.list[$scope.i+1].fields = [];
-					for (var field of $scope.list[$scope.i-1].fields) {
-						$scope.list[$scope.i+1].fields.push({type: 'timeEstimate', label: field.model, model: [1, 0]});
-					}
-					console.log($scope.list[$scope.i+1]);
-				} else {
-					for (var j in $scope.list[$scope.i].fields) {
-						$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i-1].fields[j].model;
-					}
+				//Change labels to match user input
+				for (var j in $scope.list[$scope.i].fields) {
+					$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i-1].fields[j].model;
 				}
 			}
 		}
@@ -74,7 +61,6 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 	$scope.saveProgress = function() {
 		$http.post('taskDecompStore', {'list': $scope.list, 'i': $scope.i}).then(function(res) {
 		},function(err){
-			console.log(err);
 		});
 	}
 
@@ -88,15 +74,15 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 	$http.get('taskDecompRetrieve').then(function(res) {
 		$scope.list = res.data.list;
 		$scope.i = res.data.i;
+		$scope.question = $scope.list[$scope.i];
+		console.log($scope.list);
+		console.log($scope.i);
 
 		//Convert stringified date entries to Date objects
 		for (var entry of $scope.list)
 			for (var field of entry.fields)
 				if (field.type == 'date')
-					field.model = new Date(field.model);
-
-		$scope.question = $scope.list[$scope.i];
+					field.model = new Date(field.model);		
 	},function(err){
-		console.log(err);
 	});
 });
