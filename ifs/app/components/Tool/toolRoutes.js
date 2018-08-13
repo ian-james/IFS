@@ -3,6 +3,7 @@ var viewPath = path.join(__dirname + "/");
 var fs = require("fs");
 var _ = require('lodash');
 var Logger = require(__configs + "loggingConfig");
+var async = require('async');
 
 var url = require('url');
 var defaultTool = require(__components + 'Preferences/setupDefaultToolType.js');
@@ -16,6 +17,8 @@ var Survey = require(__components + "Survey/models/survey");
 
 var preferencesDB = require(__components + 'Preferences/preferenceDB.js');
 var TipManager = require(__components + 'TipManager/tipManager.js');
+
+var {Assignment} = require("../../models/assignment");
 
 module.exports = function (app, iosocket) {
 
@@ -52,6 +55,32 @@ module.exports = function (app, iosocket) {
       }
     }
   }
+
+  app.get('/tool/assignment', async function(req, res) {
+
+    var val = 0;
+    var result = [];
+
+    var val = await Assignment.query()
+    .catch(function(err) {
+      res.send({
+        'value': val
+      });
+      console.log(err.stack);
+      return;
+    });
+
+    for(var i = 0; i < val.length; i++)
+    {
+      result.push(val[i].name);
+
+    }
+
+    res.send({'result': result});
+
+
+
+  });
 
   app.get('/tool/data', function (req, res) {
     fs.readFile(req.session.toolFile, 'utf-8', function (err, toolData) {

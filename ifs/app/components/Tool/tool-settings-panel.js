@@ -3,6 +3,27 @@ $(document).ready(function(){
 	if (msg.length > 0) {
 		UIkit.notification({message: msg, pos: 'top-center', status: 'danger'});
 	}
+
+    $('#test').empty();
+
+    $.ajax({
+        type: "get",
+        url: '/tool/assignment',
+        success: function (data, status) {
+            var optsStr = "";
+            for(var i = 0; i < data.result.length; i++)
+            {
+                optsStr += "<option value='" + data.result[i] + "'>" + data.result[i] + "</option>";
+            }
+            $('#test').append( optsStr );
+        },
+        error: function(req, err) {
+            console.log(err);
+        }
+    })
+
+
+
 });
 
 $("#settingsToggle").click(function() {
@@ -34,3 +55,4 @@ $("#toolPreference").submit(function(event) {
         }
     });
 });
+

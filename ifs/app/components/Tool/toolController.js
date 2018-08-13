@@ -13,4 +13,5 @@ app.controller( "toolCtrl", function($scope, $http) {
     $http.get('/preferences/data.json').then(function(res) {
         $scope.prefsList = res.data.options[3];
     });
+
 });
