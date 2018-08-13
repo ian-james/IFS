@@ -58,6 +58,13 @@ module.exports = function( app ) {
         return 0;
     }
 
+    /**
+     * Inserts the skills into both skill page and class skill.
+     * @param  array   skills  The skills.
+     * @param  integer classId The class id.
+     * @param  integer assignmentId The assignment id
+     * @return {[type]}        [description]
+     */
     function skillInsert(skills, classId, assignmentId){
         for(var i = 0; i < skills.length; i++){
             var data = [classId, assignmentId, skills[i]];
@@ -66,6 +73,11 @@ module.exports = function( app ) {
         } 
     }
 
+    /**
+     * Inserts the tasks.
+     * @param  array   arr    The array of tasks.
+     * @param  assignmentId   The assignment id.
+     */
     function taskInsert(arr, assignmentId){
         var taskName = taskDescription = "";
         var count = 0;
@@ -90,11 +102,13 @@ module.exports = function( app ) {
                 count = 0;
             }
         }
-        //var tasks = arr.slice(5)
-       // console.log("TASKS ARE HERE");
-      //  console.log(tasks);
     }
 
+    /**
+     * Parses the skills marking which ones have already been enabled.
+     * @param  array   s  The skills.
+     * @param  callback  callback   The callback.
+     */
     function parseSkills(s, callback){
         instructorDB.getSkills(function (err, results){
             var skills = [];
@@ -117,6 +131,11 @@ module.exports = function( app ) {
         });
     }
 
+    /**
+     * Sets up the disciplines, setting which one should be enabled.
+     * @param array d The disciplines 
+     * @return array The disciplines
+     */
     function setupDiscipline(d){
         var disciplines = [];
         var dOptions = ["computer science", "psychology", "other"];
@@ -134,6 +153,11 @@ module.exports = function( app ) {
         return disciplines;
     }
 
+    /**
+     * Sets up the semesters, setting which one should be enabled.
+     * @param array sem  The semesters
+     * @return arr The semesters
+     */
     function setupSemester(sem){
         var semesters = [];
         var sOptions = ["fall", " winter", "summer"];
@@ -155,7 +179,7 @@ module.exports = function( app ) {
 
     app.route('/instructor')
     .get(function(req,res) {
-        var classes = {}, assignments = {}, stats = {}, aoptions={}, coptions={}, tips={}, skills = {};
+        var classes = {}, assignments = {}, stats = {}, aoptions={}, coptions={}, tips={}, skills = {}, events = {};
 
         async.parallel([
             async.apply(instructorDB.getClasses, req.user.id),
@@ -164,6 +188,7 @@ module.exports = function( app ) {
             async.apply(instructorDB.fetchClassOptions, "", true),
             instructorDB.getRandomTip,
             instructorDB.getSkills,
+            async.apply(instructorDB.getEvents, req.user.id),
             async.apply(instructorDB.countInstStudents, req.user.id),
             async.apply(instructorDB.countInstStudentsOTW, req.user.id),
             async.apply(instructorDB.countWeeklySubmission, req.user.id),
@@ -192,6 +217,9 @@ module.exports = function( app ) {
                             case 5:
                                 skills = results[i];
                                 break;
+                            case 6:
+                                events = results[i];
+                                break;
                             default:
                                 _.extend(stats, results[i][0]); // get statistics
                         }
@@ -199,13 +227,14 @@ module.exports = function( app ) {
                 }
             }
             res.render(viewPath + "instructor", { title: 'Instructor Panel', classes: classes, assignments: assignments,
-                       stats: stats, aoptions: aoptions, coptions: coptions, tips: tips[0], skills: skills});
+                       stats: stats, aoptions: aoptions, coptions: coptions, tips: tips[0], skills: skills, events: events});
         });
 
     });
 
     app.route('/instructor')
     .post(function(req,res,next){
+        // parses sequelize
         var data = qs.parse(req.body.formData);
         if (req.body.form == 'createCourse'){
             if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
@@ -317,6 +346,35 @@ module.exports = function( app ) {
 
     });
 
+    app.route('/instructor-manage-event')
+    .post(function(req,res,next){
+        var id = req.body['event-id'];
+        instructorDB.checkEventAccess(id, req.user.id, function(err, result){
+            // make a check in case it fails and display some other page????
+            if(!err && result){
+                if(result[0].found == '1') {
+                    instructorDB.getEvent(id, function(err, event){ // get the assignment its safer than passing all that data
+                        if(!err && event){
+                            var eve = event[0];
+                            res.render(viewPath + "instructorEvent", {title: 'Event management',
+                            eid: id, ecid: eve.classId, ename: eve.name, etitle: eve.title, edescription: eve.description, 
+                            eopen: eve.openDate, eclose: eve.closedDate});
+                        }
+                        else{
+                            res.sendStatus(400);
+                        }
+                    });
+                }
+                else {
+                    res.sendStatus(400);
+                }
+            }
+        });
+    });
+
+    /*********************************
+     **  The instructor manage page **
+     *********************************/
     app.route('/instructor-manage-confirm')
     .post(function(req, res, next){
         var data = qs.parse(req.body.formData);
@@ -357,28 +415,51 @@ module.exports = function( app ) {
                 }
             });
         }
+        else if (req.body.form == 'updateEvent') {
+            var arr = [data.ename, data.etitle, data.edesc, data.eopen, data.eclose];
+            instructorDB.updateEvent(arr, data.eid, function(err){
+                if(!err)
+                    res.sendStatus(200);
+                else
+                    res.status(500).send();
+            });
+        }
     });
 
     app.route('/instructor-delete')
     .post(function(req, res, next){
         var data = qs.parse(req.body.formData);
-        console.log(data);
-        instructorDB.checkAssignmentAccess(data.aid, req.user.id, function(err, result){
-            if(!err && result){
-                if(result[0].found == "1"){
-                    instructorDB.deleteAssignment(data.aid, req.user.id, function(err){
-                        if(!err){
-                            res.sendStatus(200);
-                        }else{
-                            res.status(500).send();
-                        }
-                    });
+        if (req.body.form == 'deleteAss'){
+            instructorDB.checkAssignmentAccess(data.aid, req.user.id, function(err, result){
+                if(!err && result){
+                    if(result[0].found == "1"){
+                        instructorDB.deleteAssignment(data.aid, req.user.id);
+                        res.sendStatus(200);
+                    }
+                    else{
+                        res.status(500).send();
+                    }
                 }
                 else{
                     res.status(500).send();
                 }
-            }
-        });
+            });
+        }else if (req.body.form == 'deleteEvent'){
+            instructorDB.checkEventAccess(data.eid, req.user.id, function(err, result){
+                if(!err && result){
+                    if(result[0].found == "1"){
+                        instructorDB.deleteEvent(data.eid);
+                        res.sendStatus(200);
+                    }
+                    else{
+                        res.status(500).send();
+                    }
+                }
+                else{
+                    res.status(500).send();
+                }
+            });
+        }
     });
 
 

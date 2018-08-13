@@ -52,6 +52,7 @@ $(document).ready(function(){
     //    displayAssignmentOptions();
     // });
 
+    // Used for creating tasks in assignments
     $( "#addTask" ).click(function() {
         var tNameStart = `<div id='task${task}'><label class="uk-form-label" for="Task #${task} Name">Task #${task} Name</label>
                             <div class="uk-form-controls">`;
@@ -75,6 +76,7 @@ $(document).ready(function(){
         }
     })
 
+    // create course
     $('#ccourse').submit(function(event) {
         event.preventDefault();
         $('.ccerror').remove();
@@ -125,6 +127,7 @@ $(document).ready(function(){
 
     });
 
+    // create assignment 
     $('#cAss').submit(function(event) {
         event.preventDefault();
         $('.caerror').remove();
@@ -164,7 +167,7 @@ $(document).ready(function(){
 
     });
 
-
+    // create event
     $('#cEvent').submit(function(event) {
         event.preventDefault();
         $('.ceerror').remove();

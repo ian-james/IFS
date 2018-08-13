@@ -50,6 +50,10 @@ block content
                                 else
                                     option(value=skill.s) #{skill.s}
                     br
+                    div.uk-align-center(id='taskControls')
+                        input.uk-button.uk-margin-small-right(id='addTask' type='button' value='Add Task')
+                        input.uk-button(id='removeTask' type='button' value='Remove Task')
+                    br
                     input(type="hidden" name="aid" value=aid)
                     input(type="hidden" name="acid" value=acid)
                     // - stats go here...need working on and proper implementation. design is done.

@@ -35,7 +35,13 @@ module.exports = {
         var q = `SELECT COUNT(*) as found FROM class WHERE
                 id=${classId} AND instructorId=${instId}`;
         db.query(q, [], callback);
-    },   
+    },
+    
+    checkEventAccess: function(eventId, instId, callback){
+        var q = `SELECT COUNT(*) as found FROM class WHERE id in (SELECT classId 
+                FROM upcoming_event WHERE id=${eventId}) AND instructorId=${instId}`;
+        db.query(q, [], callback);
+    },
 
     /**
      * Get the options for a certain discipline for a assignment
@@ -91,6 +97,16 @@ module.exports = {
         var q = `SELECT * FROM assignment WHERE classId in (SELECT 
                 class.id FROM class WHERE instructorId=${instId}) ORDER BY deadline ASC`;
         db.query(q,[],callback);
+    },
+
+    getEvents: function(instId, callback){
+        var q = `SELECT * FROM upcoming_event WHERE classId in (SELECT id 
+                FROM class WHERE instructorId=${instId})`;
+        db.query(q, [], callback);
+    },
+
+    getEvent: function(eventId, callback){
+        dbHelpers.selectWhere(dbcfg.upcoming_event_table, "id", eventId, callback);
     },
 
     /**
@@ -275,14 +291,24 @@ module.exports = {
         db.query(q, [], callback);
     },
 
+    updateEvent: function(data, id, callback){
+        var q = `UPDATE upcoming_event set name='${data[0]}', title='${data[1]}', description='${data[2]}', openDate='${data[3]}', closedDate='${data[4]}' WHERE id=${id}`
+        db.query(q, [], callback);
+    },
+
     deleteClassSkills: function(cid, callback){
         var q = `DELETE from class_skill WHERE classId=${cid} AND assignmentId=-1`;
         db.query(q, [], callback);
     },
 
-    deleteAssignment: function(aid, uid, callback){
+    deleteAssignment: function(aid, callback){
         var q = `DELETE from assignment WHERE id=${aid}`;
-        db.query(q,[],callback);
+        db.query(q,[]);
+    },
+
+    deleteEvent: function(eid, callback){
+        var q = `DELETE from upcoming_event WHERE id=${eid}`;
+        db.query(q,[]);
     },
 
     taskInsert: function(task, callback){
