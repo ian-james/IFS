@@ -1,32 +1,29 @@
 extends ../../shared/views/pageLayout.pug
 
 block scripts
-    script(src="/socket.io/socket.io.js")
+	script(src="/socket.io/socket.io.js")
 
 block content
-    link(rel="stylesheet" href="components/Tool/tool.css")
-    div.uk-container.uk-container-small
-        div(uk-alert hidden).uk-alert-danger
-            p.uk-align-center.errorMessage#error #{messages.errorMessage}
-        div(ng-controller="toolCtrl")
-            form(class='uk-form')#toolPreference
-                div.uk-margin
-                    span(ng-repeat="pref in prefsList.values")
-                        span(ng-if="prefsList.prefValue == pref")
-                            button(type="submit").uk-button.uk-button-primary {{pref}}
-                        span(ng-if="prefsList.prefValue != pref")
-                            button(type="submit").uk-button.uk-button-default {{pref}}
-            form(class='uk-form' enctype="multipart/form-data" action="/tool_upload" method="post")#uploadForm
-                div.uk-clearfix
-                    h2.uk-float-left #{title}
-                    div(uk-toggle="target: #toolSelection; animation: uk-animation-fade" uk-icon="icon: settings" title="toggle tool settings" uk-tooltip="pos: left")#settingsToggle.uk-icon-button.uk-float-right
-                div#toolSelection
-                    ul(uk-accordion="multiple: true")
-                        li(ng-repeat="tool in toolList").toolsView
-                            include toolItem.pug
-                include ../FileUpload/fileUploadPanel.pug
-            div#buttonWrapper
-                button.uk-button.uk-button-primary.uk-button-large#evaluate Submit Files for Evaluation
+	link(rel="stylesheet" href="components/Tool/tool.css")
+	div.uk-container.uk-container-small
+		div.uk-margin
+			select.uk-select
+				option Option 01
+				option Option 02
+		div(uk-alert hidden).uk-alert-danger
+			p.uk-align-center.errorMessage#error #{messages.errorMessage}
+		div(ng-controller="toolCtrl")
+			form(class='uk-form' enctype="multipart/form-data" action="/tool_upload" method="post")#uploadForm
+				div.uk-clearfix
+					h2.uk-float-left #{title}
+					div(uk-toggle="target: #toolSelection; animation: uk-animation-fade" uk-icon="icon: settings" title="toggle tool settings" uk-tooltip="pos: left")#settingsToggle.uk-icon-button.uk-float-right
+				div#toolSelection
+					ul(uk-accordion="multiple: true")
+						li(ng-repeat="tool in toolList").toolsView
+							include toolItem.pug
+				include ../FileUpload/fileUploadPanel.pug
+			div#buttonWrapper
+				button.uk-button.uk-button-primary.uk-button-large#evaluate Submit Files for Evaluation
 
-        script(src="components/Tool/toolController.js")
-        script(src="components/Tool/tool-settings-panel.js")
+		script(src="components/Tool/toolController.js")
+		script(src="components/Tool/tool-settings-panel.js")
