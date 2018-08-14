@@ -29,9 +29,8 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 				var taskHeaders = [];
 				for (var item of $scope.list) {
 					if (item.taskHeader) taskHeaders.push(item);
-					console.log(item);
 				}
-				
+
 				//Change labels to match user input
 				for (var j in $scope.list[$scope.i].fields) {
 					$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i].fields[j].model;
@@ -61,7 +60,6 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 						$scope.list.splice($scope.i + 3, 1);
 						$scope.list[$scope.i + 3].num = 'Question 4';
 					}
-					console.log($scope.list);
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'taskNames') {
 				for (var field of $scope.list[$scope.i].fields) {

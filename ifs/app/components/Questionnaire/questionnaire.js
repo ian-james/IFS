@@ -135,7 +135,29 @@ module.exports = function(app, iosocket) {
 		.andWhere('assignmentId', assignId)
 		.catch(function(err) { console.log(err.stack); });
 
-		console.log('result 1: ', result);
+		//Separate the modules and their corresponding tasks into a new list
+		var taskList = [];
+		var j = -1;
+		for (i = 8; i < list.length; i++) {
+			if (list[i].taskHeader) {
+				j++
+				taskList[j] = [];
+			} else {
+				taskList[j].push(list[i]);
+			}
+		}
+
+		//Retrieve all time estimate sums from the task list for storage in module table
+		var moduleTimes = [];
+		for (var m of taskList) {
+			moduleTimes.push([0,0]);
+			for (var field of m[m.length-1].fields) {
+				moduleTimes[moduleTimes.length - 1][0] += field.model[0];
+				moduleTimes[moduleTimes.length - 1][1] += field.model[1];
+			}
+			moduleTimes[moduleTimes.length - 1][0] += Math.floor(moduleTimes[moduleTimes.length - 1][1] / 60);
+			moduleTimes[moduleTimes.length - 1][1] = moduleTimes[moduleTimes.length - 1][1] % 60;
+		}
 
 		//Get the base id for finding all modules
 		result = await TaskDecompBase.query()
@@ -147,15 +169,11 @@ module.exports = function(app, iosocket) {
 
 		var baseId = result[0].id;
 
-		console.log('result 2: ', result);
-
 		//Remove all previously stored modules from the database to replace them
 		result = TaskDecompModule.query()
 		.delete()
 		.where('baseId', baseId)
 		.catch(function(err) { console.log(err.stack); });
-
-		console.log('result 3: ', result);
 
 		//For each module in the assignment, add the appropriate data as a new entry to the database
 		for (var i = 0; i < numComp; i++) {
@@ -163,11 +181,10 @@ module.exports = function(app, iosocket) {
 			.insert({
 				baseId: baseId,
 				name: list[6].fields[i].model,
-				/*expectedLength: list[8].fields[i].model[0]+':'+list[8].fields[i].model[1]+':00',*/
+				expectedLength: moduleTimes[i][0]+':'+moduleTimes[i][1]+':00',
 				difficulty: list[7].fields[i].model
 			})
 			.catch(function(err) { console.log(err.stack); });
-			console.log('result ' + (i + 4) + ': ', result);
 		}
    });
 };
