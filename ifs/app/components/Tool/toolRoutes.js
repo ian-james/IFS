@@ -19,6 +19,7 @@ var preferencesDB = require(__components + 'Preferences/preferenceDB.js');
 var TipManager = require(__components + 'TipManager/tipManager.js');
 
 var {Assignment} = require("../../models/assignment");
+var {Course} = require("../../models/course");
 
 module.exports = function (app, iosocket) {
 
@@ -28,80 +29,127 @@ module.exports = function (app, iosocket) {
    * @param  {[type]} tools           [description]
    * @return {[type]}                 [description]
    */
-  function updateJsonWithDbValues(toolPreferences, tools) {
-    var toolPrefix = "enabled-";
-    var optionPrefix = "opt-";
-    for (var i = 0; i < toolPreferences.length; i++) {
+   function updateJsonWithDbValues(toolPreferences, tools) {
+   	var toolPrefix = "enabled-";
+   	var optionPrefix = "opt-";
+   	for (var i = 0; i < toolPreferences.length; i++) {
 
-      var optionName = toolPreferences[i].toolName;
-      if (_.startsWith(optionName, toolPrefix)) {
-        //Enable the tool checkbox
-        optionName = _.replace(optionName, toolPrefix, "");
-        var r = _.find(tools, _.matchesProperty('displayName', optionName));
-        if (r)
-          r['prefValue'] = false;
-      } else if (_.startsWith(optionName, optionPrefix)) {
-        var r = undefined;
-        for (var y = 0; y < tools.length && !r; y++) {
-          var options = tools[y].options;
-          r = _.find(options, _.matchesProperty("name", optionName));
-          if (r) {
-            if (r.type == "checkbox")
-              r['prefValue'] = "on";
-            else if (r.type == "select" || r.type == "text")
-              r['prefValue'] = toolPreferences[i].toolValue;
-          }
-        }
-      }
-    }
-  }
+   		var optionName = toolPreferences[i].toolName;
+   		if (_.startsWith(optionName, toolPrefix)) {
+		//Enable the tool checkbox
+		optionName = _.replace(optionName, toolPrefix, "");
+		var r = _.find(tools, _.matchesProperty('displayName', optionName));
+		if (r)
+			r['prefValue'] = false;
+	} else if (_.startsWith(optionName, optionPrefix)) {
+		var r = undefined;
+		for (var y = 0; y < tools.length && !r; y++) {
+			var options = tools[y].options;
+			r = _.find(options, _.matchesProperty("name", optionName));
+			if (r) {
+				if (r.type == "checkbox")
+					r['prefValue'] = "on";
+				else if (r.type == "select" || r.type == "text")
+					r['prefValue'] = toolPreferences[i].toolValue;
+			}
+		}
+	}
+}
+}
 
-  app.get('/tool/assignment', async function(req, res) {
+app.post('/tool/assignment', async function(req, res) {
 
-    var val = 0;
-    var result = [];
+	var insert = req.body.insert;
+	console.log("the val is " + insert);
 
-    var val = await Assignment.query()
-    .catch(function(err) {
-      res.send({
-        'value': val
-      });
-      console.log(err.stack);
-      return;
-    });
+	var val = 0;
+	var result = [];
 
-    for(var i = 0; i < val.length; i++)
-    {
-      result.push(val[i].name);
+	if(insert == "*" || insert == "None")
+	{
+		res.send({'result': result});
+	}
+	else
+	{
 
-    }
+		var temp = await Course.query()
+		.where('code', '=', insert);
 
-    res.send({'result': result});
+		console.log(temp[0].id);
 
 
+		var val = await Assignment.query()
+		.where('classId', '=', temp[0].id)
+		.catch(function(err) {
+			res.send({
+				'value': val
+			});
+			console.log(err.stack);
+			return;
+		});
 
-  });
+		for(var i = 0; i < val.length; i++)
+		{
+			result.push(val[i].name);
 
-  app.get('/tool/data', function (req, res) {
-    fs.readFile(req.session.toolFile, 'utf-8', function (err, toolData) {
-      if (err) {
-        //Unable to get supported tools file, larger problem here.
-        Logger.error(err);
-        res.end();
-      } else {
-        //Load JSON tool file and send back to UI to create inputs
-        preferencesDB.getStudentPreferencesByToolType(req.user.id, req.session.toolSelect, function (err, toolPreferences) {
+		}
 
-          var jsonObj = JSON.parse(toolData);
-          var tools = jsonObj['tools'];
+		res.send({'result': result});
+	}
 
-          if (toolPreferences)
-            updateJsonWithDbValues(toolPreferences, tools);
-          res.json(tools);
-        });
-      }
-    });
-  });
+});
+
+app.get('/tool/course', async function(req, res) {
+
+	var val = 0;
+	var result = [];
+	var id = [];
+
+	var val = await Course.query()
+	.catch(function(err) {
+		res.send({
+			'value': val
+		});
+		console.log(err.stack);
+		return;
+	});
+
+	for(var i = 0; i < val.length; i++)
+	{
+		result.push(val[i].code);
+		id.push(val[i].id);
+
+	}
+
+	res.send({
+		'result': result,
+		'id': id
+	});
+
+
+
+});
+
+app.get('/tool/data', function (req, res) {
+	fs.readFile(req.session.toolFile, 'utf-8', function (err, toolData) {
+		if (err) {
+		//Unable to get supported tools file, larger problem here.
+		Logger.error(err);
+		res.end();
+	} else {
+		//Load JSON tool file and send back to UI to create inputs
+		preferencesDB.getStudentPreferencesByToolType(req.user.id, req.session.toolSelect, function (err, toolPreferences) {
+
+			var jsonObj = JSON.parse(toolData);
+			var tools = jsonObj['tools'];
+
+			if (toolPreferences)
+				updateJsonWithDbValues(toolPreferences, tools);
+			res.json(tools);
+		});
+	}
+});
+});
 
   /**
    * This loads all the survey data required for loading time.
@@ -110,34 +158,34 @@ module.exports = function (app, iosocket) {
    * @param  {[type]} next )             {                var userId [description]
    * @return {[type]}      [description]
    */
-  app.get('/tool', function (req, res, next) {
-    const userId = req.user.id || req.passport.user;
+   app.get('/tool', function (req, res, next) {
+   	const userId = req.user.id || req.passport.user;
 
-    TipManager.selectTip(req, res, userId, () => {
-      SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
-        if (!survey) {
-          survey = [];
-        }
-        res.render(viewPath + "tool", {
-          "title": req.session.toolSelect + ' Tool Screen',
-          "surveyQuestions": survey
-        });
-      });
-    });
-  });
+   	TipManager.selectTip(req, res, userId, () => {
+   		SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
+   			if (!survey) {
+   				survey = [];
+   			}
+   			res.render(viewPath + "tool", {
+   				"title": req.session.toolSelect + ' Tool Screen',
+   				"surveyQuestions": survey
+   			});
+   		});
+   	});
+   });
 
-  app.post('/tool/preferences', function (req, res, next) {
-    let pref = req.body.tool;
+   app.post('/tool/preferences', function (req, res, next) {
+   	let pref = req.body.tool;
 
-    preferencesDB.setStudentPreferences(req.user.id, "Option", "pref-toolSelect", pref, function (err, result) {
-      tracker.trackEvent(iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
-      defaultTool.setupDefaultTool(req, pref);
+   	preferencesDB.setStudentPreferences(req.user.id, "Option", "pref-toolSelect", pref, function (err, result) {
+   		tracker.trackEvent(iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
+   		defaultTool.setupDefaultTool(req, pref);
 
-      console.log(pref);
+   		console.log(pref);
 
-      res.redirect(url.format({
-        pathname: '/tool'
-      }));
-    });
-  });
+   		res.redirect(url.format({
+   			pathname: '/tool'
+   		}));
+   	});
+   });
 }

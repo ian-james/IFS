@@ -57,9 +57,7 @@ $(function() {
 
         var uploadProgressBar = $('#progressbar')[0];
 
-        var test = $("#test");
-        console.log(test.find(":selected").text());
-
+        
         // Create an AJAX request with all the upload form data
         // available. Upon completion feedback button is available
         // to progress or alert with error message.
