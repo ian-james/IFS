@@ -24,11 +24,10 @@ module.exports = function(app, iosocket) {
 			{num: 'Question 1', text: 'What is the name of the assignment?', fields: [{type: 'text', placeholder: 'Assignment 1', model: ''}]},
 			{num: 'Question 2', text: 'When is the assignment due?', fields: [{type: 'date', model: ''}]},
 			{num: 'Question 3', text: 'How comfortable are you with this assignment?', fields: [{type: 'radio', model: 'Low', options: ['Low', 'Medium', 'High']}]},
-			{num: 'Assignment Module Decomposition', text: 'The following section will ask you questions about the modules in this assignment to help you break them. You may exit this survey at any time.', fields: []},
+			{num: 'Assignment Module Decomposition', text: 'The following section will ask you questions about the modules in this assignment to help you break them down. You may exit this survey at any time.', fields: []},
 			{num: 'Question 1', text: 'How many modules are there in this assignment?', feedsNext: 'moduleNames', fields: [{type: 'select', model: '1', label: 'Modules', options: ['1', '2', '3', '4', '5']}]},
 			{num: 'Question 2', text: 'What are the names of these modules?', fed: 0, prevFed: 0, feedsNext: 'moduleDifficulty', fields: [{type: 'text', placeholder: 'Module name', model: ''}]},
-			{num: 'Question 3', text: 'Rate the difficuly level of each of these modules:', feedsNext: 'timeEstimates', fields: [{type: 'slider', label: '', model: 5}]},
-			{num: 'Question 4', text: 'Estimate how long it will take you to complete each module:', fields: [{type: 'timeEstimate', label: '', model: [1, 0], hours: [1,2,3,4,5], minutes:[0,15,30,45]}]}
+			{num: 'Question 3', text: 'Rate the difficuly level of each of these modules:', fed: 0, prevFed: 0,  feedsNext: 'taskQuestions', fields: [{type: 'slider', label: '', model: 5}]},
 		];
 
 		// Query parameters to be used
@@ -53,6 +52,8 @@ module.exports = function(app, iosocket) {
 		list[2].fields[0].model = result[0].dueDate;
 		list[3].fields[0].model = result[0].comfort;
 		var index = result[0].index;
+
+		console.log('index', index);
 
 		//If there were no results (the user has not had a chance to do this questionnaire before) then create a new entry and send default list
 		if (result.length == 0) {
@@ -94,12 +95,12 @@ module.exports = function(app, iosocket) {
 			for (var i = 0; i < result.length; i++) {
 				var name = result[i].name;
 				var difficulty = result[i].difficulty;
-				var hours = parseInt(result[i].expectedLength.substring(1, 2));
-				var minutes = parseInt(result[i].expectedLength.substring(3, 5));
+				//var hours = parseInt(result[i].expectedLength.substring(1, 2));
+				//var minutes = parseInt(result[i].expectedLength.substring(3, 5));
 
 				list[6].fields[i] = {type: 'text', placeholder: 'Module name', model: name};
 				list[7].fields[i] = {type: 'slider', label: name, model: difficulty};
-				list[8].fields[i] = {type: 'timeEstimate', label: name, model: [hours, minutes], hours: [1,2,3,4,5], minutes:[0,15,30,45]};
+				//list[8].fields[i] = {type: 'timeEstimate', label: name, model: [hours, minutes], hours: [1,2,3,4,5], minutes:[0,15,30,45]};
 			}
 		}
 
@@ -154,7 +155,7 @@ module.exports = function(app, iosocket) {
 			.insert({
 				baseId: result[0].id,
 				name: list[6].fields[i].model,
-				expectedLength: list[8].fields[i].model[0]+':'+list[8].fields[i].model[1]+':00',
+				/*expectedLength: list[8].fields[i].model[0]+':'+list[8].fields[i].model[1]+':00',*/
 				difficulty: list[7].fields[i].model
 			})
 			.catch(function(err) { console.log(err.stack); });

@@ -36,9 +36,9 @@ div#questionnaireModal(uk-modal ng-controller='questionnaireCtrl')
 					form(style="margin: 0").uk-form-horizontal
 						label(for="{{$index}}" style="margin-top: 15px; font-size: 1rem").uk-form-label {{field.label}}
 						div(id="{{$index}}").uk-form-controls
-							select(ng-model="field.model[0]" ng-options="option for option in field.hours" style="width: 65px").uk-select.uk-form-width-small
+							select(ng-model="field.model[0]" ng-options="option for option in [1,2,3,4,5]" style="width: 65px").uk-select.uk-form-width-small
 							label(style="margin-bottom:2px; margin-left:5px; font-weight:400; font-size: 1rem; margin-right: 20px").uk-text-bottom Hours
-							select(ng-model="field.model[1]" ng-options="option for option in field.minutes" style="width: 65px").uk-select.uk-form-width-small
+							select(ng-model="field.model[1]" ng-options="option for option in [0,15,30,45]" style="width: 65px").uk-select.uk-form-width-small
 							label(style="margin-bottom:2px; margin-left:5px; font-weight:400; font-size: 1rem").uk-text-bottom Minutes
 				br
 
