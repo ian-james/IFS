@@ -311,8 +311,18 @@ module.exports = {
         db.query(q,[]);
     },
 
+    deleteTasks: function(aid, callback){
+        var q = `DELETE from assignment_task WHERE assignmentId=${aid}`;
+        db.query(q,[]);
+    },
+
     taskInsert: function(task, callback){
         var q = dbHelpers.buildInsert(dbcfg.assignment_task_table) + dbHelpers.buildValues(["assignmentId","name","description"])
         db.query(q,task,callback);
     },
+
+    getTasks : function(aid, callback){
+        var q = `SELECT * FROM assignment_task WHERE assignmentId=${aid}`;
+        db.query(q, [], callback);
+    }
 }

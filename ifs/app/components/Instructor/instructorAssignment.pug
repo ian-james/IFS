@@ -50,12 +50,29 @@ block content
                                 else
                                     option(value=skill.s) #{skill.s}
                     br
+                    - var count = 1;
+                    each task in atasks
+                        if count > 1
+                            br
+                        div(id='task' + count)
+                            label(for="Task #" + count + " Name").uk-form-label
+                                | Task ##{count} Name
+                            div.uk-form-controls
+                                input(type="text" name="tName" + count, value=task.name, required).uk-input
+                            br
+                            label(for="Task #" + count + " Description").uk-form-label
+                                | Task ##{count} Description
+                            div.uk-form-controls
+                                input(type="text" name="tDesc" + count, value=task.description, required).uk-input
+                        - count++;
+                    br
                     div.uk-align-center(id='taskControls')
                         input.uk-button.uk-margin-small-right(id='addTask' type='button' value='Add Task')
                         input.uk-button(id='removeTask' type='button' value='Remove Task')
                     br
                     input(type="hidden" name="aid" value=aid)
                     input(type="hidden" name="acid" value=acid)
+                    input(type="hidden" id="at" value=count)
                     // - stats go here...need working on and proper implementation. design is done.
                     //- h5 #[strong Statistics]
                     //- each option in aoptions

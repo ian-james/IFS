@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    var task = document.getElementById('at').value;
     $('#updateAssignment').submit(function(event) {
         event.preventDefault();
         
@@ -144,4 +145,27 @@ $(document).ready(function(){
             
         });
     });
+
+    $( "#addTask" ).click(function() {
+        var tNameStart = `<div id='task${task}'><label class="uk-form-label" for="Task #${task} Name">Task #${task} Name</label>
+                            <div class="uk-form-controls">`;
+        if (task > 1)
+            tNameStart = '<br>' + tNameStart;                  
+        var tName = '<input class="uk-input" name="tName' + task + '" placeholder="e.g Tutor session" required="required" type="text">';
+        var tNameEnd = '</div><br>';
+        var tDescStart = `<label class="uk-form-label" for="Task #${task} Description">Task #${task} Description</label>
+                            <div class="uk-form-controls">`;
+        var tDesc = '<input class="uk-input" name="tDesc' + task + '" placeholder="e.g Learn C" required="required" type="text">';
+        var tDescEnd = '</div></div>';
+        $('#taskControls').before(tNameStart + tName + tNameEnd + tDescStart + tDesc + tDescEnd);
+        task++;
+    });
+
+    $( "#removeTask" ).click(function() {
+        if (task > 1)
+        {
+            task--;
+            $("#task" + task).remove();
+        }
+    })
 });

@@ -78,9 +78,13 @@ module.exports = function( app ) {
      * @param  array   arr    The array of tasks.
      * @param  assignmentId   The assignment id.
      */
-    function taskInsert(arr, assignmentId){
+    function taskInsert(arr, assignmentId, resetTasks){
         var taskName = taskDescription = "";
         var count = 0;
+
+        if (resetTasks)
+            instructorDB.deleteTasks(assignmentId, function(err){});
+
         for(var key in arr){
             if(key.indexOf('tName') != -1)
             {
@@ -256,7 +260,7 @@ module.exports = function( app ) {
             instructorDB.insertAssignment(arr, function(err, queryInfo){
                 if(!err){
                     skillInsert(data.askills, courseInfo.cid, queryInfo.insertId);
-                    taskInsert(data, queryInfo.insertId);
+                    taskInsert(data, queryInfo.insertId, false);
                     res.sendStatus(200);
                 }
                 else
@@ -297,29 +301,36 @@ module.exports = function( app ) {
                                     parseSkills(skills, function(err, s){
                                         if (!err && s) skills = s;
                                     });
-                                    instructorDB.getAssignmentDiscipline(id, function(err, disResult){
-                                        if(!err && disResult){
-                                            instructorDB.fetchAssignmentOptions(disResult[0].discipline, false, function(err, options){
-                                                if (!err && options){
-                                                    instructorDB.getAssignmentChoices(id, function(err, choices){
-                                                        if (!err && choices){
-                                                            for (var i = 0; i < options.length; i++)
-                                                                options[i].enabled = checkEnabled(options[i].id, choices);
-                                                            res.render(viewPath + "instructorAssignment", {title: 'Assignment management',
-                                                            aid: id, acid: assign.classId, aname: assign.name, atitle: assign.title, adescription: assign.description, 
-                                                            adeadline: assign.deadline, aoptions: options, askills: skills});
+                                    instructorDB.getTasks(id, function (err, tasks){
+                                        if(!err && tasks){
+                                            instructorDB.getAssignmentDiscipline(id, function(err, disResult){
+                                                if(!err && disResult){
+                                                    instructorDB.fetchAssignmentOptions(disResult[0].discipline, false, function(err, options){
+                                                        if (!err && options){
+                                                            instructorDB.getAssignmentChoices(id, function(err, choices){
+                                                                if (!err && choices){
+                                                                    for (var i = 0; i < options.length; i++)
+                                                                        options[i].enabled = checkEnabled(options[i].id, choices);
+                                                                    res.render(viewPath + "instructorAssignment", {title: 'Assignment management',
+                                                                    aid: id, acid: assign.classId, aname: assign.name, atitle: assign.title, adescription: assign.description, 
+                                                                    adeadline: assign.deadline, aoptions: options, askills: skills, atasks: tasks});
+                                                                }
+                                                                else{
+                                                                    res.sendStatus(400);
+                                                                }
+                                                            });
                                                         }
-                                                        else{
+                                                        else{ // once again something we need went wrong lets give them an error :p
                                                             res.sendStatus(400);
                                                         }
                                                     });
                                                 }
-                                                else{ // once again something we need went wrong lets give them an error :p
+                                                else { // something is wrong lets just give them an error
                                                     res.sendStatus(400);
                                                 }
                                             });
                                         }
-                                        else { // something is wrong lets just give them an error
+                                        else {
                                             res.sendStatus(400);
                                         }
                                     });
@@ -378,12 +389,14 @@ module.exports = function( app ) {
     app.route('/instructor-manage-confirm')
     .post(function(req, res, next){
         var data = qs.parse(req.body.formData);
+        console.log(data);
         if (req.body.form == 'updateAss'){
             if (!Array.isArray(data.askills)) data.askills = [data.askills];
             var arr = [data.aname, data.atitle, data.adesc, data.adate];
             instructorDB.updateAssignment(arr, data.aid, function(err){
                 if(!err)
                 {
+                    taskInsert(data, data.aid, true);
                     instructorDB.deleteAssignmentSkills(data.aid, function(err){
                         if(!err){
                             skillInsert(data.askills, data.acid, data.aid);
