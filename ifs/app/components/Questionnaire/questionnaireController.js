@@ -25,16 +25,24 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'moduleDifficulty') {
-				$scope.list[$scope.i+1].fed = $scope.list[$scope.i].fed;
+				//Grab all header items from the lists for title change
+				var taskHeaders = [];
+				for (var item of $scope.list) {
+					if (item.taskHeader) taskHeaders.push(item);
+					console.log(item);
+				}
+				
 				//Change labels to match user input
 				for (var j in $scope.list[$scope.i].fields) {
 					$scope.list[$scope.i+1].fields[j].label = $scope.list[$scope.i].fields[j].model;
+					if (taskHeaders.length > 0) taskHeaders[j].num = '"' + $scope.list[$scope.i].fields[j].model + '" Task Decomposition';
 				}
 
 				//Build the task questions if applicable
+				$scope.list[$scope.i+1].fed = $scope.list[$scope.i].fed;
 				if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
 					for (var field of $scope.list[$scope.i].fields) {
-						$scope.list.push({num: '"' + field.model + '" Task Decomposition', text: 'The following section will ask you questions about the tasks in the "' + field.model + '" module to help you break them down. You may exit this survey at any time.', fields: []});
+						$scope.list.push({taskHeader: true, num: '"' + field.model + '" Task Decomposition', text: 'The following section will ask you questions about the tasks in the "' + field.model + '" module to help you break them down. You may exit this survey at any time.', fields: []});
 						$scope.list.push({num: 'Question 1', text: 'Do you know how to complete this module?', feedsNext: 'taskModuleDifficulty', fields: [{type: 'radio', model: 'No', options: ['No', 'Yes']}]});
 						$scope.list.push({num: 'Question 2', text: 'How many tasks are there in this module?', fed: 'Yes', prevFed: 'Yes', feedsNext: 'taskNames', fields: [{type: 'select', model: '1', label: 'Tasks', options: ['1', '2', '3', '4', '5']}]});
 						$scope.list.push({num: 'Question 3', text: 'What are the names of these tasks?', fed: 0, prevFed: 0, feedsNext: 'timeEstimates', fields: [{type: 'text', placeholder: 'Task name', model: ''}]});

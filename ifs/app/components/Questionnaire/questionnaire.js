@@ -123,7 +123,7 @@ module.exports = function(app, iosocket) {
 		var assignId = 1; //TODO: this variable is dummy for now and needs to be associated with an actualy assignment ID
 
 		//Update the base table
-		TaskDecompBase.query()
+		var result = TaskDecompBase.query()
 		.patch({
 			question: assignment,
 			dueDate: date,
@@ -135,30 +135,39 @@ module.exports = function(app, iosocket) {
 		.andWhere('assignmentId', assignId)
 		.catch(function(err) { console.log(err.stack); });
 
+		console.log('result 1: ', result);
+
 		//Get the base id for finding all modules
-		var result = await TaskDecompBase.query()
+		result = await TaskDecompBase.query()
 		.where('userId', userID)
 		.andWhere('assignmentId', assignId)
 		.catch(function(err) {
 			console.log(err.stack);
 		});
 
+		var baseId = result[0].id;
+
+		console.log('result 2: ', result);
+
 		//Remove all previously stored modules from the database to replace them
-		TaskDecompModule.query()
+		result = TaskDecompModule.query()
 		.delete()
-		.where('baseId', result[0].id)
+		.where('baseId', baseId)
 		.catch(function(err) { console.log(err.stack); });
+
+		console.log('result 3: ', result);
 
 		//For each module in the assignment, add the appropriate data as a new entry to the database
 		for (var i = 0; i < numComp; i++) {
-			TaskDecompModule.query()
+			result = TaskDecompModule.query()
 			.insert({
-				baseId: result[0].id,
+				baseId: baseId,
 				name: list[6].fields[i].model,
 				/*expectedLength: list[8].fields[i].model[0]+':'+list[8].fields[i].model[1]+':00',*/
 				difficulty: list[7].fields[i].model
 			})
 			.catch(function(err) { console.log(err.stack); });
+			console.log('result ' + (i + 4) + ': ', result);
 		}
    });
 };
