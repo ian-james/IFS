@@ -107,6 +107,27 @@ module.exports = function(app, iosocket) {
        callback(null, _.get(data[0],"id") );
     }
 
+    /**
+     * Retrieve the most used tool information and return it in chart form.
+     * @param  {[type]} req     [description]
+     * @param  {[type]} res     [description]
+     * @param  {[type]} options [description]
+     * @return {[type]}         [description]
+     */
+    function mostUsedChart(req, res, options) {
+        // fetches top 5 most used at the moment (could add a actual dropdown in the future)
+        studentModel.getMyMostUsedTools(req.user.id, options.runType, 5, function(err,data) {
+            if(!err) {
+                var tool = _.map(data, "tool");
+                var values = _.map(data, "value");
+                var options = chartHelpers.chartOptions(false, true, "Most Used Tools", chartHelpers.makeScale(true,"Tool"), chartHelpers.makeScale(true,"Uses"));
+                var chartData = chartHelpers.makeChart(tool, values,[], options);
+                res.json(chartData);
+            }
+            res.end();
+        });
+    }
+
     function studentSelfAssessmentChart(req,res,options) {
         async.waterfall([
             async.apply(studentProfile.getStudentProfile, req.user.id),
@@ -181,6 +202,8 @@ module.exports = function(app, iosocket) {
                 feedbackItemChart(req,res,req.body);
             else if( req.body.studentData.key == 'sass')
                 studentSelfAssessmentChart(req,res,req.body);
+            else if( req.body.studentData.key == 'mused')
+                mostUsedChart(req, res, req.body);
             else
                 res.end();
         }
