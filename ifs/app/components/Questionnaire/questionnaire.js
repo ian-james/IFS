@@ -21,7 +21,7 @@ module.exports = function(app, iosocket) {
 		//The default list to be sent. If anything goes wrong, this is what will be sent. Data is added as queries are done
 		var list = [
 			{num: 'Basic Task Decomposition', text: 'The following section will ask you questions about basic tasks in this assignment to help you break it down. You may exit this survey at any time.', fields: []},
-			{num: 'Question 1', text: 'What is the name of the assignment?', fields: [{type: 'text', placeholder: 'Assignment 1', model: ''}]},
+			{num: 'Question 1', text: 'What is the name of the assignment?', fields: [{type: 'text', placeholder: 'Assignment Name', model: ''}]},
 			{num: 'Question 2', text: 'When is the assignment due?', fields: [{type: 'date', model: ''}]},
 			{num: 'Question 3', text: 'How comfortable are you with this assignment?', fields: [{type: 'radio', model: 'Low', options: ['Low', 'Medium', 'High']}]},
 			{num: 'Assignment Module Decomposition', text: 'The following section will ask you questions about the modules in this assignment to help you break them down. You may exit this survey at any time.', fields: []},
@@ -41,19 +41,11 @@ module.exports = function(app, iosocket) {
 		.catch(function(err) {
 			res.send({
 				'list': list,
-				'i': result[0].index
+				'i': 0
 			});
 			console.log(err.stack);
 			return;
 		});
-
-		//Add retrieved data to the list
-		list[1].fields[0].model = result[0].question;
-		list[2].fields[0].model = result[0].dueDate;
-		list[3].fields[0].model = result[0].comfort;
-		var index = result[0].index;
-
-		console.log('index', index);
 
 		//If there were no results (the user has not had a chance to do this questionnaire before) then create a new entry and send default list
 		if (result.length == 0) {
@@ -66,15 +58,20 @@ module.exports = function(app, iosocket) {
 				numComponents: 0,
 				assignmentId: assignId
 			})
-			.catch(function(err) {
-				res.send({
-					'list': list,
-					'i': result[0].index
-				});
-				console.log(err.stack);
-				return;
+			.catch(function(err) { console.log(err.stack); });
+
+			res.send({
+				'list': list,
+				'i': 0
 			});
+			return;
 		} else {
+			//Add retrieved data to the list
+			list[1].fields[0].model = result[0].question;
+			list[2].fields[0].model = result[0].dueDate;
+			list[3].fields[0].model = result[0].comfort;
+			var index = result[0].index;
+
 			var baseId = result[0].id;
 			result = await TaskDecompModule.query()
 			.where('baseId', baseId)
@@ -87,20 +84,46 @@ module.exports = function(app, iosocket) {
 				return;
 			});
 
+			//Update module feeds and models for the number of modules
 			list[5].fields[0].model = '' + result.length;
 			list[6].fed = list[6].prevFed = result.length;
 
-			console.log(result.length);
-
 			for (var i = 0; i < result.length; i++) {
 				var name = result[i].name;
-				var difficulty = result[i].difficulty;
-				//var hours = parseInt(result[i].expectedLength.substring(1, 2));
-				//var minutes = parseInt(result[i].expectedLength.substring(3, 5));
+				var tasksIndex = 0;
 
+				//Update module feeds and models for each module
 				list[6].fields[i] = {type: 'text', placeholder: 'Module name', model: name};
-				list[7].fields[i] = {type: 'slider', label: name, model: difficulty};
-				//list[8].fields[i] = {type: 'timeEstimate', label: name, model: [hours, minutes], hours: [1,2,3,4,5], minutes:[0,15,30,45]};
+				list[7].fields[i] = {type: 'slider', label: name, model: result[i].difficulty};
+				list[7].fed = list[7].prevFed = result.length;
+
+				//Get the task data for the current module
+				var tempResult = await TaskDecompTask.query()
+				.where('moduleId', result[i].id)
+				.catch(function(err) {
+					console.log(err.stack);
+				});
+
+				//Add all of the task questions for each module
+				list.push({taskHeader: true, num: '"' + name + '" Task Decomposition', text: 'The following section will ask you questions about the tasks in the "' + name + '" module to help you break them down. You may exit this survey at any time.', fields: []});
+				list.push({num: 'Question 1', text: 'Do you know how to complete this module?', feedsNext: 'taskModuleDifficulty', fields: [{type: 'radio', model: result[i].initialComfort, options: ['No', 'Yes']}]});
+				list.push({num: 'Question 2', text: 'How many tasks are there in this module?', fed: result[i].initialComfort, prevFed: result[i].initialComfort, feedsNext: 'taskNames', fields: [{type: 'select', model: '' + tempResult.length, label: 'Tasks', options: ['1', '2', '3', '4', '5']}]});
+				list.push({num: 'Question 3', text: 'What are the names of these tasks?', fed: tempResult.length, prevFed: tempResult.length, feedsNext: 'timeEstimates', fields: []});
+				tasksIndex = list.length - 1;
+				if (result[i].initialComfort == 'No') {
+					list.push({num: 'Question 4', text: 'Do you now know how to complete this module given the tasks you listed?', fields: [{type: 'radio', model: result[i].endComfort, options: ['No', 'Yes']}]});
+					list.push({num: 'Question 5', text: 'Estimate how long it will take you to complete each task:', fields: []});
+				} else {
+					list.push({num: 'Question 4', text: 'Estimate how long it will take you to complete each task:', fields: []});
+				}
+
+				//Add the names of each task and their time estimates to the appropriate fields arrays
+				for (var task of tempResult) {
+					var hours = parseInt(task.expectedLength.substring(1, 2));
+					var minutes = parseInt(task.expectedLength.substring(3, 5));
+					list[tasksIndex].fields.push({type: 'text', placeholder: 'Task name', model: task.tasks});
+					list[list.length-1].fields.push({type: 'timeEstimate', label: task.tasks, model: [hours, minutes]});
+				}
 			}
 		}
 
@@ -219,7 +242,7 @@ module.exports = function(app, iosocket) {
 		for (var m in taskList) {
 			var numTasks = parseInt(taskList[m][1].fields[0].model);
 			for (var i = 0; i < numTasks; i++) {
-				var time = taskList[m][taskList[m].length-1].fields[0].model;
+				var time = taskList[m][taskList[m].length-1].fields[i].model;
 
 				await TaskDecompTask.query()
 				.insert({
@@ -230,5 +253,7 @@ module.exports = function(app, iosocket) {
 				.catch(function(err) { console.log(err.stack); });
 			}
 		}
+
+		console.log('success!');
    });
 };

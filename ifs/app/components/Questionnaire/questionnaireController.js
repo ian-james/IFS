@@ -25,6 +25,8 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'moduleDifficulty') {
+				console.log($scope.list);
+				
 				//Grab all header items from the lists for title change
 				var taskHeaders = [];
 				for (var item of $scope.list) {
@@ -133,10 +135,10 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 
 	$http.get('taskDecompRetrieve').then(function(res) {
 		$scope.list = res.data.list;
-		$scope.i = 6;//res.data.i;
+		$scope.i = res.data.i;
 		$scope.question = $scope.list[$scope.i];
+
 		console.log($scope.list);
-		console.log($scope.i);
 
 		//Convert stringified date entries to Date objects
 		for (var entry of $scope.list)
