@@ -1,8 +1,9 @@
 $(document).ready(function(){
+    // fetch the number of tasks that have been displayed
     var task = document.getElementById('at').value;
     $('#updateAssignment').submit(function(event) {
         event.preventDefault();
-        
+        // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#updateAssignment :input[value!='']").serialize();
   
         $.ajax({
@@ -14,7 +15,9 @@ $(document).ready(function(){
             },
             timeout: 5000,
             success: function(msg){
+                // send notification
                 UIkit.notification('Assignment updated...sending you back to panel.', {'status': 'success'});
+                // redirect to instructor dashboard
                 window.setTimeout(function(){
                     window.location.href = "/instructor";
                 }, 5000);
@@ -31,6 +34,7 @@ $(document).ready(function(){
     $('#updateCourse').submit(function(event) {
         event.preventDefault();
         
+        // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#updateCourse :input[value!='']").serialize();
   
         $.ajax({
@@ -42,7 +46,9 @@ $(document).ready(function(){
             },
             timeout: 5000,
             success: function(msg){
+                // send notification
                 UIkit.notification('Course updated...sending you back to panel.', {'status': 'success'});
+                // redirect to instructor page
                 window.setTimeout(function(){
                     window.location.href = "/instructor";
                 }, 5000);
@@ -59,6 +65,7 @@ $(document).ready(function(){
     $('#dAss').submit(function(event) {
         event.preventDefault();
         
+        // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#dAss :input[value!='']").serialize();
   
         $.ajax({
@@ -70,10 +77,14 @@ $(document).ready(function(){
             },
             timeout: 5000,
             success: function(msg){
+                // hide modal
                 var modal = UIkit.modal('#delete-assignment');
                 modal.hide();
+                // reset modal
                 $('#dAss').trigger('reset');
+                // send notification
                 UIkit.notification('Assignment deleted .. sending you back to panel.', {'status': 'success'});
+                // redirect to instructor dashboard
                 window.setTimeout(function(){
                     window.location.href = "/instructor";
                 }, 5000);
@@ -90,6 +101,7 @@ $(document).ready(function(){
     $('#updateEvent').submit(function(event) {
         event.preventDefault();
         
+        // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#updateEvent :input[value!='']").serialize();
   
         $.ajax({
@@ -101,7 +113,9 @@ $(document).ready(function(){
             },
             timeout: 5000,
             success: function(msg){
+                // send notification
                 UIkit.notification('Event updated...sending you back to panel.', {'status': 'success'});
+                // redirect to instructor dashboard apge
                 window.setTimeout(function(){
                     window.location.href = "/instructor";
                 }, 5000);
@@ -118,6 +132,7 @@ $(document).ready(function(){
     $('#dEvent').submit(function(event) {
         event.preventDefault();
         
+        // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#dEvent :input[value!='']").serialize();
   
         $.ajax({
@@ -129,10 +144,14 @@ $(document).ready(function(){
             },
             timeout: 5000,
             success: function(msg){
+                // hide modal
                 var modal = UIkit.modal('#delete-event');
                 modal.hide();
+                // reset modal
                 $('#dEvent').trigger('reset');
+                // send notification
                 UIkit.notification('Event deleted .. sending you back to panel.', {'status': 'success'});
+                // redirect to instructor dashboard
                 window.setTimeout(function(){
                     window.location.href = "/instructor";
                 }, 5000);
@@ -146,6 +165,7 @@ $(document).ready(function(){
         });
     });
 
+    // append task input to form
     $( "#addTask" ).click(function() {
         var tNameStart = `<div id='task${task}'><label class="uk-form-label" for="Task #${task} Name">Task #${task} Name</label>
                             <div class="uk-form-controls">`;
@@ -157,10 +177,12 @@ $(document).ready(function(){
                             <div class="uk-form-controls">`;
         var tDesc = '<input class="uk-input" name="tDesc' + task + '" placeholder="e.g Learn C" required="required" type="text">';
         var tDescEnd = '</div></div>';
+        // addTask 
         $('#taskControls').before(tNameStart + tName + tNameEnd + tDescStart + tDesc + tDescEnd);
         task++;
     });
 
+    // remvoe task input from form
     $( "#removeTask" ).click(function() {
         if (task > 1)
         {

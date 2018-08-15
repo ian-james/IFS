@@ -240,7 +240,7 @@ module.exports = function( app ) {
     .post(function(req,res,next){
         // parses sequelize
         var data = qs.parse(req.body.formData);
-        if (req.body.form == 'createCourse'){
+        if (req.body.form == 'createCourse'){ // create course
             if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
             var arr = [data.ccode, data.cname, data.cdesc, data.ctype, 
                        req.user.id, data.cyear, data.csemester];
@@ -253,7 +253,7 @@ module.exports = function( app ) {
                     res.status(500).send();
             });
         }
-        else if (req.body.form == 'createAss'){
+        else if (req.body.form == 'createAss'){ // create assignment
             if (!Array.isArray(data.askills)) data.askills = [data.askills];
             var courseInfo = JSON.parse(data.cnameA);
             var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];     
@@ -267,7 +267,7 @@ module.exports = function( app ) {
                     res.status(500).send();
             });
         }
-        else if (req.body.form == 'createEvent'){
+        else if (req.body.form == 'createEvent'){ // create event
             var courseInfo = JSON.parse(data.cnameE);
             var arr = [courseInfo.cid, data.ename, data.etitle, data.edesc, data.estartdate, data.eduedate];
             instructorDB.insertEvent(arr, function(err, queryInfo){
@@ -357,6 +357,9 @@ module.exports = function( app ) {
 
     });
 
+    /***************************************
+     **  The instructor manage event page **
+     ***************************************/
     app.route('/instructor-manage-event')
     .post(function(req,res,next){
         var id = req.body['event-id'];
@@ -383,14 +386,14 @@ module.exports = function( app ) {
         });
     });
 
-    /*********************************
-     **  The instructor manage page **
-     *********************************/
+    /*****************************************
+     **  The instructor manage confirm page **
+     *****************************************/
     app.route('/instructor-manage-confirm')
     .post(function(req, res, next){
         var data = qs.parse(req.body.formData);
         console.log(data);
-        if (req.body.form == 'updateAss'){
+        if (req.body.form == 'updateAss'){ // update assignment
             if (!Array.isArray(data.askills)) data.askills = [data.askills];
             var arr = [data.aname, data.atitle, data.adesc, data.adate];
             instructorDB.updateAssignment(arr, data.aid, function(err){
@@ -409,7 +412,7 @@ module.exports = function( app ) {
                 }
             });
         }
-        else if(req.body.form == 'updateCourse'){
+        else if(req.body.form == 'updateCourse'){ // update course
             if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
             var arr = [data.ccode, data.cname, data.cdesc, data.ctype, 
                 data.cyear, data.csemester];
@@ -428,7 +431,7 @@ module.exports = function( app ) {
                 }
             });
         }
-        else if (req.body.form == 'updateEvent') {
+        else if (req.body.form == 'updateEvent') { // update event
             var arr = [data.ename, data.etitle, data.edesc, data.eopen, data.eclose];
             instructorDB.updateEvent(arr, data.eid, function(err){
                 if(!err)
@@ -442,7 +445,7 @@ module.exports = function( app ) {
     app.route('/instructor-delete')
     .post(function(req, res, next){
         var data = qs.parse(req.body.formData);
-        if (req.body.form == 'deleteAss'){
+        if (req.body.form == 'deleteAss'){ // delete assignment
             instructorDB.checkAssignmentAccess(data.aid, req.user.id, function(err, result){
                 if(!err && result){
                     if(result[0].found == "1"){
@@ -457,7 +460,7 @@ module.exports = function( app ) {
                     res.status(500).send();
                 }
             });
-        }else if (req.body.form == 'deleteEvent'){
+        }else if (req.body.form == 'deleteEvent'){ // delete event
             instructorDB.checkEventAccess(data.eid, req.user.id, function(err, result){
                 if(!err && result){
                     if(result[0].found == "1"){

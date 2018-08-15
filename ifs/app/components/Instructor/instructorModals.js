@@ -1,6 +1,7 @@
 $(document).ready(function(){
     var task = 1;
     //  for classes modal
+    // THIS IS NOT CURRENTLY USED IF WE WANT TO ADD STATISTICS JUST UNCOMMENT THE FUNCTION CALLS
     $('#psycoptionsC').hide();
     $('#othoptionsC').hide();
     $('#ctype').change(function() {  
@@ -23,6 +24,7 @@ $(document).ready(function(){
         }
     });
 
+    // DISPLAYS THE ASSIGNMENT OPTIONS
     function displayAssignmentOptions(){
         var value = $('#cnameA').val();
         value = JSON.parse(value);
@@ -64,10 +66,12 @@ $(document).ready(function(){
                             <div class="uk-form-controls">`;
         var tDesc = '<input class="uk-input" name="tDesc' + task + '" placeholder="e.g Learn C" required="required" type="text">';
         var tDescEnd = '</div></div>';
+        // append the inputs to the form
         $('#taskControls').before(tNameStart + tName + tNameEnd + tDescStart + tDesc + tDescEnd);
         task++;
     });
 
+    // removes the input from the form
     $( "#removeTask" ).click(function() {
         if (task > 1)
         {
@@ -97,6 +101,7 @@ $(document).ready(function(){
         
         if (err) return;
 
+        // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#ccourse :input[value!='']").serialize();
   
         $.ajax({
@@ -108,11 +113,15 @@ $(document).ready(function(){
             },
             timeout: 5000,
             success: function(msg){
+                // hide the modal
                 var modal = UIkit.modal('#create-course');
                 modal.hide();
+                // reset the modal
                 $('#ccourse').trigger('reset');
                 $('.ccerror').remove();
+                // send notification
                 UIkit.notification('Course created.', {'status': 'success'});
+                // refresh the page
                 setTimeout(function(){
                     window.location.reload(1);
                  }, 3000);
@@ -137,6 +146,7 @@ $(document).ready(function(){
         
         if (err) return;
 
+        // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#cAss :input[value!='']").serialize();
   
         $.ajax({
@@ -148,11 +158,15 @@ $(document).ready(function(){
             },
             timeout: 5000,
             success: function(msg){
+                // hide the modal
                 var modal = UIkit.modal('#create-assignment');
                 modal.hide();
+                // reset the modal
                 $('#cAss').trigger('reset');
                 $('.caerror').remove();
+                // send the notification
                 UIkit.notification('Assignment created.', {'status': 'success'});
+                // refresh page
                 setTimeout(function(){
                     window.location.reload(1);
                  }, 3000);
@@ -176,7 +190,7 @@ $(document).ready(function(){
         var err = 0;
         
         if (err) return;
-
+        // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#cEvent :input[value!='']").serialize();
   
         $.ajax({
@@ -188,11 +202,15 @@ $(document).ready(function(){
             },
             timeout: 5000,
             success: function(msg){
+                // hide modal
                 var modal = UIkit.modal('#create-event');
                 modal.hide();
+                // reset modal
                 $('#cEvent').trigger('reset');
                 $('.ceerror').remove();
+                // send notification
                 UIkit.notification('Event created.', {'status': 'success'});
+                // refresh page
                 setTimeout(function(){
                     window.location.reload(1);
                  }, 3000);

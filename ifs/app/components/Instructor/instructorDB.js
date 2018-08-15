@@ -251,76 +251,154 @@ module.exports = {
         db.query(q,[],callback);
     },
 
+    /**
+     * Inserts a course into its table.
+     * @param array courseData The course data
+     * @param {Function} callback 
+     */
     insertCourse: function(courseData, callback) {
         var q = dbHelpers.buildInsert(dbcfg.class_table) + dbHelpers.buildValues(["code","name","description","disciplineType", "instructorId", "year", "semester"]);
         db.query(q, courseData, callback);
     },
 
+    /**
+     * Inserts a assignment into its table.
+     * @param array assignmentData The assignment data
+     * @param {Function} callback 
+     */
     insertAssignment: function(assignmentData, callback) {
         var q = dbHelpers.buildInsert(dbcfg.assignment_table) + dbHelpers.buildValues(["classId", "name", "title", "description", "deadline"]);
         db.query(q, assignmentData, callback);
     },
 
+    /**
+     * Inserts a event into its table.
+     * @param array eventData The event data
+     * @param {Function} callback 
+     */
     insertEvent: function(eventData, callback) {
         var q = dbHelpers.buildInsert(dbcfg.upcoming_event_table) + dbHelpers.buildValues(["classId", "name", "title", "description", "openDate", "closedDate"]);
         db.query(q, eventData, callback);
     },
 
+    /**
+     * Inserts a skill into its table.
+     * @param array skill The skill data
+     * @param {Function} callback 
+     */
     insertSkill: function(skill, callback) {
         var q  = dbHelpers.buildInsert(dbcfg.skills_table) + dbHelpers.buildValues(["name"]);
         db.query(q, [skill], callback);
     },
 
+    /**
+     * Inserts a class skill into its table.
+     * @param array data The class skill data.
+     * @param {Function} callback 
+     */
     insertClassSkill: function(data, callback){
         var q = dbHelpers.buildInsert(dbcfg.class_skill_table) + dbHelpers.buildValues(["classId", "assignmentId", "name"]);
         db.query(q, data, callback);
     },
 
+    /**
+     * Updates an assignment.
+     * @param array data The assignment data.
+     * @param integer aid The assignment id
+     * @param {Function} callback 
+     */
     updateAssignment: function(data, aid, callback){
         var q = `UPDATE assignment set name='${data[0]}', title='${data[1]}', description='${data[2]}', deadline='${data[3]}' WHERE id=${aid}`
         db.query(q, [], callback);
     },
 
+    /**
+     * Deletes all assignment skills for a assignment id.
+     * @param integer aid The assignment id.
+     * @param {Function} callback 
+     */
     deleteAssignmentSkills: function(aid, callback){
         var q = `DELETE from class_skill WHERE assignmentId=${aid}`;
         db.query(q, [], callback);
     },
 
+    /**
+     * Updates a class.
+     * @param array data The class data.
+     * @param integer cid The class id.
+     * @param {Function} callback
+     */
     updateClass: function(data, cid, callback){
         var q = `UPDATE class set code='${data[0]}', name='${data[1]}', description='${data[2]}', disciplineType='${data[3]}', year='${data[4]}', semester='${data[5]}' WHERE id=${cid}`
         db.query(q, [], callback);
     },
 
+    /**
+     * Updates a event.
+     * @param array data The event data.
+     * @param integer id The id.
+     * @param {Function} callback 
+     */
     updateEvent: function(data, id, callback){
         var q = `UPDATE upcoming_event set name='${data[0]}', title='${data[1]}', description='${data[2]}', openDate='${data[3]}', closedDate='${data[4]}' WHERE id=${id}`
         db.query(q, [], callback);
     },
 
+    /**
+     * Delets all class skills for a class id.
+     * @param integer cid The class id.
+     * @param {Function} callback 
+     */
     deleteClassSkills: function(cid, callback){
         var q = `DELETE from class_skill WHERE classId=${cid} AND assignmentId=-1`;
         db.query(q, [], callback);
     },
 
+    /**
+     * Deletes an assignment.
+     * @param integer aid The assignment id.
+     * @param {Function} callback 
+     */
     deleteAssignment: function(aid, callback){
         var q = `DELETE from assignment WHERE id=${aid}`;
         db.query(q,[]);
     },
 
+    /**
+     * Deletes an event.
+     * @param integer eid The event id.
+     * @param {Function} callback 
+     */
     deleteEvent: function(eid, callback){
         var q = `DELETE from upcoming_event WHERE id=${eid}`;
         db.query(q,[]);
     },
 
+    /**
+     * Deletes all tasks for a given assignment id.
+     * @param integer aid The assignment id.
+     * @param {Function} callback 
+     */
     deleteTasks: function(aid, callback){
         var q = `DELETE from assignment_task WHERE assignmentId=${aid}`;
         db.query(q,[]);
     },
 
+    /**
+     * Inserts a task into its table
+     * @param array task The task data
+     * @param {Function} callback 
+     */
     taskInsert: function(task, callback){
         var q = dbHelpers.buildInsert(dbcfg.assignment_task_table) + dbHelpers.buildValues(["assignmentId","name","description"])
         db.query(q,task,callback);
     },
 
+    /**
+     * Fetches all tasks for an assignment.
+     * @param integer aid The assignment id.
+     * @param {Function} callback 
+     */
     getTasks : function(aid, callback){
         var q = `SELECT * FROM assignment_task WHERE assignmentId=${aid}`;
         db.query(q, [], callback);
