@@ -118,45 +118,18 @@ let buildPulseSurvey = async (toolType, userId, callback) => {
       let curQuestion = surveys[0].currentIndex;
       const questions = await getPulseQuestions(curSurveyId, curQuestion, 2);
       console.log(questions)
-      callback([]);
+      let finalRes = [];
+      for (let question of questions) {
+        finalRes.push(question);
+      }
+
+      callback(finalRes);
     }
   } else {
     callback([]);
   }
 }
-/* Builds a survey json out of 2 random questions from an allowed survey that's randomly
- * selected.
- *
- */
-/* let buildPulseSurvey =  (toolType, userId, callback) => {
-  SurveyManager.getUserSurveyProfileAndSurveyType(userId, (err, surveyPref) => {
-    if (err || !__EXPERIMENT_ON) {
-      callback([]);
-      return;
-    }
-    // Get list of allowed surveys based on user preferences 
-    let surveyOpt = getSurveyFieldMatches(surveyPref,"surveyField",[toolType, "general"]);
-    surveyOpt = getSurveyFieldMatches(surveyOpt,"surveyFreq",["reg"]);
-    let allowedSurveys = getAllowedSurveys(surveyOpt);
 
-    // Pick a random survey out of those selected 
-    const selectedSurvey = _.sample(allowedSurveys);
-
-    if (!selectedSurvey) {
-      callback([]);
-      return;
-    }
- 
-    const surveyId = selectedSurvey.id;
-
-    // Get questions from the selected survey, return in callback - 2 limit hardcoded 
-    Question.selectRandomQuestions(surveyId, 2, (err, questions) => {
-      let surveyData = Serializers.serializeSurvey([selectedSurvey], questions, Serializers.matrixSerializer);
-      callback(JSON.stringify(surveyData));
-    });
-  });
-}
-*/
 
 let setDefaultDisplaySurveyOptions = (questionsPerPage = 4, splitQuestionTypes = true, range = [0, 100]) => {
   let opts = Constants.surveyDisplayDefaultOptions();

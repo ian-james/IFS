@@ -56,6 +56,18 @@ const getPulseQuestions  = async (surveyId, curQuestion, limit = 2) => {
   return questions;
 };
 
+const getQuestionOrder = async (qId) => {
+  const question = await Question.query()
+    .select(['origOrder'])
+    .where('id', qId)
+    .first();
+  if (question) {
+    return question.origOrder;
+  };
+  return -1;
+};
+
 module.exports.Question = Question;
 module.exports.getResponseCount = getResponseCount;
 module.exports.getPulseQuestions = getPulseQuestions;
+module.exports.getQuestionOrder = getQuestionOrder;

@@ -21,6 +21,7 @@ const Question = require(__components + "Survey/models/question");
 const { optedIn } = require(path.join(__modelPath, 'preferences'));
 const { getAvailableSurveys } = require(path.join(__modelPath,'survey'));
 const { getStudentIdForUser } = require(path.join(__modelPath, 'student'));
+const { getQuestionOrder } = require(path.join(__modelPath, 'question'));
 
 module.exports = {
   /* Returns a list of surveys */
@@ -56,7 +57,7 @@ module.exports = {
    * @param  {[type]} res) {                   try {            var title [description]
    * @return {[type]}      [description]
    */
-  sendSurveyData: (req, res) => {
+  sendSurveyData: async (req, res) => {
     try {
       const title = req.body.title;
       const results = req.body.result;
@@ -69,7 +70,7 @@ module.exports = {
         if (data && data.length > 0) {
           const surveyId = data[0].id;
           const userId = req.user.id || req.passport.user;
-          SurveyPreferences.getSurveyPreferences(userId, surveyId, function (err, surveyPrefData) {
+          SurveyPreferences.getSurveyPreferences(userId, surveyId, async function (err, surveyPrefData) {
             if (err) {
               Logger.error("Unable to get Survey Preferences");
               return;
@@ -121,6 +122,8 @@ module.exports = {
               }
             );
 
+            const curIndex = await getQuestionOrder(lastId);
+
             tracker.trackEvent(global.ioGlob, event.surveyEvent(req.user.sessionId, req.user.id, "addSection", {
               "surveyId": surveyId,
               "questionIds": qids,
@@ -130,7 +133,7 @@ module.exports = {
             }));
 
             // Set the Preferences question Index
-            SurveyPreferences.setQuestionCounter(userId, surveyId, lastId, function (err, qData) {
+            SurveyPreferences.setQuestionCounter(userId, surveyId, curIndex, function (err, qData) {
               if (err)
                 Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
               });
