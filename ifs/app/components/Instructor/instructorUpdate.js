@@ -1,6 +1,9 @@
 $(document).ready(function(){
     // fetch the number of tasks that have been displayed
-    var task = document.getElementById('at').value;
+    if( $('#at').length )         // use this if you are using id to check
+    {
+        var task = document.getElementById('at').value;
+    }
     $('#updateAssignment').submit(function(event) {
         event.preventDefault();
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)

@@ -422,9 +422,9 @@ module.exports = function( app ) {
                     instructorDB.deleteClassSkills(data.cid, function(err){
                         if(!err){
                             skillInsert(data.cskills, data.cid, -1);
+                            res.sendStatus(200);
                         }
                     });
-                    res.sendStatus(200);
                 }
                 else{
                     res.status(500).send();
