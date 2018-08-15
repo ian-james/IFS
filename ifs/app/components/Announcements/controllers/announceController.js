@@ -40,7 +40,6 @@ const listAnnounces = async (req, res) => {
 
 const deleteAnnounce = async (req, res) => {
   const id = req.params.id;
-  console.log(id);
   const announce = await Announcement.query()
     .delete()
     .where('id', id);

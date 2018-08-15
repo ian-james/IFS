@@ -10,7 +10,7 @@ class Survey extends Model {
   static get relationMappings() {
     const { Question } = require('./question');
     const { SurveyResult } = require('./surveyResult');
-    const SurveyPreference = require('./surveyPreference');
+    const { SurveyPreference } = require('./surveyPreference');
     const { ClassSurvey } = require('./classSurvey');
 
     return {

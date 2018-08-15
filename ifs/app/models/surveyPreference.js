@@ -39,5 +39,5 @@ const resetPulseProgress = async (userId) => {
     .where('userId', userId);
 };
 
-module.exports.surveyPreference = SurveyPreference;
+module.exports.SurveyPreference = SurveyPreference;
 module.exports.resetPulseProgress = resetPulseProgress;

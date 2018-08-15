@@ -119,8 +119,8 @@ let buildPulseSurvey = async (toolType, userId, callback) => {
       const questions = await getPulseQuestions(curSurveyId, curQuestion, 2);
 
       const surveyData = Serializers.serializeSurvey([surveys[0]], questions, Serializers.matrixSerializer);
-      console.log(surveyData);
-      callback(surveyData);
+      
+      callback(JSON.stringify(surveyData));
     }
   } else {
     callback([]);

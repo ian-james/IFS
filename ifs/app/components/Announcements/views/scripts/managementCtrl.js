@@ -9,7 +9,6 @@ app.controller('announceCtrl', function($scope, $http) {
   };
 
   $scope.deleteAnnounce = function(id) {
-    console.log(id);
     if (confirm('Do you really want to delete this announcement?')) {
       $http.delete(`/admin/announcements/${id}`)
       .then((res) => {
