@@ -86,11 +86,11 @@ module.exports = function (app, iosocket) {
 
     TipManager.selectTip(req, res, userId, () => {
       SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
-        console.log('SURVEYS');
+        console.log('SURVEY');
         console.log(survey);
+        console.log(survey.pages[0].questions);
         if (!survey) {
-          survey = [];
-        }
+          console.log('empty');        }
         res.render(viewPath + "tool", {
           "title": req.session.toolSelect + ' Tool Screen',
           "surveyQuestions": survey
