@@ -72,4 +72,7 @@ module.exports = function (app, iosocket) {
     require(componentsPath + '/SurveyAdmin/routes')(app,iosocket);
     // Announcement Routes 
     require (componentsPath + '/Announcements/routes')(app,iosocket);
+
+    // Instructor route
+    require(componentsPath + "/Instructor/instructorRoutes")(app);
 }

@@ -24,11 +24,16 @@ module.exports = function( app ) {
      * @return {[type]}        [description]
      */
     function requiresAdmin(req, res, next) {
+        var user = _.get(req, "session.passport.user",req.user);
         if (req && req.user) {
-            adminDB.getRole( req.user.id, function (err,roles){
-                if (roles && roles.length > 0 && adminDB.isAdmin(roles[0].value)) {
-                    next();
-                } else {
+            adminDB.getRole(req.user.id, function(err, role) {
+                if (role && role.length > 0){
+                    if(role[0].value == "admin")
+                        next();
+                    else
+                        res.sendStatus(400);
+                }
+                else{
                     res.sendStatus(400);
                 }
             });
@@ -82,7 +87,10 @@ module.exports = function( app ) {
                 var jsonObj = JSON.parse(data);
                 var menuOptions = jsonObj['page'];
                 updateJsonWithDbValues(menuOptions.options, options.dynamicData)
-                res.render(viewPath + options.adminForm, { title: 'Admin Dashboard', page: menuOptions, formAction: options.formAction, message: message, error: error });
+                // again with the hacky fix. It just makes sure that when you re render the page you have access to user
+                // can be fixed later 
+                var currentUser = _.get(req, "session.passport.user",req.user);
+                res.render(viewPath + options.adminForm, { title: 'Admin Dashboard', page: menuOptions, formAction: options.formAction, message: message, error: error , user : currentUser});
             }
         });
     }
@@ -177,7 +185,9 @@ module.exports = function( app ) {
                         }
                     }
                 }
-                res.render(viewPath + "admin", { title: 'IFS Admin Dashboard', stats: stats });
+                // little fix so admin panel appears in drop down menu.
+                var currentUser = _.get(req, "session.passport.user",req.user);
+                res.render(viewPath + "admin", { title: 'IFS Admin Dashboard', stats: stats , user: currentUser});
             }
         );
     });

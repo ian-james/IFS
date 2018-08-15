@@ -7,8 +7,8 @@ class SurveyPreference extends Model {
   }
   /* Relationships */
   static get relationMappings() {
-    const Survey  = require('./survey');
-    const User = require('./user');
+    const { Survey }  = require('./survey');
+    const { User } = require('./user');
 
     return {
       survey: {
@@ -24,11 +24,20 @@ class SurveyPreference extends Model {
         modelClass: User,
         join: {
           from: 'survey_preferences.userId',
-          to: 'user.id'
+          to: 'users.id'
         }
       }
     };
   };
 };
 
-module.exports = SurveyPreference;
+const resetPulseProgress = async (userId) => {
+  await SurveyPreference.query()
+    .patch( {
+      'currentIndex': 0
+    })
+    .where('userId', userId);
+};
+
+module.exports.surveyPreference = SurveyPreference;
+module.exports.resetPulseProgress = resetPulseProgress;

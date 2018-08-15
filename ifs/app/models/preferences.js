@@ -54,8 +54,6 @@ const optedIn = async (userId) => {
     .andWhere('toolType', 'option')
     .andWhere('toolName', 'pref-surveysAllowed')
     .first();
-  console.log('STATUS')
-  console.log(status);
   if (!status || status.toolValue == 'off') {
     return false;
   }

@@ -58,11 +58,9 @@ module.exports = {
    */
   sendSurveyData: (req, res) => {
     try {
-      console.log(req.body);
       const title = req.body.title;
       const results = req.body.result;
       const isPulse = req.body.isPulse;
-      console.log(isPulse);
 
       Survey.getSurveyByTitle(title, function (err, data) {
         if (err) {
@@ -135,15 +133,15 @@ module.exports = {
             SurveyPreferences.setQuestionCounter(userId, surveyId, lastId, function (err, qData) {
               if (err)
                 Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
-            });
-
-            // Check if survey was finished update counter, user survey preferences.
-            if (qids.length == surveyLastIndex) {
-              SurveyPreferences.incrementSurveyIndex(userId, surveyId, function (err, qData) {
-                if (err)
-                  Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
               });
-            }
+
+              // Check if survey was finished update counter, user survey preferences.
+              if (qids.length == surveyLastIndex) {
+                SurveyPreferences.incrementSurveyIndex(userId, surveyId, function (err, qData) {
+                  if (err)
+                    Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
+                });
+              }
           });
         }
       });

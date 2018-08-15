@@ -6,7 +6,7 @@ var dbHelpers = require(__components + "Databases/dbHelpers");
 module.exports = {
 
     getMyMostUsedTools: function( userId, runType, nLimit, callback ) {
-        var q = "select toolName, COUNT(*) as value from feedback where userId = ? and runType = ? group by toolName ORDER by value desc LIMIT " + nLimit.toString();
+        var q = "select toolName as tool, COUNT(*) as value from feedback where userId = ? and runType = ? group by toolName ORDER by value desc LIMIT " + nLimit.toString();
         db.query(q,[userId,runType],callback);
     },
 

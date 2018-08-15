@@ -1,4 +1,5 @@
 const { Model } = require('objection');
+const _ = require('lodash');
 
 class Survey extends Model {
   /* Name getter */
@@ -67,7 +68,20 @@ const getAvailableSurveys = async (studentId) => {
   return surveys;
 }
 
+const getPulseSurveyState = async (studentId, toolType) => {
+  const surveys = await Survey.query()
+    .select(['survey.id', 'survey.totalQuestions', 'survey_preferences.lastRevision', 'survey_preferences.lastIndex', 'survey_preferences.currentIndex'])
+    .whereIn('survey.surveyField', [toolType, 'general'])
+    .andWhere('survey.surveyFreq', 'reg')
+    .leftJoin('survey_preferences', 'survey.id', 'survey_preferences.surveyId');
+  const unfinishedSurveys = _.filter(surveys, (survey) => {
+    return survey.currentIndex < survey.lastIndex;
+  });
+  return unfinishedSurveys;
+}
+
 module.exports.Survey = Survey;
 module.exports.getAvailableSurveys = getAvailableSurveys;
+module.exports.getPulseSurveyState = getPulseSurveyState;
 
 

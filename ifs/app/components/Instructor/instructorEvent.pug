@@ -1,0 +1,61 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    script
+        include instructorUpdate.js
+    div.uk-container
+        h2.uk-text-left #{title}
+        hr
+        div.uk-margin.uk-padding-small
+            div.uk-margin-large-bottom
+                form(id="updateEvent" class='uk-form' method="post" action="")
+                    label(for="Event name").uk-form-label
+                        | Event Name
+                    div.uk-form-controls
+                        input(type="text" name="ename", id="ename", value=ename, required).uk-input
+                    br
+                    label(for="Event title").uk-form-label
+                        | Event Title
+                    div.uk-form-controls
+                        input(type="text" name="etitle", id="etitle", value=etitle, required).uk-input
+                    br
+                    label(for="Event description").uk-form-label
+                        | Event Description
+                    div.uk-form-controls
+                        input(type="text" name="edesc", id="edescription", value=edescription, required).uk-input
+                    br
+                    - var d1 = eopen.toLocaleDateString().split("-");
+                    - var d1 = d1[0] + '-' + d1[1]  + '-' + d1[2];
+                    label(for="Event start").uk-form-label
+                        | Event start
+                    div.uk-form-controls
+                        input(type="date" name="eopen", id="eopen", value=d1, required).uk-input
+                    br
+                    - var d2 = eclose.toLocaleDateString().split("-");
+                    - var d2 = d2[0] + '-' + d2[1]  + '-' + d2[2];
+                    label(for="Event end").uk-form-label
+                        | Event end
+                    div.uk-form-controls
+                        input(type="date" name="eclose", id="eclose", value=d2, required).uk-input
+                    br
+                    input(type="hidden" name="eid" value=eid)
+                    input(type="hidden" name="ecid" value=ecid)
+                    input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
+                    a.uk-button.uk-button-danger(href='/instructor') Cancel
+                    h5 #[strong Dangerous Settings]
+                    a.uk-button.uk-button-danger(href='#delete-event', uk-toggle='')
+                        | Delete Event
+    div#delete-event(uk-modal='')
+        .uk-modal-dialog.uk-modal-body
+            button.uk-modal-close-default(type='button', uk-close='')
+            h2.uk-modal-title Delete Event
+            div.uk-overflow-container#cContent
+                p
+                    | Are you sure you want to delete "#{ename}"?
+                form(id="dEvent" class='uk-form' method="post" action="/instructor-delete")
+                    input(type="hidden" name="eid" value=eid)
+                    button.uk-button.uk-modal-close(type='button') Cancel
+                    input.uk-button.uk-button-danger.uk-margin-small-left(type='submit' value='Delete')
+                                    
+
+
