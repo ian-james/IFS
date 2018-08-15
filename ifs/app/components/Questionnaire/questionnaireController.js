@@ -45,7 +45,8 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 						$scope.list.push({num: 'Question 1', text: 'Do you know how to complete this module?', feedsNext: 'taskModuleDifficulty', fields: [{type: 'radio', model: 'No', options: ['No', 'Yes']}]});
 						$scope.list.push({num: 'Question 2', text: 'How many tasks are there in this module?', fed: 'Yes', prevFed: 'Yes', feedsNext: 'taskNames', fields: [{type: 'select', model: '1', label: 'Tasks', options: ['1', '2', '3', '4', '5']}]});
 						$scope.list.push({num: 'Question 3', text: 'What are the names of these tasks?', fed: 0, prevFed: 0, feedsNext: 'timeEstimates', fields: [{type: 'text', placeholder: 'Task name', model: ''}]});
-						$scope.list.push({num: 'Question 4', text: 'Estimate how long it will take you to complete each task:', fields: [{type: 'timeEstimate', label: '', model: [1, 0]}]});
+						$scope.list.push({num: 'Question 4', text: 'Do you now know how to complete this module given the tasks you listed?', fields: [{type: 'radio', model: 'No', options: ['No', 'Yes']}]});
+						$scope.list.push({num: 'Question 5', text: 'Estimate how long it will take you to complete each task:', fields: [{type: 'timeEstimate', label: '', model: [1, 0]}]});
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'taskModuleDifficulty') {

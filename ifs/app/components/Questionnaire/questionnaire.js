@@ -123,7 +123,7 @@ module.exports = function(app, iosocket) {
 		var assignId = 1; //TODO: this variable is dummy for now and needs to be associated with an actualy assignment ID
 
 		//Update the base table
-		var result = TaskDecompBase.query()
+		await TaskDecompBase.query()
 		.patch({
 			question: assignment,
 			dueDate: date,
@@ -160,7 +160,7 @@ module.exports = function(app, iosocket) {
 		}
 
 		//Get the base id for finding all modules
-		result = await TaskDecompBase.query()
+		var result = await TaskDecompBase.query()
 		.where('userId', userID)
 		.andWhere('assignmentId', assignId)
 		.catch(function(err) {
@@ -169,22 +169,66 @@ module.exports = function(app, iosocket) {
 
 		var baseId = result[0].id;
 
+		//Get the module IDs for removing all tasks
+		result = await TaskDecompModule.query()
+		.where('baseId', baseId)
+		.catch(function(err) {
+			console.log(err.stack);
+		});
+
+		//Remove all previously stored tasks from the database to replace them
+		for (var r of result) {
+			await TaskDecompTask.query()
+			.delete()
+			.where('moduleId', r.id)
+			.catch(function(err) { console.log(err.stack); });
+		}
+
 		//Remove all previously stored modules from the database to replace them
-		result = TaskDecompModule.query()
+		await TaskDecompModule.query()
 		.delete()
 		.where('baseId', baseId)
 		.catch(function(err) { console.log(err.stack); });
 
 		//For each module in the assignment, add the appropriate data as a new entry to the database
 		for (var i = 0; i < numComp; i++) {
-			result = TaskDecompModule.query()
+			var intialComf = taskList[i][0].fields[0].model;
+			var endComf = intialComf;
+			if (intialComf == 'No') endComf = taskList[i][3].fields[0].model;
+
+			await TaskDecompModule.query()
 			.insert({
 				baseId: baseId,
 				name: list[6].fields[i].model,
 				expectedLength: moduleTimes[i][0]+':'+moduleTimes[i][1]+':00',
-				difficulty: list[7].fields[i].model
+				difficulty: list[7].fields[i].model,
+				initialComfort: intialComf,
+				endComfort: endComf
 			})
 			.catch(function(err) { console.log(err.stack); });
+		}
+
+		//Get the module IDs for storing tasks for each module
+		result = await TaskDecompModule.query()
+		.where('baseId', baseId)
+		.catch(function(err) {
+			console.log(err.stack);
+		});
+
+		//Store all tasks in the database
+		for (var m in taskList) {
+			var numTasks = parseInt(taskList[m][1].fields[0].model);
+			for (var i = 0; i < numTasks; i++) {
+				var time = taskList[m][taskList[m].length-1].fields[0].model;
+
+				await TaskDecompTask.query()
+				.insert({
+					moduleId: result[m].id,
+					tasks: taskList[m][2].fields[i].model,
+					expectedLength: time[0]+':'+time[1]+':00'
+				})
+				.catch(function(err) { console.log(err.stack); });
+			}
 		}
    });
 };
