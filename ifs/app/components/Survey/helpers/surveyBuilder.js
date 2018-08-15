@@ -97,7 +97,7 @@ let getSurveyFieldMatches = (surveyPrefData, field, matchingFields) => {
 let buildPulseSurvey = async (toolType, userId, callback) => {
   
   if (!__EXPERIMENT_ON) {
-    callback([]);
+    callback(JSON.stringify([]));
     return;
   }
   
@@ -112,10 +112,10 @@ let buildPulseSurvey = async (toolType, userId, callback) => {
     }
 
     if (!surveys || surveys.length == 0) {
-      callback([]);
+      callback(JSON.stringify([]));
     } else {
-      let curSurveyId = surveys[0].id;
-      let curQuestion = surveys[0].currentIndex;
+      const curSurveyId = surveys[0].id;
+      const curQuestion = surveys[0].currentIndex;
       const questions = await getPulseQuestions(curSurveyId, curQuestion, 2);
 
       const surveyData = Serializers.serializeSurvey([surveys[0]], questions, Serializers.matrixSerializer);
@@ -123,7 +123,7 @@ let buildPulseSurvey = async (toolType, userId, callback) => {
       callback(JSON.stringify(surveyData));
     }
   } else {
-    callback([]);
+    callback(JSON.stringify([]));
   }
 }
 

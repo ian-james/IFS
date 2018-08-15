@@ -104,8 +104,6 @@ module.exports = function (app, iosocket) {
       tracker.trackEvent(iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
       defaultTool.setupDefaultTool(req, pref);
 
-      console.log(pref);
-
       res.redirect(url.format({
         pathname: '/tool'
       }));

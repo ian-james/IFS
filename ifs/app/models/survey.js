@@ -64,7 +64,6 @@ const getAvailableSurveys = async (studentId) => {
         })
     })
     .leftJoin('survey_preferences', 'survey.id', 'survey_preferences.surveyId');
-  console.log(surveys);
   return surveys;
 }
 
