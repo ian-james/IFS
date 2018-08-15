@@ -117,13 +117,10 @@ let buildPulseSurvey = async (toolType, userId, callback) => {
       let curSurveyId = surveys[0].id;
       let curQuestion = surveys[0].currentIndex;
       const questions = await getPulseQuestions(curSurveyId, curQuestion, 2);
-      console.log(questions)
-      let finalRes = [];
-      for (let question of questions) {
-        finalRes.push(question);
-      }
 
-      callback(finalRes);
+      const surveyData = Serializers.serializeSurvey([surveys[0]], questions, Serializers.matrixSerializer);
+      console.log(surveyData);
+      callback(surveyData);
     }
   } else {
     callback([]);

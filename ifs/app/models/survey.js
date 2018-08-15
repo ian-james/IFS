@@ -70,7 +70,7 @@ const getAvailableSurveys = async (studentId) => {
 
 const getPulseSurveyState = async (studentId, toolType) => {
   const surveys = await Survey.query()
-    .select(['survey.id', 'survey.totalQuestions', 'survey_preferences.lastRevision', 'survey_preferences.lastIndex', 'survey_preferences.currentIndex'])
+    .select(['survey.id', 'survey.title', 'survey.totalQuestions', 'survey_preferences.lastRevision', 'survey_preferences.lastIndex', 'survey_preferences.currentIndex'])
     .whereIn('survey.surveyField', [toolType, 'general'])
     .andWhere('survey.surveyFreq', 'reg')
     .leftJoin('survey_preferences', 'survey.id', 'survey_preferences.surveyId');
