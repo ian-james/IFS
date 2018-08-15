@@ -31,4 +31,4 @@ class StudentClass extends Model {
   };
 };
 
-module.exports = StudentClass;
+module.exports.StudentClass = StudentClass;

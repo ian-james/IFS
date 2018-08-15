@@ -17,15 +17,34 @@ $(document).ready(function(){
     $.ajax({
         type: "get",
         url: '/tool/course',
-        success: function (data, status) {
-            var optsStr = "";
+        success: function (res, status) {
 
-            optsStr += "<option value='None'>None</option>"
-            for(var i = 0; i < data.result.length; i++)
+            if(res.result.length == 0)
             {
-                optsStr += "<option value='" + data.result[i] + "'>" + data.result[i] + "</option>";
+                assign.toggleClass("uk-hidden", true);
+                course.toggleClass("uk-hidden", true);
+                $('#courseLab').toggleClass("uk-hidden", true);
+                $('#assignLab').toggleClass("uk-hidden", true);
+                
             }
-            course.append( optsStr );
+            else
+            {
+
+                assign.toggleClass("uk-hidden", false);
+                course.toggleClass("uk-hidden", false);
+                $('#courseLab').toggleClass("uk-hidden", false);
+                $('#assignLab').toggleClass("uk-hidden", false);
+                
+                var optsStr = "";
+
+                optsStr += "<option value='None'>None</option>"
+                for(var i = 0; i < res.result.length; i++)
+                {
+                    optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
+                }
+                course.append( optsStr );
+            }
+            
         },
         error: function(req, err) {
             console.log(err);
@@ -40,16 +59,31 @@ $(document).ready(function(){
         },
         success: function (res, status) {
 
-            var optsStr = "";
-
-            optsStr += "<option value='None'>None</option>"            
-
-            for(var i = 0; i < res.result.length; i++)
+            if(res.result.length == 0)
             {
-                optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
+                assign.toggleClass("uk-hidden", true);
+                course.toggleClass("uk-hidden", true);
+                $('#courseLab').toggleClass("uk-hidden", true);
+                $('#assignLab').toggleClass("uk-hidden", true);
+                
             }
+            else
+            {
+                assign.toggleClass("uk-hidden", false);
+                course.toggleClass("uk-hidden", false);
+                $('#courseLab').toggleClass("uk-hidden", false);
+                $('#assignLab').toggleClass("uk-hidden", false);
 
-            assign.append( optsStr );
+                var optsStr = "";
+                optsStr += "<option value='None'>None</option>"            
+
+                for(var i = 0; i < res.result.length; i++)
+                {
+                    optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
+                }
+
+                assign.append( optsStr );
+            }     
         },
         error: function(req, err) {
             console.log(err);
@@ -101,15 +135,6 @@ $("#course").change(function() {
         }
     })
 
-
-
-
-
-    // $.ajax({
-    //     type: "get",
-    //     url: 'tool/assignment',
-    //     data: ""
-    // })
 })
 
 $("#settingsToggle").click(function() {

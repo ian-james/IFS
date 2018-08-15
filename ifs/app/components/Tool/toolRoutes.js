@@ -20,6 +20,7 @@ var TipManager = require(__components + 'TipManager/tipManager.js');
 
 var {Assignment} = require("../../models/assignment");
 var {Course} = require("../../models/course");
+var {StudentClass} = require("../../models/studentClass");
 
 module.exports = function (app, iosocket) {
 
@@ -70,12 +71,13 @@ app.post('/tool/assignment', async function(req, res) {
 	}
 	else
 	{
-
-		var temp = await Course.query()
-		.where('code', '=', insert);
-
+		// find assignments which are associated with the course code the student is enrolled in
 		var val = await Assignment.query()
-		.where('classId', '=', temp[0].id)
+		.whereIn('classId', (builder) => {
+			builder.select('id')
+			.from('class')
+			.where("code", "=", insert);
+		})
 		.catch(function(err) {
 			res.send({
 				'value': val
@@ -100,8 +102,16 @@ app.get('/tool/course', async function(req, res) {
 	var val = 0;
 	var result = [];
 	var id = [];
+	var classes = [];
+	var userId = req.user.id;
 
+	// query course database to find the courses the student is enrolled in
 	var val = await Course.query()
+	.whereIn('id', (builder) =>{
+		builder.select('studentId')
+		.from('student_class')
+		.where("studentId", "=", userId);
+	})
 	.catch(function(err) {
 		res.send({
 			'value': val
@@ -121,8 +131,6 @@ app.get('/tool/course', async function(req, res) {
 		'result': result,
 		'id': id
 	});
-
-
 
 });
 
@@ -176,8 +184,6 @@ app.get('/tool/data', function (req, res) {
    	preferencesDB.setStudentPreferences(req.user.id, "Option", "pref-toolSelect", pref, function (err, result) {
    		tracker.trackEvent(iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
    		defaultTool.setupDefaultTool(req, pref);
-
-   		console.log(pref);
 
    		res.redirect(url.format({
    			pathname: '/tool'

@@ -32,10 +32,6 @@ function getJsonTool( toolsJson, targetTool ){
 // user selected options to create jobs for the Queue
 function createJobRequests( toolFile, selectedOptions ) {
 
-    console.log("opts1: " + JSON.stringify(selectedOptions));
-
-
-
     //JSON object of all the tools available
     var toolList = readToolFileList(toolFile)
 

@@ -2,18 +2,9 @@ var  kue =  require('kue');
 var Logger = require( __configs + "loggingConfig" );
 var kOptions = require("./kuaServerConfig.js").testKue;
 var kueUIExpress = require('kue-ui-express');
-var cluster = require('cluster');
-
-var clusterWorkerSize = require('os').cpus().length;
 
 var queue = kue.createQueue(kOptions.kueOpts);
 console.log("************************** STARTING KUE SERVER ");
-
-if(cluster.isMaster)
-{
-    console.log("wdfsdfasda");
-}
-
 
 exports.getQueue = function() {
         return queue;
