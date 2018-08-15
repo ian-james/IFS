@@ -40,4 +40,4 @@ class Course extends Model {
   };
 };
 
-module.exports = Course;
+module.exports.Course = Course;

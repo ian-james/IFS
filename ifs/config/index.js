@@ -59,7 +59,7 @@ var sessionInfo =  {
     secret: 'ifsSecretSessionInfo',
     resave: true,
     store: new redisStore({
-        host:'localhost',
+        host: 'localhost',
         port: redisOpts.kueOpts.redis.port,
         client: client
     }),
