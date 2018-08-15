@@ -25,6 +25,11 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'moduleDifficulty') {
+				$scope.list[$scope.i+1].fed = $scope.list[$scope.i].fed;
+				if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
+					$scope.list.length = 8;
+					console.log('clear list here!!!');
+				}
 				console.log($scope.list);
 				
 				//Grab all header items from the lists for title change
@@ -39,13 +44,12 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 					if (taskHeaders.length > 0) taskHeaders[j].num = '"' + $scope.list[$scope.i].fields[j].model + '" Task Decomposition';
 				}
 
-				//Build the task questions if applicable
-				$scope.list[$scope.i+1].fed = $scope.list[$scope.i].fed;
+				//Build the task questions if applicable	
 				if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
 					for (var field of $scope.list[$scope.i].fields) {
-						$scope.list.push({taskHeader: true, num: '"' + field.model + '" Task Decomposition', text: 'The following section will ask you questions about the tasks in the "' + field.model + '" module to help you break them down. You may exit this survey at any time.', fields: []});
+						$scope.list.push({taskHeader: true, num: '"' + field.model + '" Task Decomposition', text: 'The following section will ask you questions about the tasks in this module to help you break them down. You may exit this survey at any time.', fields: []});
 						$scope.list.push({num: 'Question 1', text: 'Do you know how to complete this module?', feedsNext: 'taskModuleDifficulty', fields: [{type: 'radio', model: 'No', options: ['No', 'Yes']}]});
-						$scope.list.push({num: 'Question 2', text: 'How many tasks are there in this module?', fed: 'Yes', prevFed: 'Yes', feedsNext: 'taskNames', fields: [{type: 'select', model: '1', label: 'Tasks', options: ['1', '2', '3', '4', '5']}]});
+						$scope.list.push({num: 'Question 2', text: 'How many tasks are there in this module?', fed: 'No', prevFed: 'No', feedsNext: 'taskNames', fields: [{type: 'select', model: '1', label: 'Tasks', options: ['1', '2', '3', '4', '5']}]});
 						$scope.list.push({num: 'Question 3', text: 'What are the names of these tasks?', fed: 0, prevFed: 0, feedsNext: 'timeEstimates', fields: [{type: 'text', placeholder: 'Task name', model: ''}]});
 						$scope.list.push({num: 'Question 4', text: 'Do you now know how to complete this module given the tasks you listed?', fields: [{type: 'radio', model: 'No', options: ['No', 'Yes']}]});
 						$scope.list.push({num: 'Question 5', text: 'Estimate how long it will take you to complete each task:', fields: [{type: 'timeEstimate', label: '', model: [1, 0]}]});
@@ -100,6 +104,7 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 		$scope.i++;
 		$scope.question = $scope.list[$scope.i];
 		$scope.saveProgress();
+		console.log($scope.list);
 	}
 
 	$scope.prev = function() {

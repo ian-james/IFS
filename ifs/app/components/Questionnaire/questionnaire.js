@@ -105,7 +105,7 @@ module.exports = function(app, iosocket) {
 				});
 
 				//Add all of the task questions for each module
-				list.push({taskHeader: true, num: '"' + name + '" Task Decomposition', text: 'The following section will ask you questions about the tasks in the "' + name + '" module to help you break them down. You may exit this survey at any time.', fields: []});
+				list.push({taskHeader: true, num: '"' + name + '" Task Decomposition', text: 'The following section will ask you questions about the tasks in this module to help you break them down. You may exit this survey at any time.', fields: []});
 				list.push({num: 'Question 1', text: 'Do you know how to complete this module?', feedsNext: 'taskModuleDifficulty', fields: [{type: 'radio', model: result[i].initialComfort, options: ['No', 'Yes']}]});
 				list.push({num: 'Question 2', text: 'How many tasks are there in this module?', fed: result[i].initialComfort, prevFed: result[i].initialComfort, feedsNext: 'taskNames', fields: [{type: 'select', model: '' + tempResult.length, label: 'Tasks', options: ['1', '2', '3', '4', '5']}]});
 				list.push({num: 'Question 3', text: 'What are the names of these tasks?', fed: tempResult.length, prevFed: tempResult.length, feedsNext: 'timeEstimates', fields: []});
@@ -138,7 +138,8 @@ module.exports = function(app, iosocket) {
 		var i = req.body.i;
 
 		// Query parameters to be used
-		var date = list[2].fields[0].model.substring(0, 10) + ' 00:00:00';
+		var date = null;
+		if (list[2].fields[0].model) date = list[2].fields[0].model.substring(0, 10) + ' 00:00:00';
 		var assignment = list[1].fields[0].model;
 		var comfortLevel = list[3].fields[0].model;
 		var userID = req.user.id;
@@ -157,6 +158,8 @@ module.exports = function(app, iosocket) {
 		.where('userId', userID)
 		.andWhere('assignmentId', assignId)
 		.catch(function(err) { console.log(err.stack); });
+
+		console.log('test');
 
 		//Separate the modules and their corresponding tasks into a new list
 		var taskList = [];
@@ -214,7 +217,7 @@ module.exports = function(app, iosocket) {
 		.catch(function(err) { console.log(err.stack); });
 
 		//For each module in the assignment, add the appropriate data as a new entry to the database
-		for (var i = 0; i < numComp; i++) {
+		for (var i in taskList) {
 			var intialComf = taskList[i][0].fields[0].model;
 			var endComf = intialComf;
 			if (intialComf == 'No') endComf = taskList[i][3].fields[0].model;
@@ -238,17 +241,23 @@ module.exports = function(app, iosocket) {
 			console.log(err.stack);
 		});
 
+		console.log(taskList);
+
 		//Store all tasks in the database
 		for (var m in taskList) {
 			var numTasks = parseInt(taskList[m][1].fields[0].model);
 			for (var i = 0; i < numTasks; i++) {
-				var time = taskList[m][taskList[m].length-1].fields[i].model;
+				var time = null;
+				if (taskList[m][taskList[m].length-1].fields[i]) {
+					time = taskList[m][taskList[m].length-1].fields[i].model;
+					time = time[0]+':'+time[1]+':00';
+				}
 
 				await TaskDecompTask.query()
 				.insert({
 					moduleId: result[m].id,
 					tasks: taskList[m][2].fields[i].model,
-					expectedLength: time[0]+':'+time[1]+':00'
+					expectedLength: time
 				})
 				.catch(function(err) { console.log(err.stack); });
 			}
