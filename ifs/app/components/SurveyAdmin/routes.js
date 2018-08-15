@@ -1,6 +1,8 @@
 const path = require('path');
 const SurveyAdminController = require('./controllers/SurveyAdmin');
 const SurveyBuilding = require('./controllers/SurveyBuilding');
+const multer = require('multer');
+const questionsFile = multer();
 
 module.exports = (app, iosocket) => {
   app.get('/admin/surveys/stats', SurveyAdminController.viewStats);
@@ -9,7 +11,7 @@ module.exports = (app, iosocket) => {
   app.post('/admin/surveys/responses/:questionID', SurveyAdminController.getFilteredResponses);
   app.get('/admin/surveys/get', SurveyAdminController.downloadSurvey);
   app.get('/admin/surveys/create', SurveyBuilding.createSurveyForm);
-  app.post('/admin/surveys/create', SurveyBuilding.createSurveyAndQuestions);
+  app.post('/admin/surveys/create', questionsFile.single('fullSurveyFile'), SurveyBuilding.createSurveyAndQuestions);
   app.get('/admin/surveys', SurveyAdminController.manageSurveys)
   app.delete('/admin/surveys/delete/:surveyId', SurveyAdminController.deleteSpecificSurvey);
   app.get('/admin/surveys/classes', SurveyAdminController.classSurveys);

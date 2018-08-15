@@ -7,14 +7,12 @@ const { Question } = require(path.join(__modelPath, 'question'));
 module.exports = {
   /* Post request for creating a new Survey/associating questions */
   createSurveyAndQuestions: async (req, res) => {
-    console.log(req.body);
-
-    if (!req.files) {
+    if (!req.file) {
       return res.status(400).send({msg: 'No question set uploaded'});
     }
 
-    const questionSet = req.files.fullSurveyFile;
-    const questionJSON = JSON.parse(questionSet.data);
+    const questionSet = req.file.buffer;
+    const questionJSON = JSON.parse(questionSet);
     const questions = questionJSON.QuestionText
 
     const survey = await Survey.query()

@@ -85,10 +85,10 @@ var bodyParser = require('body-parser');
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({extended: false}) );
 
-/* file upload */
+/* file upload 
 const fileUpload = require('express-fileupload');
 app.use(fileUpload());
-
+*/
 app.use(mySession);
 
 // Setup Flash messages
