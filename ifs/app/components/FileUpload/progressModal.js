@@ -54,10 +54,30 @@ $(function() {
         var modal = UIkit.modal("#processingModal");
         modal.show();
 
-
         var uploadProgressBar = $('#progressbar')[0];
 
+
         
+        var assign = $('#assign');
+        var code = assign.find(":selected").text();
+        var assignId = 0;
+
+        var form = new FormData($('#uploadForm')[0]);
+
+        $.ajax({
+            type: "post",
+            url: '/assignment',
+            async: false,
+            data: {
+                course: code
+            },
+            success: function(res, status) {
+                assignId = res.assignment; 
+            }
+        });
+
+        form.append('assignId', assignId);
+
         // Create an AJAX request with all the upload form data
         // available. Upon completion feedback button is available
         // to progress or alert with error message.
@@ -67,7 +87,7 @@ $(function() {
             type: "POST",
             url:'/tool_upload',
             multiple: true,
-            data: new FormData($('#uploadForm')[0]),
+            data: form,
             headers: {
                 'token': date
             },

@@ -18,8 +18,6 @@ $(document).ready(function(){
         type: "get",
         url: '/tool/course',
         success: function (data, status) {
-            console.log(data);
-
             var optsStr = "";
 
             optsStr += "<option value='None'>None</option>"
@@ -51,7 +49,6 @@ $(document).ready(function(){
                 optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
             }
 
-            console.log(optsStr);
             assign.append( optsStr );
         },
         error: function(req, err) {
@@ -88,7 +85,6 @@ $("#course").change(function() {
                 optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
             }
 
-            console.log(optsStr);
             assign.append( optsStr );
 
             if(courseSelected == "None")
@@ -98,7 +94,6 @@ $("#course").change(function() {
             }
             else
             {
-                console.log("assign is " + assign.find(":selected").text());
                 $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
                 $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
             }

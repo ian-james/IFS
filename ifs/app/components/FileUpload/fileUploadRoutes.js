@@ -30,6 +30,9 @@ var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 
+var {Feedback} = require("../../models/feedback");
+var {Assignment} = require("../../models/assignment");
+
 module.exports = function (app, iosocket) {
 
     /**
@@ -70,12 +73,11 @@ module.exports = function (app, iosocket) {
      * @param  {Function} callback        [description]
      * @return {[type]}                   [description]
      */
-    function writeFeedbackFile( sessionId, userId, submissionId, feedbackFileObj, callback ) {
+    function writeFeedbackFile( sessionId, userId, submissionId, feedbackFileObj, assignmentID, callback ) {
         fs.readFile( feedbackFileObj.file, function(err,data){
             if(data) {
 
                 var feedbackItemData = JSON.parse(data);
-
                 var feedbackItems = feedbackItemData['feedback'];
                 var feedbackStatsItems = feedbackItemData['feedbackStats'];
 
@@ -86,7 +88,8 @@ module.exports = function (app, iosocket) {
                     var toolAdd = {"displayName": feedbackFileObj.displayName, "runType": feedbackFileObj.runType };
                     _.extend(fi,toolAdd);
 
-                    var fe =  eventDB.makeFeedbackEvent( sessionId, userId, submissionId, fi );
+                    var fe =  eventDB.makeFeedbackEvent( sessionId, userId, submissionId, fi , assignmentID);
+
                     dbHelpers.insertEventC( dbcfg.feedback_table, fe, function(err,d){
                         // Empty Callback if feedback fails to save, we aren't too concerned.
                         _callback();
@@ -147,10 +150,10 @@ module.exports = function (app, iosocket) {
      * @param  {[type]} feedbackItems [description]
      * @return {[type]}               [description]
      */
-    function emitFeedbackResults( sessionId, userId, submissionId, feedbackItemFiles ){
+    function emitFeedbackResults( sessionId, userId, submissionId, feedbackItemFiles, assignmentID ){
 
         async.each(feedbackItemFiles, function( feedbackFile, callback) {
-            writeFeedbackFile(sessionId, userId, submissionId,feedbackFile, callback );
+            writeFeedbackFile(sessionId, userId, submissionId,feedbackFile, assignmentID, callback );
         }, function(err) {
             if(err)
                 Logger.error(err);
@@ -206,14 +209,45 @@ module.exports = function (app, iosocket) {
         });
     }
 
+    app.post('/assignment', async function(req, res) {
+        
+        var temp = req.body.course;
+        var fin = 0;
+
+        if(temp == "None" || temp == "")
+        {
+            res.send({'assignment': fin});      
+        }
+        else
+        {
+            //find assignment with name in assignment table
+            var assignment = await Assignment.query()
+            .where("name", "=", temp)
+            .catch(function(err) {
+                res.send({
+                    'value': assignment
+                });
+                console.log(err.stack);
+                return;
+            });
+
+            //get the assignment id
+            fin = assignment[0].id;
+
+            res.send({'assignment': fin});
+        }        
+
+    });
+
     app.post('/tool_upload', upload.any(), function(req,res,next) {
+        
+        var assignmentID = req.body.assignId;      
+
         // saves the tools that were selected
         var user = eventDB.eventID(req);
         saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
 
         submissionEvent.addSubmission( user, function(subErr, succSubmission) {
-
-
 
             //obtain last submission from the requesting user
             var submissionRequest = submissionEvent.getLastSubmissionId(user.userId, user.sessoinId);
@@ -262,6 +296,7 @@ module.exports = function (app, iosocket) {
                     return;
                 }
 
+                
 
 
                 //Upload files names and job requests, jobRequests remains to ease testing and debugging.
@@ -282,7 +317,7 @@ module.exports = function (app, iosocket) {
                 // Add the jobs to the queue, results are return in object passed:[], failed:[]
                 manager.makeJob(tools).then( function( jobResults ) {
                     tracker.trackEvent( iosocket, eventDB.submissionEvent(user.sessionId, user.userId, "success", {}) );
-                    emitFeedbackResults(user.sessionId, user.userId, submissionId, jobResults.result.passed);
+                    emitFeedbackResults(user.sessionId, user.userId, submissionId, jobResults.result.passed, assignmentID);
                     var data = { "msg":"Awesome"};
                     res.write(JSON.stringify(data));
                     res.end();

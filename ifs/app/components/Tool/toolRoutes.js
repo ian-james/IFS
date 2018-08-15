@@ -60,7 +60,6 @@ module.exports = function (app, iosocket) {
 app.post('/tool/assignment', async function(req, res) {
 
 	var insert = req.body.insert;
-	console.log("the val is " + insert);
 
 	var val = 0;
 	var result = [];
@@ -74,9 +73,6 @@ app.post('/tool/assignment', async function(req, res) {
 
 		var temp = await Course.query()
 		.where('code', '=', insert);
-
-		console.log(temp[0].id);
-
 
 		var val = await Assignment.query()
 		.where('classId', '=', temp[0].id)
