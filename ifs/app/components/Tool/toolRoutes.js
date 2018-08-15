@@ -29,56 +29,6 @@ module.exports = function (app, iosocket) {
    * @param  {[type]} tools           [description]
    * @return {[type]}                 [description]
    */
-<<<<<<< HEAD
-  function updateJsonWithDbValues(toolPreferences, tools) {
-    var toolPrefix = "enabled-";
-    var optionPrefix = "opt-";
-    for (var i = 0; i < toolPreferences.length; i++) {
-
-      var optionName = toolPreferences[i].toolName;
-      if (_.startsWith(optionName, toolPrefix)) {
-        //Enable the tool checkbox
-        optionName = _.replace(optionName, toolPrefix, "");
-        var r = _.find(tools, _.matchesProperty('displayName', optionName));
-        if (r)
-          r['prefValue'] = false;
-      } else if (_.startsWith(optionName, optionPrefix)) {
-        var r = undefined;
-        for (var y = 0; y < tools.length && !r; y++) {
-          var options = tools[y].options;
-          r = _.find(options, _.matchesProperty("name", optionName));
-          if (r) {
-            if (r.type == "checkbox")
-              r['prefValue'] = toolPreferences[i].toolValue == "on";
-            else if (r.type == "select" || r.type == "text")
-              r['prefValue'] = toolPreferences[i].toolValue;
-          }
-        }
-      }
-    }
-  }
-
-  app.get('/tool/data', function (req, res) {
-    fs.readFile(req.session.toolFile, 'utf-8', function (err, toolData) {
-      if (err) {
-        //Unable to get supported tools file, larger problem here.
-        Logger.error(err);
-        res.end();
-      } else {
-        //Load JSON tool file and send back to UI to create inputs
-        preferencesDB.getStudentPreferencesByToolType(req.user.id, req.session.toolSelect, function (err, toolPreferences) {
-
-          var jsonObj = JSON.parse(toolData);
-          var tools = jsonObj['tools'];
-
-          if (toolPreferences)
-            updateJsonWithDbValues(toolPreferences, tools);
-          res.json(tools);
-        });
-      }
-    });
-  });
-=======
    function updateJsonWithDbValues(toolPreferences, tools) {
    	var toolPrefix = "enabled-";
    	var optionPrefix = "opt-";
@@ -196,7 +146,6 @@ app.get('/tool/data', function (req, res) {
 	}
 });
 });
->>>>>>> minorFixes
 
   /**
    * This loads all the survey data required for loading time.
