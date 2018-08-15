@@ -86,6 +86,8 @@ module.exports = function (app, iosocket) {
 
     TipManager.selectTip(req, res, userId, () => {
       SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
+        console.log('SURVEYS');
+        console.log(survey);
         if (!survey) {
           survey = [];
         }
