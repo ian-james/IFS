@@ -59,7 +59,7 @@ var sessionInfo =  {
     secret: 'ifsSecretSessionInfo',
     resave: true,
     store: new redisStore({
-        host:'localhost',
+        host: 'localhost',
         port: redisOpts.kueOpts.redis.port,
         client: client
     }),
@@ -86,8 +86,9 @@ app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({extended: false}) );
 
 /* file upload */
+/*
 const fileUpload = require('express-fileupload');
-app.use(fileUpload());
+app.use(fileUpload());*/
 
 app.use(mySession);
 

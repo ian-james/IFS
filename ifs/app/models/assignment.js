@@ -8,7 +8,7 @@ class Assignment extends Model {
   /* Relationships */
   static get relationMappings() {
     const { AssignmentTask } = require ('./assigmentTask');
-    const { Course } = require('./course');  
+    const { Course } = require('./course');
     return {
       tasks: {
         relation: Model.HasManyRelation,
@@ -31,4 +31,4 @@ class Assignment extends Model {
   };
 };
 
-module.exports = Assignment;
+module.exports.Assignment = Assignment;

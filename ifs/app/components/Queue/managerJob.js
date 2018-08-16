@@ -41,7 +41,6 @@ function cTest(jobList)
 
     }
 
-    console.log(cmdArr);
 
     var child = spawn("./test", cmdArr);
 
@@ -80,7 +79,8 @@ function loadAllTools(job, done) {
         promises.push( cjob.makeJob( jobsInfo[i] ));
     }
 
-    cTest(jobsInfo);
+    // this was to test efficiency of running the tools with C
+    // cTest(jobsInfo);
 
     cjob.runJob();
 
@@ -88,15 +88,12 @@ function loadAllTools(job, done) {
 
     var p = Q.all(promises);
 
-    console.log(p);
-
-
     // Wait for everything to finish before emitting that parent is done.
     Q.allSettled(promises)
     .then(function(res) {
         t1 = now();
 
-
+        // printing time it takes to run the tools
         console.log("time taken to run jobs is: " + (t1 - t0) + " milliseconds");
 
         // return everything that passed and was fulfilled

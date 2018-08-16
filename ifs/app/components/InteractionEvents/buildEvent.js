@@ -36,7 +36,7 @@ module.exports = {
      * @param  {[type]} toolFeedbackItem [description]
      * @return {[type]}                  [description]
      */
-    makeFeedbackEvent: function( sessionId, userId, submissionId, toolFeedbackItem ){
+    makeFeedbackEvent: function( sessionId, userId, submissionId, toolFeedbackItem, assignmentID){
         var e = {};
         try {
             e['userId'] = userId;
@@ -74,6 +74,7 @@ module.exports = {
             e = _.assign(e, rk, k);
 
             e['suggestions'] = JSON.stringify(e['suggestions']);
+            e['assignmentID'] = Number(assignmentID);
         } catch(e) {
             Logger.error("Error Making feedback");
         }
