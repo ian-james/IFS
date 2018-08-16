@@ -14,8 +14,6 @@ block content
 
         div(class="uk-width-1-1").uk-section
             div.uk-margin-medium
-                include dashboardQuestionnaire.pug
-            div.uk-margin-medium
                 include dashboardStudentProfile.pug
             span(ng-if="courses && courses.length >= 0")
                 div.uk-clearfix
@@ -35,6 +33,7 @@ block content
                         include dashboardProgrammingStats.pug
         br
 
+    script(src="components/Questionnaire/questionnaireController.js")
     script(src="components/Dashboard/dashboardController.js")
     link(rel="stylesheet" href="components/Dashboard/dashboard.css")
     link(rel="stylesheet" href="components/Feedback/errors.css")

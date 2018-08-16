@@ -1,4 +1,4 @@
-app.controller( "dashboardCtrl", function($scope, $http) {
+app.controller( "dashboardCtrl", function($scope, $http, $rootScope) {
     $scope.courses=[];
     $scope.assignments = [];
     $scope.stats = [];
@@ -10,6 +10,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
     $scope.toolType = null;
     $scope.skills = [];
     $scope.studentProfile = null;
+    $rootScope.studentFocusGlobal = 0;
 
     /**
      * Selects the next active DIV for student focus.
@@ -17,6 +18,7 @@ app.controller( "dashboardCtrl", function($scope, $http) {
      */
     $scope.getNextSelected = function() {
         $scope.activeStudentFocus = ($scope.activeStudentFocus +1) % 3;
+        $rootScope.studentFocusGlobal = $scope.activeStudentFocus;
         if( $scope.activeStudentFocus == 0 )
             $scope.resetSelectedFocus();
 
@@ -26,10 +28,12 @@ app.controller( "dashboardCtrl", function($scope, $http) {
 
     $scope.assignmentComplete = function() {
         $scope.activeStudentFocus = 3;
+        $rootScope.studentFocusGlobal = $scope.activeStudentFocus;
     }
 
     $scope.resetSelectedFocus = function() {
         $scope.activeStudentFocus = 0;
+        $rootScope.studentFocusGlobal = $scope.activeStudentFocus;
         $scope.courseSelect = null;
         $scope.assignmentSelect = null;
     }
@@ -86,8 +90,10 @@ app.controller( "dashboardCtrl", function($scope, $http) {
                 }
             }
 
-            if($scope.hasFocusItem())
+            if($scope.hasFocusItem()) {
                 $scope.activeStudentFocus = 2;
+                $rootScope.studentFocusGlobal = $scope.activeStudentFocus;
+            }
         }
     });
 });

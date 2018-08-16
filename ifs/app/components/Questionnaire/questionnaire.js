@@ -32,7 +32,7 @@ module.exports = function(app, iosocket) {
 
 		// Query parameters to be used
 		var userID = req.user.id;
-		var assignId = 1; //TODO: this variable is dummy for now and needs to be associated with an actualy assignment ID
+		var assignId = req.session.dailyFocus.assignmentId;
 
 		//Check if the user already has an entry in the database for this part of the questionnaire
 		var result = await TaskDecompBase.query()
@@ -144,7 +144,7 @@ module.exports = function(app, iosocket) {
 		var comfortLevel = list[3].fields[0].model;
 		var userID = req.user.id;
 		var numComp = parseInt(list[5].fields[0].model);
-		var assignId = 1; //TODO: this variable is dummy for now and needs to be associated with an actualy assignment ID
+		var assignId = req.session.dailyFocus.assignmentId;
 
 		//Update the base table
 		await TaskDecompBase.query()
