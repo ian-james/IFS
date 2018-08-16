@@ -9,28 +9,24 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 
 		//Feed the next item in the list, if applicable
 		if ($scope.list[$scope.i].feedsNext) {
+			var field = $scope.question.fields[0];
 			if ($scope.list[$scope.i].feedsNext == 'moduleNames') {
-				for (var field of $scope.list[$scope.i].fields) {
-					if (field.type == 'select') {
-						$scope.list[$scope.i+1].fed = parseInt(field.model);
-						//Clear all fields in further questions if the user inputs a new number of modules
-						if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
-							$scope.list[$scope.i+1].fields = [];
-							$scope.list[$scope.i+2].fields = [];
-							for (var j = 0; j < $scope.list[$scope.i+1].fed; j++) {
-								$scope.list[$scope.i+1].fields.push({type: 'text', placeholder: 'Module name', model: ''});
-								$scope.list[$scope.i+2].fields.push({type: 'slider', label: '', model: 5});
-							}
-						}
+				$scope.list[$scope.i+1].fed = parseInt(field.model);
+				//Clear all fields in further questions if the user inputs a new number of modules
+				if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
+					$scope.list[$scope.i+1].fields = [];
+					$scope.list[$scope.i+2].fields = [];
+					for (var j = 0; j < $scope.list[$scope.i+1].fed; j++) {
+						$scope.list[$scope.i+1].fields.push({type: 'text', placeholder: 'Module name', model: ''});
+						$scope.list[$scope.i+2].fields.push({type: 'slider', label: '', model: 5});
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'moduleDifficulty') {
+				//If the number of modules changed, truncate the list to build a new set of task questions later
 				$scope.list[$scope.i+1].fed = $scope.list[$scope.i].fed;
 				if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
 					$scope.list.length = 8;
-					console.log('clear list here!!!');
 				}
-				console.log($scope.list);
 				
 				//Grab all header items from the lists for title change
 				var taskHeaders = [];
@@ -55,9 +51,9 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 						$scope.list.push({num: 'Question 5', text: 'Estimate how long it will take you to complete each task:', fields: [{type: 'timeEstimate', label: '', model: [1, 0]}]});
 					}
 				}
-			} else if ($scope.list[$scope.i].feedsNext == 'taskModuleDifficulty') {
-				$scope.list[$scope.i+1].fed = $scope.list[$scope.i].fields[0].model;
+			} else if ($scope.list[$scope.i].feedsNext == 'taskModuleDifficulty') {		
 				//Check if the user knows how to complete this module
+				$scope.list[$scope.i+1].fed = $scope.list[$scope.i].fields[0].model;
 				if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
 					//If the user does or doesn't know how to complete the model, do or do not ask them questions about task difficulty
 					if ($scope.list[$scope.i+1].fed == 'No') {
@@ -69,32 +65,30 @@ app.controller("questionnaireCtrl", function($scope, $http) {
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'taskNames') {
-				for (var field of $scope.list[$scope.i].fields) {
-					if (field.type == 'select') {
-						$scope.list[$scope.i+1].fed = parseInt(field.model);
-						if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
-							$scope.list[$scope.i+1].fields = [];
-							$scope.list[$scope.i+2].fields = [];
-							if ($scope.list[$scope.i].fed == 'No') {
-								$scope.list[$scope.i+2].fields = [{type: 'radio', model: 'No', options: ['No', 'Yes']}];
-								$scope.list[$scope.i+3].fields = [];
-							}
-							for (var j = 0; j < $scope.list[$scope.i+1].fed; j++) {
-								$scope.list[$scope.i+1].fields.push({type: 'text', placeholder: 'Task name', model: ''});
-								if ($scope.list[$scope.i].fed == 'No') {
-									$scope.list[$scope.i+3].fields.push({type: 'timeEstimate', label: '', model: [1, 0]});
-								} else {
-									$scope.list[$scope.i+2].fields.push({type: 'timeEstimate', label: '', model: [1, 0]});
-								}
-							}
+				//If the number of tasks has changed, clear all fields and rebuild them for the appropriate number of tasks
+				var field = $scope.question.fields[0];
+				$scope.list[$scope.i+1].fed = parseInt(field.model);
+				if ($scope.list[$scope.i+1].prevFed != $scope.list[$scope.i+1].fed) {
+					$scope.list[$scope.i+1].fields = [];
+					$scope.list[$scope.i+2].fields = [];
+					if ($scope.list[$scope.i].fed == 'No') {
+						$scope.list[$scope.i+2].fields = [{type: 'radio', model: 'No', options: ['No', 'Yes']}];
+						$scope.list[$scope.i+3].fields = [];
+					}
+					for (var j = 0; j < $scope.list[$scope.i+1].fed; j++) {
+						$scope.list[$scope.i+1].fields.push({type: 'text', placeholder: 'Task name', model: ''});
+						if ($scope.list[$scope.i].fed == 'No') {
+							$scope.list[$scope.i+3].fields.push({type: 'timeEstimate', label: '', model: [1, 0]});
+						} else {
+							$scope.list[$scope.i+2].fields.push({type: 'timeEstimate', label: '', model: [1, 0]});
 						}
 					}
 				}
 			} else if ($scope.list[$scope.i].feedsNext == 'timeEstimates') {
+				//Change labels to match user input for task time estimates
 				var j = $scope.i + 1
 				if ($scope.list[$scope.i-1].fed == 'No') j++;
-
-				//Change labels to match user input
+	
 				for (var k in $scope.list[$scope.i].fields) {
 					$scope.list[j].fields[k].label = $scope.list[$scope.i].fields[k].model;
 				}
