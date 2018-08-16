@@ -3,14 +3,29 @@ const _ = require('lodash');
 const moment = require('moment');
 
 const viewPath = path.join(__components, 'SurveyAdmin/views/');
-const { Survey } = require(path.join(__modelPath, 'survey'));
-const { Question } = require(path.join(__modelPath, 'question'));
-const { SurveyResult } = require(path.join(__modelPath, 'surveyResult'));
-const { SurveyPreference } = require(path.join(__modelPath, 'surveyPreference'));
-const { ClassSurvey } = require(path.join(__modelPath, 'classSurvey'));
-const { Course } = require(path.join(__modelPath, 'course'));
+const surveyResponse = require(path.join(__components, 'Survey/models/surveyResponse'));
+const {
+  Survey
+} = require(path.join(__modelPath, 'survey'));
+const {
+  Question
+} = require(path.join(__modelPath, 'question'));
+const {
+  SurveyResult
+} = require(path.join(__modelPath, 'surveyResult'));
+const {
+  SurveyPreference
+} = require(path.join(__modelPath, 'surveyPreference'));
+const {
+  ClassSurvey
+} = require(path.join(__modelPath, 'classSurvey'));
+const {
+  Course
+} = require(path.join(__modelPath, 'course'));
 const ChartHelpers = require('./../../Chart/chartHelpers.js');
-const { getResponseCount } = require(path.join(__modelPath, 'question'));
+const {
+  getResponseCount
+} = require(path.join(__modelPath, 'question'));
 
 
 module.exports = {
@@ -23,12 +38,12 @@ module.exports = {
         const association = await ClassSurvey.query()
           .where('classId', classId)
           .andWhere('surveyId', pref.surveyId);
-        if ( !association || association.length == 0) {
+        if (!association || association.length == 0) {
           await ClassSurvey.query()
-          .insert({
-            classId: classId,
-            surveyId: pref.surveyId
-          });
+            .insert({
+              classId: classId,
+              surveyId: pref.surveyId
+            });
         }
       } else {
         await ClassSurvey.query()
@@ -108,7 +123,7 @@ module.exports = {
       .delete()
       .where('id', surveyId);
 
-    const surveys = await Survey.query()  
+    const surveys = await Survey.query()
     res.render(path.join(viewPath, 'surveyList'), {
       title: 'Manage Surveys',
       surveys: surveys
@@ -131,7 +146,7 @@ module.exports = {
     try {
       const surveys = await Survey.query()
       res.json(surveys);
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       res.send([]);
     }
@@ -153,10 +168,17 @@ module.exports = {
 
     if (ChartHelpers.validateDate(startDate) && ChartHelpers.validateDate(endDate) && moment(endDate).isAfter(startDate)) {
       let responses = await SurveyResult.query()
-        .where('questionId', questionId)
+        .select(['survey_result.*', 'preferences.toolValue as toolPref'])
+        .where('survey_result.questionId', questionId)
+        .andWhere('preferences.toolName', 'pref-toolSelect')
         .andWhere('answeredOn', '>=', startDate)
-        .andWhere('answeredOn', '<=', endDate);
-      
+        .andWhere('answeredOn', '<=', endDate)
+        .leftJoin('preferences', 'survey_result.userId', 'preferences.userId' )
+        .distinct('survey_result.id');
+      console.log('RESULT');
+      console.log(responses);
+      console.log(responses.length);
+      console.log(responses);
       /* Filter by survey response type */
       if (responseType != 'both') {
         const filterValue = (responseType == 'pulse') ? 1 : 0;
@@ -166,7 +188,7 @@ module.exports = {
 
       /* Filter by tool preference */
       if (toolPref != 'both') {
-          responses = _.filter(responses, response => (response.toolPref == toolPref));
+        responses = _.filter(responses, response => (response.toolPref == toolPref));
       }
 
       /* Transform results into percentages for the chart */
@@ -183,6 +205,7 @@ module.exports = {
       dataArray = _.map(dataArray, val => ((val / responseCount) * 100));
 
       res.json(dataArray);
+
     } else {
       res.json([]);
     }

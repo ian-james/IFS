@@ -17,7 +17,7 @@ const getResponsesForQuestion = (questionID, callback) => {
 };
 
 const getQResponses = (questionID, callback) => {
-    let q = 'SELECT survey_result.answeredOn, survey_result.questionAnswer, survey_result.userId, survey_result.pulse_response, preferences.toolValue AS toolPref ';
+    let q = 'SELECT survey_result.answeredOn, survey_result.questionAnswer, survey_result.userId, survey_result.pulseResponse, preferences.toolValue AS toolPref ';
     q += 'from survey_result join preferences on survey_result.userId = preferences.userId where preferences.toolName="pref-toolSelect" AND survey_result.questionId = ?';
     db.query(q, [questionID], callback);
 }

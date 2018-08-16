@@ -16,5 +16,5 @@ module.exports = {
         'connectionLimit':              500
     },
     // database name
-    'database':                         'IFS2',
+    'database':                         'IFS',
 };
