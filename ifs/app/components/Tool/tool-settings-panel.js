@@ -129,14 +129,33 @@ $("#course").change(function() {
                 assign.toggleClass("uk-hidden", false);
                 $('#assignLab').toggleClass("uk-hidden", false);
 
-                $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
-                $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
+                // $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
+                // $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
             }
 
         }
     })
 
-})
+});
+
+$("#assign").change(function() {
+    var assign = $('#assign');
+    var course = $('#course');
+
+    if(assign.find(":selected").text() == "None")
+    {
+         $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " Assignment ??");
+         $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " Assignment ??");
+    }
+    else
+    {
+        $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
+        $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
+
+    }
+    
+    
+});
 
 $("#settingsToggle").click(function() {
     $("#settingsToggle").toggleClass("uk-button-primary");
