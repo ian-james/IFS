@@ -30,10 +30,10 @@ $(document).ready(function(){
             else
             {
 
-                assign.toggleClass("uk-hidden", false);
+                assign.toggleClass("uk-hidden", true);
                 course.toggleClass("uk-hidden", false);
                 $('#courseLab').toggleClass("uk-hidden", false);
-                $('#assignLab').toggleClass("uk-hidden", false);
+                $('#assignLab').toggleClass("uk-hidden", true);
                 
                 var optsStr = "";
 
@@ -51,44 +51,40 @@ $(document).ready(function(){
         }
     })
 
-    $.ajax({
-        type: "post",
-        url: '/tool/assignment',
-        data: {
-            insert: selectedCourse
-        },
-        success: function (res, status) {
+    // $.ajax({
+    //     type: "post",
+    //     url: '/tool/assignment',
+    //     data: {
+    //         insert: selectedCourse
+    //     },
+    //     success: function (res, status) {
 
-            if(res.result.length == 0)
-            {
-                assign.toggleClass("uk-hidden", true);
-                course.toggleClass("uk-hidden", true);
-                $('#courseLab').toggleClass("uk-hidden", true);
-                $('#assignLab').toggleClass("uk-hidden", true);
+    //         if(res.result.length == 0)
+    //         {
+    //             assign.toggleClass("uk-hidden", true);
+    //             course.toggleClass("uk-hidden", true);
+    //             $('#courseLab').toggleClass("uk-hidden", true);
+    //             $('#assignLab').toggleClass("uk-hidden", true);
                 
-            }
-            else
-            {
-                assign.toggleClass("uk-hidden", false);
-                course.toggleClass("uk-hidden", false);
-                $('#courseLab').toggleClass("uk-hidden", false);
-                $('#assignLab').toggleClass("uk-hidden", false);
+    //         }
+    //         else
+    //         {
 
-                var optsStr = "";
-                optsStr += "<option value='None'>None</option>"            
+    //             var optsStr = "";
+    //             optsStr += "<option value='None'>None</option>"            
 
-                for(var i = 0; i < res.result.length; i++)
-                {
-                    optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
-                }
+    //             for(var i = 0; i < res.result.length; i++)
+    //             {
+    //                 optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
+    //             }
 
-                assign.append( optsStr );
-            }     
-        },
-        error: function(req, err) {
-            console.log(err);
-        }
-    })
+    //             assign.append( optsStr );
+    //         }     
+    //     },
+    //     error: function(req, err) {
+    //         console.log(err);
+    //     }
+    // })
 
     
 });
@@ -122,11 +118,17 @@ $("#course").change(function() {
 
             if(courseSelected == "None")
             {
+                assign.toggleClass("uk-hidden", true);
+                $('#assignLab').toggleClass("uk-hidden", true);
+
                 $('#filePlaceholder').text("Please select files to upload for Assignment ??");
                 $('#evaluate').text("Submit Files for Assignment ??");
             }
             else
             {
+                assign.toggleClass("uk-hidden", false);
+                $('#assignLab').toggleClass("uk-hidden", false);
+
                 $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
                 $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
             }
