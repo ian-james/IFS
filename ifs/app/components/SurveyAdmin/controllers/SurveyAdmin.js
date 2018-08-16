@@ -175,10 +175,7 @@ module.exports = {
         .andWhere('answeredOn', '<=', endDate)
         .leftJoin('preferences', 'survey_result.userId', 'preferences.userId' )
         .distinct('survey_result.id');
-      console.log('RESULT');
-      console.log(responses);
-      console.log(responses.length);
-      console.log(responses);
+
       /* Filter by survey response type */
       if (responseType != 'both') {
         const filterValue = (responseType == 'pulse') ? 1 : 0;
