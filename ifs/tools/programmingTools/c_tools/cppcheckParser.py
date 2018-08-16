@@ -246,10 +246,9 @@ def main(argv):
 
                 file = open(newerFile + "/feedback_cppCheck_unzipped", "w")
                 file.write(result)
-                file.clos()
+                file.close()
                 
                 print( result )
-
             except:
                 sys.stderr.write("Unable to successfully retrieve compiler information\n")
         else:

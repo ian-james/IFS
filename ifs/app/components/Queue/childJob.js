@@ -49,12 +49,18 @@ function runSingleTool(job, done)
     var uploadDir = path.dirname( uploadFilename );
     var filepath =  path.join(uploadDir, "feedback" + "_" + easyToolName + "_" + path.basename(uploadFilename));
 
+    //Create write stream to pipe results as they arrive into a file.
+    const ws = fs.createWriteStream( filepath );
+
     // Spawn a child to handle process
     child = spawn(splitCMD[0], splitCMD.slice(1));
 
     console.log("splitcmd: " + splitCMD[0] + " " + splitCMD.slice(1));
 
     var error = false;
+
+    // Setup the pipe, this is similar to stderr Event except its shorthand format.
+    child.stdout.pipe(ws);
 
     // Event to handle stderr
     child.stderr.on('data', function(data) {
@@ -67,8 +73,8 @@ function runSingleTool(job, done)
 
     // Event on close to indicate progress has finished and close the stream.
     child.on('close', function(code) {
-        job.progress(100, 100);
-
+        job.progress(100,100);
+        ws.end();
         if(error) {
             var err = {"code":-1, "response":new Error("Failed to execute assessment tool: " + job.data.name)};
             done(JSON.stringify(err));
