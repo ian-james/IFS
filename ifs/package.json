@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "node ./config/createDatabase.js",
-    "test": "nodemon ./config/index.js --inspect --ignore logs/* --ignore data/* --ignore uploads/* --ignore logs/* --ignore tests/* --ignore tools/* --ignore users/* --ignore app/shared/img/user/*",
+    "test": "nodemon ./config/index.js --inspect --ignore 'logs/*' --ignore 'data/*' --ignore 'uploads/*' --ignore 'logs/*' --ignore 'tests/*' --ignore 'tools/*' --ignore users/* --ignore 'app/shared/img/user/*'",
     "prestart": "node ./config/createDatabase.js",
     "start": "pm2 start ./config/index.js -i 0 --name IFS",
     "restart": "pm2 start -f ./config/index.js -i 0 --name IFS",

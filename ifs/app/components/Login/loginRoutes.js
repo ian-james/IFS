@@ -42,7 +42,7 @@ module.exports = function( app, passport ) {
         }
     }
 
-
+    // not used????
     function getEmailUsername( email ) {
 
         if( email ) {
