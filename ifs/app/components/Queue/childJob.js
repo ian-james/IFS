@@ -3,6 +3,7 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 var job = require('./generalJob');
 var Q = require('q');
+var cluster = require('cluster');
 
 var path = require('path');
 var fs = require('fs');
@@ -11,13 +12,15 @@ var _ = require('lodash');
 const jobType = 'cJob';
 const JobConCurrent = 10;
 
+var clusterSize = require('os').cpus().length;
+
 /* Tool Options
     Should present a number of values in the obj, should be validated in some way.
     displayName
     progName -> callable from command line
     arguments -> an array of arguments or whatever the program expects.
 */
-function makeJob( toolOptions ) {
+function makeJob(toolOptions) {
     var jobOpts = job.getDefaults(jobType,toolOptions.displayName );
     return job.buildJob( toolOptions, jobOpts );
 }
@@ -29,7 +32,7 @@ function makeJob( toolOptions ) {
  * @param  {Function} done [description]
  * @return {[type]}        [description]
  */
-function runSingleTool( job, done )
+function runSingleTool(job, done)
 {
     // Fake progress to demonstrate some progress
     job.progress(10, 100);
@@ -48,6 +51,8 @@ function runSingleTool( job, done )
 
     // Spawn a child to handle process
     child = spawn(splitCMD[0], splitCMD.slice(1));
+
+    console.log("splitcmd: " + splitCMD[0] + " " + splitCMD.slice(1));
 
     var error = false;
 
@@ -81,6 +86,9 @@ function runChildJob(){
     queue.getQueue().process(jobType, JobConCurrent, function(job,done) {
         runSingleTool( job, done );
     });
+
+
+    
 }
 
 module.exports.makeJob = makeJob;

@@ -12,6 +12,9 @@ block content
                 a.btn.btn-primary(href='#create-assignment', uk-toggle='').uk-float-right.uk-margin-small-right
                     i.glyphicon.glyphicon-plus(aria-hidden='true')
                     |  Create Assignment
+                a.btn.btn-primary(href='#create-event', uk-toggle='').uk-float-right.uk-margin-small-right
+                    i.glyphicon.glyphicon-plus(aria-hidden='true')
+                    |  Create Event
             div(uk-grid style='clear:both;').uk-grid-small.uk-grid-match
                 each cs in classes
                     div(class="uk-width-1-2@m")
@@ -29,17 +32,16 @@ block content
                                         div.uk-width-expand
                                             h3.uk-card-title.uk-margin-remove-bottom #{cs.code}
                                             p.uk-text-meta.uk-margin-remove-top= cs.name
-                                    a(href="/register").uk-float-right
+                                    a(href="").uk-float-right
                                         span.glyphicon(class="glyphicon-signal").uk-margin-small-right
                                         | Statistics
-                                    a(href="/register").uk-float-right.uk-margin-small-right
+                                    a(href="").uk-float-right.uk-margin-small-right
                                         span.glyphicon(class="glyphicon-edit").uk-margin-small-right
                                         | Edit
                 else
                     h3 You don't have any classes created.
-            if !assignments
-                p.uk-text-lead
-                    | No assignments to show!
+            if assignments.length == 0
+                p.uk-text-lead.uk-text-center No assignments to show!
             else
                 div.uk-margin
                     div.uk-card.uk-card-default
@@ -57,13 +59,43 @@ block content
                                                 td #{assign.title}
                                                 // Clean up date then parse it properly so that the other page wont mess up
                                                 - var date = assign.deadline.toLocaleDateString().split("-");
-                                                - if (parseInt(date[1]) < 10) date[1] = '0' + date[1];
-                                                - if (parseInt(date[2]) < 10) date[2] = '0' + date[2];
+                                                // - if (parseInt(date[1]) < 10) date[1] = '0' + date[1];
+                                                // - if (parseInt(date[2]) < 10) date[2] = '0' + date[2];
                                                 - var date = date[0] + '-' + date[1]  + '-' + date[2];
                                                 td #{date}
                                                 td
                                                     form(class='uk-form' method="post" action="/instructor-manage-assignment")
                                                         input(type="hidden" name="assignment-id" value=assign.id)
+                                                        button.btn.btn-sm.btn-success(type="submit").uk-margin-small-right
+                                                            i.glyphicon.glyphicon-edit(aria-hidden='true')
+                                                            |  Manage
+            if events.length == 0
+                p.uk-text-lead.uk-text-center No events to show!
+            else
+                div.uk-margin
+                    div.uk-card.uk-card-default
+                        div.uk-card-body
+                            h4.uk-card-title Events
+                                table.uk-table.uk-table-divider.uk-table-hover
+                                    thead
+                                        tr
+                                            th Title
+                                            th Start Date
+                                            th End Date
+                                            th Manage
+                                    tbody
+                                        each event in events
+                                            tr
+                                                td #{event.title}
+                                                - var d1 = event.openDate.toLocaleDateString().split("-");
+                                                - var d1 = d1[0] + '-' + d1[1]  + '-' + d1[2];
+                                                td #{d1}
+                                                - var d2 = event.closedDate.toLocaleDateString().split("-");
+                                                - var d2 = d2[0] + '-' + d2[1]  + '-' + d2[2];
+                                                td #{d2}
+                                                td
+                                                    form(class='uk-form' method="post" action="/instructor-manage-event")
+                                                        input(type="hidden" name="event-id" value=event.id)
                                                         button.btn.btn-sm.btn-success(type="submit").uk-margin-small-right
                                                             i.glyphicon.glyphicon-edit(aria-hidden='true')
                                                             |  Manage

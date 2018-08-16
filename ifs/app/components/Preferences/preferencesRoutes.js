@@ -93,6 +93,7 @@ module.exports = function(app, iosocket) {
         var studentBio = req.body['student-bio'];
         var error = false;
 
+
         if (!sanitization.validateText(studentName, 'title')) {
             res.redirect(url.format({
                 pathname:"/preferences",

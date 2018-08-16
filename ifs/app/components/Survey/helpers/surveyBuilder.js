@@ -14,6 +14,11 @@ const Survey = require(__components + "Survey/models/survey");
 const Question = require(__components + "Survey/models/question");
 const Serializers = require(path.join(__components, 'Survey/helpers/Serializer'));
 const SurveyManager = require(path.join(__components, 'Survey/helpers/surveyManager'));
+const { optedIn } = require(path.join(__modelPath, 'preferences'));
+const { getStudentIdForUser } = require(path.join(__modelPath, 'student'));
+const { getPulseSurveyState } = require(path.join(__modelPath, 'survey'));
+const { resetPulseProgress } = require(path.join(__modelPath, 'surveyPreference'));
+const { getPulseQuestions } = require(path.join(__modelPath, 'question'));
 
 /**
  * Default parameters for our surveys, add more as necessary.
@@ -89,38 +94,39 @@ let getSurveyFieldMatches = (surveyPrefData, field, matchingFields) => {
   });
 };
 
-/* Builds a survey json out of 2 random questions from an allowed survey that's randomly
- * selected.
- *
- */
-let buildPulseSurvey =  (toolType, userId, callback) => {
-  SurveyManager.getUserSurveyProfileAndSurveyType(userId, (err, surveyPref) => {
-    if (err || !__EXPERIMENT_ON) {
-      callback([]);
-      return;
-    }
-    /* Get list of allowed surveys based on user preferences */
-    let surveyOpt = getSurveyFieldMatches(surveyPref,"surveyField",[toolType, "general"]);
-    surveyOpt = getSurveyFieldMatches(surveyOpt,"surveyFreq",["reg"]);
-    let allowedSurveys = getAllowedSurveys(surveyOpt);
+let buildPulseSurvey = async (toolType, userId, callback) => {
+  
+  if (!__EXPERIMENT_ON) {
+    callback(JSON.stringify([]));
+    return;
+  }
+  
+  const studentId = await getStudentIdForUser(userId);
 
-    /* Pick a random survey out of those selected */
-    const selectedSurvey = _.sample(allowedSurveys);
-
-    if (!selectedSurvey) {
-      callback([]);
-      return;
+  if (await optedIn(studentId)) {
+    let surveys = await getPulseSurveyState(studentId, toolType);
+    /* If no incomplete surveys, reset progress and try again */
+    if (!surveys || surveys.length == 0) {
+      await resetPulseProgress(userId);
+      surveys = await getPulseSurveyState(studentId, toolType);
     }
 
-    const surveyId = selectedSurvey.id;
+    if (!surveys || surveys.length == 0) {
+      callback(JSON.stringify([]));
+    } else {
+      const curSurveyId = surveys[0].id;
+      const curQuestion = surveys[0].currentIndex;
+      const questions = await getPulseQuestions(curSurveyId, curQuestion, 2);
 
-    /* Get questions from the selected survey, return in callback - 2 limit hardcoded */
-    Question.selectRandomQuestions(surveyId, 2, (err, questions) => {
-      let surveyData = Serializers.serializeSurvey([selectedSurvey], questions, Serializers.matrixSerializer);
+      const surveyData = Serializers.serializeSurvey([surveys[0]], questions, Serializers.matrixSerializer);
+      
       callback(JSON.stringify(surveyData));
-    });
-  });
+    }
+  } else {
+    callback(JSON.stringify([]));
+  }
 }
+
 
 let setDefaultDisplaySurveyOptions = (questionsPerPage = 4, splitQuestionTypes = true, range = [0, 100]) => {
   let opts = Constants.surveyDisplayDefaultOptions();

@@ -1,0 +1,20 @@
+extends ../../../shared/views/pageLayout.pug
+
+block scripts
+
+block content
+    div.uk-container
+        h1 Survey Management
+        a(href="/admin/").uk-margin-bottom Back to Admin
+        br
+        br
+        .uk-grid.uk-grid-small.uk-margin-bottom
+            .uk-width-1-5
+                .uk-card.uk-card-default
+                    a(href='/admin/surveys').uk-button Manage Surveys
+                    a(href='/admin/surveys/create').uk-button Add Survey
+                    a(href='/admin/surveys/classes').uk-button Class Surveys
+                    a(href='/admin/surveys/stats').uk-button Survey Data View
+            .uk-width-expand
+                .uk-card.uk-card-default.uk-padding-small
+                    block main

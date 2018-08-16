@@ -40,12 +40,13 @@ function deleteQuestion( questionData, callback ) {
     })
 };*/
 
-let selectNRandomQuestions =  (surveyId, n, callback) => {
+const selectNRandomQuestions =  (surveyId, n, callback) => {
     const q = 'SELECT * from ' + dbcfg.question_table + ' WHERE surveyId = ? ORDER BY RAND() LIMIT ?';
     db.query (q, [surveyId, n], (err, data) => {
         callback (err, data);
     });
 };
+
 
 module.exports.getQuestions = getQuestions;
 module.exports.insertQuestion = insertQuestion;

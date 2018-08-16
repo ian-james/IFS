@@ -57,6 +57,10 @@ const knexCfg = require('knex')({
         user: dbcfg.connection.user,
         password: dbcfg.connection.password,
         database: dbcfg.database,
+    },
+    pool: {
+        min: 0,
+        max: 7,
     }
 });
 

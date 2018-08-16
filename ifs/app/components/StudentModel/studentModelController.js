@@ -2,9 +2,14 @@ app.controller( "studentModelCtrl", function($scope, $http) {
 
     // Backend Data passed in.
     $scope.graphData= {};
+
     // Graph Types
     $scope.graphTypes = [];
     $scope.selectedGraphType= 0;
+
+    // Run Types
+    $scope.runTypes = [];
+    $scope.selectedRunType = 0;
 
     // Dates, format YYYY-MM-DD
     $scope.lowDate;
@@ -53,8 +58,14 @@ app.controller( "studentModelCtrl", function($scope, $http) {
             { 'name': 'Submissions', 'key': 'nsubs' },
             { 'name': 'Feedback Items', 'key': 'nerrs' },
             { 'name': 'Feedback Items Viewed', 'key': 'nfiv' },
-            { 'name': "Self-Assessments", 'key':'sass'}
+            { 'name': "Self-Assessments", 'key':'sass'},
+            { 'name': "Most used tools", 'key':'mused'}
         ];
+    }
+
+    $scope.initRunType = function() {
+        $scope.runTypes = ['programming', 'writing'];
+        $scope.selectedRunType = $scope.runTypes[0];
     }
 
     $scope.init = function() {
@@ -62,10 +73,12 @@ app.controller( "studentModelCtrl", function($scope, $http) {
         $scope.initDates();
         $scope.initGraphTypes();
         $scope.initMetrics();
+        $scope.initRunType();
     }
 
     $scope.updateForm = function() {
-        $http.post('/studentModel/data', {'minDate': $scope.lowDate, 'maxDate': $scope.highDate, 'studentData': $scope.selectedData }).then( function(res) {
+        // add different options here, should never really have to add more here but here it is!
+        $http.post('/studentModel/data', {'runType': $scope.selectedRunType, 'minDate': $scope.lowDate, 'maxDate': $scope.highDate, 'studentData': $scope.selectedData }).then( function(res) {
             if(res.data) {
                 $scope.graphData = res.data;
             }

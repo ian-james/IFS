@@ -1,0 +1,30 @@
+extends surveyAdmin.pug
+
+block main
+    h1.title Create a New Survey
+    form(id="survey" enctype="multipart/form-data" action="/admin/surveys/create" method="post")
+        .uk-margin
+            label Title
+            input(id="title" name="title" required="required" placeholder="eg. Achievement Goals Questionnaire").uk-input
+        .uk-margin
+            label Unique Identifier
+            input(name="surveyName" required="required" placeholder="eg. ACQ1").uk-input
+        .uk-margin
+            label Authors
+            input(name="authorNames" required="required" placeholder="Authors").uk-input
+        .uk-margin
+            label Frequency
+            select(name='surveyFreq' required ).uk-select
+                option(value="reg") Reg
+                option(value="set") Set
+        .uk-margin
+            label Field
+            select(name="surveyField" required="required").uk-select
+                option(value="programming") Programming
+                option(value="writing") Writing
+                option(value="general") General
+        .uk-margin
+            label Questions file (.json)
+            input(type="file" name="fullSurveyFile" required="required").uk-input
+        .uk-margin
+            button(type="Submit").uk-button.uk-button-primary Create Survey

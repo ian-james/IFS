@@ -12,7 +12,6 @@ var dbcfg = require(__configs + 'databaseConfig');
 var Errors = require(__components + "Errors/errors");
 
 var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
-var Survey = require( __components + "Survey/models/survey");
 
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
@@ -36,7 +35,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getUserSurveyProfileAndSurveyType: function(userId, callback) {
-        var q = "select sp.*, s.id, s.surveyName, s.title, s.surveyField,s.surveyFreq, s.fullSurveyFile, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
+        var q = "select sp.*, s.id, s.title, s.surveyField,s.surveyFreq, s.totalQuestions from survey_preferences sp, survey s where s.id = sp.surveyId and userId = ?";
         db.query(q,userId,callback);
     },
 

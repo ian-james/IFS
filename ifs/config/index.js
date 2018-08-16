@@ -21,6 +21,7 @@ global.__configs = path.join(__dirname, "/");
 global.__tools = path.join(__dirname , "../tools/");
 global.__components = path.join(__dirname, "../app/components/");
 global.__appPath = path.join(__dirname, "../app/");
+global.__modelPath = path.join(__dirname, '../app/models');
 global.__EXPERIMENT_ON = true;
 
 var port = process.env.PORT || 3000;
@@ -58,7 +59,7 @@ var sessionInfo =  {
     secret: 'ifsSecretSessionInfo',
     resave: true,
     store: new redisStore({
-        host:'localhost',
+        host: 'localhost',
         port: redisOpts.kueOpts.redis.port,
         client: client
     }),
@@ -83,6 +84,7 @@ app.use( methodOverride() );
 var bodyParser = require('body-parser');
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({extended: false}) );
+
 
 app.use(mySession);
 

@@ -1,0 +1,24 @@
+extends surveyAdmin.pug
+
+block main
+    div(ng-controller='classSurveyCtrl')
+        h1 Manage Class Survey Availability
+        .uk-margin
+            label Select Class
+            select(data-ng-options="class as class.code for class in classes track by class.id" ng-model="selectedClass" ng-change="fetchPreferences()").uk-select
+        .uk-margin
+            label Survey Availability
+            table.uk-table
+                thead
+                    tr 
+                        th Title
+                        th Field
+                        th Available to Enrolled Students
+                tbody
+                    tr(ng-repeat="pref in surveyPref")
+                        td {{ pref.title }}
+                        td {{ pref.field }}
+                        td
+                            input(type="checkbox" ng-model="surveyPref[$index].viewable")
+            button(ng-click="updatePreferences()").uk-button.uk-button-primary Update Survey Availability
+    script(src='/surveyscripts/classSurveyCtrl.js')

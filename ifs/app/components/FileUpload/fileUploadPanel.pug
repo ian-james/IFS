@@ -38,6 +38,7 @@ div
                         var squestions =!{surveyQuestions};
                         if(squestions) {
                             var model = new Survey.Model(squestions);
+                            model.setValue('isPulse', true);
                             $("#surveyElement").Survey({
                                 model:model,
                                 onComplete: sendDataToServer

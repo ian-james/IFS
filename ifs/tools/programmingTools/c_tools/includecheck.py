@@ -47,13 +47,14 @@ def PathValidate(fileNames, includePaths, includeLineNum):
                 if "/" in result[1]:
                     cutFileNames = fileNames[i].split("/")
                     output = ""
-                    for folder in cutFileNames[3:]:
+					#Only grab the actual file name relevant to the file. Don't grab "unzipped" or anything earlier in the file name
+                    for folder in cutFileNames[4:]:
                         output += folder
-                    
                     improperPaths.append([output,includeLineNum[i][j]])
 
             j=j+1
         i=i+1
+    
     return improperPaths
 
 #Take the list of lists from PathFind and split them into 3 discrete lists  
@@ -89,7 +90,10 @@ def PathCollect(includes):
 def PathFind(dir):
     includeList = []
     lineList = []
-    projectFiles = glob(dir+'/*.c') + glob(dir+'/*.h')
+    projectFiles = [os.path.join(dirpath, f)
+        for dirpath, dirnames, files in os.walk(dir)
+        for f in files if (f.endswith('.c')) or (f.endswith('.h'))]
+    #print projectFiles
     lineNumber = 0
     for file in projectFiles:
         fp  = open(file, "r")

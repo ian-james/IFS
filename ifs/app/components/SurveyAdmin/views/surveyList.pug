@@ -1,0 +1,23 @@
+extends surveyAdmin.pug
+
+block main 
+    h2.uk-title Survey List
+    table.uk-table.uk-width-1-1
+        thead
+            tr 
+                th Title
+                th # of Questions
+                th Field
+                th Frequency
+                th Manage
+        tbody
+            each survey in surveys
+                tr
+                    td #{survey.title}
+                    td #{survey.totalQuestions}
+                    td #{survey.surveyField}
+                    td #{survey.surveyFreq}
+                    td 
+                        a(onclick=`destroySurvey(${survey.id})` style="color: red")
+                            span(uk-icon="icon: close")
+    script(src="/surveyscripts/surveyManage.js")
