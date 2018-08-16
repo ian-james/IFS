@@ -95,8 +95,6 @@ app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 			}
 		}
 
-		console.log($rootScope.studentFocusGlobal);
-
 		$rootScope.i++;
 		$rootScope.question = $rootScope.list[$rootScope.i];
 		$scope.saveProgress();
