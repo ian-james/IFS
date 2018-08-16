@@ -110,10 +110,9 @@ $("#course").change(function() {
         success: function (res, status) {
             var optsStr = "";
 
-            if(course == "None")
-            {
-                optsStr += "<option value='None'>None</option>"
-            }
+
+            optsStr += "<option value='None'>None</option>"
+            
             for(var i = 0; i < res.result.length; i++)
             {
                 optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
