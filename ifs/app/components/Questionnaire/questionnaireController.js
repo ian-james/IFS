@@ -137,6 +137,10 @@ app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 			$rootScope.i = res.data.i;
 			$rootScope.question = $rootScope.list[$rootScope.i];
 
+
+			console.log($rootScope.list);
+			console.log($rootScope.i);
+
 			//Convert stringified date entries to Date objects
 			for (var entry of $rootScope.list)
 				for (var field of entry.fields)
