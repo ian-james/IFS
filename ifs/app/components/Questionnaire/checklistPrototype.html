@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test Page</title>
+	<meta charset="utf-8"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/css/uikit.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.6/js/uikit-icons.min.js"></script>
+	<script
+  	src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="uk-container"  style="margin-top: 50px;">
+	<div class="uk-card uk-card-default">
+		<ul class="uk-subnav uk-subnav-pill" uk-switcher="animation: uk-animation-fade">
+		    <li><a>Major Component A</a></li>
+		    <li><a>Major Component B</a></li>
+		    <li><a>Major Component C</a></li>
+		</ul>
+
+		<div class="uk-switcher uk-margin">
+			<div uk-sortable="group: sortable-group">
+				<div uk-grid style="margin-top: 0px">
+					<div class="uk-width-auto">
+						<div class="uk-card uk-drag">
+					        <input class="uk-checkbox" type="checkbox">
+		    				<span>These various items</span>
+		    				<span></span><span></span>
+						    <span></span><span></span>
+						    <div class="uk-float-right"></div>
+						    <div hidden uk-sortable="group: sortable-group" style="padding-left: 30px"></div>
+					    </div>
+					</div>
+				</div>
+			    <div uk-grid style="margin-top: 0px">
+					<div class="uk-width-auto">
+						<div class="uk-card uk-drag">
+					        <input class="uk-checkbox" type="checkbox">
+		    				<span>are sortable</span>
+		    				<span></span><span></span>
+						    <span></span><span></span>
+						    <div class="uk-float-right"></div>
+						    <div hidden uk-sortable="group: sortable-group" style="padding-left: 30px"></div>
+					    </div>
+					</div>
+				</div>
+			    <div uk-grid style="margin-top: 0px">
+					<div class="uk-width-auto">
+						<div class="uk-card uk-drag">
+					        <input class="uk-checkbox" type="checkbox">
+		    				<span>by dragging and dropping.</span>
+		    				<span></span><span></span>
+						    <span></span><span></span>
+						    <div class="uk-float-right"></div>
+						    <div hidden uk-sortable="group: sortable-group" style="padding-left: 30px"></div>
+					    </div>
+					</div>
+				</div>
+				<!-- sub items -->
+				<div uk-grid style="margin-top: 0px">
+					<div class="uk-width-auto">
+					    <div class="uk-card uk-drag">
+					        <input class="uk-checkbox" type="checkbox">
+		    				<span>Items can have sub-items:</span>
+		    				<span></span><span></span>
+						    <span></span><span></span>
+						    <div class="uk-float-right"></div>
+							<div uk-sortable="group: sortable-group" style="padding-left: 30px">
+								<div uk-grid style="margin-top: 0px">
+									<div class="uk-width-auto">
+										<div class="uk-card uk-drag">
+									        <input class="uk-checkbox" type="checkbox">
+						    				<span>Sub-items are</span>
+						    				<span></span><span></span>
+						    				<span></span><span></span>
+						    				<div class="uk-float-right"></div>
+									    </div>
+									</div>
+								</div>
+								<div uk-grid style="margin-top: 0px">
+									<div class="uk-width-auto">
+										<div class="uk-card uk-drag">
+									        <input class="uk-checkbox" type="checkbox">
+						    				<span>are sortable like</span>
+						    				<span></span><span></span>
+						    				<span></span><span></span>
+						    				<div class="uk-float-right"></div>
+									    </div>
+									</div>
+								</div>
+							    <div uk-grid style="margin-top: 0px">
+									<div class="uk-width-auto">
+										<div class="uk-card uk-drag">
+									        <input class="uk-checkbox" type="checkbox">
+						    				<span>the other items</span>
+						    				<span></span><span></span>
+						    				<span></span><span></span>
+						    				<div class="uk-float-right"></div>
+									    </div>
+									</div>
+								</div>
+							</div>
+					    </div>
+					</div>
+				</div>
+			    <div uk-grid style="margin-top: 0px">
+					<div class="uk-width-auto">
+						<div class="uk-card uk-drag">
+					        <input class="uk-checkbox" type="checkbox">
+		    				<span>Items can be focused by clicking them.</span>
+		    				<span class="uk-text-muted">1</span>
+		    				<span class="uk-text-muted">Hour</span>
+		    				<span class="uk-text-muted">15</span>
+		    				<span class="uk-text-muted">Minutes</span>
+		    				<div class="uk-float-right"></div>
+		    				<div hidden uk-sortable="group: sortable-group" style="padding-left: 30px"></div>
+					    </div>
+					</div>
+				</div>
+				<div class="uk-sortable-nodrag" id="addItem" style="padding-top: 10px">
+					<a uk-icon="plus"></a>
+					<label class="uk-text-muted uk-text-small">Add item</label>
+				</div>
+			</div>
+		    <p>
+		    	This is a tabbed interface to allow for major components to have separate task lists. <br>
+		    	This gives better separation of major components and prevents a long, overwhelming list. <br><br>
+		    	Another list would go here instead of this description.
+		    </p>
+		    <p>Another list could be found here</p>
+		</div>
+	</div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+var focus = null;
+var editing = false;
+var temp = false;
+var editButton = document.createElement('button');
+editButton.setAttribute('uk-icon', 'pencil');
+editButton.onclick = edit;
+var saveButton = document.createElement('button');
+saveButton.setAttribute('uk-icon', 'check');
+saveButton.style = 'padding-left: 10px';
+saveButton.onclick = save;
+var trashButton = document.createElement('button');
+trashButton.setAttribute('uk-icon', 'trash');
+trashButton.onclick = trash;
+var title = document.createElement('input');
+title.className = 'uk-input';
+title.type = 'text';
+title.style = 'width: 300px;height: 30px';
+var minutes = document.createElement('select');
+minutes.className = 'uk-select';
+minutes.type = 'number';
+minutes.style = 'width: 60px;height: 30px';
+for (var val of [0,5,10,15,20,25,30,45,50,55]) {
+	var option = document.createElement('option');
+	option.innerText = val;
+	minutes.appendChild(option);
+}
+var hours = document.createElement('select');
+hours.className = 'uk-select';
+hours.type = 'number';
+hours.style = 'width: 60px;height: 30px';
+for (var i = 0; i < 6; i++) {
+	var option = document.createElement('option');
+	option.innerText = i;
+	hours.appendChild(option);
+}
+var addButton = document.createElement('div');
+addButton.classList = 'uk-sortable-nodrag';
+var addButtonIcon = document.createElement('a');
+addButtonIcon.setAttribute('uk-icon', 'plus');
+addButton.appendChild(addButtonIcon);
+addButtonLabel = document.createElement('label');
+addButtonLabel.innerText = 'Add item';
+addButtonLabel.classList = 'uk-text-muted uk-text-small';
+addButton.appendChild(addButtonLabel);
+addButton.onclick = function() {
+	addItem(this);
+};
+
+function edit() {
+	editing = true;
+	var parent = this.parentNode.parentElement;
+	var spans = $(parent).find('span');
+	title.value = focus.children[1].innerText;
+	parent.replaceChild(title, spans[0]);
+	$(title).focus();
+	hours.value = spans[1].innerText;
+	parent.replaceChild(hours, spans[1]);
+	minutes.value = spans[3].innerText;
+	parent.replaceChild(minutes, spans[3]);
+	if (!spans[2].innerText) {
+		spans[2].className = 'uk-text-muted';
+		spans[2].innerText = 'Hours'
+	}
+	if (!spans[4].innerText) {
+		spans[4].className = 'uk-text-muted';
+		spans[4].innerText = 'Minutes'
+	}
+	var div = $(focus).find('div')[0];
+	div.appendChild(trashButton);
+	div.appendChild(saveButton);
+	editButton.remove();
+}
+
+function save() {
+	var parent = saveButton.parentElement.parentElement;
+	var spans = $(parent).find('span');
+	var tVal = document.createElement('span');
+	tVal.innerText = title.value;
+	
+	var hVal = document.createElement('span');
+	hVal.className = 'uk-text-muted';
+	if (hours.value && hours.value != 0) {
+		hVal.innerText = hours.value;
+		if (hours.value == 1) spans[0].innerText = 'Hour';
+		else spans[0].innerText = 'Hours';
+	} else
+		spans[0].innerText = '';
+
+	var mVal = document.createElement('span');
+	mVal.className = 'uk-text-muted';
+	if (minutes.value && minutes.value != 0) 
+		mVal.innerText = minutes.value;
+	else
+		spans[1].innerText = '';
+	
+	parent.replaceChild(tVal, title);
+	parent.replaceChild(hVal, hours);
+	parent.replaceChild(mVal, minutes);
+
+	if (parent == focus) {
+		var div = $(focus).find('div')[0];
+		div.appendChild(editButton);
+		saveButton.remove();
+		trashButton.remove();
+	}
+	editing = false;
+	autoSave();
+}
+
+//This needs to incorporate undo functionality!!!
+function trash() {
+	var parent = saveButton.parentElement.parentElement;
+	parent.remove();
+	autoSave();
+}
+
+function test() {
+	console.log(this);
+}
+
+function addItem(element) {
+	var div = document.createElement('div');
+	div.setAttribute('uk-grid', '');
+	div.style = 'margin-top: 0px';
+	div.classList = 'uk-animation-slide-bottom-small uk-animation-fast';
+	var div2 = document.createElement('div');
+	div2.classList = 'uk-width-auto';
+	div.appendChild(div2);
+	var div3 = document.createElement('div');
+	div3.classList = 'uk-card uk-drag';
+	div2.appendChild(div3);
+	var input = document.createElement('input');
+	input.type = 'checkbox';
+	input.classList = 'uk-checkbox';
+	div3.appendChild(input);
+	title.value = '';
+	div3.appendChild(title);
+	hours.value = '';
+	div3.appendChild(hours);
+	var span1 = document.createElement('span');
+	span1.classList = 'uk-text-muted';
+	span1.innerText = 'Hours';
+	div3.appendChild(span1);
+	minutes.value = '';
+	div3.appendChild(minutes);
+	var span2 = document.createElement('span');
+	span2.classList = 'uk-text-muted';
+	span2.innerText = 'Minutes';
+	div3.appendChild(span2);
+	var div4 = document.createElement('div');
+	div4.classList = 'uk-float-right';
+	div4.appendChild(trashButton);
+	div4.appendChild(saveButton);
+	div3.appendChild(div4);
+
+	editButton.remove();
+	element.parentElement.insertBefore(div, element);
+	toggleFocus(input);
+	$(title).focus();
+	editing = true;
+}
+
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
+function toggleFocus(element) {
+	if (focus) {
+		focus.classList.toggle('uk-card-default');
+		if (editing) save();
+	}
+	focus = element.parentElement;
+	focus.classList.toggle('uk-card-default');
+	
+}
+
+$('.uk-sortable').on('click', 'span', function(){
+	if (focus) {
+		focus.classList.toggle('uk-card-default');
+		if (editing) save();
+		var div = $(focus).find('div')[1];
+		if (div && div.children.length <= 1) {
+			addButton.remove();
+			div.hidden = true;
+		}
+	}
+	focus = this.parentElement;
+	focus.classList.toggle('uk-card-default');
+	var div = $(focus).find('div')[0];
+	div.appendChild(editButton);
+	div = $(focus).find('div')[1];
+	if (div) {
+		if (div.children.length == 0) {
+			div.hidden = false;
+			div.appendChild(addButton);
+		} else {
+			insertAfter(addButton, div.children[div.children.length-1]);
+		}
+	}
+});
+
+$('.uk-sortable').on('click', '.uk-checkbox', function(){
+	if (focus) {
+		focus.classList.toggle('uk-card-default');
+		if (editing) save();
+		var div = $(focus).find('div')[1];
+		if (div && div.children.length <= 1) {
+			addButton.remove();
+			div.hidden = true;
+		}
+	}
+	focus = this.parentElement;
+	focus.classList.toggle('uk-card-default');
+	editButton.remove();
+});
+
+$('#addItem').click(function(){
+	addItem(this);
+});
+
+//Autosaves if in editing mode and the user clicks away from an item
+$(document).click(function(event){
+	console.log(event.target);
+	if ((focus && focus != event.target && !focus.contains(event.target))
+		&& editing && event.target != editButton && event.target.id != 'addItem'
+		&& !document.getElementById('addItem').contains(event.target)
+		&& event.target != addButton && !addButton.contains(event.target)) {
+		save();
+	}
+});
+
+//This function can be used to save the new order of the list after move
+UIkit.util.on('.uk-sortable', 'moved', function (event) {
+    autoSave();
+});
+
+//Dummy autosave function, needs actual functionality later
+function autoSave() {
+	//console.log('Autosaved!');
+}
+
+</script>
+
+<style>
+	li {
+		color: rgb(0,0,0);
+	}
+
+	.uk-checkbox {
+		margin-right: 2px;
+	}
+
+	.uk-card {
+		padding-top: 10px;
+	}
+
+	.uk-card-default {
+		padding: 10px;
+	}
+
+	.uk-float-right {
+		margin-left: 30px;
+	}
+</style>
+
+</html>
