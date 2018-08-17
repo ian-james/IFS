@@ -39,7 +39,7 @@ app.controller( "dashboardCtrl", function($scope, $http, $rootScope) {
      * This can then be saved as today's focus for the session
      */
     $scope.setSessionData = function() {
-
+        $rootScope.getList();
         if ($scope.hasFocusItem() ) {
             var data = {
                 'focusCourseId':  $scope.assignmentSelect.courseId,
@@ -87,6 +87,7 @@ app.controller( "dashboardCtrl", function($scope, $http, $rootScope) {
             }
 
             if($scope.hasFocusItem()) {
+                $rootScope.getList();
                 $scope.activeStudentFocus = 2;
             }
         }

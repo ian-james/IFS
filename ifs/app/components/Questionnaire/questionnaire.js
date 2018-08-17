@@ -159,8 +159,6 @@ module.exports = function(app, iosocket) {
 		.andWhere('assignmentId', assignId)
 		.catch(function(err) { console.log(err.stack); });
 
-		console.log('test');
-
 		//Separate the modules and their corresponding tasks into a new list
 		var taskList = [];
 		var j = -1;
@@ -241,8 +239,6 @@ module.exports = function(app, iosocket) {
 			console.log(err.stack);
 		});
 
-		console.log(taskList);
-
 		//Store all tasks in the database
 		for (var m in taskList) {
 			var numTasks = parseInt(taskList[m][1].fields[0].model);
@@ -263,6 +259,6 @@ module.exports = function(app, iosocket) {
 			}
 		}
 
-		console.log('success!');
+		res.send('success!');
    });
 };

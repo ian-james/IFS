@@ -98,7 +98,6 @@ app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 		$rootScope.i++;
 		$rootScope.question = $rootScope.list[$rootScope.i];
 		$scope.saveProgress();
-		console.log($rootScope.list);
 	}
 
 	$scope.prev = function() {
@@ -115,11 +114,10 @@ app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 		$rootScope.i++;
 	}
 
-	$scope.saveProgress = async function() {
-		await $http.post('taskDecompStore', {'list': $rootScope.list, 'i': $rootScope.i}).then(function(res) {
+	$scope.saveProgress = function() {
+		$http.post('taskDecompStore', {'list': $rootScope.list, 'i': $rootScope.i}).then(function(res) {
 		},function(err){
 		});
-		console.log('posted');
 	}
 
 	$scope.changeFedModels = function() {
@@ -133,8 +131,7 @@ app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 		}
 	}
 
-	$scope.getList = function() {
-		console.log('tst');
+	$rootScope.getList = function() {
 		$http.get('taskDecompRetrieve').then(function(res) {
 			$rootScope.list = res.data.list;
 			$rootScope.i = res.data.i;
@@ -147,9 +144,5 @@ app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 						field.model = new Date(field.model);		
 		},function(err){
 		});
-		UIkit.modal("#questionnaireModal").show();
-		console.log($rootScope.list);
-		console.log($rootScope.i);
-		console.log($rootScope.question);	
 	}
 });
