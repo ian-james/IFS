@@ -1,7 +1,7 @@
 app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 	$scope.modalTitle = "Task Decomposition"
 	$rootScope.question = null;
-	$rootScope.list = [null, null];
+	$rootScope.list = null;
 	$rootScope.i = 0;
 
 	$scope.next = function() {
