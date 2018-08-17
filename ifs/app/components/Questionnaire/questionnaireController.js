@@ -1,7 +1,7 @@
 app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 	$scope.modalTitle = "Task Decomposition"
 	$rootScope.question = null;
-	$rootScope.list = null;
+	$rootScope.list = [null, null];
 	$rootScope.i = 0;
 
 	$scope.next = function() {
@@ -115,10 +115,11 @@ app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 		$rootScope.i++;
 	}
 
-	$scope.saveProgress = function() {
-		$http.post('taskDecompStore', {'list': $rootScope.list, 'i': $rootScope.i}).then(function(res) {
+	$scope.saveProgress = async function() {
+		await $http.post('taskDecompStore', {'list': $rootScope.list, 'i': $rootScope.i}).then(function(res) {
 		},function(err){
 		});
+		console.log('posted');
 	}
 
 	$scope.changeFedModels = function() {
@@ -133,6 +134,7 @@ app.controller("questionnaireCtrl", function($scope, $http, $rootScope) {
 	}
 
 	$scope.getList = function() {
+		console.log('tst');
 		$http.get('taskDecompRetrieve').then(function(res) {
 			$rootScope.list = res.data.list;
 			$rootScope.i = res.data.i;
