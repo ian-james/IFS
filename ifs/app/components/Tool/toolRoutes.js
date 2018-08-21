@@ -76,7 +76,7 @@ app.post('/tool/assignment', async function(req, res) {
 		.whereIn('classId', (builder) => {
 			builder.select('id')
 			.from('class')
-			.where("code", "=", insert);
+			.where('code', insert);
 		})
 		.catch(function(err) {
 			res.send({
@@ -89,7 +89,6 @@ app.post('/tool/assignment', async function(req, res) {
 		for(var i = 0; i < val.length; i++)
 		{
 			result.push(val[i].name);
-
 		}
 
 		res.send({'result': result});
@@ -108,9 +107,9 @@ app.get('/tool/course', async function(req, res) {
 	// query course database to find the courses the student is enrolled in
 	var val = await Course.query()
 	.whereIn('id', (builder) =>{
-		builder.select('studentId')
+		builder.select('classId')
 		.from('student_class')
-		.where("studentId", "=", userId);
+		.where('studentId', userId);
 	})
 	.catch(function(err) {
 		res.send({
@@ -124,7 +123,6 @@ app.get('/tool/course', async function(req, res) {
 	{
 		result.push(val[i].code);
 		id.push(val[i].id);
-
 	}
 
 	res.send({

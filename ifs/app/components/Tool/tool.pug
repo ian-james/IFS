@@ -15,7 +15,7 @@ block content
 			div.uk-margin
 				label#assignLab.uk-form-label(for='#assign') Assignment
 				div.uk-form-controls
-					select#assign.uk-select
+					select#assign.uk-select.uk-hidden
 						option None
 		div(uk-alert hidden).uk-alert-danger
 			p.uk-align-center.errorMessage#error #{messages.errorMessage}
@@ -30,7 +30,7 @@ block content
 							include toolItem.pug
 				include ../FileUpload/fileUploadPanel.pug
 			div#buttonWrapper
-				button.uk-button.uk-button-primary.uk-button-large#evaluate Submit Files for Evaluation
+				button.uk-button.uk-button-primary.uk-button-large#evaluate Submit Files
 
 		script(src="components/Tool/toolController.js")
 		script(src="components/Tool/tool-settings-panel.js")
