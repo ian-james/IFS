@@ -163,16 +163,28 @@ app.get('/tool/data', function (req, res) {
   app.get('/tool', function (req, res, next) {
     const userId = req.user.id || req.passport.user;
 
-    TipManager.selectTip(req, res, userId, () => {
-      SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
-        if (!survey) {
-          survey = [];       
-        }
-        res.render(viewPath + "tool", {
-          "title": req.session.toolSelect + ' Tool Screen',
-          "surveyQuestions": survey
-        });
-      });
-    });
+    fs.readFile(req.session.toolFile, 'utf-8', function (err, toolData) {
+    	//Load JSON tool file and send back to UI to create inputs
+			preferencesDB.getStudentPreferencesByToolType(req.user.id, req.session.toolSelect, function (err, toolPreferences) {
+				var jsonObj = JSON.parse(toolData);
+				var tools = jsonObj['tools'];
+
+				if (toolPreferences)
+					updateJsonWithDbValues(toolPreferences, tools);
+
+		    TipManager.selectTip(req, res, userId, () => {
+		      SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
+		        if (!survey) {
+		          survey = [];       
+		        }
+		        res.render(viewPath + "tool", {
+		        	"tools": tools,
+		          "title": req.session.toolSelect + ' Tool Screen',
+		          "surveyQuestions": survey
+		        });
+		      });
+		    });
+		  });
+	  });
   });
 }
