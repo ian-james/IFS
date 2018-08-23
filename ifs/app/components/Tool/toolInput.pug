@@ -1,29 +1,40 @@
 // checkbox
-div(ng-if="option.type == 'checkbox'")
-    span {{ option.displayName }}
-    input(type="checkbox" name="{{option.name}}" id="{{option.name}}" ng-checked="{{option.prefValue}}").uk-checkbox.uk-float-right
+if option.type == 'checkbox'
+    div
+        span #{option.displayName}
+        if option.prefValue
+            input(type="checkbox" name=option.name id=option.name checked).uk-checkbox.uk-float-right
+        else
+            input(type="checkbox" name=option.name id=option.name).uk-checkbox.uk-float-right
 
 // text input
-div(ng-if="option.type == 'text'")
-    label(for="{{ option.name }}").uk-form-label.text-normal
-        | {{ option.displayName }}
-    div.uk-form-controls
-        input(type="text" name="{{option.name}}" id="{{option.name}}" placeholder="{{option.placeholder}}" value="{{option.prefValue}}").uk-input
+if option.type == 'text'
+    div
+        label(for=option.name).uk-form-label.text-normal
+            | #{option.displayName}
+        div.uk-form-controls
+            input(type="text" name=option.name id=option.name placeholder=option.placeholder value=option.prefValue).uk-input
 
 // file input
-div(ng-if="option.type == 'file'")
-    label(for="{{ option.name }}").uk-form-label.text-normal
-        | {{ option.displayName }}
-    br
-    div(uk-form-custom="target: true")
-        input(type="file" name="{{option.name}}" id="{{option.name}}" accept="image/png")
-        input(type="text" placeholder="Select an image" disabled).uk-input.uk-form-width-medium
-        button.uk-button.uk-button-default Select
+if option.type == 'file'
+    div
+        label(for=option.name).uk-form-label.text-normal
+            | #{option.displayName}
+        br
+        div(uk-form-custom="target: true")
+            input(type="file" name=option.name id=option.name accept="image/png")
+            input(type="text" placeholder="Select an image" disabled).uk-input.uk-form-width-medium
+            button.uk-button.uk-button-default Select
 
 // select input
-div(ng-if="option.type == 'select'")
-    label(for="{{ option.name }}").uk-form-label.text-normal
-        | {{ option.displayName }}
-    div.uk-form-controls
-        select(id="{{option.name}}" name="{{option.name}}").uk-select
-            option( ng-repeat='val in option.values' ng-selected="val==option.prefValue" ) {{ val }}
+if option.type == 'select'
+    div
+        label(for=option.name).uk-form-label.text-normal
+            | #{option.displayName}
+        div.uk-form-controls
+            select(id=option.name name=option.name).uk-select
+                each val in option.values
+                    if val == option.prefValue
+                        option(selected= true) #{val}
+                    else
+                        option #{val}

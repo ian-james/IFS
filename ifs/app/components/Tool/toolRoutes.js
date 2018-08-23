@@ -76,7 +76,7 @@ app.post('/tool/assignment', async function(req, res) {
 		.whereIn('classId', (builder) => {
 			builder.select('id')
 			.from('class')
-			.where("code", "=", insert);
+			.where('code', insert);
 		})
 		.catch(function(err) {
 			res.send({
@@ -89,7 +89,6 @@ app.post('/tool/assignment', async function(req, res) {
 		for(var i = 0; i < val.length; i++)
 		{
 			result.push(val[i].name);
-
 		}
 
 		res.send({'result': result});
@@ -108,9 +107,9 @@ app.get('/tool/course', async function(req, res) {
 	// query course database to find the courses the student is enrolled in
 	var val = await Course.query()
 	.whereIn('id', (builder) =>{
-		builder.select('studentId')
+		builder.select('classId')
 		.from('student_class')
-		.where("studentId", "=", userId);
+		.where('studentId', userId);
 	})
 	.catch(function(err) {
 		res.send({
@@ -124,7 +123,6 @@ app.get('/tool/course', async function(req, res) {
 	{
 		result.push(val[i].code);
 		id.push(val[i].id);
-
 	}
 
 	res.send({
@@ -165,29 +163,28 @@ app.get('/tool/data', function (req, res) {
   app.get('/tool', function (req, res, next) {
     const userId = req.user.id || req.passport.user;
 
-    TipManager.selectTip(req, res, userId, () => {
-      SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
-        if (!survey) {
-          survey = [];       
-        }
-        res.render(viewPath + "tool", {
-          "title": req.session.toolSelect + ' Tool Screen',
-          "surveyQuestions": survey
-        });
-      });
-    });
-  });
+    fs.readFile(req.session.toolFile, 'utf-8', function (err, toolData) {
+    	//Load JSON tool file and send back to UI to create inputs
+			preferencesDB.getStudentPreferencesByToolType(req.user.id, req.session.toolSelect, function (err, toolPreferences) {
+				var jsonObj = JSON.parse(toolData);
+				var tools = jsonObj['tools'];
 
-  app.post('/tool/preferences', function (req, res, next) {
-    let pref = req.body.tool;
+				if (toolPreferences)
+					updateJsonWithDbValues(toolPreferences, tools);
 
-    preferencesDB.setStudentPreferences(req.user.id, "Option", "pref-toolSelect", pref, function (err, result) {
-      tracker.trackEvent(iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
-      defaultTool.setupDefaultTool(req, pref);
-
-      res.redirect(url.format({
-        pathname: '/tool'
-      }));
-    });
+		    TipManager.selectTip(req, res, userId, () => {
+		      SurveyBuilder.getPulseSurvey(req.session.toolSelect.toLowerCase(), userId, (survey) => {
+		        if (!survey) {
+		          survey = [];       
+		        }
+		        res.render(viewPath + "tool", {
+		        	"tools": tools,
+		          "title": req.session.toolSelect + ' Tool Screen',
+		          "surveyQuestions": survey
+		        });
+		      });
+		    });
+		  });
+	  });
   });
 }

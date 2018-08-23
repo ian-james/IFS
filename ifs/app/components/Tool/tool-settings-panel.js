@@ -1,24 +1,17 @@
 $(document).ready(function(){
+    //Display a previous error message, if it exists
 	var msg = $('#error').text();
+    if (msg.length > 0) {
+        UIkit.notification({message: msg, pos: 'top-center', status: 'danger'});
+    }
+
     var course = $('#course');
     var assign = $('#assign');
-    var selectedCourse = "*";
-	if (msg.length > 0) {
-		UIkit.notification({message: msg, pos: 'top-center', status: 'danger'});
-	}
-
-    assign.empty();
-    course.empty();
-
-    $('#filePlaceholder').text("Please select files to upload for Assignment ??");
-    $('#evaluate').text("Submit Files for Assignment ??");
-
 
     $.ajax({
         type: "get",
         url: '/tool/course',
         success: function (res, status) {
-
             if(res.result.length == 0)
             {
                 assign.toggleClass("uk-hidden", true);
@@ -29,20 +22,16 @@ $(document).ready(function(){
             }
             else
             {
-
-                assign.toggleClass("uk-hidden", true);
                 course.toggleClass("uk-hidden", false);
+                assign.toggleClass("uk-hidden", true);
                 $('#courseLab').toggleClass("uk-hidden", false);
                 $('#assignLab').toggleClass("uk-hidden", true);
-                
-                var optsStr = "";
 
-                optsStr += "<option value='None'>None</option>"
-                for(var i = 0; i < res.result.length; i++)
-                {
-                    optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
+                for (var c of res.result) {
+                    var option = document.createElement("option");
+                    option.text = c;
+                    course.append(option);
                 }
-                course.append( optsStr );
             }
             
         },
@@ -50,50 +39,11 @@ $(document).ready(function(){
             console.log(err);
         }
     })
-
-    // $.ajax({
-    //     type: "post",
-    //     url: '/tool/assignment',
-    //     data: {
-    //         insert: selectedCourse
-    //     },
-    //     success: function (res, status) {
-
-    //         if(res.result.length == 0)
-    //         {
-    //             assign.toggleClass("uk-hidden", true);
-    //             course.toggleClass("uk-hidden", true);
-    //             $('#courseLab').toggleClass("uk-hidden", true);
-    //             $('#assignLab').toggleClass("uk-hidden", true);
-                
-    //         }
-    //         else
-    //         {
-
-    //             var optsStr = "";
-    //             optsStr += "<option value='None'>None</option>"            
-
-    //             for(var i = 0; i < res.result.length; i++)
-    //             {
-    //                 optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
-    //             }
-
-    //             assign.append( optsStr );
-    //         }     
-    //     },
-    //     error: function(req, err) {
-    //         console.log(err);
-    //     }
-    // })
-
-    
 });
 
 $("#course").change(function() {
     var assign = $('#assign');
     var course = $('#course');
-    assign.empty();
-
     
     var courseSelected = course.find(":selected").text();
 
@@ -104,33 +54,35 @@ $("#course").change(function() {
             insert: courseSelected
         },
         success: function (res, status) {
-            var optsStr = "";
+            //Remove each option in the list if it is not "None"
+            $('#assign option').each(function() {
+                if ($(this).val() != 'None') {
+                    $(this).remove();
+                }
+            });
 
-
-            optsStr += "<option value='None'>None</option>"
-            
-            for(var i = 0; i < res.result.length; i++)
-            {
-                optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
+            //Add all new options to the list
+            for (var a of res.result) {
+                var option = document.createElement("option");
+                option.text = a;
+                assign.append(option);
             }
-
-            assign.append( optsStr );
 
             if(courseSelected == "None")
             {
                 assign.toggleClass("uk-hidden", true);
                 $('#assignLab').toggleClass("uk-hidden", true);
 
-                $('#filePlaceholder').text("Please select files to upload for Assignment ??");
-                $('#evaluate').text("Submit Files for Assignment ??");
+                $('#filePlaceholder').text("Please select files to upload");
+                $('#evaluate').text("Submit Files");
             }
             else
             {
                 assign.toggleClass("uk-hidden", false);
                 $('#assignLab').toggleClass("uk-hidden", false);
 
-                // $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
-                // $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
+                $('#evaluate').text("Submit Files for " + course.find(":selected").text());
+                $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text());
             }
 
         }
@@ -144,17 +96,15 @@ $("#assign").change(function() {
 
     if(assign.find(":selected").text() == "None")
     {
-         $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " Assignment ??");
-         $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " Assignment ??");
+         $('#evaluate').text("Submit Files for " + course.find(":selected").text());
+         $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text());
     }
     else
     {
         $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
         $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
 
-    }
-    
-    
+    }        
 });
 
 $("#settingsToggle").click(function() {
@@ -167,23 +117,3 @@ $('#error').bind("DOMSubtreeModified",function(){
 		UIkit.notification({message: msg, pos: 'top-center', status: 'danger'});
 	}
 });
-
-$("#toolPreference").submit(function(event) {
-    var val = event.originalEvent.explicitOriginalTarget.innerHTML;
-
-    $.ajax({
-        type: "post",
-        url:'/tool/preferences',
-        dataType: 'json',
-        data: {
-        	tool: val
-        },
-        success: function (data, textStatus) {
-        	location.reload(true);
-        },
-        error: function (req, err){
-            location.reload(true);
-        }
-    });
-});
-

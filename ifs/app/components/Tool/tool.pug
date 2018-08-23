@@ -11,12 +11,12 @@ block content
 				label#courseLab.uk-form-label(for='#course') Course
 				div.uk-form-controls
 					select#course.uk-select
-						option Option 01
+						option None
 			div.uk-margin
-				label#assignLab.uk-form-label(for='#assign') Assignment
+				label#assignLab.uk-form-label(for='#assign').uk-hidden Assignment
 				div.uk-form-controls
-					select#assign.uk-select
-						option Option 01
+					select#assign.uk-select.uk-hidden
+						option None
 		div(uk-alert hidden).uk-alert-danger
 			p.uk-align-center.errorMessage#error #{messages.errorMessage}
 		div(ng-controller="toolCtrl")
@@ -26,11 +26,12 @@ block content
 					div(uk-toggle="target: #toolSelection; animation: uk-animation-fade" uk-icon="icon: settings" title="toggle tool settings" uk-tooltip="pos: left")#settingsToggle.uk-icon-button.uk-float-right
 				div#toolSelection
 					ul(uk-accordion="multiple: true")
-						li(ng-repeat="tool in toolList").toolsView
-							include toolItem.pug
+						each tool in tools
+							li.toolsView
+								include toolItem.pug
 				include ../FileUpload/fileUploadPanel.pug
 			div#buttonWrapper
-				button.uk-button.uk-button-primary.uk-button-large#evaluate Submit Files for Evaluation
+				button.uk-button.uk-button-primary.uk-button-large#evaluate Submit Files
 
 		script(src="components/Tool/toolController.js")
 		script(src="components/Tool/tool-settings-panel.js")
