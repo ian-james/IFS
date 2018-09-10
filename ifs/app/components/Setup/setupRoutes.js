@@ -12,6 +12,7 @@ var userOptDB = require(__components + "Setup/userOptDB.js");
 var _ = require('lodash');
 
 var surveyManager = require(__components + "Survey/helpers/surveyManager.js");
+const { setSurveyPref } = require(path.join(__modelPath, 'preferences'));
 
 // POST/GET requests
 module.exports = function(app) {
@@ -57,7 +58,7 @@ module.exports = function(app) {
         });
     });
 
-    app.post('/setup', function(req, res, next) {
+    app.post('/setup', async function(req, res, next) {
         var userId = req.user.id;
         // build array of options and values for the setup form
         var keys = [];
@@ -81,6 +82,10 @@ module.exports = function(app) {
 
         // handle setup options
         // deal with experiment opt-in / opt-out
+        /* New survey preferences option */
+        const value = (enabled.indexOf('optin') >= 0) ? 'on' : 'off';
+        await setSurveyPref(req.user.id, value);
+
         if (enabled.indexOf('optin') >= 0) {
             surveyManager.setAbleAllSurveyPreferences( req.user.id, 1, function(ableErr, ableResult) {
                 userOptDB.toggleOptedIn(userId, 1, function(err, optin) {

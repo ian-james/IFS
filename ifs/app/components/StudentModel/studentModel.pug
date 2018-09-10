@@ -44,5 +44,9 @@ block content
                                 | Color Scheme
                         div.uk-form-controls
                             select(ng-model="selectedColorScheme" ng-options="c.name for c in colorSchemes" ng-init="selectedColorScheme = colorSchemes[0]").uk-select.uk-margin-bottom
+                        label(for="runType").uk-form-label
+                                | Run Type
+                        div.uk-form-controls
+                            select(ng-model="selectedRunType" ng-options="r for r in runTypes" ng-init="selectedRunType = runTypes[0]").uk-select.uk-margin-bottom
 
     script(src="components/StudentModel/studentModelController.js")

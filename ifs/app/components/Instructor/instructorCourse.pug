@@ -1,0 +1,85 @@
+extends ../../shared/views/pageLayout.pug
+block content
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    // - Select 2
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css', rel='stylesheet')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js')
+    script.
+        $(document).ready(function() {
+            $('.skillpicker').select2({
+                tags: true
+            });
+        });
+    script
+        include instructorUpdate.js
+    div.uk-container
+        h2.uk-text-left #{title}
+        hr
+        ul.uk-subnav.uk-subnav-pill(uk-switcher='animation: uk-animation-slide-left-medium, uk-animation-slide-right-medium, connect: #switchcontrol')
+            li
+                a(href='#') Manage
+            li
+                a(href='#') Statistics
+            
+        ul.uk-switcher.switch.uk-margin(id="switchcontrol")
+            li
+                div.uk-overflow-container#cContent
+                    form(id="updateCourse" class='uk-form' method="post" action="/instructor")
+                        label(for="Course code").uk-form-label
+                            | Class Code
+                        div.uk-form-controls
+                            input(type="text" name="ccode", id="ccode", value=ccode, required).uk-input
+                        br
+                        label(for="Course name").uk-form-label
+                            | Course Name
+                        div.uk-form-controls
+                            input(type="text" name="cname", id="cname", value=cname, required).uk-input
+                        br
+                        label(for="Course year").uk-form-label
+                            | Year
+                        div.uk-form-controls
+                            input(type="text" name="cyear", id="cyear", value=cyear, required).uk-input
+                        br
+                        label(for="Course semester").uk-form-label
+                            | Course Semester
+                        div.uk-form-controls
+                            select(id="csemester" name="csemester", required).uk-select
+                                each semester in csemesters
+                                    if semester.enabled
+                                        option(value=semester.name, selected) #{semester.name}
+                                    else
+                                        option(value=semester.name) #{semester.name}
+                        br
+                        label(for="Course description").uk-form-label
+                            | Course Description
+                        div.uk-form-controls
+                            input(type="text" name="cdesc", id="cdesc", value=cdescription, required).uk-input
+                        br
+                        label(for="Course type").uk-form-label
+                            | Course Type
+                        div.uk-form-controls
+                            select(id="ctype" name="ctype", required).uk-select
+                                each discipline in cdiscipline
+                                    if discipline.enabled
+                                        option(value=discipline.name, selected) #{discipline.name}
+                                    else
+                                        option(value=discipline.name) #{discipline.name}
+                        br
+                        label(for="Skills").uk-form-label
+                            | Skills
+                        div.uk-form-controls
+                            select.skillpicker(style="width:100%;" name='cskills' multiple="multiple" required).uk-select
+                                each skill in cskills
+                                    if skill.enabled
+                                        option(value=skill.s selected) #{skill.s}
+                                    else
+                                        option(value=skill.s) #{skill.s}
+                        br
+                        input(type="hidden" name="cid" value=cid)
+                        input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
+                        button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
+
+            li Coming soon!
+
+            
+

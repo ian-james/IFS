@@ -1,0 +1,23 @@
+extends ../../../shared/views/pageLayout.pug
+block content
+    .uk-container.uk-container-small.uk-margin
+        a(href="/admin") Back to Admin
+        div(ng-controller="announceCtrl as c").uk-card.uk-card-default.uk-margin.uk-padding
+            h2 Announcements
+            table.uk-table
+                thead
+                    tr
+                        th Title
+                        th Created 
+                        th Expiry Date
+                        th Actions
+                tbody
+                    tr(ng-repeat="announce in announcements")
+                        td 
+                            a(href="/announcements/{{announce.id}}") {{ announce.title }}
+                        td {{ announce.created_at }}
+                        td {{ announce.expiryDate }}
+                        td 
+                            a(ng-click="deleteAnnounce(announce.id)" style="color: red")
+                                span(uk-icon="icon: close")
+    script(src="../components/Announcements/views/scripts/managementCtrl.js")

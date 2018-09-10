@@ -1,0 +1,121 @@
+extends ../../shared/views/pageLayout.pug
+
+block content
+    // - Jquery
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    // - Select 2
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css', rel='stylesheet')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js')
+    script.
+        $(document).ready(function() {
+            $('.skills').select2({
+                tags: true
+            });
+        });
+    script
+        include instructorUpdate.js
+    div.uk-container
+        h2.uk-text-left #{title}
+        hr
+        div.uk-margin.uk-padding-small
+            div.uk-margin-large-bottom
+                form(id="updateAssignment" class='uk-form' method="post" action="")
+                    label(for="Assignment name").uk-form-label
+                        | Assignment Name
+                    div.uk-form-controls
+                        input(type="text" name="aname", id="aname", value=aname, required).uk-input
+                    br
+                    label(for="Assignment title").uk-form-label
+                        | Assignment Title
+                    div.uk-form-controls
+                        input(type="text" name="atitle", id="atitle", value=atitle, required).uk-input
+                    br
+                    label(for="Assignment description").uk-form-label
+                        | Assignment Description
+                    div.uk-form-controls
+                        input(type="text" name="adesc", id="adescription", value=adescription, required).uk-input
+                    br
+                    label(for="Assignment deadline").uk-form-label
+                        | Assignment Deadline
+                    div.uk-form-controls
+                        input(type="date" name="adate", id="adate", value=adeadline, required).uk-input
+                    br
+                    label(for="Assignment skills").uk-form-label
+                        | Assignment Skills
+                    div.uk-form-controls
+                        select.skills(name='askills' multiple="multiple" required).uk-input
+                            each skill in askills
+                                if skill.enabled
+                                    option(value=skill.s selected) #{skill.s}
+                                else
+                                    option(value=skill.s) #{skill.s}
+                    br
+                    - var count = 1;
+                    each task in atasks
+                        if count > 1
+                            br
+                        div(id='task' + count)
+                            label(for="Task #" + count + " Name").uk-form-label
+                                | Task ##{count} Name
+                            div.uk-form-controls
+                                input(type="text" name="tName" + count, value=task.name, required).uk-input
+                            br
+                            label(for="Task #" + count + " Description").uk-form-label
+                                | Task ##{count} Description
+                            div.uk-form-controls
+                                input(type="text" name="tDesc" + count, value=task.description, required).uk-input
+                        - count++;
+                    br
+                    div.uk-align-center(id='taskControls')
+                        input.uk-button.uk-margin-small-right(id='addTask' type='button' value='Add Task')
+                        input.uk-button(id='removeTask' type='button' value='Remove Task')
+                    br
+                    input(type="hidden" name="aid" value=aid)
+                    input(type="hidden" name="acid" value=acid)
+                    input(type="hidden" id="at" value=count)
+                    // - stats go here...need working on and proper implementation. design is done.
+                    //- h5 #[strong Statistics]
+                    //- each option in aoptions
+                    //-     div.uk-grid
+                    //-         div.tool-title
+                    //-             strong #{option.name}
+                    //-         div.uk-width-expand
+                    //-             div.uk-float-right
+                    //-                 label.switch-wrapper
+                    //-                     input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" value="true" ng-checked=option.enabled)
+                    //-                     div(uk-toggle="target: #" +  option.fieldName + "; animation: uk-animation-slide-top-small").switch.switch-round
+                    //-     span(ng-if=option.enabled)
+                    //-         div(id=option.fieldName).uk-background-muted
+                    //-             ul.uk-list.uk-list-divider.uk-padding-small
+                    //-                 li
+                    //-                     div.uk-clearfix
+                    //-                         div.uk-float-left
+                    //-                             include instructorInput.pug
+                    //-     // nick's crappy fix for it not showing if its not enabled.. it works i guess?
+                    //-     span(ng-if="!" + option.enabled) 
+                    //-         div(id=option.fieldName hidden='').uk-background-muted
+                    //-             ul.uk-list.uk-list-divider.uk-padding-small
+                    //-                 li
+                    //-                     div.uk-clearfix
+                    //-                         div.uk-float-left
+                    //-                             include instructorInput.pug
+
+                    input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
+                    a.uk-button.uk-button-danger(href='/instructor') Cancel
+                    h5 #[strong Dangerous Settings]
+                    a.uk-button.uk-button-danger(href='#delete-assignment', uk-toggle='')
+                        | Delete Assignment
+    div#delete-assignment(uk-modal='')
+        .uk-modal-dialog.uk-modal-body
+            button.uk-modal-close-default(type='button', uk-close='')
+            h2.uk-modal-title Delete Assignment
+            div.uk-overflow-container#cContent
+                p
+                    | Are you sure you want to delete "#{aname}"?
+                form(id="dAss" class='uk-form' method="post" action="/instructor-delete")
+                    input(type="hidden" name="aid" value=aid)
+                    button.uk-button.uk-modal-close(type='button') Cancel
+                    input.uk-button.uk-button-danger.uk-margin-small-left(type='submit' value='Delete')
+                                    
+
+

@@ -161,7 +161,9 @@ module.exports = function (passport) {
                 passReqToCallback : true
             },
             function (req, username, password, done) {
+
                 if (!validator.isEmail(username)) {
+                    console.log(username);
                     req.flash('errorMessage', 'Error. You must use a valid email address.');
                     return done(null, false);
                 } else {

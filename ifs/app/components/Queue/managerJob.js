@@ -5,7 +5,10 @@ var cjob = require('./childJob');
 var job = require('./generalJob');
 var path = require('path');
 var Logger = require( __configs  + "loggingConfig");
+var now = require("performance-now");
 var _ = require('lodash');
+var cluster = require('cluster')
+var spawn = require('child_process').spawn;
 
 // This is just a regular reference, it needed a name for managerJob.
 const jobType = 'mJob';
@@ -24,21 +27,75 @@ function makeManagerJob(toolOptions) {
    and waits for the feedback.
 */
 
+function cTest(jobList)
+{
+    // console.log(jobList);
+
+    var argStr = "";
+    var cmdArr = [];
+
+    for (var i = 0; i < jobList.length; i++)
+    {
+        argStr = "\"" + jobList[i].runCmd + "\"";
+        cmdArr.push(argStr);
+
+    }
+
+
+    var child = spawn("./test", cmdArr);
+
+    child.stdout.on('data', function(data) {
+        console.log('stdout: ' + data);
+        //Here is where the output goes
+    });
+
+    child.stderr.on('data', function(data) {
+        console.log('stderr: ' + data);
+        //Here is where the error output goes
+    });
+
+    child.on('close', function(code) {
+        console.log('closing code: ' + code);
+        //Here you can get the exit code of the script
+    });
+
+
+
+}
+
 function loadAllTools(job, done) {
     job.emit('start');
 
+
+    var t0 = now();
+    var t1 = now();
+
     var promises = [];
     var jobsInfo = job.data.tool;
+
+
+    //creates a promise for each job to be executed
     for(var i = 0;i < jobsInfo.length;i++) {
         promises.push( cjob.makeJob( jobsInfo[i] ));
     }
 
+    // this was to test efficiency of running the tools with C
+    // cTest(jobsInfo);
+
     cjob.runJob();
 
     var count = 0;
+
+    var p = Q.all(promises);
+
     // Wait for everything to finish before emitting that parent is done.
     Q.allSettled(promises)
     .then(function(res) {
+        t1 = now();
+
+        // printing time it takes to run the tools
+        console.log("time taken to run jobs is: " + (t1 - t0) + " milliseconds");
+
         // return everything that passed and was fulfilled
         var passed =[], failed = [];
 
@@ -67,6 +124,7 @@ function loadAllTools(job, done) {
         }
         var Err = passed.length == 0 ? new Error('No jobs successfully completed.') : null;
         done(Err, { 'passed': passed, 'failed': failed });
+
     },
 
     function(reason) {
@@ -90,6 +148,8 @@ function loadAllTools(job, done) {
             Logger.info("Received:", notice );
         }
     });
+
+
 }
 
 /* This function is mostly to simplify the calling interface

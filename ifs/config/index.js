@@ -21,6 +21,7 @@ global.__configs = path.join(__dirname, "/");
 global.__tools = path.join(__dirname , "../tools/");
 global.__components = path.join(__dirname, "../app/components/");
 global.__appPath = path.join(__dirname, "../app/");
+global.__modelPath = path.join(__dirname, '../app/models');
 global.__EXPERIMENT_ON = true;
 
 var port = process.env.PORT || 3000;
@@ -58,7 +59,7 @@ var sessionInfo =  {
     secret: 'ifsSecretSessionInfo',
     resave: true,
     store: new redisStore({
-        host:'localhost',
+        host: 'localhost',
         port: redisOpts.kueOpts.redis.port,
         client: client
     }),
@@ -84,12 +85,16 @@ var bodyParser = require('body-parser');
 app.use( bodyParser.json() );
 app.use( bodyParser.urlencoded({extended: false}) );
 
+
 app.use(mySession);
 
 // Setup Flash messages
 var flash = require('express-flash');
 app.use(flash());
 
+// Add XLS Middleware
+const J2XParser = require('json2xls');
+app.use(J2XParser.middleware);
 
 //Require passport routes
 require( "./passport") (passport);
@@ -98,7 +103,7 @@ app.use( passport.session() );
 
 var server = http.Server(app);
 var io = require('socket.io')(server,{'transports':['polling', 'websocket'], pingInterval:25000,pingTimeout:60000});
-global.ioGlob = io; //Controller issues TOFIX: Kevin
+global.ioGlob = io;
 var passportSocketIO = require('passport.socketio');
 
 function onAuthorizeSuccess(data, accept){
@@ -134,6 +139,11 @@ require("./serverSocketIO.js")(app,io);
 
 // Add Developer Routes
 require("./addRoutes.js")(app, io);
+
+// Setup objection to use Knex
+const { Model } = require('objection');
+const { knex } = require('./database');
+Model.knex(knex);
 
 // Error handling in common format (err,req,res,next)
 var errorHandler = require('errorhandler');

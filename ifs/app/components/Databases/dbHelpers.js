@@ -76,7 +76,7 @@ module.exports = {
     },
 
     insertEventC: function (table, eventData, callback) {
-        var q = this.insert(table, eventData);
+        var q = this.insert(table, eventData)
         db.query(q, _.values(eventData), callback);
     },
 
@@ -86,8 +86,6 @@ module.exports = {
      * @return No return
      */
     insertEvent: function(table, eventData) {
-
-        console.log("eventData: " + table)
         this.insertEventC(table, eventData, function(err,data) {
             if(err)
                 Logger.error(err);

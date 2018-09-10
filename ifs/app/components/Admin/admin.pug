@@ -10,17 +10,21 @@ block content
             form(class='uk-form' method="post" )#uploadForm
                 div(uk-grid).uk-grid-small.uk-child-width-1-1
                     div(uk-grid).uk-grid-collapse.uk-child-width-1-1
-                        a(href="/admin-add-course" class="uk-width-1-5@m").uk-button.uk-button-primary Add Course
-                        a(href="/admin-add-event" class="uk-width-1-6@m uk-width-1-5@l").uk-button.uk-button-primary Add Event
-                        a(href="/admin-add-assignment" class="uk-width-expand@m uk-width-1-5@l").uk-button.uk-button-primary Add Assignment
-                        a(href="/admin-add-assignment-task" class="uk-width-1-6@m uk-width-1-5@l").uk-button.uk-button-primary Add Task
-                        a(href="/admin-add-skill" class="uk-width-1-5@m").uk-button.uk-button-primary Add Skill
+                        a(href="/admin-add-course" class="uk-width-1-6@m").uk-button.uk-button-primary Add Course
+                        a(href="/admin-add-event" class="uk-width-1-6@m uk-width-1-6@l").uk-button.uk-button-primary Add Event
+                        a(href="/admin-add-assignment" class="uk-width-expand@m uk-width-1-6@l").uk-button.uk-button-primary Add Assignment
+                        a(href="/admin-add-assignment-task" class="uk-width-1-6@m uk-width-1-6@l").uk-button.uk-button-primary Add Task
+                        a(href="/admin-add-skill" class="uk-width-1-6@m").uk-button.uk-button-primary Add Skill
+                        a(href="/admin/announcements/new" class="uk-width-1-6@m").uk-button.uk-button-primary Add Announce
                     div(uk-grid).uk-grid-collapse.uk-child-width-1-1
-                        a(href="/admin-remove-course" class="uk-width-1-5@m").uk-button.uk-button-danger Remove Course
-                        a(href="/admin-remove-event" class="uk-width-1-6@m uk-width-1-5@l").uk-button.uk-button-danger Remove Event
+                        a(href="/admin-remove-course" class="uk-width-1-6@m").uk-button.uk-button-danger Remove Course
+                        a(href="/admin-remove-event" class="uk-width-1-6@m uk-width-1-6@l").uk-button.uk-button-danger Remove Event
                         a(href="/admin-remove-assignment" class="uk-width-expand@m").uk-button.uk-button-danger Remove Assignment
-                        a(href="/admin-remove-assignment-task" class="uk-width-1-6@m uk-width-1-5@l").uk-button.uk-button-danger Remove Task
-                        a(href="/admin-remove-skill" class="uk-width-1-5@m").uk-button.uk-button-danger Remove Skill
+                        a(href="/admin-remove-assignment-task" class="uk-width-1-6@m uk-width-1-6@l").uk-button.uk-button-danger Remove Task
+                        a(href="/admin-remove-skill" class="uk-width-1-6@m").uk-button.uk-button-danger Remove Skill
+                        a(href="/admin/announcements" class="uk-width-1-6@m").uk-button.uk-button-danger  Manage Announces
+                    div(uk-grid).uk-grid-collapse.uk-child-width-1-1
+                        a(href="/admin/surveys" class="uk-width-1-6@m").uk-button.uk-button-primary Manage Surveys
 
         div.uk-margin
             if !stats

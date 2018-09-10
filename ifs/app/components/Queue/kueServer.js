@@ -12,12 +12,15 @@ exports.getQueue = function() {
 
 exports.setupQueue = function(app) {
 
+
     kueUIExpress(app, '/kue/', '/kue-api/');
     app.use('/kue-api/', kue.app);
 
     // Watch for stuck jobs, as PER REQUEST on GITHUB
     Logger.info("Watching for stuck jobs: timeout: " + kOptions.options.watchStuckTime)
     queue.watchStuckJobs(kOptions.options.watchStuckTime);
+
+
 
 
     //Help removing large number of jobs for debugging only

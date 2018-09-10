@@ -38,6 +38,8 @@ div.footer.uk-section.uk-section-secondary
                             | IFS Wiki
         hr
         p.uk-clearfix
+            - var date = new Date();
+            - var year = date.getYear() + 1900;
             span.uk-float-left
-            | Copyright &copy;
+            | Copyright &copy; #{year}
             span#IFS-version.uk-float-right

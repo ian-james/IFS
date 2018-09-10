@@ -50,5 +50,20 @@ function query(queryStr, args, callback) {
    });
 }
 
+const knexCfg = require('knex')({
+    client: 'mysql',
+    connection: {
+        host: dbcfg.connection.host,
+        user: dbcfg.connection.user,
+        password: dbcfg.connection.password,
+        database: dbcfg.database,
+    },
+    pool: {
+        min: 0,
+        max: 7,
+    }
+});
+
 module.exports.pool = pool;
 module.exports.query = query;
+module.exports.knex = knexCfg;

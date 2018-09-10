@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
-# This script parses gcc based output into JSON.
-# Works for GCC -fno-diagnostics-show-caret  and cppcheck (template=gcc) and
+# This script parses c files to find absolutely/relatively addressed paths and reports output into JSON.
+# Works for GCC -fno-diagnostics-show-caret and cppcheck (template=gcc) and
 # Copyright (c) 2018 John Harmer jharmer@uoguelph.ca
 #
 # Permission to use, copy, modify, and/or distribute this software for any
@@ -47,13 +47,14 @@ def PathValidate(fileNames, includePaths, includeLineNum):
                 if "/" in result[1]:
                     cutFileNames = fileNames[i].split("/")
                     output = ""
-                    for folder in cutFileNames[3:]:
+					#Only grab the actual file name relevant to the file. Don't grab "unzipped" or anything earlier in the file name
+                    for folder in cutFileNames[4:]:
                         output += folder
-                    
                     improperPaths.append([output,includeLineNum[i][j]])
 
             j=j+1
         i=i+1
+    
     return improperPaths
 
 #Take the list of lists from PathFind and split them into 3 discrete lists  
@@ -89,7 +90,10 @@ def PathCollect(includes):
 def PathFind(dir):
     includeList = []
     lineList = []
-    projectFiles = glob(dir+'/*.c') + glob(dir+'/*.h')
+    projectFiles = [os.path.join(dirpath, f)
+        for dirpath, dirnames, files in os.walk(dir)
+        for f in files if (f.endswith('.c')) or (f.endswith('.h'))]
+    #print projectFiles
     lineNumber = 0
     for file in projectFiles:
         fp  = open(file, "r")
@@ -144,7 +148,7 @@ def main(argv):
         sys.exit()
     else:
         #Get command line arguments and put them into list
-        options = { 'tool': 'pathcheck',
+        options = { 'tool': 'includecheck',
                     'dir':''
                     }
 

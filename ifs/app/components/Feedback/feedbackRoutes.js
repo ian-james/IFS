@@ -1,5 +1,6 @@
 var path = require('path');
 var viewPath = path.join( __dirname + "/");
+var he = require('he');
 
 var fs = require('fs');
 var Feedback = require('./feedbackSetup');
@@ -9,6 +10,8 @@ var Logger = require( __configs + "loggingConfig");
 var _ = require('lodash');
 
 var feedbackEvents = require(__components + "InteractionEvents/feedbackEvents");
+
+
 
 module.exports = function( app ) {
 
@@ -25,7 +28,6 @@ module.exports = function( app ) {
      * @return {[type]}     [description]
      */
     function  showFeedback( req,res, opt, callback ) {
-
         if(!req.session.uploadFilesFile) {
             req.flash('errorMessage', "Feedback is not currently available, please upload again.");
             res.location("/tool");
@@ -45,7 +47,8 @@ module.exports = function( app ) {
                 var filesContent = fs.readFile( req.session.uploadFilesFile, 'utf-8', (err,filesContent) => {
                     var feedbackFile = "{" +
                     '"files": ' + filesContent + ",\n" +
-                    '"feedback":' + JSON.stringify(data) + '\n'
+                    '"feedback":' + JSON.stringify(data) + ',\n' +
+                    '"runType": ' + JSON.stringify(req.session.toolSelect) + '\n'
                     +"}\n";
 
                     var page = getDefaultPage();
@@ -63,6 +66,7 @@ module.exports = function( app ) {
 
                             var visualTools = Feedback.setupVisualFeedback(visualTools);
                             results = _.assign(result,visualTools);
+                            _.extend(results, {'runType': req.session.toolSelect.toLowerCase()})
                             callback(results);
                         });
                     });
@@ -80,7 +84,8 @@ module.exports = function( app ) {
 
     app.get('/feedback', function(req, res) {
         var opt = {};
-        showFeedback(req,res,opt, function(results) {
+
+        showFeedback(req,res,opt, function(results) {      
             res.render( viewPath + "feedback", results );
         });
     });

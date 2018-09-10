@@ -9,6 +9,11 @@ ifs/logs/
 ifs/app/shared/img/user/*
 ifs/users/
 ifs/config/databaseConfig.js
+ifs/package-lock.json
+ifs/config/dbConnectionConfig.js
+.DS_Store
+package-lock.json
+.vscode
 
 # vim swap files
 *.sw[a-p]

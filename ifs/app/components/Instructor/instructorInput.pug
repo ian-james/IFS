@@ -1,0 +1,15 @@
+if option.fieldType == 'checkbox'
+    span Expected #{option.name}
+    input(type="checkbox" name=option.name).uk-checkbox.uk-float-right
+else if option.fieldType == 'text'
+    label(for=option.name).uk-form-label
+        | Expected #{option.name}
+    div.uk-form-controls
+        input(type="text" name=option.name, id=option.name, size="40", placeholder="e.g: 1").uk-input
+else if option.fieldType == 'select'
+    label(for=option.name).uk-form-label
+        | Expected #{option.name}
+    // still need to make options work somehow
+    div.uk-form-controls
+        select(id=option.name name=option.name).uk-select
+            option test

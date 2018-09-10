@@ -30,6 +30,11 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                         a(href="/feedback")
                             span(uk-icon="icon: commenting").uk-margin-small-right
                             span(class="uk-visible@m") Feedback
+                    li
+                        a(href="/announcements")
+                            span(uk-icon="icon: bell").uk-margin-small-right
+                            span(class="uk-visible@m") Announcements
+                            span(ng-controller="annBadge" ng-bind="unseen").badge.badge-light.uk-margin-small-left
                     // Drop down menu
                     li.uk-inline
                         a(href="#")
@@ -56,7 +61,20 @@ nav(uk-navbar).uk-background-secondary.uk-margin
                                         span(uk-icon="icon: link").uk-margin-small-right
                                         | Surveys
                                 hr
+                                if user.admin
+                                    li
+                                        a(href="/admin")
+                                            span(uk-icon="icon: bolt", style="color:red").uk-margin-small-right
+                                            | Admin Panel
+                                    hr
+                                else if user.instr
+                                    li
+                                        a(href="/instructor")
+                                            span(uk-icon="icon: lifesaver", style="color:red").uk-margin-small-right
+                                            | Instructor Panel
+                                    hr
                                 li
                                     a(href="/logout")
                                         span(uk-icon="icon: sign-out").uk-margin-small-right
                                         | Logout
+    script(src="/announce/announcementBadgeCtrl.js")

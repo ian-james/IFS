@@ -18,15 +18,21 @@ const Serializers = require(path.join(componentPath, 'helpers/Serializer.js'));
 const Survey = require(__components + "/Survey/models/survey");
 const SurveyPreferences = require(path.join(componentPath, 'models/surveyPreferences'));
 const Question = require(__components + "Survey/models/question");
+const { optedIn } = require(path.join(__modelPath, 'preferences'));
+const { getAvailableSurveys } = require(path.join(__modelPath,'survey'));
+const { getStudentIdForUser } = require(path.join(__modelPath, 'student'));
+const { getQuestionOrder } = require(path.join(__modelPath, 'question'));
 
 module.exports = {
   /* Returns a list of surveys */
-  surveyList: (req, res) => {
-    SurveyManager.getUserSurveyProfileAndSurveyType(req.user.id, function (err, surveyData) {
-      const keys = ['id', 'surveyId', 'lastRevision', 'currentSurveyIndex', 'surveyName', 'title', 'surveyField'];
-      let ans = _.map(surveyData, obj => _.pick(obj, keys));
+  surveyList: async (req, res) => {
+    const userId = req.user.id;
 
-      ans = _.map(ans, function (obj) {
+    if (await optedIn(userId)) {
+      const studentId = await getStudentIdForUser(userId);
+      let surveys = await getAvailableSurveys(studentId);
+      /* Format date so pug will play nice */
+      surveys = _.map(surveys, (obj) => {
         const rev = obj['lastRevision'];
         if (rev)
           obj['lastRevision'] = moment(obj['lastRevision']).format("hh:mm a DD-MM-YYYY");
@@ -35,34 +41,14 @@ module.exports = {
 
       res.render(viewPath + 'surveyList', {
         'title': "Survey List",
-        "surveys": ans
+        "surveys": surveys
       });
-    });
-  },
-  /**
-   * Method gets the full survey and displays it.
-   * @param  {[type]} req  [description]
-   * @param  {[type]} res) {                   var surveyName [description]
-   * @return {[type]}      [description]
-   */
-  getSpecificSurvey: (req, res) => {
-    const surveyName = req.params.surveyName;
-    Survey.getSurvey(surveyName, (err, surveyData) => {
-      if (err) {
-        Logger.error(err);
-      } else if (surveyData.length >= 1 && surveyData[0].surveyName == surveyName) {
-        SurveyBuilder.loadSurveyFile(surveyData[0], function (err, data) {
-          const sqs = JSON.stringify(data);
-          res.render(viewPath + "questionsLayout", {
-            "title": 'Survey',
-            "surveyQuestions": sqs
-          });
-        });
-      } else {
-        // Could throw an error here indicating failure to reach survey
-        res.end();
-      }
-    });
+    } else {
+      res.render(viewPath + 'surveyList', {
+        'title': "Survey List",
+        "surveys": []
+      });
+    }
   },
   /**
    * This function receives the survey data from SurveyJS and parses it and
@@ -71,10 +57,11 @@ module.exports = {
    * @param  {[type]} res) {                   try {            var title [description]
    * @return {[type]}      [description]
    */
-  sendSurveyData: (req, res) => {
+  sendSurveyData: async (req, res) => {
     try {
-      const title = req.body['title'];
-      const results = req.body['result'];
+      const title = req.body.title;
+      const results = req.body.result;
+      const isPulse = req.body.isPulse;
 
       Survey.getSurveyByTitle(title, function (err, data) {
         if (err) {
@@ -83,7 +70,7 @@ module.exports = {
         if (data && data.length > 0) {
           const surveyId = data[0].id;
           const userId = req.user.id || req.passport.user;
-          SurveyPreferences.getSurveyPreferences(userId, surveyId, function (err, surveyPrefData) {
+          SurveyPreferences.getSurveyPreferences(userId, surveyId, async function (err, surveyPrefData) {
             if (err) {
               Logger.error("Unable to get Survey Preferences");
               return;
@@ -91,7 +78,7 @@ module.exports = {
 
             const surveyIndex = surveyPrefData[0].currentSurveyIndex;
             const surveyLastIndex = data[0].numQ;
-            console.log(surveyLastIndex);
+
             const resultsToDb = [];
             let qids = [];
             let answers = [];
@@ -122,7 +109,7 @@ module.exports = {
 
             // Organize results for survey response database.
             for (var i = 0; i < qids.length && i < answers.length; i++) {
-              resultsToDb.push([userId, surveyId, qids[i], answers[i], surveyIndex]);
+              resultsToDb.push([userId, surveyId, qids[i], answers[i], surveyIndex, isPulse]);
             }
 
             // Insert the response to the survey into DB.
@@ -135,6 +122,8 @@ module.exports = {
               }
             );
 
+            const curIndex = await getQuestionOrder(lastId);
+
             tracker.trackEvent(global.ioGlob, event.surveyEvent(req.user.sessionId, req.user.id, "addSection", {
               "surveyId": surveyId,
               "questionIds": qids,
@@ -144,18 +133,18 @@ module.exports = {
             }));
 
             // Set the Preferences question Index
-            SurveyPreferences.setQuestionCounter(userId, surveyId, lastId, function (err, qData) {
+            SurveyPreferences.setQuestionCounter(userId, surveyId, curIndex, function (err, qData) {
               if (err)
                 Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
-            });
-
-            // Check if survey was finished update counter, user survey preferences.
-            if (qids.length == surveyLastIndex) {
-              SurveyPreferences.incrementSurveyIndex(userId, surveyId, function (err, qData) {
-                if (err)
-                  Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
               });
-            }
+
+              // Check if survey was finished update counter, user survey preferences.
+              if (qids.length == surveyLastIndex) {
+                SurveyPreferences.incrementSurveyIndex(userId, surveyId, function (err, qData) {
+                  if (err)
+                    Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
+                });
+              }
           });
         }
       });
@@ -173,14 +162,21 @@ module.exports = {
     const id = req.params.surveyID;
 
     Survey.getSurveyId(id, (err, surveyMeta) => {
-      Question.getQuestions(id, (err, questions) => {
-        let loadedSurvey = Serializers.serializeSurvey(surveyMeta, questions, Serializers.matrixSerializer);
-        loadedSurvey = JSON.stringify(loadedSurvey);
+      if (err || !surveyMeta) {
         res.render(viewPath + "questionsLayout", {
           "title": 'Survey',
-          "surveyQuestions": loadedSurvey
+          "surveyQuestions": []
         });
-      })
+      } else {
+        Question.getQuestions(id, (err, questions) => {
+          let loadedSurvey = Serializers.serializeSurvey(surveyMeta, questions, Serializers.matrixSerializer);
+          loadedSurvey = JSON.stringify(loadedSurvey);
+          res.render(viewPath + "questionsLayout", {
+            "title": 'Survey',
+            "surveyQuestions": loadedSurvey
+          });
+        });
+      }
     });
   },
 };

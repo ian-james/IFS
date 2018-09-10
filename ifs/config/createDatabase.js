@@ -3,13 +3,15 @@
 */
 
 var mysql = require('mysql');
-var dbConnect = require('./dbConnectionConfig.js')
 var dbcfg = require('./databaseConfig');
+var dbConnect = require('./dbConnectionConfig.js')
 
 var Logger = require('./loggingConfig') ;
 
 try {
+    console.log("Try connection....")
     var connection = mysql.createConnection( dbConnect.connection );
+    console.log("Connection success.")
 
     // Tell mysql to use the database
     if(connection) {
@@ -25,17 +27,6 @@ try {
             password CHAR(60) NOT NULL, \
             sessionId INT NOT NULL DEFAULT 0, \
             optedIn BOOL DEFAULT TRUE, \
-            PRIMARY KEY(id) \
-        )");
-
-        // create the users table, opt new users into data tracking by default
-        Logger.info("Create the Table:", dbcfg.login_table);
-        connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.login_table + "( \
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
-            userId INT UNSIGNED NOT NULL, \
-            sessionId INT NOT NULL DEFAULT 0, \
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
-            FOREIGN KEY (userId) REFERENCES " + dbcfg.database + "." + dbcfg.users_table + "(id), \
             PRIMARY KEY(id) \
         )");
 
@@ -99,8 +90,8 @@ try {
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
             surveyId Int UNSIGNED NOT NULL, \
             userId INT UNSIGNED NOT NULL, \
-            surveyStartDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
-            lastRevision TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            surveyStartDate DATETIME, \
+            lastRevision TIMESTAMP, \
             pauseAsking BOOL DEFAULT FALSE, \
             pauseTime TIME, \
             allowedToAsk BOOL DEFAULT TRUE, \
@@ -231,7 +222,7 @@ try {
             FOREIGN Key (userId) REFERENCES " + dbcfg.database + "." + dbcfg.users_table + "(id), \
             FOREIGN Key (feedbackId) REFERENCES " + dbcfg.database + "." + dbcfg.feedback_table + "(id) \
         )");
-/*
+
         Logger.info("Create the Table:", dbcfg.feedback_input_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.feedback_input_table + " ( \
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, \
@@ -243,7 +234,7 @@ try {
             FOREIGN Key (userId) REFERENCES " + dbcfg.database + "." + dbcfg.users_table + "(id), \
             FOREIGN Key (feedbackId) REFERENCES " + dbcfg.database + "." + dbcfg.feedback_table + "(id) \
         )");
-*/
+
         // student table; used for user profiles; foreign key in users table
         Logger.info("Create the Table:", dbcfg.student_table);
         connection.query(" CREATE TABLE IF NOT EXISTS " + dbcfg.database + "." + dbcfg.student_table + " ( \
@@ -286,7 +277,7 @@ try {
             name TEXT, \
             title TEXT, \
             description TEXT, \
-            deadline DATETIME DEFAULT CURRENT_TIMESTAMP , \
+            deadline DATETIME , \
             PRIMARY KEY(id), \
             FOREIGN Key (classId) REFERENCES " + dbcfg.database + "." + dbcfg.class_table + "(id) \
         )");
@@ -337,9 +328,9 @@ try {
             name TEXT, \
             title TEXT, \
             description TEXT, \
-            openDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
-            closedDate DATETIME DEFAULT CURRENT_TIMESTAMP, \
-            dateCreated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \
+            openDate DATETIME, \
+            closedDate DATETIME, \
+            dateCreated TIMESTAMP, \
             PRIMARY KEY(id), \
             FOREIGN Key (classId) REFERENCES " + dbcfg.database + "." + dbcfg.class_table + "(id) \
         )");
