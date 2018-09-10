@@ -24,11 +24,16 @@ module.exports = function( app ) {
                 res.end();
             }
             else {
-                var langToolsObj = JSON.parse(files[0]);
-                var progToolsObj = JSON.parse(files[1]);
-                res.json({'lang':langToolsObj, 'prog':progToolsObj})
+                try{
+                    var langToolsObj = JSON.parse(files[0]);
+                    var progToolsObj = JSON.parse(files[1]);
+                    res.json({'lang':langToolsObj, 'prog':progToolsObj});
+                }
+                catch( e ){
+                    Logger.error(e);
+                    res.json({'lang':[], 'prog':[]});
+                }
             }
         });
     })
 }
-
