@@ -19,7 +19,7 @@ module.exports = {
      */
     checkAssignmentAccess: function(assignmentId, instId, callback){
         var q = `SELECT COUNT(*) as found FROM class WHERE id
-                 in(SELECT classId FROM assignment WHERE 
+                 in(SELECT classId FROM assignment WHERE
                  id=${assignmentId}) AND instructorId=${instId}`;
         db.query(q, [], callback);
     },
@@ -36,9 +36,9 @@ module.exports = {
                 id=${classId} AND instructorId=${instId}`;
         db.query(q, [], callback);
     },
-    
+
     checkEventAccess: function(eventId, instId, callback){
-        var q = `SELECT COUNT(*) as found FROM class WHERE id in (SELECT classId 
+        var q = `SELECT COUNT(*) as found FROM class WHERE id in (SELECT classId
                 FROM upcoming_event WHERE id=${eventId}) AND instructorId=${instId}`;
         db.query(q, [], callback);
     },
@@ -73,7 +73,7 @@ module.exports = {
         else
         {
             var q = dbHelpers.buildSelect(dbcfg.class_options_table);
-            db.query(q,[],callback);           
+            db.query(q,[],callback);
         }
     },
 
@@ -86,7 +86,7 @@ module.exports = {
     getAssignment: function(assignmentId, callback){
         dbHelpers.selectWhere(dbcfg.assignment_table, "id", assignmentId, callback);
     },
-    
+
     /**
      * Get the assignments for a specific instructor
      * @param  integer instId   The instructor id
@@ -94,13 +94,13 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAssignments: function(instId, callback){
-        var q = `SELECT * FROM assignment WHERE classId in (SELECT 
+        var q = `SELECT * FROM assignment WHERE classId in (SELECT
                 class.id FROM class WHERE instructorId=${instId}) ORDER BY deadline ASC`;
         db.query(q,[],callback);
     },
 
     getEvents: function(instId, callback){
-        var q = `SELECT * FROM upcoming_event WHERE classId in (SELECT id 
+        var q = `SELECT * FROM upcoming_event WHERE classId in (SELECT id
                 FROM class WHERE instructorId=${instId})`;
         db.query(q, [], callback);
     },
@@ -135,7 +135,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getAssignmentDiscipline: function(aId, callback){
-        var q = `SELECT disciplineType as discipline FROM class WHERE id in 
+        var q = `SELECT disciplineType as discipline FROM class WHERE id in
                 (SELECT classId FROM assignment WHERE id=${aId})`;
         db.query(q,[],callback);
     },
@@ -203,7 +203,7 @@ module.exports = {
         var q = "select role value from user_role ur, users u, roles r  where ur.userId = u.id and r.id = ur.roleId and u.id = ?";
         db.query(q,userId,callback);
     },
-    
+
     /*************************************************
      ********* Instructor Dashboard Stats ************
      *************************************************/
@@ -220,7 +220,7 @@ module.exports = {
     countInstStudents: function(instId, callback ) {
         var q = `SELECT COUNT(student_class.studentId) as students FROM student_class
                  LEFT OUTER JOIN class ON class.id = student_class.classId
-                 WHERE class.instructorId=${instId}`; 
+                 WHERE class.instructorId=${instId}`;
         db.query(q,[],callback);
     },
     /**
@@ -254,7 +254,7 @@ module.exports = {
     /**
      * Inserts a course into its table.
      * @param array courseData The course data
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     insertCourse: function(courseData, callback) {
         var q = dbHelpers.buildInsert(dbcfg.class_table) + dbHelpers.buildValues(["code","name","description","disciplineType", "instructorId", "year", "semester"]);
@@ -264,7 +264,7 @@ module.exports = {
     /**
      * Inserts a assignment into its table.
      * @param array assignmentData The assignment data
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     insertAssignment: function(assignmentData, callback) {
         var q = dbHelpers.buildInsert(dbcfg.assignment_table) + dbHelpers.buildValues(["classId", "name", "title", "description", "deadline"]);
@@ -274,7 +274,7 @@ module.exports = {
     /**
      * Inserts a event into its table.
      * @param array eventData The event data
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     insertEvent: function(eventData, callback) {
         var q = dbHelpers.buildInsert(dbcfg.upcoming_event_table) + dbHelpers.buildValues(["classId", "name", "title", "description", "openDate", "closedDate"]);
@@ -284,7 +284,7 @@ module.exports = {
     /**
      * Inserts a skill into its table.
      * @param array skill The skill data
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     insertSkill: function(skill, callback) {
         var q  = dbHelpers.buildInsert(dbcfg.skills_table) + dbHelpers.buildValues(["name"]);
@@ -294,7 +294,7 @@ module.exports = {
     /**
      * Inserts a class skill into its table.
      * @param array data The class skill data.
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     insertClassSkill: function(data, callback){
         var q = dbHelpers.buildInsert(dbcfg.class_skill_table) + dbHelpers.buildValues(["classId", "assignmentId", "name"]);
@@ -305,7 +305,7 @@ module.exports = {
      * Updates an assignment.
      * @param array data The assignment data.
      * @param integer aid The assignment id
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     updateAssignment: function(data, aid, callback){
         var q = `UPDATE assignment set name='${data[0]}', title='${data[1]}', description='${data[2]}', deadline='${data[3]}' WHERE id=${aid}`
@@ -315,7 +315,7 @@ module.exports = {
     /**
      * Deletes all assignment skills for a assignment id.
      * @param integer aid The assignment id.
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     deleteAssignmentSkills: function(aid, callback){
         var q = `DELETE from class_skill WHERE assignmentId=${aid}`;
@@ -337,7 +337,7 @@ module.exports = {
      * Updates a event.
      * @param array data The event data.
      * @param integer id The id.
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     updateEvent: function(data, id, callback){
         var q = `UPDATE upcoming_event set name='${data[0]}', title='${data[1]}', description='${data[2]}', openDate='${data[3]}', closedDate='${data[4]}' WHERE id=${id}`
@@ -347,7 +347,7 @@ module.exports = {
     /**
      * Delets all class skills for a class id.
      * @param integer cid The class id.
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     deleteClassSkills: function(cid, callback){
         var q = `DELETE from class_skill WHERE classId=${cid} AND assignmentId=-1`;
@@ -357,7 +357,7 @@ module.exports = {
     /**
      * Deletes an assignment.
      * @param integer aid The assignment id.
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     deleteAssignment: function(aid, callback){
         var q = `DELETE from assignment WHERE id=${aid}`;
@@ -367,7 +367,7 @@ module.exports = {
     /**
      * Deletes an event.
      * @param integer eid The event id.
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     deleteEvent: function(eid, callback){
         var q = `DELETE from upcoming_event WHERE id=${eid}`;
@@ -377,7 +377,7 @@ module.exports = {
     /**
      * Deletes all tasks for a given assignment id.
      * @param integer aid The assignment id.
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     deleteTasks: function(aid, callback){
         var q = `DELETE from assignment_task WHERE assignmentId=${aid}`;
@@ -387,7 +387,7 @@ module.exports = {
     /**
      * Inserts a task into its table
      * @param array task The task data
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     taskInsert: function(task, callback){
         var q = dbHelpers.buildInsert(dbcfg.assignment_task_table) + dbHelpers.buildValues(["assignmentId","name","description"])
@@ -397,7 +397,7 @@ module.exports = {
     /**
      * Fetches all tasks for an assignment.
      * @param integer aid The assignment id.
-     * @param {Function} callback 
+     * @param {Function} callback
      */
     getTasks : function(aid, callback){
         var q = `SELECT * FROM assignment_task WHERE assignmentId=${aid}`;

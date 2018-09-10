@@ -24,12 +24,14 @@ module.exports = function( app ) {
      * @param  {Function} next [description]
      * @return {[type]}        [description]
      */
-    function isInstr(req, res, next) {
+    function isInstructor(req, res, next) {
         var user = _.get(req, "session.passport.user",req.user);
+        console.log( user );
         if (req && req.user) {
             instructorDB.getRole(req.user.id, function(err, role) {
-                if (role && role.length > 0){
-                    if(role[0].value == "instructor")
+                console.log( role );
+                if (role.value && role.length > 0){
+                    if(role == "instructor")
                         next();
                     else
                         res.sendStatus(400);
@@ -53,7 +55,7 @@ module.exports = function( app ) {
     function checkEnabled(optionId, choices){
         for (var i = 0; i < choices.length; i++){
             if(optionId == choices[i].optionId)
-                return 1;  
+                return 1;
         }
         return 0;
     }
@@ -70,7 +72,7 @@ module.exports = function( app ) {
             var data = [classId, assignmentId, skills[i]];
             instructorDB.insertSkill(skills[i], function(err) {});
             instructorDB.insertClassSkill(data, function(err) {});
-        } 
+        }
     }
 
     /**
@@ -137,7 +139,7 @@ module.exports = function( app ) {
 
     /**
      * Sets up the disciplines, setting which one should be enabled.
-     * @param array d The disciplines 
+     * @param array d The disciplines
      * @return array The disciplines
      */
     function setupDiscipline(d){
@@ -175,11 +177,11 @@ module.exports = function( app ) {
                 semester.enabled = 0;
             }
             semesters.push(semester);
-        } 
+        }
         return semesters;
     }
 
-    app.all('/instructor*', isInstr );
+    app.all('/instructor*', isInstructor);
 
     app.route('/instructor')
     .get(function(req,res) {
@@ -196,8 +198,8 @@ module.exports = function( app ) {
             async.apply(instructorDB.countInstStudents, req.user.id),
             async.apply(instructorDB.countInstStudentsOTW, req.user.id),
             async.apply(instructorDB.countWeeklySubmission, req.user.id),
-            
-        ], 
+
+        ],
         function(err, results) {
             if (results){
                 for (var i = 0; i < results.length; i++){
@@ -242,7 +244,7 @@ module.exports = function( app ) {
         var data = qs.parse(req.body.formData);
         if (req.body.form == 'createCourse'){ // create course
             if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
-            var arr = [data.ccode, data.cname, data.cdesc, data.ctype, 
+            var arr = [data.ccode, data.cname, data.cdesc, data.ctype,
                        req.user.id, data.cyear, data.csemester];
             instructorDB.insertCourse(arr, function(err, queryInfo){
                 if(!err){
@@ -253,10 +255,10 @@ module.exports = function( app ) {
                     res.status(500).send();
             });
         }
-        else if (req.body.form == 'createAss'){ // create assignment
+        else if (req.body.form == 'createAssign'){ // create assignment
             if (!Array.isArray(data.askills)) data.askills = [data.askills];
             var courseInfo = JSON.parse(data.cnameA);
-            var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];     
+            var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];
             instructorDB.insertAssignment(arr, function(err, queryInfo){
                 if(!err){
                     skillInsert(data.askills, courseInfo.cid, queryInfo.insertId);
@@ -312,7 +314,7 @@ module.exports = function( app ) {
                                                                     for (var i = 0; i < options.length; i++)
                                                                         options[i].enabled = checkEnabled(options[i].id, choices);
                                                                     res.render(viewPath + "instructorAssignment", {title: 'Assignment management',
-                                                                    aid: id, acid: assign.classId, aname: assign.name, atitle: assign.title, adescription: assign.description, 
+                                                                    aid: id, acid: assign.classId, aname: assign.name, atitle: assign.title, adescription: assign.description,
                                                                     adeadline: assign.deadline, aoptions: options, askills: skills, atasks: tasks});
                                                                 }
                                                                 else{
@@ -371,7 +373,7 @@ module.exports = function( app ) {
                         if(!err && event){
                             var eve = event[0];
                             res.render(viewPath + "instructorEvent", {title: 'Event management',
-                            eid: id, ecid: eve.classId, ename: eve.name, etitle: eve.title, edescription: eve.description, 
+                            eid: id, ecid: eve.classId, ename: eve.name, etitle: eve.title, edescription: eve.description,
                             eopen: eve.openDate, eclose: eve.closedDate});
                         }
                         else{
@@ -392,8 +394,7 @@ module.exports = function( app ) {
     app.route('/instructor-manage-confirm')
     .post(function(req, res, next){
         var data = qs.parse(req.body.formData);
-        console.log(data);
-        if (req.body.form == 'updateAss'){ // update assignment
+        if (req.body.form == 'updateAssign'){ // update assignment
             if (!Array.isArray(data.askills)) data.askills = [data.askills];
             var arr = [data.aname, data.atitle, data.adesc, data.adate];
             instructorDB.updateAssignment(arr, data.aid, function(err){
@@ -414,7 +415,7 @@ module.exports = function( app ) {
         }
         else if(req.body.form == 'updateCourse'){ // update course
             if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
-            var arr = [data.ccode, data.cname, data.cdesc, data.ctype, 
+            var arr = [data.ccode, data.cname, data.cdesc, data.ctype,
                 data.cyear, data.csemester];
             instructorDB.updateClass(arr, data.cid, function(err){
                 if(!err)
@@ -487,7 +488,7 @@ module.exports = function( app ) {
         var id = req.body['class-id'];
         instructorDB.checkClassAccess(id, req.user.id, function(err, result){
             if(!err && result){
-                if(result[0].found == "1"){ // lets fetch the actual class to make sure there was no tampering           
+                if(result[0].found == "1"){ // lets fetch the actual class to make sure there was no tampering
                     instructorDB.getClass(id, function(error,course){ // get the class information its safer to just get by id
                         if (!error && course){
                             var cs = course[0];
@@ -497,7 +498,7 @@ module.exports = function( app ) {
                                 parseSkills(skills, function(err, s){
                                     if (!err && s){
                                         res.render(viewPath + "instructorCourse", {title: 'Course management',
-                                        cid: id, ccode: cs.code, cname: cs.name, cdescription: cs.description, 
+                                        cid: id, ccode: cs.code, cname: cs.name, cdescription: cs.description,
                                         cdiscipline: disciplines, cyear: cs.year, csemesters: semesters, cskills: s});
                                     }
                                     else{

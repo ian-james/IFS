@@ -396,7 +396,8 @@ try {
         Logger.info("Set up roles in:", dbcfg.role_table);
         connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (1, \"admin\") ON DUPLICATE KEY UPDATE id=id;");
         connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (2, \"developer\") ON DUPLICATE KEY UPDATE id=id;");
-        connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (3, \"student\") ON DUPLICATE KEY UPDATE id=id;");
+        connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (3, \"instructor\") ON DUPLICATE KEY UPDATE id=id;");
+        connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (4, \"student\") ON DUPLICATE KEY UPDATE id=id;");
 
         /* POST DATABASE CREATION: setup deletion rules for entries in the
          * verify_table; run once per hour */

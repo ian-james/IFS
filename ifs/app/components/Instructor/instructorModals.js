@@ -4,7 +4,7 @@ $(document).ready(function(){
     // THIS IS NOT CURRENTLY USED IF WE WANT TO ADD STATISTICS JUST UNCOMMENT THE FUNCTION CALLS
     $('#psycoptionsC').hide();
     $('#othoptionsC').hide();
-    $('#ctype').change(function() {  
+    $('#ctype').change(function() {
         var value = $('#ctype').val();
         if(value == 'computer science')
         {
@@ -59,7 +59,7 @@ $(document).ready(function(){
         var tNameStart = `<div id='task${task}'><label class="uk-form-label" for="Task #${task} Name">Task #${task} Name</label>
                             <div class="uk-form-controls">`;
         if (task > 1)
-            tNameStart = '<br>' + tNameStart;                  
+            tNameStart = '<br>' + tNameStart;
         var tName = '<input class="uk-input" name="tName' + task + '" placeholder="e.g Tutor session" required="required" type="text">';
         var tNameEnd = '</div><br>';
         var tDescStart = `<label class="uk-form-label" for="Task #${task} Description">Task #${task} Description</label>
@@ -87,8 +87,8 @@ $(document).ready(function(){
         var strErr = '<div class="uk-alert-danger ccerror" uk-alert>';
         var endErr = '</div>';
         var err = 0;
-        // check to make sure year is a valid number 
-        if(isNaN($('#cyear').val())) {        
+        // check to make sure year is a valid number
+        if(isNaN($('#cyear').val())) {
             $('#cContent').prepend(strErr + 'Error: Please enter in a valid year!' + endErr);
             err = 1;
         }
@@ -98,12 +98,12 @@ $(document).ready(function(){
             $('#cContent').prepend(strErr + 'Error: Please enter in a valid class code.' + endErr);
             err = 1;
         }
-        
+
         if (err) return;
 
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#ccourse :input[value!='']").serialize();
-  
+
         $.ajax({
             url: '/instructor',
             type: 'post',
@@ -131,30 +131,30 @@ $(document).ready(function(){
                     UIkit.notification('Failed to create course.', {'status': 'danger'});
                 }
             }
-            
+
         });
 
     });
 
-    // create assignment 
-    $('#cAss').submit(function(event) {
+    // create assignment
+    $('#cAssign').submit(function(event) {
         event.preventDefault();
         $('.caerror').remove();
         var strErr = '<div class="uk-alert-danger caerror" uk-alert>';
         var endErr = '</div>';
         var err = 0;
-        
+
         if (err) return;
 
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
-        var formData = $("#cAss :input[value!='']").serialize();
-  
+        var formData = $("#cAsign :input[value!='']").serialize();
+
         $.ajax({
             url: '/instructor',
             type: 'post',
             data: {
                 formData,
-                form: 'createAss'
+                form: 'createAssign'
             },
             timeout: 5000,
             success: function(msg){
@@ -162,7 +162,7 @@ $(document).ready(function(){
                 var modal = UIkit.modal('#create-assignment');
                 modal.hide();
                 // reset the modal
-                $('#cAss').trigger('reset');
+                $('#cAssign').trigger('reset');
                 $('.caerror').remove();
                 // send the notification
                 UIkit.notification('Assignment created.', {'status': 'success'});
@@ -176,7 +176,7 @@ $(document).ready(function(){
                     UIkit.notification('Failed to create assignment.', {'status': 'danger'});
                 }
             }
-            
+
         });
 
     });
@@ -188,11 +188,11 @@ $(document).ready(function(){
         var strErr = '<div class="uk-alert-danger ceerror" uk-alert>';
         var endErr = '</div>';
         var err = 0;
-        
+
         if (err) return;
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#cEvent :input[value!='']").serialize();
-  
+
         $.ajax({
             url: '/instructor',
             type: 'post',
@@ -220,7 +220,7 @@ $(document).ready(function(){
                     UIkit.notification('Failed to create event.', {'status': 'danger'});
                 }
             }
-            
+
         });
 
     });

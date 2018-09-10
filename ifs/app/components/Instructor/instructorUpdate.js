@@ -8,13 +8,13 @@ $(document).ready(function(){
         event.preventDefault();
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#updateAssignment :input[value!='']").serialize();
-  
+
         $.ajax({
             url: '/instructor-manage-confirm',
             type: 'post',
             data: {
                 formData,
-                form: 'updateAss'
+                form: 'updateAssign'
             },
             timeout: 5000,
             success: function(msg){
@@ -30,16 +30,16 @@ $(document).ready(function(){
                     UIkit.notification('Failed to update assignment.', {'status': 'danger'});
                 }
             }
-            
+
         });
     });
 
     $('#updateCourse').submit(function(event) {
         event.preventDefault();
-        
+
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#updateCourse :input[value!='']").serialize();
-  
+
         $.ajax({
             url: '/instructor-manage-confirm',
             type: 'post',
@@ -61,16 +61,16 @@ $(document).ready(function(){
                     UIkit.notification('Failed to update course.', {'status': 'danger'});
                 }
             }
-            
+
         });
     });
 
-    $('#dAss').submit(function(event) {
+    $('#deleteAssign').submit(function(event) {
         event.preventDefault();
-        
+
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
-        var formData = $("#dAss :input[value!='']").serialize();
-  
+        var formData = $("#deleteAssign :input[value!='']").serialize();
+
         $.ajax({
             url: '/instructor-delete',
             type: 'post',
@@ -84,7 +84,7 @@ $(document).ready(function(){
                 var modal = UIkit.modal('#delete-assignment');
                 modal.hide();
                 // reset modal
-                $('#dAss').trigger('reset');
+                $('#deleteAssign').trigger('reset');
                 // send notification
                 UIkit.notification('Assignment deleted .. sending you back to panel.', {'status': 'success'});
                 // redirect to instructor dashboard
@@ -97,16 +97,16 @@ $(document).ready(function(){
                     UIkit.notification('Failed to delete assignment.', {'status': 'danger'});
                 }
             }
-            
+
         });
     });
 
     $('#updateEvent').submit(function(event) {
         event.preventDefault();
-        
+
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
         var formData = $("#updateEvent :input[value!='']").serialize();
-  
+
         $.ajax({
             url: '/instructor-manage-confirm',
             type: 'post',
@@ -128,16 +128,16 @@ $(document).ready(function(){
                     UIkit.notification('Failed to update event.', {'status': 'danger'});
                 }
             }
-            
+
         });
     });
 
-    $('#dEvent').submit(function(event) {
+    $('#deleteEvent').submit(function(event) {
         event.preventDefault();
-        
+
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
-        var formData = $("#dEvent :input[value!='']").serialize();
-  
+        var formData = $("#deleteEvent :input[value!='']").serialize();
+
         $.ajax({
             url: '/instructor-delete',
             type: 'post',
@@ -151,7 +151,7 @@ $(document).ready(function(){
                 var modal = UIkit.modal('#delete-event');
                 modal.hide();
                 // reset modal
-                $('#dEvent').trigger('reset');
+                $('#deleteEvent').trigger('reset');
                 // send notification
                 UIkit.notification('Event deleted .. sending you back to panel.', {'status': 'success'});
                 // redirect to instructor dashboard
@@ -164,7 +164,7 @@ $(document).ready(function(){
                     UIkit.notification('Failed to delete event.', {'status': 'danger'});
                 }
             }
-            
+
         });
     });
 
@@ -173,14 +173,14 @@ $(document).ready(function(){
         var tNameStart = `<div id='task${task}'><label class="uk-form-label" for="Task #${task} Name">Task #${task} Name</label>
                             <div class="uk-form-controls">`;
         if (task > 1)
-            tNameStart = '<br>' + tNameStart;                  
+            tNameStart = '<br>' + tNameStart;
         var tName = '<input class="uk-input" name="tName' + task + '" placeholder="e.g Tutor session" required="required" type="text">';
         var tNameEnd = '</div><br>';
         var tDescStart = `<label class="uk-form-label" for="Task #${task} Description">Task #${task} Description</label>
                             <div class="uk-form-controls">`;
         var tDesc = '<input class="uk-input" name="tDesc' + task + '" placeholder="e.g Learn C" required="required" type="text">';
         var tDescEnd = '</div></div>';
-        // addTask 
+        // addTask
         $('#taskControls').before(tNameStart + tName + tNameEnd + tDescStart + tDesc + tDescEnd);
         task++;
     });

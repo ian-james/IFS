@@ -16,20 +16,19 @@ var _ = require('lodash');
 
 module.exports = function( app, passport ) {
     function isAuthenticated(req,res,next) {
-        var nonSecurePaths = ['/', '/login', '/register', '/verify', '/forgot', '/reset', '/about','/about/data', '/aboutSimple'];
+        var nonSecurePaths = ['/', '/login', '/register', '/verify', '/forgot', '/reset', '/about','/about/data'];
         var result = _.findIndex(nonSecurePaths, function (p) { return p == req.path});
         var user = _.get(req, "session.passport.user",req.user);
 
         if(result >= 0 || (user) ) {
             if(user){
                 // Assign them the role they deserve to their session
-                adminDB.getRole( req.user.id, function (err,roles){
-                    if (roles && roles.length > 0){
-                        var permissions = adminDB.getPermissions(roles[0].value);
-                        if (permissions == 1)
+                adminDB.getRole( req.user.id, function (err,role){
+                    if (role && role.length > 0){
+                        if (role == "admin")
                             _.extend(user, {admin: 1});
-                        else if(permissions == 2)
-                            _.extend(user, {instr: 1});
+                        else if(role == "instructor")
+                            _.extend(user, {instructor: 1});
                     }
                 });
                 res.locals.user = user;

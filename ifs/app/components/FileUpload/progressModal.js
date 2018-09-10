@@ -57,7 +57,7 @@ $(function() {
         var uploadProgressBar = $('#progressbar')[0];
 
 
-        
+
         var assign = $('#assign');
         var code = assign.find(":selected").text();
         var assignId = 0;
@@ -72,7 +72,7 @@ $(function() {
                 course: code
             },
             success: function(res, status) {
-                assignId = res.assignment; 
+                assignId = res.assignment;
             }
         });
 

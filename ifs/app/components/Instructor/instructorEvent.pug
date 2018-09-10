@@ -52,10 +52,10 @@ block content
             div.uk-overflow-container#cContent
                 p
                     | Are you sure you want to delete "#{ename}"?
-                form(id="dEvent" class='uk-form' method="post" action="/instructor-delete")
+                form(id="deleteEvent" class='uk-form' method="post" action="/instructor-delete")
                     input(type="hidden" name="eid" value=eid)
                     button.uk-button.uk-modal-close(type='button') Cancel
                     input.uk-button.uk-button-danger.uk-margin-small-left(type='submit' value='Delete')
-                                    
+
 
 

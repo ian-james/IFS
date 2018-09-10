@@ -78,8 +78,8 @@ div#create-course(uk-modal='')
                     div#othoptionsC
                         each option in coptions
                             - if (option.disciplineType == 'other')
-                                include instructorInput.pug  
-                                br  
+                                include instructorInput.pug
+                                br
                 input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
                 button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
 
@@ -90,7 +90,7 @@ div#create-assignment(uk-modal='')
         button.uk-modal-close-default(type='button', uk-close='')
         h2.uk-modal-title Create Assignment
         div.uk-overflow-container
-            form(id="cAss" class='uk-form' method="post" action="/instructor")
+            form(id="cAssign" class='uk-form' method="post" action="/instructor")
                 label(for="Course name").uk-form-label
                     | Course Name
                 div.uk-form-controls
@@ -145,7 +145,7 @@ div#create-assignment(uk-modal='')
                     div#othoptionsA
                         each option in aoptions
                             - if (option.disciplineType == 'other')
-                                include instructorInput.pug  
+                                include instructorInput.pug
                                 br
                 input.uk-button.uk-button-primary.uk-margin-small-right(type='submit' value='Save')
                 button.uk-button.uk-button-danger.uk-modal-close(type='button') Cancel
