@@ -57,7 +57,6 @@ $(function() {
         var uploadProgressBar = $('#progressbar')[0];
 
 
-
         var assign = $('#assign');
         var code = assign.find(":selected").text();
         var assignId = 0;
