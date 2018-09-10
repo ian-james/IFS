@@ -1,5 +1,5 @@
 // Update with your config settings.
-const dbcfg = require('./config/dbConnectionConfig');
+const dbcfg = require('./dbConnectionConfig');
 
 module.exports = {
 
