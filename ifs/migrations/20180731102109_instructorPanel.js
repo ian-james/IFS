@@ -45,7 +45,7 @@ exports.down = function(knex, Promise) {
     .dropTableIfExists(dbcfg.class_options_table)
 
     .dropTableIfExists(dbcfg.assignment_choices_table)
-    
+
     .dropTableIfExists(dbcfg.assignment_options_table)
 
     .table(dbcfg.class_table, (t) => {

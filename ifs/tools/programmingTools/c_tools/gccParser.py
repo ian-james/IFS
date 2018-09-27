@@ -57,8 +57,6 @@ def getProcessInfo( cmd, outFile, errorFile ):
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
 
-    
-    
     return out, err
 
 # Parsing the output of a couple simple formats
@@ -202,9 +200,6 @@ def main(argv):
         options['dir'] = idirectory
 
 
-        newFile = idirectory.split("/")
-        newerFile = newFile[0] + "/" + newFile[1]
-
         cmd = createCmd( options )
 
         if( cmd ):
@@ -218,14 +213,17 @@ def main(argv):
                 errors = err
 
                 result = parse( errors, options )
-                
+
                 if( options['ifs'] ):
                     result = decorateData( result, options )
 
-                file = open(newerFile + "/feedback_gcc_unzipped", "w")
+                outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  "/feedback_gcc_unzipped" ) )
+
+                file = open( outputfile, "w")
+
                 file.write(result)
                 file.close()
-                
+
                 print( result )
             except:
                 sys.stderr.write("Unable to successfully retrieve compiler information\n")

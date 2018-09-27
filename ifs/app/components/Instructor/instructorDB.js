@@ -257,6 +257,7 @@ module.exports = {
      * @param {Function} callback
      */
     insertCourse: function(courseData, callback) {
+        console.log( courseData );
         var q = dbHelpers.buildInsert(dbcfg.class_table) + dbHelpers.buildValues(["code","name","description","disciplineType", "instructorId", "year", "semester"]);
         db.query(q, courseData, callback);
     },
@@ -298,6 +299,17 @@ module.exports = {
      */
     insertClassSkill: function(data, callback){
         var q = dbHelpers.buildInsert(dbcfg.class_skill_table) + dbHelpers.buildValues(["classId", "assignmentId", "name"]);
+        db.query(q, data, callback);
+    },
+
+     /**
+     * Inserts a class skill into its table.
+     * @param array data The class skill data.
+     * @param {Function} callback
+     */
+    //**** TODO: UGH HACK -> IFS allows NULL assignmentID so can't be giving -1 values */
+    insertClassSkillNoAssignment: function(data, callback){
+        var q = dbHelpers.buildInsert(dbcfg.class_skill_table) + dbHelpers.buildValues(["classId",  "name"]);
         db.query(q, data, callback);
     },
 

@@ -13,7 +13,7 @@ exports.up = function(knex, Promise) {
       t.increments('id').primary()
       t.integer('userId').unsigned().references('id').inTable('users').notNull()
       t.integer('sessionId').unsigned().defaultTo(0).notNull()
-      t.timestamp('date').defaultTo(knex.fn.now())  
+      t.timestamp('date').defaultTo(knex.fn.now())
     })
     .createTable(dbcfg.feedback_table, (t) => {
       t.increments('id').primary()
@@ -262,4 +262,4 @@ exports.down = function(knex, Promise) {
     .dropTable('ifs_tips')
     .dropTable('roles')
     .dropTable('users')
-}; 
+};

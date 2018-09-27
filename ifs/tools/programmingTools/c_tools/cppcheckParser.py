@@ -69,8 +69,8 @@ def getProcessInfo( cmd, outFile, errorFile ):
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
 
-    
-    
+
+
     return out, err
 
 # Parsing the output of a couple simple formats
@@ -79,7 +79,7 @@ def getProcessInfo( cmd, outFile, errorFile ):
 def parse( text, options ):
     results = []
     types = options['splitTypes']
- 
+
 
 
     # file = open("feedback_cppCheck_unzipped", "a");
@@ -160,7 +160,7 @@ def createCmd( options ):
                     '--template="{file}##{line}##{severity}##{id}##{message}"',
                     " " + srcDir  if iDir == "" else "-I " + iDir + " " + srcDir
                 ])
-    
+
     return cmdStr
 
 
@@ -222,7 +222,7 @@ def main(argv):
 
         newFile = idirectory.split("/")
         newerFile = newFile[0] + "/" + newFile[1]
-        
+
         cmd = createCmd( options )
 
         if( cmd ):
@@ -239,15 +239,15 @@ def main(argv):
                 file.close()
 
                 result = parse( errors, options )
-                
+
                 if( options['ifs'] ):
                     result = decorateData( result, options )
 
-
+                print(newerFile)
                 file = open(newerFile + "/feedback_cppCheck_unzipped", "w")
                 file.write(result)
-                file.clos()
-                
+                file.close()
+
                 print( result )
 
             except:

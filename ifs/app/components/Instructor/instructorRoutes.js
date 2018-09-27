@@ -29,12 +29,8 @@ module.exports = function( app ) {
         console.log( user );
         if (req && req.user) {
             instructorDB.getRole(req.user.id, function(err, role) {
-                console.log( role );
-                if (role.value && role.length > 0){
-                    if(role == "instructor")
+                if (role.length > 0 && role[0].value == "instructor"){
                         next();
-                    else
-                        res.sendStatus(400);
                 }
                 else {
                     res.sendStatus(400);
@@ -68,10 +64,14 @@ module.exports = function( app ) {
      * @return {[type]}        [description]
      */
     function skillInsert(skills, classId, assignmentId){
+        //TODO: This function management of errors and improvement.
         for(var i = 0; i < skills.length; i++){
             var data = [classId, assignmentId, skills[i]];
             instructorDB.insertSkill(skills[i], function(err) {});
-            instructorDB.insertClassSkill(data, function(err) {});
+            if( assignmentId == -1 )
+                instructorDB.insertClassSkillNoAssignment(data,function(err){});
+            else
+                instructorDB.insertClassSkill(data, function(err) {});
         }
     }
 
@@ -116,6 +116,7 @@ module.exports = function( app ) {
      * @param  callback  callback   The callback.
      */
     function parseSkills(s, callback){
+
         instructorDB.getSkills(function (err, results){
             var skills = [];
             if (!err && results){
@@ -243,6 +244,7 @@ module.exports = function( app ) {
         // parses sequelize
         var data = qs.parse(req.body.formData);
         if (req.body.form == 'createCourse'){ // create course
+            console.log("CSkillS", data.cskills)
             if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
             var arr = [data.ccode, data.cname, data.cdesc, data.ctype,
                        req.user.id, data.cyear, data.csemester];
@@ -257,6 +259,7 @@ module.exports = function( app ) {
         }
         else if (req.body.form == 'createAssign'){ // create assignment
             if (!Array.isArray(data.askills)) data.askills = [data.askills];
+            console.log(data.cnameA);
             var courseInfo = JSON.parse(data.cnameA);
             var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];
             instructorDB.insertAssignment(arr, function(err, queryInfo){

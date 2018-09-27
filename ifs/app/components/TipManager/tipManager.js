@@ -58,7 +58,7 @@ module.exports = {
     },
 
     deleteIFSTips: function(callback) {
-        var q =  dbHelpers.buildDelete(dbcfg.ifs_tips_table); 
+        var q =  dbHelpers.buildDelete(dbcfg.ifs_tips_table);
         db.query(q,[],callback);
     },
 
@@ -66,7 +66,7 @@ module.exports = {
         var q = "ALTER TABLE " + dbcfg.ifs_tips_table + " AUTO_INCREMENT = 1";
         db.query(q,[],callback);
     },
-   
+
 
 /**
  * [selectTip description]
@@ -111,6 +111,10 @@ module.exports = {
             }
             else {
                 module.exports.getIFSTips(tipIndex, function(err, tip){
+                    if( err ) {
+                        callback();
+                        return;
+                    }
                     module.exports.getTipCount( function(err,tipCount) {
                         try {
                             var tipC = parseInt( _.get(tipCount[0],"tips", "1") );

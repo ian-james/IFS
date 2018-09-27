@@ -39,8 +39,9 @@ module.exports = function (passport) {
         db.query( "SELECT id, username, sessionId FROM users where id = ? ", user.id, function(err,rows) {
             if( err )
                 done(err,null);
-            else
+            else {
                 done( err, rows[0]);
+            }
         });
     });
 
