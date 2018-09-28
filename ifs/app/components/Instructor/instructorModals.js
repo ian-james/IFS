@@ -147,7 +147,7 @@ $(document).ready(function(){
         if (err) return;
 
         // only fetches inputs that have a value (this is to fix a problem with fetching statistic inputs)
-        var formData = $("#cAsign :input[value!='']").serialize();
+        var formData = $("#cAssign :input[value!='']").serialize();
 
         $.ajax({
             url: '/instructor',
