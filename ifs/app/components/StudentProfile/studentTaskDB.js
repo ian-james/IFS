@@ -51,10 +51,15 @@ module.exports = {
      * @param  {Function} callback         [description]
      * @return {[type]}                    [description]
      */
+    /*
+
+     NOT USED(?)
     insertStudentAssignmentTask: function( studentId, assignmentTaskId, isComplete, callback ) {
+        console.log(" Student Task DB");
         var q = dbHelpers.buildInsert(dbcfg.student_assignment_task_table) + dbHelpers.buildValues(["studentId","assignmentTaskId", "isComplete"]) + "ON Duplicate Key update isComplete=Values(isComplete)";
         db.query(q,[studentId, assignmentTaskId, isComplete], callback);
     },
+    */
 
     /**
      * Get all of a student's assignments and tasks.
@@ -64,9 +69,12 @@ module.exports = {
      * @param  {Function} callback         [description]
      * @return {[type]}                    [description]
      */
+    /*
+    NOT USED ?
     getStudentAssignmentsAndTasks: function( studentId, callback ) {
         var q = dbHelpers.buildSelect(dbcfg.student_assignment_task_table) + dbHelpers.buildWS("studentId");
         db.query(q,studentId, callback);
     },
-    
+    */
+
 }
