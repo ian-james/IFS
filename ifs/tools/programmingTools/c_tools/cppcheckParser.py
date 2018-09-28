@@ -220,9 +220,6 @@ def main(argv):
     if idirectory != '':
         options['dir'] = idirectory
 
-        newFile = idirectory.split("/")
-        newerFile = newFile[0] + "/" + newFile[1]
-
         cmd = createCmd( options )
 
         if( cmd ):
@@ -243,8 +240,8 @@ def main(argv):
                 if( options['ifs'] ):
                     result = decorateData( result, options )
 
-                print(newerFile)
-                file = open(newerFile + "/feedback_cppCheck_unzipped", "w")
+                outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  "/feedback_gcc_unzipped" ) )
+                file = open(outputFile, "w")
                 file.write(result)
                 file.close()
 
