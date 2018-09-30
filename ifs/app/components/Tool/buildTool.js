@@ -100,9 +100,7 @@ function parseFormSelection( formData ) {
 
                 progName = key.substr( toolMarker.length );
                 tool = { 'progName': progName, 'options':[] };
-               
             }
-            
             else if(tool) {
                 var r = {};
                 r['name'] = key;
@@ -160,7 +158,7 @@ function removeInactiveTools(toolList, formOptions) {
 }
 
 /**
- * Removes enabled checkbox information from form data 
+ * Removes enabled checkbox information from form data
  * Currently does nothing of use, bring to attention to group if it is needed in the future
  * @param  {[type]} formOptions [description]
  * @return {[type]}             [description]
@@ -200,7 +198,7 @@ function buildJobs( fullJobs, files, options ) {
     for( var i = 0; i < filenames.length;i++)
     {
             for(var y = 0; y < jobs.length;y++)
-            {   
+            {
                 var j = _.clone( jobs[y], true );
                 j['runCmd'] += (" " + filenames[i]);
                 jobsPerFile.push(j);
@@ -226,7 +224,7 @@ function createToolProgramCall ( toolListItem, options )
     });
 
     args.push(toolListItem.fileArgs);
-    
+
     var result = _.join( args, " ");
     return result;
 }
@@ -247,7 +245,7 @@ function basicParse( toolListItem, userOptions ){
         {
             var value = "";
             if(option.type == "checkbox") {
-                value = userTargetTool.value  == "on" ? option.arg : "";
+                value = ( userTargetTool.value  == "on"  || userTargetTool.value == "true" ) ? option.arg : "";
             }
             else {
                 value = option.arg + " " + userTargetTool.value;

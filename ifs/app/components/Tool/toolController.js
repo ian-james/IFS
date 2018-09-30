@@ -3,6 +3,9 @@
         The main route /tool is server side in toolRoutes.js
 */
 app.controller( "toolCtrl", function($scope, $http) {
+    /*
+
+    //TODO: WIll remove on a seperate commit.
     $scope.toolList=[];
     $scope.prefsList = [];
     $http.get('/tool/data').then( function(res) {
@@ -10,8 +13,5 @@ app.controller( "toolCtrl", function($scope, $http) {
         // Main Layout information and more static information is loaded via Express routes.
         $scope.toolList = res.data;
     });
-    $http.get('/preferences/data.json').then(function(res) {
-        $scope.prefsList = res.data.options[3];
-    });
-
+    */
 });

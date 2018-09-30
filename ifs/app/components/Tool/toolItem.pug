@@ -1,27 +1,21 @@
-input(type="hidden", name="tool-{{ tool.progName }}" value="{{ tool.displayName }}")
+input(type='hidden' name='tool-'+tool.progName value=tool.displayName)
 div.uk-grid
-    div.tool-title {{tool.displayName}}
+    div.tool-title #{tool.displayName}
     div.uk-width-expand
         div.uk-float-right
             label.switch-wrapper
-                input(type="checkbox" name="enabled-{{ tool.displayName }}" id="enabled-{{tool.displayName}}" ng-checked="false")
-                div(uk-toggle="target: #{{tool.cmdToolName}}; animation: uk-animation-slide-top-small").switch.switch-round
+                if tool.prefValue
+                    input(type='checkbox' name='enabled-'+tool.displayName id='enabled-'+tool.displayName value='true' checked)
+                else
+                    input(type='checkbox' name='enabled-'+tool.displayName id='enabled-'+tool.displayName value='true')
+                div(uk-toggle='target:#'+tool.cmdToolName+'; animation: uk-animation-slide-top-small').switch.switch-round
 
-span(ng-if="tool.prefValue")
-    div(id='{{tool.cmdToolName}}').uk-background-muted
-        ul.uk-list.uk-list-divider.uk-padding-small
-            li
-                div.uk-clearfix
-                    div.uk-float-left
-                        strong {{tool.description}}
-            li(ng-repeat="option in tool.options")
-                include toolInput.pug
-span(ng-if="!tool.prefValue")
-    div(id='{{tool.cmdToolName}}' hidden='').uk-background-muted
-        ul.uk-list.uk-list-divider.uk-padding-small
-            li
-                div.uk-clearfix
-                    div.uk-float-left
-                        strong {{tool.description}}
-            li(ng-repeat="option in tool.options")
-                include toolInput.pug
+div(id=tool.cmdToolName class="toolOptions" hidden=!tool.prefValue ).uk-background-muted
+    ul.uk-list.uk-list-divider.uk-padding-small
+        li
+            div.uk-clearfix
+                div.uk-float-left
+                    strong #{tool.description}
+            each option in tool.options
+                li
+                    include toolInput.pug

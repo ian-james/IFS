@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function() {
 	var msg = $('#error').text();
     var course = $('#course');
     var assign = $('#assign');
@@ -25,16 +25,14 @@ $(document).ready(function(){
                 course.toggleClass("uk-hidden", true);
                 $('#courseLab').toggleClass("uk-hidden", true);
                 $('#assignLab').toggleClass("uk-hidden", true);
-                
             }
             else
             {
-
                 assign.toggleClass("uk-hidden", true);
                 course.toggleClass("uk-hidden", false);
                 $('#courseLab').toggleClass("uk-hidden", false);
                 $('#assignLab').toggleClass("uk-hidden", true);
-                
+
                 var optsStr = "";
 
                 optsStr += "<option value='None'>None</option>"
@@ -44,49 +42,11 @@ $(document).ready(function(){
                 }
                 course.append( optsStr );
             }
-            
         },
         error: function(req, err) {
             console.log(err);
         }
     })
-
-    // $.ajax({
-    //     type: "post",
-    //     url: '/tool/assignment',
-    //     data: {
-    //         insert: selectedCourse
-    //     },
-    //     success: function (res, status) {
-
-    //         if(res.result.length == 0)
-    //         {
-    //             assign.toggleClass("uk-hidden", true);
-    //             course.toggleClass("uk-hidden", true);
-    //             $('#courseLab').toggleClass("uk-hidden", true);
-    //             $('#assignLab').toggleClass("uk-hidden", true);
-                
-    //         }
-    //         else
-    //         {
-
-    //             var optsStr = "";
-    //             optsStr += "<option value='None'>None</option>"            
-
-    //             for(var i = 0; i < res.result.length; i++)
-    //             {
-    //                 optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
-    //             }
-
-    //             assign.append( optsStr );
-    //         }     
-    //     },
-    //     error: function(req, err) {
-    //         console.log(err);
-    //     }
-    // })
-
-    
 });
 
 $("#course").change(function() {
@@ -94,7 +54,7 @@ $("#course").change(function() {
     var course = $('#course');
     assign.empty();
 
-    
+
     var courseSelected = course.find(":selected").text();
 
     $.ajax({
@@ -105,10 +65,8 @@ $("#course").change(function() {
         },
         success: function (res, status) {
             var optsStr = "";
-
-
             optsStr += "<option value='None'>None</option>"
-            
+
             for(var i = 0; i < res.result.length; i++)
             {
                 optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
@@ -128,11 +86,7 @@ $("#course").change(function() {
             {
                 assign.toggleClass("uk-hidden", false);
                 $('#assignLab').toggleClass("uk-hidden", false);
-
-                // $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
-                // $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
             }
-
         }
     })
 
@@ -151,10 +105,7 @@ $("#assign").change(function() {
     {
         $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
         $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
-
     }
-    
-    
 });
 
 $("#settingsToggle").click(function() {
@@ -167,23 +118,3 @@ $('#error').bind("DOMSubtreeModified",function(){
 		UIkit.notification({message: msg, pos: 'top-center', status: 'danger'});
 	}
 });
-
-$("#toolPreference").submit(function(event) {
-    var val = event.originalEvent.explicitOriginalTarget.innerHTML;
-
-    $.ajax({
-        type: "post",
-        url:'/tool/preferences',
-        dataType: 'json',
-        data: {
-        	tool: val
-        },
-        success: function (data, textStatus) {
-        	location.reload(true);
-        },
-        error: function (req, err){
-            location.reload(true);
-        }
-    });
-});
-

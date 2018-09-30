@@ -111,7 +111,7 @@ module.exports = {
             }
             else {
                 module.exports.getIFSTips(tipIndex, function(err, tip){
-                    if( err ) {
+                    if( err  || !tip) {
                         callback();
                         return;
                     }
