@@ -240,8 +240,8 @@ def main(argv):
                 if( options['ifs'] ):
                     result = decorateData( result, options )
 
-                outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  "/feedback_gcc_unzipped" ) )
-                file = open(outputFile, "w")
+                outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  "/feedback_cppCheck_unzipped" ) )
+                file = open(outputfile, "w")
                 file.write(result)
                 file.close()
 

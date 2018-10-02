@@ -194,7 +194,7 @@
             ]
         },
         {
-           "displayName": "#Include Path Checker",
+           "displayName": "Include Path Checker",
            "description": "Finds and reports instances of absolute/relative hardcoded #include paths.",
            "technicalDesc": "A Python script that checks .c or .h files for bsolute/relative hardcoded #include paths. Only file names are to be included.",
            "author": "IFS Development Team",

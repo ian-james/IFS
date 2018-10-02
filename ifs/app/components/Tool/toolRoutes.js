@@ -64,9 +64,9 @@ module.exports = function (app, iosocket) {
     app.post('/tool/assignment', async function(req, res) {
 
         var insert = req.body.insert;
-
         var val = 0;
         var result = [];
+        var selectedId = -1;
 
         if(insert == "*" || insert == "None")
         {
@@ -91,11 +91,12 @@ module.exports = function (app, iosocket) {
 
             for(var i = 0; i < val.length; i++)
             {
+                if(req.session.submissionFocus && req.session.submissionFocus.assignmentName == val[i].name )
+                    selectedId = i;
                 result.push(val[i].name);
-
             }
 
-            res.send({'result': result});
+            res.send({'result': result, 'selectedId':selectedId});
         }
 
     });
@@ -104,9 +105,10 @@ module.exports = function (app, iosocket) {
 
         var val = 0;
         var result = [];
-        var id = [];
+        var ids = [];
         var classes = [];
         var userId = req.user.id;
+        var selectedId = -1;
 
         // query course database to find the courses the student is enrolled in
         var val = await Course.query()
@@ -125,14 +127,17 @@ module.exports = function (app, iosocket) {
 
         for(var i = 0; i < val.length; i++)
         {
-            result.push(val[i].code);
-            id.push(val[i].id);
+            if(req.session.submissionFocus && req.session.submissionFocus.courseName == val[i].code )
+                selectedId = i;
 
+            result.push(val[i].code);
+            ids.push(val[i].id);
         }
 
         res.send({
             'result': result,
-            'id': id
+            'ids': ids,
+            'selectedId': selectedId
         });
 
     });
@@ -195,5 +200,20 @@ module.exports = function (app, iosocket) {
                     });
             });
         });
+    });
+
+      /**
+     * Post request from client-angular not a real form. Sending us select info on course/assignment focus data.
+     * @param  {[type]} req    [description]
+     * @param  {Object} res){                     req.session.dailyFocus [description]
+     * @return {[type]}        [description]
+     */
+    app.post('/tool/saveSubmissionFocusData', function(req,res){
+        req.session.submissionFocus = {
+            courseName: req.body.courseName,
+            assignmentName: req.body.assignName
+        };
+        tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "submissionFocus", req.session.submissionFocus));
+        req.session.save();
     });
 }

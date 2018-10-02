@@ -199,9 +199,6 @@ def main(argv):
     if idirectory != '':
         options['dir'] = idirectory
 
-        newFile = idirectory.split("/")
-        newerFile = newFile[0] + "/" + newFile[1]
-        
         cmd = createCmd( options )
 
         if( cmd ):
@@ -218,15 +215,16 @@ def main(argv):
                 file.close()
 
                 result = parse( errors, options )
-                
+
                 if( options['ifs'] ):
                     result = decorateData( result, options )
 
 
-                file = open(newerFile + "/feedback_clang_unzipped", "w")
+                outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) + "/feedback_clang_unzipped") )
+                file = open(outputfile, "w")
                 file.write(result)
                 file.close()
-                
+
                 print( result )
             except:
                 sys.stderr.write("Unable to successfully retrieve compiler information\n")
