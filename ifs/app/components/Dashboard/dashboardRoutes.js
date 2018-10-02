@@ -80,7 +80,7 @@ module.exports = function (app, iosocket )
 
                     if( statsReq[i].displayName )
                         _.set(r, "displayName", statsReq[i].displayName);
-                    
+
                     if(statsReq[i].resultPath)
                         _.set(ret, statsReq[i].resultPath, r);
                 }

@@ -34,14 +34,18 @@ $(document).ready(function() {
                 $('#assignLab').toggleClass("uk-hidden", true);
 
                 var optsStr = "";
-
-                optsStr += "<option value='None'>None</option>"
+                optsStr += "<option value='None'" + ((res.selectedId == -1 )? " selected " : "" ) + ">None</option>"
                 for(var i = 0; i < res.result.length; i++)
                 {
-                    optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
+                    console.log("onece", res.selectedId, " ", i );
+                    console.log( res.selectedId == 0 );
+                    optsStr += "<option value='" + res.result[i] + "'" + ((res.selectedId == i )? " selected " : "" ) + " >" + res.result[i] + "</option>";
                 }
                 course.append( optsStr );
-            }
+
+                if( res.selectedId >= 0)
+                    $('#course').trigger('change');
+           }
         },
         error: function(req, err) {
             console.log(err);
@@ -54,7 +58,6 @@ $("#course").change(function() {
     var course = $('#course');
     assign.empty();
 
-
     var courseSelected = course.find(":selected").text();
 
     $.ajax({
@@ -65,11 +68,11 @@ $("#course").change(function() {
         },
         success: function (res, status) {
             var optsStr = "";
-            optsStr += "<option value='None'>None</option>"
+            optsStr += "<option value='None'" + ((res.selectedId == -1 ) ? " selected " : "") + ">None</option>"
 
             for(var i = 0; i < res.result.length; i++)
             {
-                optsStr += "<option value='" + res.result[i] + "'>" + res.result[i] + "</option>";
+                optsStr += "<option value='" + res.result[i] + "'" + ((res.selectedId == i) ? " selected " : "") + " >" + res.result[i] + "</option>";
             }
 
             assign.append( optsStr );
@@ -87,6 +90,9 @@ $("#course").change(function() {
                 assign.toggleClass("uk-hidden", false);
                 $('#assignLab').toggleClass("uk-hidden", false);
             }
+
+            if( res.selectedId >= 0)
+                $('#assign').trigger('change');
         }
     })
 
@@ -96,16 +102,38 @@ $("#assign").change(function() {
     var assign = $('#assign');
     var course = $('#course');
 
+    var courseSelected = course.find(":selected")
+    var courseSelectedText = courseSelected.text();
+
+    var assignSelected = assign.find(":selected");
+    var assignSelectedText = assign.find(":selected").text();
+
+
     if(assign.find(":selected").text() == "None")
     {
-         $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " Assignment ??");
-         $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " Assignment ??");
+         $('#evaluate').text("Submit Files for " + courseSelectedText + " Assignment ??");
+         $('#filePlaceholder').text("Please select files to upload for " + courseSelectedText + " Assignment ??");
     }
     else
     {
-        $('#evaluate').text("Submit Files for " + course.find(":selected").text() + " " + assign.find(":selected").text());
-        $('#filePlaceholder').text("Please select files to upload for " + course.find(":selected").text() + " " + assign.find(":selected").text())
+        $('#evaluate').text("Submit Files for " + courseSelectedText + " " + assign.find(":selected").text());
+        $('#filePlaceholder').text("Please select files to upload for " + courseSelectedText + " " + assignSelectedText)
     }
+
+    // AJAX request to save the student's selection
+    $.ajax({
+        type: "post",
+        url: 'tool/saveSubmissionFocusData',
+        data: {
+            courseName: courseSelectedText,
+            assignName: assignSelectedText
+        },
+        success: function (res, status) {
+        },
+        error: function(req,err) {
+            console.log("FAILED: To send student submission focus.");
+        }
+    });
 });
 
 $("#settingsToggle").click(function() {
