@@ -53,7 +53,6 @@ def getProcessInfo( cmd, outFile, errorFile ):
     args = shlex.split(cmd)
     # Expand the wildcard to be processed as expected, gets the requested files.
     args = args[:-1] + glob.glob(args[-1])
-
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
 
@@ -71,6 +70,10 @@ def parse( text, options ):
         feedback['toolName'] = options['tool']
         sections = line.split( options['splitSeq'])
 
+        # Join any additional data into the feedback section
+        if(len(sections) > len(types)):
+            sections[ len(types)-1 ] = ' '.join( sections[len(types)-1:])
+            sections = sections[ : len(types) ]
 
         # Check that we can put each parsed section into an expect tag type.
         if( len(sections) == len(types) ):
@@ -93,13 +96,8 @@ def parse( text, options ):
                             feedback[ types[sNum] ] = feed
                     else:
                         feedback[ types[sNum] ] = section.strip()
-                else:
-                    sys.stderr.write("************ Error: Section types doesn't mtch split Sections ***** ")
                 sNum = sNum + 1
             results.append( feedback )
-        #else:
-            # This is not so much an error as often an intended not from compiler.
-            #print("*** Error: incorrectly matching regular expression items")
 
     return results
 
@@ -198,8 +196,6 @@ def main(argv):
 
     if idirectory != '':
         options['dir'] = idirectory
-
-
         cmd = createCmd( options )
 
         if( cmd ):
