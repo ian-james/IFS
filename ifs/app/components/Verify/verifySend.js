@@ -151,6 +151,7 @@ module.exports = {
 
                         transporter.sendMail(msg, (error, info) => {
                             if (error) {
+                                Logger.error("Failed to send mail!");
                                 Logger.error(error);
                                 return false;
                             } else {
