@@ -261,9 +261,9 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 			fileMessage += expected
 			fileMessage += " from submission. Mandatory for compilation."
 			#print folderMessage
-			#res = decorate("Compliance", "error", "Error: Missing File", expected, "-", "-", fileMessage, firstPrint)
+			#res = decorate("Compliance", "error", "Error: Missing File", expected, "NULL", "NULL", fileMessage, firstPrint)
 			print outputString
-			outputString += decorate("Compliance", "error", "Error: Missing File", expected, "-", "-", fileMessage, firstPrint)
+			outputString += decorate("Compliance", "error", "Error: Missing File", expected, 0, 0, fileMessage, firstPrint)
 			firstPrint = False
 			missingCount = missingCount +1
 		found = False
@@ -275,18 +275,18 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 	for actual in actualFileNames:
 		for expected in expectedFileNames:
 			searchLen = len(actual) - len(expected)
-			if (expected.lower() == actual[searchLen:].lower() or ".DS_Store" in actual or "readme" in actual.lower() or "makefile" in actual.lower()):
+			if (expected.lower() == actual[searchLen:].lower() or ".DS_Store" in actual or "readme" in actual.lower() or "makefile" in actual.lower() or ".zip" in actual.lower()):
 				found = True
 		if (found == False):
 			#if (csv == False):
 			#print "WARNING: Extra non-specification outlined file:", actual
 			fileMessage = ""
-			fileMessage += "Additional non-spec folder "
+			fileMessage += "Additional non-spec file "
 			fileErr = actual.rsplit('/', 1)[1]
 			fileMessage += fileErr
-			fileMessage += " exists in submission directory. Check to make sure it and it's contents are necessary."
+			fileMessage += " exists in submission directory. Check to make sure it and its contents are necessary."
 			#print folderMessage
-			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, "-", "-", fileMessage, firstPrint)
+			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, 0, 0, fileMessage, firstPrint)
 			firstPrint = False
 			extraCount = extraCount +1
 		found = False
@@ -325,7 +325,7 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, outputStr
 			folderMessage += expected
 			folderMessage += " from submission directory. Mandatory for compilation."
 			#print folderMessage
-			outputString += decorate("Compliance", "error", "Error: Missing Folder", "-", "-", "-", folderMessage, firstPrint)
+			outputString += decorate("Compliance", "error", "Error: Missing Folder", expected, 0, 0, folderMessage, firstPrint)
 			firstPrint = False
 			missingCount = missingCount +1
 		found = False
@@ -345,9 +345,9 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, outputStr
 			folderMessage = ""
 			folderMessage += "Additional non-spec folder "
 			folderMessage += actual.rsplit('/', 1)[1]
-			folderMessage += " exists in submission directory. Check to make sure it and it's contents are necessary."
+			folderMessage += " exists in submission directory. Check to make sure it and its contents are necessary."
 			#print folderMessage
-			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", "-", "-", "-", folderMessage, firstPrint)
+			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", actual.rsplit('/',1)[1], 0, 0, folderMessage, firstPrint)
 			firstPrint = False
 			#print "WARNING: Extra non-specification outlined folder:", actual
 			extraCount = extraCount +1
@@ -406,7 +406,7 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 			functionMessage += refList[0]
 			functionMessage += ". Ensure the function is named correctly and implemented in the correct file."
 			#print folderMessage
-			outputString += decorate("Compliance", "error", "Error, missing function", refList[0], "-", "-", functionMessage, firstPrint)
+			outputString += decorate("Compliance", "error", "Error, missing function", refList[0], 0, 0, functionMessage, firstPrint)
 			firstPrint = False
 				#print "ERROR: Missing or improperly defined function:", refList[0],":", refList[1][i]
 			missingCount = missingCount+1

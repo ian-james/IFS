@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -g -Iinclude -IstudentInclude
+CFLAGS = -Wall -g -Iinclude -IstudentInclude -std=c11
 CARD_TEST_FILES = src/CardTest.c src/CardTestCreate.c src/CardTestOther.c src/CardTestUtilities.c src/TestHarness2.c
 
 UNAME := $(shell uname)

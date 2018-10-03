@@ -50,7 +50,7 @@ def PathValidate(fileNames, includePaths, includeLineNum):
 						cutFileNames = fileNames[i].split("/")
 						output = ""
 						#Only grab the actual file name relevant to the file. Don't grab "unzipped" or anything earlier in the file name
-						for folder in cutFileNames[5:]:
+						for folder in cutFileNames[4:]:
 							output += folder
 						improperPaths.append([output,includeLineNum[i][j]])
 

@@ -119,8 +119,8 @@ def main(argv):
 			else:
 				f.write(", %s" % entry)
 		f.close()
-		print fileLocation
-		print outputString
+		#print fileLocation
+		#print outputString
 		writeToFile(outputString, idirectory.rsplit('/', 1)[0])
 		#print csvList
 	else:
