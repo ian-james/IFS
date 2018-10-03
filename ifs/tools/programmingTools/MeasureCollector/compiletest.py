@@ -117,7 +117,8 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 	#print [name for name in os.listdir(projectFiles) if os.path.isdir(name)]
 	srcDirectory = "./"+projectFiles+"/src"
 	includeDirectory = "./"+projectFiles+"/include"
-	#print srcDirectory
+	binDirectory = "./"+projectFiles+"/bin"
+        #print srcDirectory
 	#print includeDirectory
 	actualLocation = FindBuriedFolders(projectFiles)
 	#Copy all files to the correct location
@@ -125,6 +126,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 	if (actualLocation != ""):
 		srcDirectory = actualLocation + "/src"
 		includeDirectory = actualLocation + "/include"
+                binDirectory = actualLocation + "/bin"
 		if (assignment == "A1"):
 			copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentCode")
 			copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentInclude")
@@ -213,7 +215,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 
 	#Call the cleanup script
 	#Remove all student files and leftover files from the project
-	csvListCompliance, outputString = complianceManager(projectFiles, assignment, complianceFilePath, outputString, csv, [])
+	csvListCompliance, outputString = complianceManager(projectFiles, assignment, complianceFilePath, outputString, binDirectory, csv, [])
 	tempCSVList.append(csvListCompliance+csvList)
 
 	#Look for warning that the script failed

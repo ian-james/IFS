@@ -20,6 +20,8 @@
 			"List of References"
 		],
 		"outputFiles": [
-		]
+		    "bin/libllist.a",
+            "bin/libcparse.a"
+        ]
 	}
 }

@@ -144,7 +144,7 @@ def getExpectedStructure(idirectory, jsonString, assignment):
 	#print newExpectedFileNames
 	return newExpectedFileNames, newExpectedFolderNames, expectedFunctionDeclarations, expectedReadmeStructure, expectedOutputFiles
 
-def compareOutputFiles(expectedOutputFiles, actualOutputFiles, csv=False, csvList=[]):
+def compareOutputFiles(expectedOutputFiles, actualOutputFiles, firstPrint, outputString, csv=False, csvList=[]):
 	found = False
 	missingCount = 0
 	#print expectedOutputFiles
@@ -154,6 +154,16 @@ def compareOutputFiles(expectedOutputFiles, actualOutputFiles, csv=False, csvLis
 			if (expected.lower() in actual.lower()):
 				found = True
 		if (found == False):
+                        fileMessage = ""
+			fileMessage += "Missing output file "
+                        
+			fileMessage += expected
+			fileMessage += " from submission. File was not generated after attempting make."
+			#print folderMessage
+			#res = decorate("Compliance", "error", "Error: Missing File", expected, "NULL", "NULL", fileMessage, firstPrint)
+			print outputString
+			outputString += decorate("Compliance", "error", "Error: Missing File", expected, 0, 0, fileMessage, firstPrint)
+			firstPrint = False
 			if (csv == False):
 				print "ERROR: Missing output file:", expected
 			missingCount = missingCount +1
@@ -163,8 +173,8 @@ def compareOutputFiles(expectedOutputFiles, actualOutputFiles, csv=False, csvLis
 
 	if (csv==True):
 		csvList.append(missingCount)
-		return csvList
-	return []
+		return csvList, firstPrint, outputString
+	return [], firstPrint, outputString
 	
 #Scrape a directory for all folders, files and functions in the given directory
 #INPUT: File path to a directory to parse
@@ -256,7 +266,7 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 		if (found == False):
 			#if (csv == False):
 			#if (csv == False):
-			fileMessage = ""
+                        fileMessage = ""
 			fileMessage += "Missing file "
 			fileMessage += expected
 			fileMessage += " from submission. Mandatory for compilation."
@@ -420,11 +430,21 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 		csvList.append(missingCount)
 		return csvList, firstPrint, outputString
 	return [], firstPrint, outputString
+
+def runMakefile(folder):
+        result = ""
+        for filename in glob.iglob(folder+"/**/Makefile"):
+                result = filename.rsplit('/', 1)[0]
+        result = subprocess.Popen(['make', '-C', 'result'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+
+
+
 #Handles all the compliance measures being calculated.
 #Input: A folder with student submission inside. Optional variables: csv determines whether or not the output prints or gathers results for csv formatting, csvList is the list of all data for the current file up until this point
 #OUTPUT: Returns a blank list if CSV is set to false, or a populated list of number of measures calculated by this file if csv=true
 
-def complianceManager(idirectory, assignment, complianceFilePath, outputString, csv=False, csvList=[]):
+def complianceManager(idirectory, assignment, complianceFilePath, outputString, binDirectory, csv=False, csvList=[]):
 	#print "---------------------------------------------------------"
 	firstPrint = True
 	actualFolderNames = []
@@ -443,26 +463,10 @@ def complianceManager(idirectory, assignment, complianceFilePath, outputString, 
 	actualFolderNames, actualFileNames, actualFunctionDeclarations = getActualStructure(idirectory)
 	
 	
-	if (assignment == "A1"):
-		actualOutputFiles = glob.glob('./compiletestF18A1/bin/*')
-		#print actualOutputFiles
-	elif (assignment == "A2"):
-		actualOutputFiles = glob.glob('./compiletestA2/bin/*')
 	
-	elif (assignment == "A1R"):
-		actualOutputFiles = glob.glob('./compiletestA1R/bin/*')
-		#print actualOutputFiles
-		#print actualOutputFiles
-	elif (assignment == "A2R"):
-		actualOutputFiles = glob.glob('./compiletestA2R/bin/*')
 	
-	else:
-		print "UNEXPECTED ASSIGNMENT, ABORTING"
-		exit()
-	#print expectedOutputFiles
-	#print actualOutputFiles
-
-	#print "EXPECTED FUNCTIONS"
+		#print actualOutputFiles
+		#print "EXPECTED FUNCTIONS"
 	#print expectedFunctionDeclarations
 	
 	#print "ACTUAL FUNCTIONS"
@@ -485,7 +489,12 @@ def complianceManager(idirectory, assignment, complianceFilePath, outputString, 
 	csvList, firstPrint, outputString = improperCount(idirectory, outputString, firstPrint, csv, csvList)
 	#print "ACTUAL OUTPUT FILES"
 	#print actualOutputFiles
-	csvList = compareOutputFiles(expectedOutputFiles, actualOutputFiles, csv, csvList)
+	
+        actualOutputFiles = glob.glob(binDirectory+'/*')
+
+        runMakefile(idirectory)
+        
+        csvList, firstPrint, outputString = compareOutputFiles(expectedOutputFiles, actualOutputFiles,firstPrint, outputString, csv, csvList)
 	#print expectedFunctionDeclarations
 	#print actualFunctionDeclarations
 	
