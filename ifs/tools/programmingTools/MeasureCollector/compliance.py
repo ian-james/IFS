@@ -490,9 +490,9 @@ def complianceManager(idirectory, assignment, complianceFilePath, outputString, 
 	#print "ACTUAL OUTPUT FILES"
 	#print actualOutputFiles
 	
-        actualOutputFiles = glob.glob(binDirectory+'/*')
-
         runMakefile(idirectory)
+        
+        actualOutputFiles = glob.glob(binDirectory+'/*')
         
         csvList, firstPrint, outputString = compareOutputFiles(expectedOutputFiles, actualOutputFiles,firstPrint, outputString, csv, csvList)
 	#print expectedFunctionDeclarations
