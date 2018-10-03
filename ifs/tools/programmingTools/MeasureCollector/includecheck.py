@@ -162,7 +162,7 @@ def decorateData(result, firstPrint, manager):
 		json_string += '}\n'
 	return json_string
 	
-def improperCount(idirectory, firstPrint=False, csv=False, csvList=[]):
+def improperCount(idirectory, outputString, firstPrint=False, csv=False, csvList=[]):
 	manager=True;
 	includeList = PathFind(idirectory)
 	fileNames, includePaths, includeLineNum = PathCollect(includeList)
@@ -171,11 +171,12 @@ def improperCount(idirectory, firstPrint=False, csv=False, csvList=[]):
 	#if (csv == False):
 	json_string = decorateData(improperPaths, firstPrint, manager)
 	print json_string
+	outputString += json_string
 		#print "Total number of improper/hardcoded include paths =",len(improperPaths)
 	if (csv==True):
 		csvList.append(len(improperPaths))
-		return csvList, firstPrint
-	return [], firstPrint
+		return csvList, firstPrint, outputString
+	return [], firstPrint, outputString
 
 #Find all instances of absolute or relative paths in #include commands in a .c or .h file
 #INPUT: Command line args: -t includecheck -d <directory/to/parse> 

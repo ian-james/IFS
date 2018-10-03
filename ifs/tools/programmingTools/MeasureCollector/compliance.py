@@ -32,10 +32,10 @@ from functionscount import getCtagsInfo
 
 def decorate(tool, severity, severityComment, fileName, lineNum, charPos, feedback, firstPrint=False):
 	#print firstPrint
-	if firstPrint != True:
-		print ","
-
 	json_string = ""
+	if firstPrint != True:
+		json_string += ","
+		print ","
 	json_string += '{"severity": "'
 	json_string += severityComment
 	json_string += '", "filename": "'
@@ -52,6 +52,7 @@ def decorate(tool, severity, severityComment, fileName, lineNum, charPos, feedba
 	json_string += feedback
 	json_string += '"}'
 	print json_string
+	return json_string
 	#print "TESTING"
 
 def getReferenceFunctions():
@@ -239,8 +240,7 @@ def checkReadme(readme, readmeCategories, csv=False, csvList=[]):
 #Compares expected file structure to actual file structure in a given directory
 #INPUT: A list of expected file names populated from the JSON string passed to this file, a list of actual file names created by scraping the directory being parsed. Optional variables: csv determines whether or not the output prints or gathers results for csv formatting, csvList is the list of all data for the current file up until this point
 #OUTPUT: Returns a blank list if CSV is set to false, or a populated list of number of missing files and unexpected files in the directory if csv=true
-def compareFiles(expectedFileNames, actualFileNames, firstPrint, csv=False, csvList=[]):
-	
+def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, csv=False, csvList=[]):
 	found = False
 	missingCount = 0
 	for expected in expectedFileNames:
@@ -261,7 +261,9 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, csv=False, csvL
 			fileMessage += expected
 			fileMessage += " from submission. Mandatory for compilation."
 			#print folderMessage
-			decorate("Compliance", "error", "Error: Missing File", expected, "-", "-", fileMessage, firstPrint)
+			#res = decorate("Compliance", "error", "Error: Missing File", expected, "-", "-", fileMessage, firstPrint)
+			print outputString
+			outputString += decorate("Compliance", "error", "Error: Missing File", expected, "-", "-", fileMessage, firstPrint)
 			firstPrint = False
 			missingCount = missingCount +1
 		found = False
@@ -284,7 +286,7 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, csv=False, csvL
 			fileMessage += fileErr
 			fileMessage += " exists in submission directory. Check to make sure it and it's contents are necessary."
 			#print folderMessage
-			decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, "-", "-", fileMessage, firstPrint)
+			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, "-", "-", fileMessage, firstPrint)
 			firstPrint = False
 			extraCount = extraCount +1
 		found = False
@@ -293,14 +295,14 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, csv=False, csvL
 	if (csv==True):
 		csvList.append(missingCount)
 		csvList.append(extraCount)
-		return csvList, firstPrint
-	return [], firstPrint
+		return csvList, firstPrint, outputString
+	return [], firstPrint, outputString
 
 
 #Compares expected folder structure to actual folder structure in a given directory
 #INPUT: A list of expected folder names populated from the JSON string passed to this file, a list of actual folder names created by scraping the directory being parsed. Optional variables: csv determines whether or not the output prints or gathers results for csv formatting, csvList is the list of all data for the current file up until this point
 #OUTPUT: Returns a blank list if CSV is set to false, or a populated list of number of missing folders and unexpected folders in the directory if csv=true
-def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, csv=False, csvList=[]):
+def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, outputString, csv=False, csvList=[]):
 	
 	#NOTE: FIX THE OUTPUT TO TRACK ACCURATE EXTRA FOLDERS NAMED THE SAME AS THE EXPECTED FOLDERS
 	
@@ -323,7 +325,7 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, csv=False
 			folderMessage += expected
 			folderMessage += " from submission directory. Mandatory for compilation."
 			#print folderMessage
-			decorate("Compliance", "error", "Error: Missing Folder", "-", "-", "-", folderMessage, firstPrint)
+			outputString += decorate("Compliance", "error", "Error: Missing Folder", "-", "-", "-", folderMessage, firstPrint)
 			firstPrint = False
 			missingCount = missingCount +1
 		found = False
@@ -345,7 +347,7 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, csv=False
 			folderMessage += actual.rsplit('/', 1)[1]
 			folderMessage += " exists in submission directory. Check to make sure it and it's contents are necessary."
 			#print folderMessage
-			decorate("Compliance", "warning", "Warning, potential mark deduction", "-", "-", "-", folderMessage, firstPrint)
+			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", "-", "-", "-", folderMessage, firstPrint)
 			firstPrint = False
 			#print "WARNING: Extra non-specification outlined folder:", actual
 			extraCount = extraCount +1
@@ -367,10 +369,10 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, csv=False
 		csvList.append(extraCount)
 		#print extraCount
 		#print totalFoundFolderCount
-		return csvList, firstPrint
-	return [], firstPrint
+		return csvList, firstPrint, outputString
+	return [], firstPrint, outputString
 
-def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, firstPrint, csv=False, csvList=[]):
+def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, firstPrint, outputString, csv=False, csvList=[]):
 	tempList = []
 	i = 0
 	found = False
@@ -404,7 +406,7 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 			functionMessage += refList[0]
 			functionMessage += ". Ensure the function is named correctly and implemented in the correct file."
 			#print folderMessage
-			decorate("Compliance", "error", "Error, missing function", refList[0], "-", "-", functionMessage, firstPrint)
+			outputString += decorate("Compliance", "error", "Error, missing function", refList[0], "-", "-", functionMessage, firstPrint)
 			firstPrint = False
 				#print "ERROR: Missing or improperly defined function:", refList[0],":", refList[1][i]
 			missingCount = missingCount+1
@@ -416,13 +418,13 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 	if (csv==True):
 		#print missingCount
 		csvList.append(missingCount)
-		return csvList, firstPrint
-	return [], firstPrint
+		return csvList, firstPrint, outputString
+	return [], firstPrint, outputString
 #Handles all the compliance measures being calculated.
 #Input: A folder with student submission inside. Optional variables: csv determines whether or not the output prints or gathers results for csv formatting, csvList is the list of all data for the current file up until this point
 #OUTPUT: Returns a blank list if CSV is set to false, or a populated list of number of measures calculated by this file if csv=true
 
-def complianceManager(idirectory, assignment, complianceFilePath, csv=False, csvList=[]):
+def complianceManager(idirectory, assignment, complianceFilePath, outputString, csv=False, csvList=[]):
 	#print "---------------------------------------------------------"
 	firstPrint = True
 	actualFolderNames = []
@@ -474,20 +476,20 @@ def complianceManager(idirectory, assignment, complianceFilePath, csv=False, csv
 	#print expectedFileNames
 	#print actualFileNames
 	
-	csvList, firstPrint = compareFolders(expectedFolderNames,actualFolderNames, firstPrint, csv, csvList)
-	csvList, firstPrint = compareFiles(expectedFileNames,actualFileNames, firstPrint, csv, csvList)
-	csvList, firstPrint = compareFunctions(expectedFunctionDeclarations,actualFunctionDeclarations, assignment, firstPrint, csv, csvList)
+	csvList, firstPrint, outputString = compareFolders(expectedFolderNames,actualFolderNames, firstPrint, outputString, csv, csvList)
+	csvList, firstPrint, outputString = compareFiles(expectedFileNames,actualFileNames, firstPrint, outputString, csv, csvList)
+	csvList, firstPrint, outputString = compareFunctions(expectedFunctionDeclarations,actualFunctionDeclarations, assignment, firstPrint,  outputString, csv, csvList)
 	
 	#print csvList
 	#csvList = checkReadme(idirectory+"/assign1/README", expectedReadmeCategories, csv, csvList)
-	csvList, firstPrint = improperCount(idirectory, firstPrint, csv, csvList)
+	csvList, firstPrint, outputString = improperCount(idirectory, outputString, firstPrint, csv, csvList)
 	#print "ACTUAL OUTPUT FILES"
 	#print actualOutputFiles
 	csvList = compareOutputFiles(expectedOutputFiles, actualOutputFiles, csv, csvList)
 	#print expectedFunctionDeclarations
 	#print actualFunctionDeclarations
 	
-	return csvList
+	return csvList, outputString
 	#getFunctionHeaders("./assign1/src/hash.c")
 
 def main(argv):

@@ -107,7 +107,7 @@ def copyFiles(studentFolder, destination, excludeFiles=[]):
 #Runs the compile, testing and cleanup script. Also checks output and either displays it or stores it for CSV purposes.
 #INPUT: Folder address of the folder to parse for the list of specific measures to calculate. Optional variables: csv determines whether or not the output prints or gathers results for csv formatting, csvList is the list of all data for the current file up until this point
 #OUTPUT: Returns a blank list if CSV is set to false, or a populated list of measures in the directory if csv=true
-def compileManager(projectFiles, runharness, showErrors, assignment, complianceFilePath, csv=False, csvList=[]):
+def compileManager(projectFiles, runharness, showErrors, assignment, complianceFilePath, outputString, csv=False, csvList=[]):
 	root, dirs, files = os.walk(projectFiles).next()
 	actualLocation = ""
 	#print dirs
@@ -213,7 +213,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 
 	#Call the cleanup script
 	#Remove all student files and leftover files from the project
-	csvListCompliance = complianceManager(projectFiles, assignment, complianceFilePath, csv, [])
+	csvListCompliance, outputString = complianceManager(projectFiles, assignment, complianceFilePath, outputString, csv, [])
 	tempCSVList.append(csvListCompliance+csvList)
 
 	#Look for warning that the script failed
@@ -242,10 +242,11 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			#print tempCSVList
 			csvList = csvList + tempCSVList[0]
 			csvList.append("Success")
-			return csvList
+			return csvList, outputString
 	csvList = csvList + tempCSVList[0]
 	csvList.append("Failure")
-	return csvList
+	#print outputString
+	return csvList, outputString
 
 #ONLY WORKS WITH testFiles FOLDER FILES
 def main():

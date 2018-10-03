@@ -13,6 +13,12 @@ from MeasureCollector import measureManager
 from compiletest import compileManager
 #from jsonDecorator import decorate
 
+def writeToFile(stringToWrite, fileLocation):
+	fileLocation = fileLocation+"/feedback_Compliance_unzipped"
+	f = open(fileLocation, "w")
+	f.write("%s" % stringToWrite)
+	f.close()
+
 def main(argv):
 	i=0
 	j=1
@@ -25,6 +31,7 @@ def main(argv):
 	idirectory = 'studentfolders'
 	chosenSubmission="A1"
 	complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceF18A1.json"
+	outputString = ""
 	#Make sure a file directory is provided
 	#if (len(argv) <= 1):
 		#print "Please provide a directory to search for C files."
@@ -89,16 +96,18 @@ def main(argv):
 		#print "---------------------------------------------------------------"
 		#print "User", folderNoRoot
 		print "{ \"feedback\": ["
+		outputString += "{ \"feedback\": ["
 		csvListMeasure = measureManager(folder, True, csvListMeasure)
 		#csvListCompliance = complianceManager(folder, True, csvListCompliance)
 		
-		csvListCompilation = compileManager(folder, runHarness, showErrors, chosenSubmission, complianceFilePath, True, csvListCompilation)
+		csvListCompilation, outputString = compileManager(folder, runHarness, showErrors, chosenSubmission, complianceFilePath, outputString, True, csvListCompilation)
 		csvList = ["User"]+csvListMeasure + csvListCompliance + csvListCompilation
 		#print csvList
 		
 		#decorate("Compliance", "warning", "Warning, potential mark deduction", "Testing.c", 20, 5, "Testing!!!")
 		
 		print "]\n}"
+		outputString += "]\n}"
 		fileLocation = idirectory.rsplit('/', 1)[0]
 		fileLocation = fileLocation + "/IFS-SPECIFIC-MEASURE-FILE.txt"
 		f = open(fileLocation, "w")
@@ -110,6 +119,9 @@ def main(argv):
 			else:
 				f.write(", %s" % entry)
 		f.close()
+		print fileLocation
+		print outputString
+		writeToFile(outputString, idirectory.rsplit('/', 1)[0])
 		#print csvList
 	else:
 		with open(csvFileAddress,'wb') as csvFile:
