@@ -194,20 +194,20 @@
             ]
         },
         {
-           "displayName": "Include Path Checker",
-           "description": "Finds and reports instances of absolute/relative hardcoded #include paths.",
-           "technicalDesc": "A Python script that checks .c or .h files for bsolute/relative hardcoded #include paths. Only file names are to be included.",
-           "author": "IFS Development Team",
+           "displayName": "CIS*2750 A1 Compliance Checker",
+           "description": "Checks a submission for compliance with some of the mandatory rules for CIS*2750 A1. Only a guide, make sure to read the outline thoroughly before your final submission!",
+           "technicalDesc": "A Python suite that checks for various compliance issues in a submission of student's code agains the CIS*2750 F18 A1 rubric.",
+           "author": "John Harmer",
            "copyright": "Copyright © 2018",
            "license": "ISC License",
            "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
-           "progName": "./tools/programmingTools/c_tools/includecheck.py",
-           "cmdToolName": "includecheck",
+           "progName": "./tools/programmingTools/MeasureCollector/ifsmanager.py",
+           "cmdToolName": "Compliance",
            "runType": "programming",
            "route": "",
            "filesAllowed": "zipFile",
            "parseCmd": "",
-           "defaultArg": "-t includecheck",
+           "defaultArg": "",
            "fileArgs": "-d",
            "options":  [
 

@@ -1,0 +1,25 @@
+{
+    "compliance": 
+     {
+		"folderNames": [
+			"bin",
+			"include",
+			"src"
+		],
+		"fileNames": [
+			"src/VCardParser.c",
+			"src/LinkedListAPI.c",
+			"include/VCardParser.h",
+			"include/LinkedListAPI.h",
+			"Makefile",
+			"README"
+		],
+		"readmeCategories": [
+			"Student Identification",
+			"Known Issues",
+			"List of References"
+		],
+		"outputFiles": [
+		]
+	}
+}
