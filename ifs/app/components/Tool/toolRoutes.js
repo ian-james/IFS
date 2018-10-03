@@ -113,7 +113,7 @@ module.exports = function (app, iosocket) {
         // query course database to find the courses the student is enrolled in
         var val = await Course.query()
         .whereIn('id', (builder) =>{
-            builder.select('studentId')
+            builder.select('classId')
             .from('student_class')
             .where("studentId", "=", userId);
         })

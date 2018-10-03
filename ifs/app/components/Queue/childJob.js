@@ -86,9 +86,6 @@ function runChildJob(){
     queue.getQueue().process(jobType, JobConCurrent, function(job,done) {
         runSingleTool( job, done );
     });
-
-
-    
 }
 
 module.exports.makeJob = makeJob;
