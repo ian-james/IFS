@@ -2,6 +2,7 @@
     "compliance": 
      {
 		"folderNames": [
+			"assign1",
 			"bin",
 			"include",
 			"src"

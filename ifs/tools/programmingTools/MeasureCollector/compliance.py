@@ -62,7 +62,7 @@ def getReferenceFunctions():
 "VCardErrorCode createCard(char* fileName, Card** obj)",
 "char* printCard(const Card* obj)",
 "void deleteCard(Card* obj)",
-"const char* printError(VCardErrorCode err)",
+"char* printError(VCardErrorCode err)",
 
 "void deleteProperty(void* toBeDeleted)",
 "int compareProperties(const void* first, const void* second)",
@@ -87,7 +87,7 @@ def getRegexes():
 
 "void *deleteCard *\( *Card *\* *[A-Za-z]* *\)",
 
-"const *char *\* *printError *\( *VCardErrorCode *[A-Za-z]* *\)",
+"char *\* *printError *\( *VCardErrorCode *[A-Za-z]* *\)",
 
 "void *deleteProperty *\( *void *\* *t[A-Za-z]* *\)",
 "int *compareProperties *\( *const *void *\* *[A-Za-z]* *\, *const *void *\* *[A-Za-z]* *\)",
