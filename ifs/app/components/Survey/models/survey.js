@@ -10,23 +10,21 @@ const SurveyBuilder = require(path.join(componentPath, "helpers/surveyBuilder"))
 var dbHelpers = require(__components + "Databases/dbHelpers");
 
 function getSurveys( callback ) {
-    var q = dbHelpers.buildSelect(dbcfg.survey_table);    
+    var q = dbHelpers.buildSelect(dbcfg.survey_table);
     db.query(q,[],callback );
  }
 
 function getSurvey( surveyName, callback ) {
-    var q =  dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("surveyName"); 
+    var q =  dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("surveyName");
     db.query(q,surveyName, callback);
 }
 
 function getSurveyId( surveyId, callback ) {
-
-    var q = dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("id"); 
+    var q = dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("id");
     db.query(q,surveyId, callback);
 }
 
 function getSurveyByTitle( surveyTitle, callback ) {
-    //var q = dbHelpers.buildSelect(dbcfg.survey_table) + dbHelpers.buildWS("title"); 
     let q = 'select survey.*, (select COUNT(*) from questions where questions.surveyId=survey.id) as numQ from survey where survey.title = ?;';
     db.query(q, surveyTitle, callback);
 }
@@ -42,7 +40,7 @@ function updateSurvey( surveyData, callback ) {
 }
 
 function deleteSurvey( surveyData, callback ) {
-    var q = dbHelpers.buildDelete(dbcfg.survey_table)  + dbHelpers.buildWS("surveyName"); 
+    var q = dbHelpers.buildDelete(dbcfg.survey_table)  + dbHelpers.buildWS("surveyName");
     db.query(q,surveyData, callback );
 }
 

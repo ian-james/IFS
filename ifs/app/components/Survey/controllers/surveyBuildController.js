@@ -43,11 +43,8 @@ module.exports = {
    * @return {[type]}      [description]
    */
   generateMatrixSurvey: (req, res) => {
-    var allData = staticSurvey.getStaticSurveyData();
-
     var allSurveys = staticSurvey.getStaticSurveyData();
     var i = Math.max(0, Math.min(req.params.n, allSurveys.length - 1));
-
     // Survey N becomes the default
     var [surveyName, surveyAuthors, surveyTitle, numQuestions, surveyField, freq, surveyFiles, surveyQuestions] = allSurveys[i];
 
@@ -56,7 +53,6 @@ module.exports = {
       res.end();
       return;
     }
-
     Survey.getSurvey(surveyName, function (err, data) {
       if (err)
         Logger.error(err);

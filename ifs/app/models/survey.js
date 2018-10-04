@@ -63,7 +63,8 @@ const getAvailableSurveys = async (studentId) => {
             .where('student_class.studentId', studentId);
         })
     })
-    .leftJoin('survey_preferences', 'survey.id', 'survey_preferences.surveyId');
+    .leftJoin('survey_preferences', 'survey.id', 'survey_preferences.surveyId')
+    .where('survey_preferences.userId', '=',  studentId );
   return surveys;
 }
 

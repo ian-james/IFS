@@ -12,10 +12,10 @@ block content
             div(class="uk-width-1-1").studentSkills
                 h2 Student Self-Assessed Skills
                 p.uk-text-meta This section allows you to make self-assessment about your knowledge on a certain portion of assignment. It allows you to track your own growth over time.
-                p.uk-text-meta 
-                    | Ratings are between 
-                    span.uk-text-primary.uk-text-bold  0 (no experience) 
-                    | and 
+                p.uk-text-meta
+                    | Ratings are between
+                    span.uk-text-primary.uk-text-bold  0 (no experience)
+                    | and
                     span.uk-text-primary.uk-text-bold 100 (completely confident).
                 if userRatedSkills && userRatedSkills.length > 0
                     div.uk-container
@@ -25,14 +25,17 @@ block content
                         each skill in userRatedSkills
                             div.uk-card.uk-card-hover.uk-card-default.uk-margin
                                 h2.uk-card-title.uk-text-center
-                                    |  #{skill.title}
+                                    | Skill Level
                                     span(uk-icon="icon: arrow-right").uk-margin-remove.uk-padding-remove
                                     | #{skill.skillName}
 
                                 div.uk-card-body.uk-padding-remove-top
                                     a(href="#" uk-icon="icon: info").uk-icon-button.uk-float-right
                                     div(uk-dropdown="pos: left-center; delay-hide: 100").uk-width-medium
-                                        span #{skill.classDescription}
+                                        if skill.classDescription
+                                            span #{skill.classDescription}
+                                        else
+                                            span No description available
 
                                     //- Note: studentSkillSlider uses the format and naming form this code
                                     //- If you need to change it make sure studentSkillSliders.js is update to still work.
@@ -53,12 +56,15 @@ block content
                         each skill in classSkills
                             div.uk-card.uk-card-hover.uk-card-default.uk-margin-bottom
                                 h2.uk-card-title.uk-text-center.uk-text-muted
-                                   | #{skill.skillName}
+                                    | Skill Level: #{skill.skillName}
 
                                 div.uk-card-body.uk-padding-remove-top
                                     a(href="#" uk-icon="icon: info").uk-icon-button.uk-float-right
                                     div(uk-dropdown="pos: left-center; delay-hide: 100").uk-width-medium
-                                        span #{skill.classDescription}
+                                        if skill.classDescription
+                                            span #{skill.classDescription}
+                                        else
+                                            span No description available
 
                                     //- Note: studentSkillSlider uses the format and naming form this code
                                     //- If you need to change it make sure studentSkillSliders.js is update to still work.

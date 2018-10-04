@@ -95,12 +95,12 @@ let getSurveyFieldMatches = (surveyPrefData, field, matchingFields) => {
 };
 
 let buildPulseSurvey = async (toolType, userId, callback) => {
-  
+
   if (!__EXPERIMENT_ON) {
     callback(JSON.stringify([]));
     return;
   }
-  
+
   const studentId = await getStudentIdForUser(userId);
 
   if (await optedIn(studentId)) {
@@ -119,7 +119,7 @@ let buildPulseSurvey = async (toolType, userId, callback) => {
       const questions = await getPulseQuestions(curSurveyId, curQuestion, 2);
 
       const surveyData = Serializers.serializeSurvey([surveys[0]], questions, Serializers.matrixSerializer);
-      
+
       callback(JSON.stringify(surveyData));
     }
   } else {

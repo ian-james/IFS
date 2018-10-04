@@ -10,11 +10,9 @@ module.exports = {
     if (!req.file) {
       return res.status(400).send({msg: 'No question set uploaded'});
     }
-
     const questionSet = req.file.buffer;
     const questionJSON = JSON.parse(questionSet);
     const questions = questionJSON.QuestionText
-
     const survey = await Survey.query()
       .insert({
         surveyName: req.body.surveyName,
@@ -23,7 +21,7 @@ module.exports = {
         surveyField: req.body.surveyField,
         totalQuestions: questions.length,
         surveyFreq: req.body.surveyFreq,
-        fullSurveyFile: questionSet.name
+        fullSurveyFile: req.file.originalname
       });
     /* Insert parsed questions associated with new survey */
 
@@ -34,7 +32,7 @@ module.exports = {
           language: 'english',
           origOrder: index + 1,
           text: question,
-          visualFile: questionSet.name,
+          visualFile: req.file.originalname,
           type: 'matrix'
         });
     });
