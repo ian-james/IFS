@@ -68,73 +68,6 @@
             ]
         },
         {
-            "displayName": "Clang Diagnostics",
-            "description": "Identifies errors and warnings from the Clang C compiler. These errors and warnings are often more readable than those from GCC.",
-            "technicalDesc": "A Python script that checks C/C++ compilation with the Clang compiler.",
-            "author": "IFS Development Team",
-            "copyright": "Copyright © 2017",
-            "license": "ISC License",
-            "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
-            "progName": "./tools/programmingTools/c_tools/clangParser.py",
-            "cmdToolName": "clang",
-            "runType": "programming",
-            "route": "",
-            "filesAllowed": "zipFile",
-            "parseCmd": "",
-            "defaultArg": "",
-            "fileArgs": "-d",
-            "options":  [
-                {
-                    "displayName": "Language standard (std)",
-                    "type": "select",
-                    "name": "opt-clangLanguageStd",
-                    "values": [ "c99", "gnu99", "c11", "gnu11", "c89", "gnu89"],
-                    "arg": "-s",
-                    "params": ""
-                },
-                {
-                    "displayName": "Custom compiler flags",
-                    "type": "text",
-                    "name": "opt-clangCompilerFlags",
-                    "placeholder": "ex. -lm -lncurses, -D_XOPENSOURCE",
-                    "values": "",
-                    "arg": "-f"
-                },
-                {
-                    "displayName": "Standard warnings (-Wall)",
-                    "type": "checkbox",
-                    "name": "opt-clangLanguageWarningAll",
-                    "values": "",
-                    "arg": "-f -Wall ",
-                    "params": ""
-                },
-                {
-                    "displayName": "Extra warnings (-Wextra)",
-                    "type": "checkbox",
-                    "name": "opt-clangLanguageExtraWarning",
-                    "values": "",
-                    "arg": "-f -Wextra",
-                    "params": ""
-                },
-                {
-                    "displayName": "Use strict pedantic warnings (-pedantic)",
-                    "type": "checkbox",
-                    "name": "opt-clangLanguagePendantic",
-                    "values": "",
-                    "arg": "-f -pedantic",
-                    "params": ""
-                },
-                {
-                    "displayName": "Treat warnings as errors (-pedantic-errors)",
-                    "type": "checkbox",
-                    "name": "opt-clangLanguagePendanticToError",
-                    "values": "",
-                    "arg": "-f -pedantic-errors",
-                    "params": ""
-                }
-            ]
-        },
-        {
             "displayName": "Code Quality Checker",
             "description": "Identifies potential problems with C code, beyond what the compiler is able to identify.",
             "technicalDesc": "A Python script that checks C/C++ code for errors using Cppcheck.",
@@ -212,8 +145,75 @@
            "options":  [
 
            ]
-       },
-	   {
+        },
+        {
+            "displayName": "Clang Diagnostics",
+            "description": "Identifies errors and warnings from the Clang C compiler. These errors and warnings are often more readable than those from GCC.",
+            "technicalDesc": "A Python script that checks C/C++ compilation with the Clang compiler.",
+            "author": "IFS Development Team",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
+            "progName": "./tools/programmingTools/c_tools/clangParser.py",
+            "cmdToolName": "clang",
+            "runType": "programming",
+            "route": "",
+            "filesAllowed": "zipFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "-d",
+            "options":  [
+                {
+                    "displayName": "Language standard (std)",
+                    "type": "select",
+                    "name": "opt-clangLanguageStd",
+                    "values": [ "c99", "gnu99", "c11", "gnu11", "c89", "gnu89"],
+                    "arg": "-s",
+                    "params": ""
+                },
+                {
+                    "displayName": "Custom compiler flags",
+                    "type": "text",
+                    "name": "opt-clangCompilerFlags",
+                    "placeholder": "ex. -lm -lncurses, -D_XOPENSOURCE",
+                    "values": "",
+                    "arg": "-f"
+                },
+                {
+                    "displayName": "Standard warnings (-Wall)",
+                    "type": "checkbox",
+                    "name": "opt-clangLanguageWarningAll",
+                    "values": "",
+                    "arg": "-f -Wall ",
+                    "params": ""
+                },
+                {
+                    "displayName": "Extra warnings (-Wextra)",
+                    "type": "checkbox",
+                    "name": "opt-clangLanguageExtraWarning",
+                    "values": "",
+                    "arg": "-f -Wextra",
+                    "params": ""
+                },
+                {
+                    "displayName": "Use strict pedantic warnings (-pedantic)",
+                    "type": "checkbox",
+                    "name": "opt-clangLanguagePendantic",
+                    "values": "",
+                    "arg": "-f -pedantic",
+                    "params": ""
+                },
+                {
+                    "displayName": "Treat warnings as errors (-pedantic-errors)",
+                    "type": "checkbox",
+                    "name": "opt-clangLanguagePendanticToError",
+                    "values": "",
+                    "arg": "-f -pedantic-errors",
+                    "params": ""
+                }
+            ]
+        },
+	    {
             "displayName": "Statistics",
             "description": "Identifies certain characteristics about a piece of code and gathers statistics.",
             "technicalDesc": "A Python script that checks C/C++ code for gathering statistics",
@@ -246,42 +246,6 @@
                     "arg": "-c totalComments",
                     "params": ""
                 }
-            ]
-        },
-        {
-            "displayName": "Python Formatting",
-            "description": "Finds errors in python files",
-            "technicalDesc": "A Python script that checks with a python linter",
-            "author": "IFS Development Team",
-            "copyright": "Copyright © 2018",
-            "license": "ISC License",
-            "licenseFile": "./tools/programmingTools/python_tools/LICENSE.txt",
-            "progName": "./tools/programmingTools/python_tools/pythonParser.py",
-            "cmdToolName": "pycodestyle",
-            "runType": "programming",
-            "route": "",
-            "filesAllowed": "zipFile",
-            "parseCmd": "",
-            "defaultArg": "-t pycodestyle",
-            "fileArgs": "-d",
-            "options":  [
-                {
-                    "displayName": "Language standard (python3, python2)",
-                    "type": "select",
-                    "name": "opt-pythonStandard",
-                    "values": [ "python3"],
-                    "arg": "-s",
-                    "params": ""
-                },
-                {
-                    "displayName": "Number of formatting errors",
-                    "type": "checkbox",
-                    "name": "opt-pycodestyleErrCount",
-                    "values": "",
-                    "arg": "",
-                    "params": ""
-                }
-
             ]
         }
     ]
