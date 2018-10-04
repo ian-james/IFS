@@ -25,10 +25,10 @@ def decorateData(allResults):
         for result in results:
             json_string += ('{'
                             + '"toolName": "c_stats",'
-                            + '"type": "stat",' 
+                            + '"type": "stat",'
                             + '"level": "basic",'
                             + '"category": "spelling",'
-                            + '"filename": "' + result[0] + '",' 
+                            + '"filename": "' + result[0] + '",'
                             + '"statName": "' + result[1] + '",'
                             + '"statValue": "' + str(result[2]) + '",'
                             + '"name": "' + result[3] + '"'
@@ -51,7 +51,7 @@ def parse (dir, tool):
             title, val, name = tool(dir + '/' + file)
             data = (file, title, val, name)
             ret.append(data)
-            
+
     return ret
 
 def countLines(path):
@@ -119,6 +119,14 @@ def main (argv):
         results.append(result)
 
     results = decorateData(results)
+
+    idirectory = options['dir']
+    outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  "/feedback_stats_unzipped" ) )
+
+    file = open( outputfile, "w")
+    file.write(results)
+    file.close()
+
     print(results)
 
 if __name__ == '__main__':
