@@ -26,8 +26,10 @@ import shlex
 import glob
 from cStringIO import StringIO
 import subprocess
+import shutil
 from includecheck import improperCount
 from functionscount import getCtagsInfo
+from time import sleep
 #from jsonDecorator import decorate
 
 def decorate(tool, severity, severityComment, fileName, lineNum, charPos, feedback, firstPrint=False):
@@ -56,24 +58,27 @@ def decorate(tool, severity, severityComment, fileName, lineNum, charPos, feedba
 	#print "TESTING"
 
 def getReferenceFunctions():
-	return ["VCardParser.c",["char* printError(GEDCOMerror err)",
-				"char* printEvent(void* toBePrinted)",
-				"char* printFamily(void* toBePrinted)",
-				"char* printField(void* toBePrinted)",
-				"char* printGEDCOM(const GEDCOMobject* obj)",
-				"char* printIndividual(void* toBePrinted)",
-				"GEDCOMerror createGEDCOM(char* fileName, GEDCOMobject** obj)",
-				"Individual* findPerson(const GEDCOMobject* familyRecord, bool(*compare)(const void* first,const void* second), const void* person)",
-				"int compareEvents(const void* first, const void* second)",
-				"int compareFamilies(const void* first, const void* second)",
-				"int compareFields(const void* first, const void* second)",
-				"int compareIndividuals(const void* first, const void* second)",
-				"List getDescendants(const GEDCOMobject* familyRecord, const Individual* person)",
-				"void deleteEvent(void* toBeDeleted)",
-				"void deleteFamily(void* toBeDeleted)",
-				"void deleteField(void* toBeDeleted)",
-				"void deleteGEDCOM(GEDCOMobject* obj)",
-				"void deleteIndividual(void* toBeDeleted)"]]
+	return ["VCardParser.c",[
+"VCardErrorCode createCard(char* fileName, Card** obj)",
+"char* printCard(const Card* obj)",
+"void deleteCard(Card* obj)",
+"const char* printError(VCardErrorCode err)",
+
+"void deleteProperty(void* toBeDeleted)",
+"int compareProperties(const void* first, const void* second)",
+"char* printProperty(void* toBePrinted)",
+
+"void deleteParameter(void* toBeDeleted)",
+"int compareParameters(const void* first, const void* second)",
+"char* printParameter(void* toBePrinted)",
+
+"void deleteValue(void* toBeDeleted)",
+"int compareValues(const void* first, const void* second)",
+"char* printValue(void* toBePrinted)",
+
+"void deleteDate(void* toBeDeleted)",
+"int compareDates(const void* first, const void* second)",
+"char* printDate(void* toBePrinted)"]]
 
 def getRegexes():
 	return ["VCardParser.c",["VCardErrorCode *createCard *\( *char *\* *[A-Za-z]* *, *Card *\*\* *[A-Za-z]* *\)",
@@ -150,11 +155,14 @@ def compareOutputFiles(expectedOutputFiles, actualOutputFiles, firstPrint, outpu
 	#print expectedOutputFiles
 	#print actualOutputFiles
 	for expected in expectedOutputFiles:
+		#print "EXPECTED = ", expected
 		for actual in actualOutputFiles:
+			#print "ACTUAL = ", actual
 			if (expected.lower() in actual.lower()):
+				#print "TRUE!"
 				found = True
 		if (found == False):
-                        fileMessage = ""
+			fileMessage = ""
 			fileMessage += "Missing output file "
                         
 			fileMessage += expected
@@ -432,19 +440,40 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 	return [], firstPrint, outputString
 
 def runMakefile(folder):
-        result = ""
-        for filename in glob.iglob(folder+"/**/Makefile"):
-                result = filename.rsplit('/', 1)[0]
-        result = subprocess.Popen(['make', '-C', 'result'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		result = ""
+		#print folder
+		makefiles = glob.glob(folder+"/**/Makefile") + glob.glob(folder+"/**/makefile") + glob.glob(folder+"/Makefile") + glob.glob(folder+"/makefile")
+		for filename in makefiles:
+			result = filename.rsplit('/', 1)[0]
+			#print "result =", result
+			#print "----------------------------------------"
+		#print result
+		result = subprocess.Popen(['make', '-C', result], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
 
+
+def insertHFiles(studentFolder, hFileLocation):
+	#print destination
+	#print studentFolder
+	excludedStudentFiles = []
+	foundFlag = False
+	# Get all .c and .h files in the folder
+	hFiles = glob.glob(hFileLocation+'/LinkedListAPI.h') + glob.glob(hFileLocation+'/VCardParser.h')
+	#Look for all excluded files, if any
+	#Remove exlucded files from student file list
+	if len(hFiles) == 0:
+		return -1
+	for copyFile in hFiles:
+		#print copyFile, destination
+		shutil.copy(copyFile, studentFolder)
+	return 1
 
 #Handles all the compliance measures being calculated.
 #Input: A folder with student submission inside. Optional variables: csv determines whether or not the output prints or gathers results for csv formatting, csvList is the list of all data for the current file up until this point
 #OUTPUT: Returns a blank list if CSV is set to false, or a populated list of number of measures calculated by this file if csv=true
 
-def complianceManager(idirectory, assignment, complianceFilePath, outputString, binDirectory, csv=False, csvList=[]):
+def complianceManager(idirectory, assignment, complianceFilePath, outputString, binDirectory, includeDirectory, csv=False, csvList=[]):
 	#print "---------------------------------------------------------"
 	firstPrint = True
 	actualFolderNames = []
@@ -490,11 +519,17 @@ def complianceManager(idirectory, assignment, complianceFilePath, outputString, 
 	#print "ACTUAL OUTPUT FILES"
 	#print actualOutputFiles
 	
-        runMakefile(idirectory)
+	#print "includeDirectory = ", includeDirectory
+	
+	insertHFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/include")
+	
+	runMakefile(idirectory)
+	sleep(2)
+	actualOutputFiles = glob.glob(binDirectory+'/*')
+	#print "birDir = ", binDirectory+'/*'
+	#print "actual outputFiles = ", actualOutputFiles
         
-        actualOutputFiles = glob.glob(binDirectory+'/*')
-        
-        csvList, firstPrint, outputString = compareOutputFiles(expectedOutputFiles, actualOutputFiles,firstPrint, outputString, csv, csvList)
+	csvList, firstPrint, outputString = compareOutputFiles(expectedOutputFiles, actualOutputFiles,firstPrint, outputString, csv, csvList)
 	#print expectedFunctionDeclarations
 	#print actualFunctionDeclarations
 	
