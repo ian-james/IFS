@@ -215,7 +215,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 
 	#Call the cleanup script
 	#Remove all student files and leftover files from the project
-	csvListCompliance, outputString = complianceManager(projectFiles, assignment, complianceFilePath, outputString, binDirectory, csv, [])
+	csvListCompliance, outputString = complianceManager(projectFiles, assignment, complianceFilePath, outputString, binDirectory, includeDirectory, csv, [])
 	tempCSVList.append(csvListCompliance+csvList)
 
 	#Look for warning that the script failed
