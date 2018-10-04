@@ -16,8 +16,6 @@ block content
                         img(src="../../shared/img/user/" + user.id + "/avatar.png").profile-avatar
                         div.user
                             span.profile-name #{studentProfile.name}
-                            br
-                            span.profile-username #{user.username} (#{user.id})
                         hr
                         div.bio
                             div.uk-clearfix
@@ -36,7 +34,7 @@ block content
                                         dd= val.description
                             else
                                 p
-                                    | You haven't enrolled in a class yet. Visit the 
+                                    | You haven't enrolled in a class yet. Visit the
                                     a(href="/courses") setup page
                                     |  to enrol.
 
@@ -53,12 +51,12 @@ block content
                         p.uk-text-lead.uk-text-muted
                             | You're currently not working on any skills.
                             br
-                            | Why not visit 
+                            | Why not visit
                             a(href="/dashboard") the Dashboard
                             | ?
                     br
                 div.events
-                    h2 Upcoming Events 
+                    h2 Upcoming Events
                         span(uk-icon="icon: calendar; ratio: 1.5")
                     if upcomingEvents.length > 0
                         div(uk-grid).uk-grid-small.uk-grid-match
@@ -66,5 +64,5 @@ block content
                                 include event-card.pug
                     else
                         p.uk-text-lead.uk-text-muted
-                            | No upcoming events. You can relax 
+                            | No upcoming events. You can relax
                             span(uk-icon="icon: happy").uk-icon
