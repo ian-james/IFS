@@ -26,8 +26,7 @@ class Preference extends Model {
 const setSurveyPref = async (userId, status = 'on') => {
   const pref = await Preference.query()
     .where('toolName', 'pref-surveysAllowed')
-    .andWhere('toolType', 'option')
-    .first();
+    .andWhere('toolType', 'option');
   if (!pref) {
     await Preference.query()
       .insert({
@@ -53,7 +52,6 @@ const optedIn = async (userId) => {
     .where('userId', userId)
     .andWhere('toolType', 'option')
     .andWhere('toolName', 'pref-surveysAllowed')
-    .first();
   if (!status || status.toolValue == 'off') {
     return false;
   }
