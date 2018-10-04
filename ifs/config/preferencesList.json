@@ -32,7 +32,7 @@
                 "info": "The default toolset. Writing tools analyze written texts. Programming tools analyze C/C++ source code.",
                 "name": "pref-toolSelect",
                 "type": "select",
-                "values": [  "Programming","Writing" ],
+                "values": [  "Programming" ],
                 "value": "Programming"
             },
             {
