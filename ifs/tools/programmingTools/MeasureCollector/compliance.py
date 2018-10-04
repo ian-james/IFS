@@ -442,13 +442,11 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 def runMakefile(folder):
 		result = ""
 		#print folder
-		for filename in glob.iglob(folder+"/**/Makefile"):
+		makefiles = glob.glob(folder+"/**/Makefile") + glob.glob(folder+"/**/makefile") + glob.glob(folder+"/Makefile") + glob.glob(folder+"/makefile")
+		for filename in makefiles:
 			result = filename.rsplit('/', 1)[0]
 			#print "result =", result
 			#print "----------------------------------------"
-		if result == "":
-			for filename in glob.iglob(folder+"/Makefile"):
-				result = filename.rsplit('/', 1)[0]
 		#print result
 		result = subprocess.Popen(['make', '-C', result], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
