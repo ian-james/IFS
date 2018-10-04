@@ -73,7 +73,8 @@ const getPulseSurveyState = async (studentId, toolType) => {
     .select(['survey.id', 'survey.title', 'survey.totalQuestions', 'survey_preferences.lastRevision', 'survey_preferences.lastIndex', 'survey_preferences.currentIndex'])
     .whereIn('survey.surveyField', [toolType, 'general'])
     .andWhere('survey.surveyFreq', 'reg')
-    .leftJoin('survey_preferences', 'survey.id', 'survey_preferences.surveyId');
+    .leftJoin('survey_preferences', 'survey.id', 'survey_preferences.surveyId')
+    .where('survey_preferences.userId', '=',  studentId );
   const unfinishedSurveys = _.filter(surveys, (survey) => {
     return survey.currentIndex < survey.lastIndex;
   });
@@ -83,5 +84,3 @@ const getPulseSurveyState = async (studentId, toolType) => {
 module.exports.Survey = Survey;
 module.exports.getAvailableSurveys = getAvailableSurveys;
 module.exports.getPulseSurveyState = getPulseSurveyState;
-
-

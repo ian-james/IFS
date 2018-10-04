@@ -139,7 +139,7 @@ module.exports = {
               });
 
               // Check if survey was finished update counter, user survey preferences.
-              if (qids.length == surveyLastIndex) {
+              if ( lastId == surveyLastIndex) {
                 SurveyPreferences.incrementSurveyIndex(userId, surveyId, function (err, qData) {
                   if (err)
                     Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
