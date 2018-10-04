@@ -69,7 +69,7 @@ module.exports = function( app ) {
             var data = [classId, assignmentId, skills[i]];
             instructorDB.insertSkill(skills[i], function(err) {});
             if( assignmentId == -1 )
-                instructorDB.insertClassSkillNoAssignment(data,function(err){});
+                instructorDB.insertClassSkillNoAssignment([classId, skills[i]],function(err){});
             else
                 instructorDB.insertClassSkill(data, function(err) {});
         }

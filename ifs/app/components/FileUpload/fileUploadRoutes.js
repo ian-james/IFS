@@ -184,7 +184,7 @@ module.exports = function (app, iosocket) {
 
         preferencesDB.clearStudentFormPreferences(userId,toolType, function( err, clearResult ) {
 
-            async.eachOf(preferences, function( value,key, callback ) {
+            async.eachOfSeries(preferences, function( value,key, callback ) {
                 preferencesDB.setStudentPreferences(userId, toolType,  key, value, callback);
             }, function(err){
                 if(err)
