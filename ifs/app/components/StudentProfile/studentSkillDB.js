@@ -39,6 +39,7 @@ module.exports = {
      * @param  {Function} callback [description]
      * @return {[type]}            [description]
      */
+    /** BECOMEING OBSOLETE AS IT DUPLICATE INFORMATION */
     getAssigmentAndTaskList: function( userId, callback ) {
         var q = "select a.id as assignmentId, a.name as assignmentName, a.description as description, c.id as courseId, d.id as assignmentTaskId, d.name as taskName, d.description as at_desc, d.taskId as taskId, d.value as isComplete" +
                " from class c, assignment a, student s, (select at.*,b.id as taskId, ifnull(b.isComplete, 0) as value from assignment_task at LEFT Join student_assignment_task b on at.id = b.assignmentTaskId) d " +
@@ -66,5 +67,18 @@ module.exports = {
     getStudentAssignmentsAndTasks: function( studentId, callback ) {
         var q = dbHelpers.buildSelect(dbcfg.student_assignment_task_table) + dbHelpers.buildWS("studentId");
         db.query(q,studentId, callback);
+    },
+
+
+    // Replacement for getAssignmentAndTaskList but just get course and assignment information.
+     getAssigmentAndCourse: function( userId, callback ) {
+        var q = "select assignment.id as assignmentId , name as assignmentName,title as assignmentTitle, description as assignmentDescription, studentId, assignment.classId as courseId from assignment, (select * from student_class where studentId = ? ) myClasses where myClasses.classId = assignment.classId";
+        db.query(q,userId,callback);
+    },
+
+     // Replacement for getAssignmentAndTaskList but just get course and assignment information.
+     getStudentTaskList: function( userId, callback ) {
+        var q = "select a.classId,a.name,a.title,a.description, AllTasks.* from assignment a, student_class sc, (select id as assignmentTaskId, assignmentId, name as at_name, description as at_desc, ifnull(sat.studentId,?) as studentId, ifnull(sat.isComplete,0) as isComplete from assignment_task ast LEFT JOIN (select studentId, assignmentTaskId as satTaskID, isComplete from student_assignment_task where studentId = ?) sat on sat.satTaskID = ast.id) AllTasks where a.id = AllTasks.assignmentId and sc.studentId = AllTasks.studentId and sc.classId = a.classId";
+        db.query(q,[userId,userId],callback);
     },
 }

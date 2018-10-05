@@ -258,21 +258,22 @@ module.exports = function (app, iosocket )
                     });
                 }
                 else {
-                    studentSkill.getAssigmentAndTaskList(studentProfile.id, function(errTask, taskData) {
+                    studentSkill.getAssigmentAndCourse(studentProfile.id, function(errCourse, assignmentData){
+                        studentSkill.getStudentTaskList(studentProfile.id, function(errTask, taskData) {
+                            var assignmentTasks = taskData;
+                            studentSkill.getStudentSkills( studentProfile.id, function(skillErr, skills) {
 
-                        var assignmentTasks = taskData;
-                        studentSkill.getStudentSkills( studentProfile.id, function(skillErr, skills) {
+                                var focus = null;
+                                if( req.session.dailyFocus )
+                                    focus = req.session.dailyFocus;
 
-                            var focus = null;
-                            if( req.session.dailyFocus )
-                                focus = req.session.dailyFocus;
+                                var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses,'assignments': getAssignments(assignmentData),
+                                             'assignmentTasks':assignmentTasks, 'skills': skills, 'focus': focus, 'toolType': toolType };
 
-                            var page = { "title":"Dashboard", "studentProfile":studentProfile, "courses": courses,'assignments': getAssignments(assignmentTasks),
-                                         'assignmentTasks':assignmentTasks, 'skills': skills, 'focus': focus, 'toolType': toolType };
-
-                            toolFunc(req,res,function(stats) {
-                                page['stats'] =  stats;
-                                callback(req,res,page);
+                                toolFunc(req,res,function(stats) {
+                                    page['stats'] =  stats;
+                                    callback(req,res,page);
+                                });
                             });
                         });
                     });
