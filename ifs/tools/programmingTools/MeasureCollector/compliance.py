@@ -105,6 +105,60 @@ def getRegexes():
 "int *compareDates *\( *const *void *\* *[A-Za-z]* *\, *const *void *\* *[A-Za-z]* *\)",
 "char *\* *printDate *\( *void *\* *[A-Za-z]* *\)"]]
 	
+	
+def getReferenceFunctionsA2():
+	return ["VCardParser.c",[
+"VCardErrorCode createCard(char* fileName, Card** obj)",
+"char* printCard(const Card* obj)",
+"void deleteCard(Card* obj)",
+"char* printError(VCardErrorCode err)",
+
+"void deleteProperty(void* toBeDeleted)",
+"int compareProperties(const void* first, const void* second)",
+"char* printProperty(void* toBePrinted)",
+
+"void deleteParameter(void* toBeDeleted)",
+"int compareParameters(const void* first, const void* second)",
+"char* printParameter(void* toBePrinted)",
+
+"void deleteValue(void* toBeDeleted)",
+"int compareValues(const void* first, const void* second)",
+"char* printValue(void* toBePrinted)",
+
+"void deleteDate(void* toBeDeleted)",
+"int compareDates(const void* first, const void* second)",
+"char* printDate(void* toBePrinted)",
+"VCardErrorCode writeCard(char* fileName, Card* obj)",
+"VCardErrorCode validateCard(Card* obj)"]]
+
+def getRegexesA2():
+	return ["VCardParser.c",["VCardErrorCode *createCard *\( *char *\* *[A-Za-z]* *, *Card *\*\* *[A-Za-z]* *\)",
+
+"char *\* *printCard *\( *const *Card *\* *[A-Za-z]* *\)",
+
+"void *deleteCard *\( *Card *\* *[A-Za-z]* *\)",
+
+"char *\* *printError *\( *VCardErrorCode *[A-Za-z]* *\)",
+
+"void *deleteProperty *\( *void *\* *t[A-Za-z]* *\)",
+"int *compareProperties *\( *const *void *\* *[A-Za-z]* *\, *const *void *\* *[A-Za-z]* *\)",
+"char *\* *printProperty *\( *void *\* *[A-Za-z]* *\)",
+
+"void *deleteParameter *\( *void *\* *[A-Za-z]* *\)",
+"int *compareParameters *\( *const *void *\* *[A-Za-z]* *\, *const *void *\* *[A-Za-z]* *\)",
+"char *\* *printParameter *\( *void *\* *[A-Za-z]* *\)",
+
+"void *deleteValue *\( *void *\* *[A-Za-z]* *\)",
+"int *compareValues *\( *const *void *\* *[A-Za-z]* *\, *const *void *\* *[A-Za-z]* *\)",
+"char *\* *printValue *\( *void *\* *[A-Za-z]* *\) *",
+
+"void *deleteDate *\( *void *\* *[A-Za-z]* *\)",
+"int *compareDates *\( *const *void *\* *[A-Za-z]* *\, *const *void *\* *[A-Za-z]* *\)",
+"char *\* *printDate *\( *void *\* *[A-Za-z]* *\)",
+
+"VCardErrorCode *writeCard *\( *char *\* *[A-Za-z]* *\, *Card *\* *[A-Za-z]* *\)", 
+"VCardErrorCode *validateCard *\( *Card *\* *[A-Za-z]* *\)"]]
+	
 
 #Parse the JSON string for information and translate that into a list which can be interpreted by other functions
 #INPUT: The directory passed as a command line argument where student folders exist, the JSON file which was written for the assignment
@@ -274,15 +328,15 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 		if (found == False):
 			#if (csv == False):
 			#if (csv == False):
-                        fileMessage = ""
+			fileMessage = ""
 			fileMessage += "Missing file "
 			fileMessage += expected
 			fileMessage += " from submission. Mandatory for compilation."
 			#print folderMessage
 			#res = decorate("Compliance", "error", "Error: Missing File", expected, "NULL", "NULL", fileMessage, firstPrint)
-			print outputString
-			outputString += decorate("Compliance", "error", "Error: Missing File", expected, 0, 0, fileMessage, firstPrint)
-			firstPrint = False
+			#print outputString
+			#outputString += decorate("Compliance", "error", "Error: Missing File", expected, 0, 0, fileMessage, firstPrint)
+			#firstPrint = False
 			missingCount = missingCount +1
 		found = False
 	if (csv == False):
@@ -295,7 +349,7 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 			searchLen = len(actual) - len(expected)
 			if (expected.lower() == actual[searchLen:].lower() or ".DS_Store" in actual or "readme" in actual.lower() or "makefile" in actual.lower() or ".zip" in actual.lower()):
 				found = True
-		if (found == False):
+		if (found == False and actual[searchLen:].lower()[1] != '.'):
 			#if (csv == False):
 			#print "WARNING: Extra non-specification outlined file:", actual
 			fileMessage = ""
@@ -304,8 +358,8 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 			fileMessage += fileErr
 			fileMessage += " exists in submission directory. Check to make sure it and its contents are necessary."
 			#print folderMessage
-			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, 0, 0, fileMessage, firstPrint)
-			firstPrint = False
+			#outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, 0, 0, fileMessage, firstPrint)
+			#firstPrint = False
 			extraCount = extraCount +1
 		found = False
 	if (csv == False):
@@ -468,6 +522,9 @@ def insertHFiles(studentFolder, hFileLocation):
 		#print copyFile, destination
 		shutil.copy(copyFile, studentFolder)
 	return 1
+	
+#def detectMain(actualFileNames, actualFunctionNames):
+#	print actualFileNames, actualFunctionNames
 
 #Handles all the compliance measures being calculated.
 #Input: A folder with student submission inside. Optional variables: csv determines whether or not the output prints or gathers results for csv formatting, csvList is the list of all data for the current file up until this point
@@ -520,8 +577,10 @@ def complianceManager(idirectory, assignment, complianceFilePath, outputString, 
 	#print actualOutputFiles
 	
 	#print "includeDirectory = ", includeDirectory
-	
-	insertHFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/include")
+	if (assignment.lower() == "a1"):
+		insertHFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/include")
+	elif (assignment.lower() == "a2"):
+		insertHFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/include")
 	
 	runMakefile(idirectory)
 	sleep(2)
@@ -533,6 +592,7 @@ def complianceManager(idirectory, assignment, complianceFilePath, outputString, 
 	#print expectedFunctionDeclarations
 	#print actualFunctionDeclarations
 	
+	#detectMain(actualFileNames, actualFunctionDeclarations)
 	return csvList, outputString
 	#getFunctionHeaders("./assign1/src/hash.c")
 

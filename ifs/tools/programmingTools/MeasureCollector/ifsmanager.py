@@ -39,12 +39,12 @@ def main(argv):
 	#else:
 		#Get command line arguments and put them into list
 	options = { 'tool':'', 'directory':'', 'ifsOff':'',
-				'csv':'', 'output':'','runharness':'','showerrors':'','help':''
+				'csv':'', 'output':'','runharness':'','showerrors':'','help':'', 'submission':''
 				}
 
 	# define command line arguments and check if the script call is valid
-	opts, args = getopt.getopt(argv,'t:d:i:co:vbh',
-		['tool=','directory=', 'jsonInput=', 'ifsOff=', 'csv','output=','verbose','broadcast','help'])
+	opts, args = getopt.getopt(argv,'t:d:i:co:vbhs:',
+		['tool=','directory=', 'jsonInput=', 'ifsOff=', 'csv','output=','verbose','broadcast','help', 'submission='])
 	
 	#Set options and tool being selected
 	#Currentl only grabs includecheck.py but can be expanded in the future
@@ -71,6 +71,10 @@ def main(argv):
 			runHarness = True
 		elif opt in ('--broadcast', '-b'):
 			broadcastFolder = True
+		elif opt in ('--submission', '-s'):
+			chosenSubmission=arg.upper()
+			if (chosenSubmission == "A2"):
+				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceF18A2.json"
 
 
 	if idirectory != '':

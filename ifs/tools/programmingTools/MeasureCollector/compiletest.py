@@ -131,14 +131,8 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentCode")
 			copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentInclude")
 		elif (assignment == "A2"):
-			copyFiles(srcDirectory, "./compiletestA2/studentCode")
-			copyFiles(includeDirectory, "./compiletestA2/studentInclude")
-		elif (assignment == "A1R"):
-			copyFiles(srcDirectory, "./compiletestA1R/studentCode")
-			copyFiles(includeDirectory, "./compiletestA1R/studentInclude")
-		elif (assignment == "A2R"):
-			copyFiles(srcDirectory, "./compiletestA2R/studentCode")
-			copyFiles(includeDirectory, "./compiletestA2R/studentInclude")
+			copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentCode")
+			copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude")
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
 			exit()
@@ -148,11 +142,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 		if (assignment == "A1"):
 			errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentCode")
 		elif (assignment == "A2"):
-			errCode = copyFiles(srcDirectory, "./compiletestA2/studentCode")
-		elif (assignment == "A1R"):
-			errCode = copyFiles(srcDirectory, "./compiletestA1R/studentCode")
-		elif (assignment == "A2R"):
-			errCode = copyFiles(srcDirectory, "./compiletestA2R/studentCode")
+			errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentCode")
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
 			exit()
@@ -162,20 +152,12 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			
 				srcDirectory = "./"+projectFiles+"/"+dir+"/src"
 				includeDirectory = "./"+projectFiles+"/"+dir+"/include"
-				#print srcDirectory
-				#print includeDirectory
 				if (assignment == "A1"):
 					errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentCode")
 					copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentInclude", ["VCardParser.h", "LinkedListAPI.h"])
 				elif (assignment == "A2"):
-					errCode = copyFiles(srcDirectory, "./compiletestA2/studentCode")
-					copyFiles(includeDirectory, "./compiletestA2/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
-				elif (assignment == "A1R"):
-					errCode = copyFiles(srcDirectory, "./compiletestA1R/studentCode")
-					copyFiles(includeDirectory, "./compiletestA1R/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
-				elif (assignment == "A2R"):
-					errCode = copyFiles(srcDirectory, "./compiletestA2R/studentCode")
-					copyFiles(includeDirectory, "./compiletestA2R/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
+					errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentCode")
+					copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude", ["VCardParser.h", "LinkedListAPI.h"])
 				else:
 					print "ERROR: ASSIGNMENT UNKNOWN"
 					exit()
@@ -183,11 +165,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			if (assignment == "A1"):
 				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
 			elif (assignment == "A2"):
-				copyFiles(includeDirectory, "./compiletestA2/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
-			elif (assignment == "A1R"):
-				copyFiles(includeDirectory, "./compiletestA1R/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
-			elif (assignment == "A2R"):
-				copyFiles(includeDirectory, "./compiletestA2R/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
+				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
 			else:
 				print "ERROR: ASSIGNMENT UNKNOWN"
 				exit()
@@ -202,11 +180,8 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			result = subprocess.Popen("./tools/programmingTools/MeasureCollector/.checkharnessA1.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 			#print "HEY THIS IS RUNNING"
 		elif (assignment == "A2"):
-			result = subprocess.Popen("./.checkharnessA2.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-		elif (assignment == "A1R"):
-			result = subprocess.Popen("./.checkharnessA1R.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-		elif (assignment == "A2R"):
-			result = subprocess.Popen("./.checkharnessA2R.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+			result = subprocess.Popen("./tools/programmingTools/MeasureCollector/.checkharnessA2.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+		
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
 			exit()

@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:4.0
+FN:Simon Perreault
+GENDER:M
+LANG;PREF=1:fr
+LANG;PREF=2:en
+TEL;VALUE=uri;TYPE="work,cell,voice,video,text":tel:+1-418-262-6501
+URL;TYPE=home:http://nomis80.org
+END:VCARD

@@ -17,7 +17,14 @@
            "defaultArg": "",
            "fileArgs": "-d",
            "options":  [
-
+               {
+                   "displayName": "A2 testing",
+                   "type": "checkbox",
+                   "name": "opt-A2ComplianceCheck",
+                   "values": "",
+                   "arg": "-s A2",
+                   "params": ""
+               }
            ]
         },
         {

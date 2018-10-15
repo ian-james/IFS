@@ -1,0 +1,26 @@
+{
+    "compliance": 
+     {
+		"folderNames": [
+			"assign2",
+			"bin",
+			"include",
+			"src"
+		],
+		"fileNames": [
+			"src/VCardParser.c",
+			"src/LinkedListAPI.c",
+			"Makefile",
+			"README"
+		],
+		"readmeCategories": [
+			"Student Identification",
+			"Known Issues",
+			"List of References"
+		],
+		"outputFiles": [
+		    "libllist.a",
+            "libcparse.a"
+        ]
+	}
+}
