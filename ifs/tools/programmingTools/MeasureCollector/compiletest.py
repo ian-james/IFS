@@ -13,6 +13,7 @@ import shutil
 from distutils.dir_util import copy_tree
 
 from compliance import complianceManager
+from compliance import decorate
 
 #Searches for instances of extra folders being above the desired assignment folder and copies the files out into a new folder just below the root which can be used to compilation testing. If no such folder is found, nothing happens.
 #INPUT: A directory to search along its entire depth for the expected student folders.
@@ -190,7 +191,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 
 	#Call the cleanup script
 	#Remove all student files and leftover files from the project
-	csvListCompliance, outputString = complianceManager(projectFiles, assignment, complianceFilePath, outputString, binDirectory, includeDirectory, csv, [])
+	csvListCompliance, outputString, firstPrint = complianceManager(projectFiles, assignment, complianceFilePath, outputString, binDirectory, includeDirectory, csv, [])
 	tempCSVList.append(csvListCompliance+csvList)
 
 	#Look for warning that the script failed
@@ -219,10 +220,14 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			#print tempCSVList
 			csvList = csvList + tempCSVList[0]
 			csvList.append("Success")
+			compileRes = decorate("Compliance", "status", "Successful compilation", "Submission", 0, 0, "Compilation of submission successful.", firstPrint)
+			outputString += compileRes
 			return csvList, outputString
 	csvList = csvList + tempCSVList[0]
 	csvList.append("Failure")
+	compileRes = decorate("Compliance", "status", "Failed compilation", "Submission", 0, 0, "Compilation of submission failed. Please ensre your submission meets all requirements of submission.", firstPrint)
 	#print outputString
+	outputString += compileRes
 	return csvList, outputString
 
 #ONLY WORKS WITH testFiles FOLDER FILES

@@ -37,7 +37,7 @@ def decorate(tool, severity, severityComment, fileName, lineNum, charPos, feedba
 	json_string = ""
 	if firstPrint != True:
 		json_string += ","
-		print ","
+		#print ","
 	json_string += '{"severity": "'
 	json_string += severityComment
 	json_string += '", "filename": "'
@@ -53,7 +53,7 @@ def decorate(tool, severity, severityComment, fileName, lineNum, charPos, feedba
 	json_string += '", "feedback": "'
 	json_string += feedback
 	json_string += '"}'
-	print json_string
+	#print json_string
 	return json_string
 	#print "TESTING"
 
@@ -332,9 +332,9 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 			fileMessage += expected
 			fileMessage += " from submission. Mandatory for compilation."
 			#print folderMessage
-			#res = decorate("Compliance", "error", "Error: Missing File", expected, "NULL", "NULL", fileMessage, firstPrint)
+			res = decorate("Compliance", "error", "Error: Missing File", expected, "NULL", "NULL", fileMessage, firstPrint)
 			#print outputString
-			#outputString += decorate("Compliance", "error", "Error: Missing File", expected, 0, 0, fileMessage, firstPrint)
+			outputString += decorate("Compliance", "error", "Error: Missing File", expected, 0, 0, fileMessage, firstPrint)
 			#firstPrint = False
 			missingCount = missingCount +1
 		found = False
@@ -344,11 +344,12 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 	found = False
 	extraCount = 0
 	for actual in actualFileNames:
+		#print actual
 		for expected in expectedFileNames:
 			searchLen = len(actual) - len(expected)
 			if (expected.lower() == actual[searchLen:].lower() or ".DS_Store" in actual or "readme" in actual.lower() or "makefile" in actual.lower() or ".zip" in actual.lower()):
 				found = True
-		if (found == False and actual[searchLen:].lower()[1] != '.'):
+		if (found == False and actual[searchLen:].lower()[1] != '.' and ("LinkedListAPI.h" in actual or "VCardParser.h" in actual)):
 			#if (csv == False):
 			#print "WARNING: Extra non-specification outlined file:", actual
 			fileMessage = ""
@@ -357,7 +358,7 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 			fileMessage += fileErr
 			fileMessage += " exists in submission directory. Check to make sure it and its contents are necessary."
 			#print folderMessage
-			#outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, 0, 0, fileMessage, firstPrint)
+			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, 0, 0, fileMessage, firstPrint)
 			#firstPrint = False
 			extraCount = extraCount +1
 		found = False
@@ -487,7 +488,7 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 		#print actual
 		if ("main(" in actual):
 			positionOfMain = actual.rsplit(' ', 1)[1]
-			print "POSITION OF MAIN =", positionOfMain
+			#print "POSITION OF MAIN =", positionOfMain
 			functionMessage = ""
 			functionMessage += "Main function"
 			functionMessage += " present in source code. Submitting an implemented main will result in a mark penalty"
@@ -605,7 +606,7 @@ def complianceManager(idirectory, assignment, complianceFilePath, outputString, 
 	#print actualFunctionDeclarations
 	
 	#detectMain(actualFileNames, actualFunctionDeclarations)
-	return csvList, outputString
+	return csvList, outputString, firstPrint
 	#getFunctionHeaders("./assign1/src/hash.c")
 
 def main(argv):

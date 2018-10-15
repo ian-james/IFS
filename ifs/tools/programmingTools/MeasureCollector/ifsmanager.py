@@ -99,7 +99,7 @@ def main(argv):
 		#print folder
 		#print "---------------------------------------------------------------"
 		#print "User", folderNoRoot
-		print "{ \"feedback\": ["
+		#print "{ \"feedback\": ["
 		outputString += "{ \"feedback\": ["
 		csvListMeasure = measureManager(folder, True, csvListMeasure)
 		#csvListCompliance = complianceManager(folder, True, csvListCompliance)
@@ -110,7 +110,7 @@ def main(argv):
 		
 		#decorate("Compliance", "warning", "Warning, potential mark deduction", "Testing.c", 20, 5, "Testing!!!")
 		
-		print "]\n}"
+		#print "]\n}"
 		outputString += "]\n}"
 		fileLocation = idirectory.rsplit('/', 1)[0]
 		fileLocation = fileLocation + "/IFS-SPECIFIC-MEASURE-FILE.txt"
