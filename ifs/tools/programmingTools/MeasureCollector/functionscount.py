@@ -31,6 +31,7 @@ def getCtagsInfo(filesToRead):
 			the_file.write('\n')
 	result = subprocess.Popen(['ctags', '-x', '--c-types=f', '-L', 'files_to_read.txt'], stdout=subprocess.PIPE)
 	#print (result.stdout.decode('utf-8'))
+	#print "-------------INCOMING INFO DUMP--------------"
 	while True:
 		line = result.stdout.readline()
 		if len(line) == 0:
@@ -38,13 +39,19 @@ def getCtagsInfo(filesToRead):
 		functions = line.split()
 		functionString = ''
 		functionFile = functions[3]
+		
+		#print functionFile
+		functionLocation = functions[2]
+		#print functions[2]
 		for partialString in functions[4:]:
 			functionString = functionString + partialString
 		functionString = functionString.replace('{','')
+		#print functionString
 		#print functionFile,",",functionString
-		allEntries.append(functionFile+" "+functionString)
+		allEntries.append(functionFile+" "+functionString + " "+functionLocation)
 		#print functions
 	#print allEntries
+	#print "------------------------------------------"
 	os.remove("files_to_read.txt")
 	return allEntries
 	

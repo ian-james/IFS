@@ -158,7 +158,6 @@ def getRegexesA2():
 
 "VCardErrorCode *writeCard *\( *char *\* *[A-Za-z]* *\, *Card *\* *[A-Za-z]* *\)", 
 "VCardErrorCode *validateCard *\( *Card *\* *[A-Za-z]* *\)"]]
-	
 
 #Parse the JSON string for information and translate that into a list which can be interpreted by other functions
 #INPUT: The directory passed as a command line argument where student folders exist, the JSON file which was written for the assignment
@@ -224,7 +223,7 @@ def compareOutputFiles(expectedOutputFiles, actualOutputFiles, firstPrint, outpu
 			#print folderMessage
 			#res = decorate("Compliance", "error", "Error: Missing File", expected, "NULL", "NULL", fileMessage, firstPrint)
 			print outputString
-			outputString += decorate("Compliance", "error", "Error: Missing File", expected, 0, 0, fileMessage, firstPrint)
+			outputString += decorate("Compliance", "error", "Error: Missing Output File", expected, 0, 0, fileMessage, firstPrint)
 			firstPrint = False
 			if (csv == False):
 				print "ERROR: Missing output file:", expected
@@ -410,7 +409,7 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, outputStr
 		#print actual
 		for expected in expectedFolderNames:
 			searchLen = len(actual) - len(expected)
-			if (expected.lower() == actual[searchLen:].lower()):
+			if (expected.lower() == actual[searchLen:].lower() or "__MACOSX" in actual):
 				found = True
 		if (found == False):
 			#if (csv == False):
@@ -484,6 +483,16 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 			missingCount = missingCount+1
 		found = False
 		i=i+1
+	for actual in actualFunctionNames:
+		#print actual
+		if ("main(" in actual):
+			positionOfMain = actual.rsplit(' ', 1)[1]
+			print "POSITION OF MAIN =", positionOfMain
+			functionMessage = ""
+			functionMessage += "Main function"
+			functionMessage += " present in source code. Submitting an implemented main will result in a mark penalty"
+			outputString += decorate("Compliance", "error", "Error, main implemented", refList[0], positionOfMain, 1, functionMessage, firstPrint)
+			firstPrint = False
 	if (csv == False):
 		print "Missing a total of",missingCount,"Functions"
 
@@ -529,6 +538,9 @@ def insertHFiles(studentFolder, hFileLocation):
 #Handles all the compliance measures being calculated.
 #Input: A folder with student submission inside. Optional variables: csv determines whether or not the output prints or gathers results for csv formatting, csvList is the list of all data for the current file up until this point
 #OUTPUT: Returns a blank list if CSV is set to false, or a populated list of number of measures calculated by this file if csv=true
+
+
+
 
 def complianceManager(idirectory, assignment, complianceFilePath, outputString, binDirectory, includeDirectory, csv=False, csvList=[]):
 	#print "---------------------------------------------------------"
