@@ -225,7 +225,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			return csvList, outputString
 	csvList = csvList + tempCSVList[0]
 	csvList.append("Failure")
-	compileRes = decorate("Compliance", "status", "Failed compilation", "Submission", 0, 0, "Compilation of submission failed. Please ensre your submission meets all requirements of submission.", firstPrint)
+	compileRes = decorate("Compliance", "status", "Failed compilation", "Submission", 0, 0, "Compilation of submission failed. Please ensure your submission meets all requirements of submission.", firstPrint)
 	#print outputString
 	outputString += compileRes
 	return csvList, outputString
