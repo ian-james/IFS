@@ -128,8 +128,8 @@ def getReferenceFunctionsA2():
 "void deleteDate(void* toBeDeleted)",
 "int compareDates(const void* first, const void* second)",
 "char* printDate(void* toBePrinted)",
-"VCardErrorCode writeCard(char* fileName, Card* obj)",
-"VCardErrorCode validateCard(Card* obj)"]]
+"VCardErrorCode writeCard(const char* fileName, const Card* obj)",
+"VCardErrorCode validateCard(const Card* obj)"]]
 
 def getRegexesA2():
 	return ["VCardParser.c",["VCardErrorCode *createCard *\( *char *\* *[A-Za-z]* *, *Card *\*\* *[A-Za-z]* *\)",
@@ -156,8 +156,8 @@ def getRegexesA2():
 "int *compareDates *\( *const *void *\* *[A-Za-z]* *\, *const *void *\* *[A-Za-z]* *\)",
 "char *\* *printDate *\( *void *\* *[A-Za-z]* *\)",
 
-"VCardErrorCode *writeCard *\( *char *\* *[A-Za-z]* *\, *Card *\* *[A-Za-z]* *\)", 
-"VCardErrorCode *validateCard *\( *Card *\* *[A-Za-z]* *\)"]]
+"VCardErrorCode *writeCard *\( *const *char *\* *[A-Za-z]* *\, *const *Card *\* *[A-Za-z]* *\)", 
+"VCardErrorCode *validateCard *\( *const *Card *\* *[A-Za-z]* *\)"]]
 
 #Parse the JSON string for information and translate that into a list which can be interpreted by other functions
 #INPUT: The directory passed as a command line argument where student folders exist, the JSON file which was written for the assignment
