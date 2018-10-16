@@ -51,6 +51,14 @@ testRec* _tValidWriteTest10(int testNum);
 testRec* _tValidateTest1(int testNum);
 testRec* _tValidateTest2(int testNum);
 
+testRec* _tTestStrListToJSONInv(int testNum);
+testRec* _tTestJSONToStrListInv(int testNum);
+testRec* _tTestPropToJSONInv(int testNum);
+testRec* _tTestJSONToPropInv(int testNum);
+testRec* _tTestDTtoJSONInv(int testNum);
+testRec* _tTestJSONtoDTInv(int testNum);
+testRec* _tTestJSONtoCardInv(int testNum);
+testRec* _tTestAddPropInv(int testNum);
 
 
 

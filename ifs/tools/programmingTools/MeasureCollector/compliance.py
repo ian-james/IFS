@@ -129,10 +129,21 @@ def getReferenceFunctionsA2():
 "int compareDates(const void* first, const void* second)",
 "char* printDate(void* toBePrinted)",
 "VCardErrorCode writeCard(const char* fileName, const Card* obj)",
-"VCardErrorCode validateCard(const Card* obj)"]]
+"VCardErrorCode validateCard(const Card* obj)",
+
+"char* strListToJSON(const List* strList)",
+"List* JSONtoStrList(const char* str)",
+"char* propToJSON(const Property* prop)",
+"Property* JSONtoProp(const char* str)",
+"char* dtToJSON(const DateTime* prop)",
+"DateTime* JSONtoDT(const char* str)",
+"Card* JSONtoCard(const char* str)",
+"void addProperty(Card* card, const Property* toBeAdded)"
+]]
 
 def getRegexesA2():
-	return ["VCardParser.c",["VCardErrorCode *createCard *\( *char *\* *[A-Za-z]* *, *Card *\*\* *[A-Za-z]* *\)",
+	return ["VCardParser.c",
+	["VCardErrorCode *createCard *\( *char *\* *[A-Za-z]* *, *Card *\*\* *[A-Za-z]* *\)",
 
 "char *\* *printCard *\( *const *Card *\* *[A-Za-z]* *\)",
 
@@ -157,7 +168,17 @@ def getRegexesA2():
 "char *\* *printDate *\( *void *\* *[A-Za-z]* *\)",
 
 "VCardErrorCode *writeCard *\( *const *char *\* *[A-Za-z]* *\, *const *Card *\* *[A-Za-z]* *\)", 
-"VCardErrorCode *validateCard *\( *const *Card *\* *[A-Za-z]* *\)"]]
+"VCardErrorCode *validateCard *\( *const *Card *\* *[A-Za-z]* *\)",
+
+"char *\* *strListToJSON *\( *const *List *\* *[A-Za-z]* *\)",
+"List *\* *JSONtoStrList *\( *const *char *\* *[A-Za-z]* *\)",
+"char *\* *propToJSON *\( *const *Property *\* *[A-Za-z]* *\)",
+"Property *\* *JSONtoProp *\( *const *char *\* *[A-Za-z]* *\)",
+"char *\* *dtToJSON *\( *const *DateTime *\* *[A-Za-z]* *\)",
+"DateTime *\* *JSONtoDT *\( *const *char *\* *[A-Za-z]* *\)",
+"Card *\* *JSONtoCard *\( *const *char *\* *[A-Za-z]* *\)",
+"void *addProperty *\( *Card *\* *[A-Za-z]* *\, *const *Property *\* *[A-Za-z]* *\)"
+]]
 
 #Parse the JSON string for information and translate that into a list which can be interpreted by other functions
 #INPUT: The directory passed as a command line argument where student folders exist, the JSON file which was written for the assignment
@@ -349,14 +370,14 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 			searchLen = len(actual) - len(expected)
 			if (expected.lower() == actual[searchLen:].lower() or ".DS_Store" in actual or "readme" in actual.lower() or "makefile" in actual.lower() or ".zip" in actual.lower()):
 				found = True
-		if (found == False and actual[searchLen:].lower()[1] != '.' and ("LinkedListAPI.h" in actual or "VCardParser.h" in actual)):
+		if (found == False and actual.rsplit('/', 1)[1][0] != '.' and ("LinkedListAPI.h" in actual or "VCardParser.h" in actual)):
 			#if (csv == False):
 			#print "WARNING: Extra non-specification outlined file:", actual
 			fileMessage = ""
 			fileMessage += "Additional non-spec file "
 			fileErr = actual.rsplit('/', 1)[1]
 			fileMessage += fileErr
-			fileMessage += " exists in submission directory. Check to make sure it and its contents are necessary."
+			fileMessage += " exists in submission directory. Remove from submission directory."
 			#print folderMessage
 			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, 0, 0, fileMessage, firstPrint)
 			#firstPrint = False

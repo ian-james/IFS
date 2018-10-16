@@ -13,7 +13,7 @@
 
 
 
-#define TESTS 38
+#define TESTS 46
 
 #define DEBUG 0
 #define OUT stdout
@@ -49,6 +49,15 @@ static float calcGrade(void){
                         5,                  //Card from RFC
 //************************************************************************
                         4,                  //Null card, fn, and otherProps   
+//************************************************************************
+                        4,                  //Null / empty list (ListToJSON)
+                        2,                  //NULL str (JSONtoList)
+                        2,                  //NULL prop (PropToJSON)
+                        2,                  //NULL str (JSONtoProp)
+                        2,                  //NULL DT (DTtoJSON)
+                        2,                  //NULL str (JSONtoDT)
+                        2,                  //NULL str (JSONtoCard)
+                        2,                  //NULL args (addProp)
    };  //More weights go here
     
     float totalScore = 0;
@@ -225,6 +234,39 @@ int main(void)
 
     if (DEBUG) fprintf(OUT,"Test \n");
     tmpRec = _tValidateTest1(testNo);
+    addTestResult(tmpRec);
+
+
+    if (DEBUG) fprintf(OUT,"Test \n");
+    tmpRec = _tTestStrListToJSONInv(testNo);
+    addTestResult(tmpRec);
+
+    if (DEBUG) fprintf(OUT,"Test \n");
+    tmpRec = _tTestJSONToStrListInv(testNo);
+    addTestResult(tmpRec);
+
+    if (DEBUG) fprintf(OUT,"Test \n");
+    tmpRec = _tTestPropToJSONInv(testNo);
+    addTestResult(tmpRec);
+
+    if (DEBUG) fprintf(OUT,"Test \n");
+    tmpRec = _tTestJSONToPropInv(testNo);
+    addTestResult(tmpRec);
+
+    if (DEBUG) fprintf(OUT,"Test \n");
+    tmpRec = _tTestDTtoJSONInv(testNo);
+    addTestResult(tmpRec);
+
+    if (DEBUG) fprintf(OUT,"Test \n");
+    tmpRec = _tTestJSONtoDTInv(testNo);
+    addTestResult(tmpRec);
+
+    if (DEBUG) fprintf(OUT,"Test \n");
+    tmpRec = _tTestJSONtoCardInv(testNo);
+    addTestResult(tmpRec);
+
+    if (DEBUG) fprintf(OUT,"Test \n");
+    tmpRec = _tTestAddPropInv(testNo);
     addTestResult(tmpRec);
 
 
