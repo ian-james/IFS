@@ -243,9 +243,9 @@ def compareOutputFiles(expectedOutputFiles, actualOutputFiles, firstPrint, outpu
 			fileMessage += " from submission. File was not generated after attempting make."
 			#print folderMessage
 			#res = decorate("Compliance", "error", "Error: Missing File", expected, "NULL", "NULL", fileMessage, firstPrint)
-			print outputString
-			outputString += decorate("Compliance", "error", "Error: Missing Output File", expected, 0, 0, fileMessage, firstPrint)
-			firstPrint = False
+			#print outputString
+			#outputString += decorate("Compliance", "error", "Error: Missing Output File", expected, 0, 0, fileMessage, firstPrint)
+			#firstPrint = False
 			if (csv == False):
 				print "ERROR: Missing output file:", expected
 			missingCount = missingCount +1
@@ -411,7 +411,7 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, outputStr
 			if (expected.lower() == actual[searchLen:].lower()):
 				found = True
 				totalFoundFolderCount = totalFoundFolderCount + 1
-		if (found == False):
+		if (found == False and "bin" not in expected):
 			#if (csv == False):
 			folderMessage = ""
 			folderMessage += "Missing folder "
