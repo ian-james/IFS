@@ -505,16 +505,25 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 			missingCount = missingCount+1
 		found = False
 		i=i+1
+	i=0
 	for actual in actualFunctionNames:
 		#print actual
+		
 		if ("main(" in actual):
 			positionOfMain = actual.rsplit(' ', 1)[1]
+			mainFileName = actual.rsplit(' ')[0]
+			mainFileName = mainFileName.rsplit('/', 1)[1]
+			print mainFileName
+			
 			#print "POSITION OF MAIN =", positionOfMain
 			functionMessage = ""
 			functionMessage += "Main function"
 			functionMessage += " present in source code. Submitting an implemented main will result in a mark penalty"
-			outputString += decorate("Compliance", "error", "Error, main implemented", refList[0], positionOfMain, 1, functionMessage, firstPrint)
+			outputString += decorate("Compliance", "error", "Error, main implemented", mainFileName, positionOfMain, 1, functionMessage, firstPrint)
+			#print refList
+			#print actualFunctionNames
 			firstPrint = False
+		i=i+1
 	if (csv == False):
 		print "Missing a total of",missingCount,"Functions"
 
