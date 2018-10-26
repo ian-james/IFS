@@ -431,7 +431,7 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, outputStr
 		#print actual
 		for expected in expectedFolderNames:
 			searchLen = len(actual) - len(expected)
-			if (expected.lower() == actual[searchLen:].lower() or "__MACOSX" in actual):
+			if (expected.lower() == actual[searchLen:].lower() or "__MACOSX" in actual or "assign2" in actual):
 				found = True
 		if (found == False):
 			#if (csv == False):
