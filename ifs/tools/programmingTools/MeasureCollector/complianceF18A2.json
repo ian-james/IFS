@@ -2,7 +2,6 @@
     "compliance": 
      {
 		"folderNames": [
-			"bin",
 			"include",
 			"src"
 		],

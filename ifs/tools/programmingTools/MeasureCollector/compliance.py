@@ -380,7 +380,7 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 			fileMessage += " exists in submission directory. Remove from submission directory."
 			#print folderMessage
 			outputString += decorate("Compliance", "warning", "Warning, potential mark deduction", fileErr, 0, 0, fileMessage, firstPrint)
-			#firstPrint = False
+			firstPrint = False
 			extraCount = extraCount +1
 		found = False
 	if (csv == False):
