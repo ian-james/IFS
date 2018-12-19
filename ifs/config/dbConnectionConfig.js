@@ -10,9 +10,9 @@ module.exports = {
     // that the database user has permissions restricted only to access and
     // modify the database specified below.
     'connection': {
-        'host' :                        'localhost',
+        'host' :                        'mysql',
         'user' :                        'root',
-        'password' :                    'mysqlRootPassword',
+        'password' :                    'root',
         'connectionLimit':              5000
     },
     // database name

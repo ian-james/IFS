@@ -1,0 +1,46 @@
+version: '2.1'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports: 
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: ifs_admin
+      MYSQL_PASSWORD: ifs_root
+    restart: unless-stopped
+    healthcheck:
+      test: "mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    command: mysqld --event-scheduler=ON
+
+
+  redis:
+    container_name: redis_cache
+    image: redis:5
+    ports: 
+      - "6379:6379"
+
+  node: 
+    build:
+      context: .
+      dockerfile: ./docker/node/Dockerfile
+    container_name: ifs_node
+    depends_on:
+      mysql:
+        condition: service_healthy
+    depends_on:
+      - redis
+    links:
+      - mysql
+      - redis
+    ports: 
+      - "3000:3000"
+    volumes:
+        - ./ifs:/IFS
+    tty: true
+    stdin_open: true
