@@ -544,7 +544,7 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 			refFunctions.append(refList[i])
 		i=i+1
 	i=0
-	print refFunctions
+	#print refFunctions
 	#print len(expectedFunctionNames)
 	#for a in actualFunctionNames:
 		#print a
