@@ -124,6 +124,7 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 	actualLocation = FindBuriedFolders(projectFiles)
 	#Copy all files to the correct location
 	#errCode = copyFiles(srcDirectory, "./compiletest/studentCode")
+	#print assignment
 	if (actualLocation != ""):
 		srcDirectory = actualLocation + "/src"
 		includeDirectory = actualLocation + "/include"
@@ -134,6 +135,9 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 		elif (assignment == "A2"):
 			copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentCode")
 			copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude")
+		elif (assignment == "A1W19"):
+			copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentCode")
+			copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentInclude")
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
 			exit()
@@ -144,6 +148,8 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentCode")
 		elif (assignment == "A2"):
 			errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentCode")
+		elif (assignment == "A1W19"):
+			errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentCode")
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
 			exit()
@@ -159,6 +165,9 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 				elif (assignment == "A2"):
 					errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentCode")
 					copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude", ["VCardParser.h", "LinkedListAPI.h"])
+				elif (assignment == "A1W19"):
+					errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentCode")
+					copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentInclude", ["CalendarParser.h", "LinkedListAPI.h"])
 				else:
 					print "ERROR: ASSIGNMENT UNKNOWN"
 					exit()
@@ -167,6 +176,8 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A1/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
 			elif (assignment == "A2"):
 				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
+			elif (assignment == "A1W19"):
+				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude", ["CalendarParser.h", "LinkedListAPI.h"])
 			else:
 				print "ERROR: ASSIGNMENT UNKNOWN"
 				exit()
@@ -182,6 +193,8 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			#print "HEY THIS IS RUNNING"
 		elif (assignment == "A2"):
 			result = subprocess.Popen("./tools/programmingTools/MeasureCollector/.checkharnessA2.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+		elif (assignment == "A1W19"):
+			result = subprocess.Popen("./tools/programmingTools/MeasureCollector/.checkharnessW19A1.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 		
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
@@ -193,6 +206,8 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 	#Remove all student files and leftover files from the project
 	csvListCompliance, outputString, firstPrint = complianceManager(projectFiles, assignment, complianceFilePath, outputString, binDirectory, includeDirectory, csv, [])
 	tempCSVList.append(csvListCompliance+csvList)
+	
+	#print "testing!!"
 
 	#Look for warning that the script failed
 	#TO DO: Implement a better method in the future
@@ -204,7 +219,9 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			if (showErrors == True):
 				print listResult[1]
 				print listResult[0]
-		
+		#print listResult[1]
+		#print listResult[0]
+	
 	else:
 		if (csv==True):
 			resultsList.append("Success")

@@ -1,0 +1,110 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=Jimmy Johnson:MAILTO:john.doe@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+CLASS:PUBLIC
+SUMMARY:Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+	 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+	 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+	 nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+	 reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+	 pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+	 culpa qui officia deserunt mollit anim id est laborum.
+BEGIN:VALARM
+TRIGGER;VALUE=DATE-TIME:19970317T133000Z
+REPEAT:5
+DURATION:PT55M
+ACTION:AUDIO
+ATTACH:FMTYPE=audio/basic:ftp://example.com/pub/sounds/
+ really-longfile
+ .aud
+END:VALARM
+BEGIN:VALARM
+TRIGGER;VALUE=DATE-TIME:19970317T133000Z
+REPEAT:5
+DURATION:PT55M
+ACTION:AUDIO
+ATTACH:FMTYPE=audio/basic:ftp://example.com/pub/sounds/test.aud
+END:VALARM
+BEGIN:VALARM
+TRIGGER;VALUE=DATE-TIME:19970317T133000Z
+REPEAT:5
+DURATION:PT55M
+ACTION:AUDIO
+ATTACH:FMTYPE=audio/basic:ftp://example.com/pub/sounds/test.aud
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:uid2@example.com
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=Cornelius Samuelson III:MAILTO:cornelius
+ samsuelsoniii@gmail.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+CLASS:PUBLIC
+SUMMARY:Lunch (Slop) at 12:30pm with the proletariat where
+  Cornelius will discuss wage cuts.
+DESCRIPTION:The wages are much too high and Cornelius requires
+  an addition on his mansion to host parties. Such cost will
+  be covered through extensive wage reductions.
+END:VEVENT
+BEGIN:VEVENT
+UID:uid3@example.com
+DTSTAMP:19970714T170000Z
+DTSTART:19970714T170000Z
+ORGANIZER;CN=Jimmy Johnson:MAILTO:john.doe@example.com
+DTEND:19970715T035959Z
+CLASS:PUBLIC
+PRIORITY:7
+LOCATION:SOMEWHEREVILLE
+GEO:0.1241154;-122.08324
+STATUS:CONFUSED
+TRANSP:OPAQUE
+RESOURCES:Things that are necessary
+SUMMARY:Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+	 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+	 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris
+	 nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
+	 reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+	 pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+	 culpa qui officia deserunt mollit anim id est laborum.
+DESCRIPTION:Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  Quisque porta accumsan ante, nec auctor risus fermentum in. Sed
+  vestibulum pretium mi, vitae vestibulum mi auctor eu. Fusce mattis
+  porta erat, non convallis nisi fringilla malesuada. Nulla odio massa,
+  venenatis in est at, varius tempus ipsum. Vivamus molestie efficitur
+  urna id ultricies. Aenean placerat pellentesque nunc sed iaculis.
+  Suspendisse consequat lorem ligula, quis sagittis massa vestibulum ac.
+  Cras dictum pretium enim, sit amet sollicitudin augue. Suspendisse nec
+  neque auctor lectus sollicitudin vulputate. Integer non eleifend turpis.
+  Maecenas at tellus feugiat, convallis enim a, pretium lorem. Ut vel
+  enim sed magna porta pulvinar eu eu mi.
+  Sed laoreet nibh arcu, eget tempus ex dapibus id. Aliquam interdum
+  feugiat sapien vel tincidunt. Quisque elit sapien, malesuada at
+  ultrices eget, tempus a erat. Nulla tristique tincidunt odio, et
+  cursus ante gravida nec. Curabitur varius consequat nisi, eu varius
+  turpis sagittis in. Vestibulum velit nisl, semper consectetur risus nec,
+  ullamcorper volutpat est. Maecenas elementum euismod est pretium aliquam.
+  Praesent feugiat sem mi, a viverra leo fermentum in. Fusce iaculis
+  dictum eleifend. Maecenas sit amet ultricies augue. Vivamus sed
+  mauris in orci bibendum egestas. Donec elementum a dolor in aliquet.
+  Duis arcu augue, malesuada a odio a, bibendum pellentesque purus.
+  Suspendisse urna magna, tristique vitae ipsum a, pellentesque
+  pulvinar ante. Ut ut finibus turpis, eget eleifend odio.
+BEGIN:VALARM
+TRIGGER;VALUE=DATE-TIME:19970317T133000Z
+REPEAT:5
+DURATION:PT55M
+ACTION:AUDIO
+ATTACH:FMTYPE=audio/basic:ftp://example.com/pub/sounds/
+ really-longfile
+ .aud
+END:VALARM
+END:VEVENT
+END:VCALENDAR

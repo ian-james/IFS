@@ -14,7 +14,7 @@
            "route": "",
            "filesAllowed": "zipFile",
            "parseCmd": "",
-           "defaultArg": "-s A2",
+           "defaultArg": "-s A1W19",
            "fileArgs": "-d",
            "options":  [
                

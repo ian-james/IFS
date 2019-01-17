@@ -75,6 +75,8 @@ def main(argv):
 			chosenSubmission=arg.upper()
 			if (chosenSubmission == "A2"):
 				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceF18A2.json"
+			elif (chosenSubmission == "A1W19"):
+				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceW19A1.json"
 
 
 	if idirectory != '':

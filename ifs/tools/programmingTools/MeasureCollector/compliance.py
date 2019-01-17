@@ -180,6 +180,59 @@ def getRegexesA2():
 "void *addProperty *\( *Card *\* *[A-Za-z]* *\, *const *Property *\* *[A-Za-z]* *\)"
 ]]
 
+def getReferenceFunctionsW19A1():
+	return ["CalendarParser.c", [
+		"ICalErrorCode createCalendar(char* fileName, Calendar** obj)",
+		"char* printCalendar(const Calendar* obj)",
+		"void deleteCalendar(Calendar* obj)",
+		"char* printError(ICalErrorCode err)"
+		], 
+		"Any", [	
+		"void deleteEvent(void* toBeDeleted)",
+		"int compareEvents(const void* first, const void* second)",
+		"char* printEvent(void* toBePrinted)",
+		"void deleteAlarm(void* toBeDeleted)",
+		"int compareAlarms(const void* first, const void* second)",
+		"char* printAlarm(void* toBePrinted)",
+		"void deleteProperty(void* toBeDeleted)",
+		"int compareProperties(const void* first, const void* second)",
+		"char* printProperty(void* toBePrinted)",
+		"void deleteDate(void* toBeDeleted)",
+		"int compareDates(const void* first, const void* second)",
+		"char* printDate(void* toBePrinted)",
+		]
+	]
+	
+
+def getRegexesW19A1():
+	return ["CalendarParser.c", [
+		"ICalErrorCode *createCalendar *\( *char *\* *[A-Za-z]+ *\, *Calendar *\*\* *[A-Za-z]+ *\)",
+		"char *\* *printCalendar *\( *const *Calendar *\* *[A-Za-z]+ *\)",
+		"void *deleteCalendar *\( *Calendar *\* *[A-Za-z]+ *\)",
+		"char *\* *printError *\( *ICalErrorCode *[A-Za-z]+ *\)"#,
+		], 
+		"Any", [
+
+		"void *deleteEvent *\( *void *\* *[A-za-z]+ *\)",
+		"int *compareEvents *\( *const *void *\* *[A-za-z]+ *, *const *void *\* *[A-Za-z]+ *\)",
+		"char *\* *printEvent *\( *void *\* *[A-za-z]+ *\)",
+
+		"void *deleteAlarm *\( *void *\* *[A-za-z]+ *\)",
+		"int *compareAlarms *\( *const *void *\* *[A-za-z]+ *, *const *void *\* *[A-Za-z]+ *\)",
+		"char *\* *printAlarm *\( *void *\* *[A-za-z]+ *\)",
+
+
+		"void *deleteProperty *\( *void *\* *[A-za-z]+ *\)",
+		"int *compareProperties *\( *const *void *\* *[A-za-z]+ *, *const *void *\* *[A-Za-z]+ *\)",
+		"char *\* *printProperty *\( *void *\* *[A-za-z]+ *\)",
+
+
+		"void *deleteDate *\( *void *\* *[A-za-z]+ *\)",
+		"int *compareDates *\( *const *void *\* *[A-za-z]+ *, *const *void *\* *[A-Za-z]+ *\)",
+		"char *\* *printDate *\( *void *\* *[A-za-z]+ *\)"
+		]
+	]
+
 #Parse the JSON string for information and translate that into a list which can be interpreted by other functions
 #INPUT: The directory passed as a command line argument where student folders exist, the JSON file which was written for the assignment
 #OUTPUT: Four lists which contain all of the expected folder, files, functions and readme headings
@@ -215,6 +268,8 @@ def getExpectedStructure(idirectory, jsonString, assignment):
 		expectedFunctionDeclarations = getRegexes()
 	elif (assignment == "A2" or assignment == "A2R"):
 		expectedFunctionDeclarations = getRegexesA2()
+	elif (assignment == "A1W19"):
+		expectedFunctionDeclarations = getRegexesW19A1()
 	else:
 		print "ERROR: ASSIGNMENT UNKNOWN"
 		exit()
@@ -411,7 +466,8 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, outputStr
 			if (expected.lower() == actual[searchLen:].lower()):
 				found = True
 				totalFoundFolderCount = totalFoundFolderCount + 1
-		if (found == False and "bin" not in expected):
+		#if (found == False and "bin" not in expected):
+		if (found == False):
 			#if (csv == False):
 			folderMessage = ""
 			folderMessage += "Missing folder "
@@ -467,6 +523,9 @@ def compareFolders(expectedFolderNames, actualFolderNames, firstPrint, outputStr
 
 def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, firstPrint, outputString, csv=False, csvList=[]):
 	tempList = []
+	fileNames = []
+	allRegexList = []
+	refFunctions=[]
 	i = 0
 	found = False
 	missingCount = 0
@@ -474,38 +533,74 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 		refList = getReferenceFunctions()
 	elif (assignment == "A2" or assignment == "A2R"):
 		refList = getReferenceFunctionsA2()
+	elif (assignment == "A1W19"):
+		refList = getReferenceFunctionsW19A1()
 	else:
 		print "ERROR: UNKNOWN ASSIGNMENT"
 		exit()
-	refFunctions=refList[1]
-	#print len(expectedFunctionNames)
-	for functions in expectedFunctionRegexes[1]:
-		#print i
-		#print "EXPECTED =",functions
-		
-		for actual in actualFunctionNames:
-			#print "ACTUAL =",actual
-			if (re.search(functions, actual) != None):
-				found = True
-				#print "MATCH FOUND"
-				break
-		if (found == False):
-			#print "EXPECTED =",functions, "NOT FOUND"
-			#if (csv == False):
-			functionMessage = ""
-			functionMessage += "Missing function "
-			functionMessage += refFunctions[i]
-			functionMessage += " from file "
-			functionMessage += refList[0]
-			functionMessage += ". Ensure the function is named correctly and implemented in the correct file."
-			#print folderMessage
-			outputString += decorate("Compliance", "error", "Error, missing function", refList[0], 0, 0, functionMessage, firstPrint)
-			firstPrint = False
-				#print "ERROR: Missing or improperly defined function:", refList[0],":", refList[1][i]
-			missingCount = missingCount+1
-		found = False
+	i=0
+	for e in refList:
+		if (i%2 == 1):
+			refFunctions.append(refList[i])
 		i=i+1
 	i=0
+	print refFunctions
+	#print len(expectedFunctionNames)
+	#for a in actualFunctionNames:
+		#print a
+	#for e in expectedFunctionRegexes:
+		#print e
+	#print actualFunctionNames
+	#print expectedFunctionRegexes[0]
+	
+	for e in expectedFunctionRegexes:
+		if (i%2 == 0):
+			fileNames.append(e)
+		else:
+			allRegexList.append(e)
+		i=i+1
+	
+	#for a in fileNames:
+		#print a
+	#for e in allRegexList:
+		#print e	
+	
+	i=0
+	j=0
+	for regexListByFile in allRegexList:
+		for functions in regexListByFile:
+			#print functions
+			#print i
+			#print "EXPECTED =",functions
+		
+			for actual in actualFunctionNames:
+				#print "ACTUAL =",actual
+				#print "FUNCTIONS =",functions
+				if (re.search(functions, actual) != None):
+					found = True
+					#print "MATCH FOUND"
+					break
+			if (found == False):
+				#print "EXPECTED =",functions, "NOT FOUND"
+				#if (csv == False):
+				functionMessage = ""
+				functionMessage += "Missing function "
+				#print refFunctions[j+1]
+				functionMessage += refFunctions[j][i]
+				functionMessage += " from file "
+				functionMessage += fileNames[j]
+				functionMessage += ". Ensure the function is named correctly and implemented in the correct file."
+				#print folderMessage
+				outputString += decorate("Compliance", "error", "Error, missing function", fileNames[j], 0, 0, functionMessage, firstPrint)
+				firstPrint = False
+					#print "ERROR: Missing or improperly defined function:", refList[0],":", refList[1][i]
+				missingCount = missingCount+1
+			found = False
+			i=i+1
+		i=0
+		j=j+1
+	i=0
+	j=0
 	for actual in actualFunctionNames:
 		#print actual
 		
@@ -586,13 +681,16 @@ def complianceManager(idirectory, assignment, complianceFilePath, outputString, 
 	expectedOutputFiles = []
 	
 	expectedFileNames, expectedFolderNames, expectedFunctionDeclarations, expectedReadmeCategories, expectedOutputFiles = getExpectedStructure(idirectory, complianceFilePath, assignment)
+	
+	#print expectedFunctionDeclarations
 
 	#actualFunctionNames = getCtagsInfo(idirectory)
 
 	actualFolderNames, actualFileNames, actualFunctionDeclarations = getActualStructure(idirectory)
 	
 	
-	
+	#print expectedFunctionDeclarations
+	#print actualFunctionDeclarations
 	
 		#print actualOutputFiles
 		#print "EXPECTED FUNCTIONS"

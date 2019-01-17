@@ -1,0 +1,26 @@
+{
+    "compliance": 
+     {
+		"folderNames": [
+			"assign1",
+			"assign1/bin",
+			"assign1/include",
+			"assign1/src"
+		],
+		"fileNames": [
+			"src/CalendarParser.c",
+			"src/LinkedListAPI.c",
+			"Makefile",
+			"README"
+		],
+		"readmeCategories": [
+			"Student Identification",
+			"Known Issues",
+			"List of References"
+		],
+		"outputFiles": [
+		    "liblist.so",
+            "libcal.so"
+        ]
+	}
+}
