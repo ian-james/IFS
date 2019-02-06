@@ -113,6 +113,7 @@ def main(argv):
 		#decorate("Compliance", "warning", "Warning, potential mark deduction", "Testing.c", 20, 5, "Testing!!!")
 		
 		#print "]\n}"
+		outputString += ",{\"severity\": \"warning\", \"filename\": \"CalendarParser.c\", \"lineNum\": \"0\", \"toolName\": \"Compliance\", \"charPos\": \"0\", \"type\": \"warning\", \"feedback\": \"Functions ICalErrorCode validateCalendar(const Calendar* obj) and ICalErrorCode writeCalendar(char* fileName, const Calendar* obj) are not currently tested in this version of IFS. Please implement those functions in CalendarParser.c.\"}"
 		outputString += "]\n}"
 		fileLocation = idirectory.rsplit('/', 1)[0]
 		fileLocation = fileLocation + "/IFS-SPECIFIC-MEASURE-FILE.txt"
