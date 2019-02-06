@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -g -Iinclude -IstudentInclude -std=c11
 CARD_TEST_FILES = src/CardTest.c src/CardTestCreate.c src/CardTestOther.c src/CardTestUtilities.c src/CardTestWrite.c src/CardTestValidate.c src/CardTestA2Module3.c src/TestHarness2.c
-CAL_TEST_FILES = src/CalTestCasesA1.c src/CalTestCasesA2.c src/CalTestUtilities.c src/CalTestObjects.c src/TestHarness2.c
+CAL_TEST_FILES = src/CalTestCasesA1.c src/CalTestUtilities.c src/CalTestObjects.c src/TestHarness2.c
 A1_TEST = src/CalTestA1.c
 ALL_TEST = src/CalTestAll.c
 
@@ -16,9 +16,6 @@ endif
 
 calTestsA1:  
 	$(CC)  $(CFLAGS) $(A1_TEST) $(CAL_TEST_FILES) studentCode/*.c  -o bin/calTestsA1
-
-calTestsAll:  
-	$(CC) $(CFLAGS) $(ALL_TEST) $(CAL_TEST_FILES) studentCode/*.c  -o bin/calTestsAll
 
 
 funcTest: cardTests
