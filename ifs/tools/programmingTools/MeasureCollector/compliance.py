@@ -232,6 +232,81 @@ def getRegexesW19A1():
 		"char *\* *printDate *\( *void *\* *[A-za-z]+ *\)"
 		]
 	]
+	
+	
+
+def getReferenceFunctionsW19A2():
+	return ["CalendarParser.c", [
+		"ICalErrorCode createCalendar(char* fileName, Calendar** obj)",
+		"char* printCalendar(const Calendar* obj)",
+		"void deleteCalendar(Calendar* obj)",
+		"char* printError(ICalErrorCode err)",
+		"ICalErrorCode writeCalendar(char* fileName, const Calendar* obj)",
+		"ICalErrorCode validateCalendar(const Calendar* obj)"
+		], 
+		"Any", [	
+		"void deleteEvent(void* toBeDeleted)",
+		"int compareEvents(const void* first, const void* second)",
+		"char* printEvent(void* toBePrinted)",
+		"void deleteAlarm(void* toBeDeleted)",
+		"int compareAlarms(const void* first, const void* second)",
+		"char* printAlarm(void* toBePrinted)",
+		"void deleteProperty(void* toBeDeleted)",
+		"int compareProperties(const void* first, const void* second)",
+		"char* printProperty(void* toBePrinted)",
+		"void deleteDate(void* toBeDeleted)",
+		"int compareDates(const void* first, const void* second)",
+		"char* printDate(void* toBePrinted)",
+		"char* dtToJSON(DateTime prop)",
+		"char* eventToJSON(const Event* event)",
+		"char* eventListToJSON(const List* eventList)",
+		"char* calendarToJSON(const Calendar* cal)",
+		"Calendar* JSONtoCalendar(const char* str)",
+		"Event* JSONtoEvent(const char* str)",
+		"void addEvent(Calendar* cal, Event* toBeAdded)"
+		]
+	]
+	
+
+def getRegexesW19A2():
+	return ["CalendarParser.c", [
+		"ICalErrorCode *createCalendar *\( *char *\* *[A-Za-z]+ *\, *Calendar *\*\* *[A-Za-z]+ *\)",
+		"char *\* *printCalendar *\( *const *Calendar *\* *[A-Za-z]+ *\)",
+		"void *deleteCalendar *\( *Calendar *\* *[A-Za-z]+ *\)",
+		"char *\* *printError *\( *ICalErrorCode *[A-Za-z]+ *\)",
+		"ICalErrorCode *writeCalendar *\( *char *\* *[A-Za-z]+ *\, *const *Calendar *\* *[A-Za-z]+ *\)",
+		"ICalErrorCode *validateCalendar *\( *const *Calendar *\* *[A-Za-z]+ *\)"
+		], 
+		"Any", [
+
+		"void *deleteEvent *\( *void *\* *[A-za-z]+ *\)",
+		"int *compareEvents *\( *const *void *\* *[A-za-z]+ *, *const *void *\* *[A-Za-z]+ *\)",
+		"char *\* *printEvent *\( *void *\* *[A-za-z]+ *\)",
+
+		"void *deleteAlarm *\( *void *\* *[A-za-z]+ *\)",
+		"int *compareAlarms *\( *const *void *\* *[A-za-z]+ *, *const *void *\* *[A-Za-z]+ *\)",
+		"char *\* *printAlarm *\( *void *\* *[A-za-z]+ *\)",
+
+
+		"void *deleteProperty *\( *void *\* *[A-za-z]+ *\)",
+		"int *compareProperties *\( *const *void *\* *[A-za-z]+ *, *const *void *\* *[A-Za-z]+ *\)",
+		"char *\* *printProperty *\( *void *\* *[A-za-z]+ *\)",
+
+
+		"void *deleteDate *\( *void *\* *[A-za-z]+ *\)",
+		"int *compareDates *\( *const *void *\* *[A-za-z]+ *, *const *void *\* *[A-Za-z]+ *\)",
+		"char *\* *printDate *\( *void *\* *[A-za-z]+ *\)",
+		
+		"char *\* *dtToJSON *\( *DateTime *[A-Za-z]+ *\)",
+		"char *\* *eventToJSON *\( *const *Event *\* *[A-Za-z]+ *\)",
+		"char *\* *eventListToJSON *\( *const *List *\* *[A-Za-z]+ *\)",
+		"char *\* *calendarToJSON *\( *const *Calendar *\* *[A-Za-z]+ *\)",
+		"Calendar *\* *JSONtoCalendar *\( *const *char *\* *[A-Za-z]+ *\)",
+		"Event *\* *JSONtoEvent *\( *const *char *\* *[A-Za-z]+ *\)",
+		"void *addEvent *\( *Calendar *\* *[A-Za-z]+ *\, *Event *\* *[A-Za-z]+ *\)"
+		]
+	]
+
 
 #Parse the JSON string for information and translate that into a list which can be interpreted by other functions
 #INPUT: The directory passed as a command line argument where student folders exist, the JSON file which was written for the assignment
@@ -270,6 +345,8 @@ def getExpectedStructure(idirectory, jsonString, assignment):
 		expectedFunctionDeclarations = getRegexesA2()
 	elif (assignment == "A1W19"):
 		expectedFunctionDeclarations = getRegexesW19A1()
+	elif (assignment == "A2W19"):
+		expectedFunctionDeclarations = getRegexesW19A2()
 	else:
 		print "ERROR: ASSIGNMENT UNKNOWN"
 		exit()
@@ -535,6 +612,8 @@ def compareFunctions(expectedFunctionRegexes, actualFunctionNames, assignment, f
 		refList = getReferenceFunctionsA2()
 	elif (assignment == "A1W19"):
 		refList = getReferenceFunctionsW19A1()
+	elif (assignment == "A2W19"):
+		refList = getReferenceFunctionsW19A2()
 	else:
 		print "ERROR: UNKNOWN ASSIGNMENT"
 		exit()

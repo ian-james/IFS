@@ -77,6 +77,8 @@ def main(argv):
 				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceF18A2.json"
 			elif (chosenSubmission == "A1W19"):
 				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceW19A1.json"
+			elif (chosenSubmission == "A2W19"):
+				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceW19A2.json"
 
 
 	if idirectory != '':

@@ -1,8 +1,8 @@
 {
     "tools": [
         {
-           "displayName": "CIS*2750 A1 Compliance Checker",
-           "description": "Checks a submission for compliance with some of the mandatory rules for CIS*2750 A1. Only a guide, make sure to read the outline thoroughly before your final submission!",
+           "displayName": "CIS*2750 A2 Compliance Checker",
+           "description": "Checks a submission for compliance with some of the mandatory rules for CIS*2750 A2. Only a guide, make sure to read the outline thoroughly before your final submission!",
            "technicalDesc": "A Python suite that checks for various compliance issues in a submission of student's code agains the CIS*2750 W19 A1 rubric.",
            "author": "IFS Development Team",
            "copyright": "Copyright © 2018",
@@ -14,7 +14,7 @@
            "route": "",
            "filesAllowed": "zipFile",
            "parseCmd": "",
-           "defaultArg": "-s A1W19",
+           "defaultArg": "-s A2W19",
            "fileArgs": "-d",
            "options":  [
                

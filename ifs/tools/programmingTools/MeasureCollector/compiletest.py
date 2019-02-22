@@ -138,6 +138,9 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 		elif (assignment == "A1W19"):
 			copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentCode")
 			copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentInclude")
+		elif (assignment == "A2W19"):
+			copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A2/studentCode")
+			copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A2/studentInclude")
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
 			exit()
@@ -150,6 +153,8 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentCode")
 		elif (assignment == "A1W19"):
 			errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentCode")
+		elif (assignment == "A2W19"):
+			errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A2/studentCode")
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
 			exit()
@@ -168,6 +173,9 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 				elif (assignment == "A1W19"):
 					errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentCode")
 					copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentInclude", ["CalendarParser.h", "LinkedListAPI.h"])
+				elif (assignment == "A2W19"):
+					errCode = copyFiles(srcDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A2/studentCode")
+					copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A2/studentInclude", ["CalendarParser.h", "LinkedListAPI.h"])
 				else:
 					print "ERROR: ASSIGNMENT UNKNOWN"
 					exit()
@@ -177,7 +185,9 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			elif (assignment == "A2"):
 				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude", ["GEDCOMparser.h", "LinkedListAPI.h"])
 			elif (assignment == "A1W19"):
-				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestF18A2/studentInclude", ["CalendarParser.h", "LinkedListAPI.h"])
+				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A1/studentInclude", ["CalendarParser.h", "LinkedListAPI.h"])
+			elif (assignment == "A2W19"):
+				copyFiles(includeDirectory, "./tools/programmingTools/MeasureCollector/compiletestW19A2/studentInclude", ["CalendarParser.h", "LinkedListAPI.h"])
 			else:
 				print "ERROR: ASSIGNMENT UNKNOWN"
 				exit()
@@ -195,12 +205,16 @@ def compileManager(projectFiles, runharness, showErrors, assignment, complianceF
 			result = subprocess.Popen("./tools/programmingTools/MeasureCollector/.checkharnessA2.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 		elif (assignment == "A1W19"):
 			result = subprocess.Popen("./tools/programmingTools/MeasureCollector/.checkharnessW19A1.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+		elif (assignment == "A2W19"):
+			result = subprocess.Popen("./tools/programmingTools/MeasureCollector/.checkharnessW19A2.sh", stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 		
 		else:
 			print "ERROR: ASSIGNMENT UNKNOWN"
 			exit()
 	#Trim garbage output
+	#print result
 	listResult = list(result)
+	
 
 	#Call the cleanup script
 	#Remove all student files and leftover files from the project
