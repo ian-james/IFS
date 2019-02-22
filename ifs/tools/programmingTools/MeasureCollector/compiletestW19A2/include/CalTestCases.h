@@ -39,16 +39,55 @@ testRec* _tDeleteCalTest(int testNum);
 testRec* _tPrintErrTest(int testNum);
 
 //A2
-testRec* paramsTest(int testNum);
-testRec* validateTest(int testNum);
-testRec* _tValidateTestInvArgs(int testNum);
-testRec* outputTest(int testNum);
+//Module 1
+testRec* _tWriteTestInvArgs(int testNum);
+testRec* _tValidWriteTest1(int testNum);
+testRec* _tValidWriteTest2(int testNum);
+testRec* _tValidWriteTest3(int testNum);
+testRec* _tValidWriteTest4(int testNum);
+testRec* _tValidWriteTest5(int testNum);
+testRec* _tValidWriteTest6(int testNum);
+testRec* _tValidWriteTest7(int testNum);
+testRec* _tValidWriteTest8(int testNum);
+testRec* _tValidWriteTest9(int testNum);
+testRec* _tValidWriteTest10(int testNum);
+
+
 testRec* megaCalTestWrite(int testNum);
 
-//A2 Mod 3
+//Module 2
+//testRec* paramsTest(int testNum);
+//testRec* validateTest(int testNum);
+testRec* _tValidateTestInvArgs(int testNum);
+
+testRec* _tValidateObjTest0(int testNum);
+testRec* _tValidateObjTest1(int testNum);
+testRec* _tValidateObjTest2(int testNum);
+testRec* _tValidateObjTest3(int testNum);
+testRec* _tValidateObjTest4(int testNum);
+testRec* _tValidateObjTest5(int testNum);
+testRec* _tValidateObjTest6(int testNum);
+testRec* _tValidateObjTest7(int testNum);
+testRec* _tValidateObjTest8(int testNum);
+testRec* _tValidateObjTest9(int testNum);
+testRec* _tValidateObjTest10(int testNum);
+
+
+testRec* _tValidateTest1(int testNum);
+testRec* _tValidateTest2(int testNum);
+testRec* _tValidateTest3(int testNum);
+testRec* _tValidateTest4(int testNum);
+testRec* _tValidateTest5(int testNum);
+testRec* _tValidateTest6(int testNum);
+testRec* _tValidateTest7(int testNum);
+
+
+
+//Module 3
 testRec* _tTestDTtoJSON(int testNum);
 
 testRec* _tTestEvtToJSONInv(int testNum);
+testRec* _tTestEvtToJSON(int testNum);
 
 testRec* _tTestEvtListToJSONInv(int testNum);
 

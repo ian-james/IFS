@@ -94,6 +94,26 @@ Calendar* _tEvtPropCalendar(void)
     return calendar;
 }
 
+Calendar* _tEvtPropCalendar2(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
+
+    DateTime dtStamp = _tCreateTestDateTime("19970714","170000",true);
+    DateTime dtStart = _tCreateTestDateTime("19970714","170000",true);
+    Event *event = _tCreateTestEvent("uid1@example.com", dtStamp, dtStart);
+
+    _tInsertBack(calendar->events, event);
+
+    Property* prop = _tCreateTestProp("DTEND", "19970715T035959Z");
+    _tInsertBack(event->properties, (void*)prop);
+    prop = _tCreateTestProp("CLASS", "PUBLIC");
+    _tInsertBack(event->properties, (void*)prop);
+    prop = _tCreateTestProp("SUMMARY", "Bastille Day Party");
+    _tInsertBack(event->properties, (void*)prop);
+
+    return calendar;
+}
+
 
 //Calendar with Event Properties and Alarms
 Calendar* _tAlmPropCalendar(void)
@@ -534,13 +554,13 @@ Calendar* _tMegaLineFolding(void) {
 
 }
 
-//************************************ A1 ************************************
+//************************************ A2 ************************************
 
 /**
  * Include two DTSTART properties
  * @return
  */
-Calendar* _tInvalidEventCalendar(void) {
+Calendar* _tInvalidEventDupProp(void) {
 
     Property *prop = NULL;
     Calendar* cal = _tCreateTestCalendar("-/SOME/PROD/ID", 2);
@@ -559,10 +579,11 @@ Calendar* _tInvalidEventCalendar(void) {
 }
 
 /**
- * Includes two PRODIDs and two DTSTARTs but should call INV_CAL
+ * Includes two PRODIDs
  * @return
  */
-Calendar* _tInvalidMultiComp(void) {
+Calendar* _tInvalidCalDupVal(void) 
+{
 
     Property *prop = NULL;
     Calendar* cal = _tCreateTestCalendar("-/SOME/PROD/ID", 2);
@@ -572,40 +593,62 @@ Calendar* _tInvalidMultiComp(void) {
     prop = _tCreateTestProp("PRODID", "ONLY/BE/ONE/OF/ME");
     _tInsertBack(cal->properties, prop);
     
-
     dtStamp = _tCreateTestDateTime("19970815","170000",true);
     dtStart = _tCreateTestDateTime("19970815","170000",true);
 
     Event* event = _tCreateTestEvent("SOMEUID1@EXAMPLE.COM", dtStamp, dtStart);
     _tInsertBack(cal->events, event);
 
-    prop = _tCreateTestProp("ORGANIZER", "CN=Jimmy Johnson:MAILTO:john.doe@example.com");
-    _tInsertBack(event->properties, prop);
-    prop = _tCreateTestProp("DTSTART", "19970714T170000Z");
-    _tInsertBack(event->properties, prop);
-    prop = _tCreateTestProp("DTEND", "19970715T035959Z");
-    _tInsertBack(event->properties, prop);
-    prop = _tCreateTestProp("DTSTART", "19970714T170000Z");
-    _tInsertBack(event->properties, prop);
-    prop = _tCreateTestProp("CLASS", "PUBLIC");
-    _tInsertBack(event->properties, prop);
-    prop = _tCreateTestProp("SUMMARY", "Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-    _tInsertBack(event->properties, prop);
-
     return cal;
-
 }
 
-//Inalid eent - has duration property
-Calendar* _tInvalidDuration(void)
+Calendar* _tInvalidCalEmptyPropVal(void) 
+{
+
+    Property *prop = NULL;
+    Calendar* cal = _tCreateTestCalendar("-/SOME/PROD/ID", 2);
+    DateTime dtStamp;
+    DateTime dtStart;
+    
+    prop = _tCreateTestProp("CALSCALE", "");
+    _tInsertBack(cal->properties, prop);
+    
+    dtStamp = _tCreateTestDateTime("19970815","170000",true);
+    dtStart = _tCreateTestDateTime("19970815","170000",true);
+
+    Event* event = _tCreateTestEvent("SOMEUID1@EXAMPLE.COM", dtStamp, dtStart);
+    _tInsertBack(cal->events, event);
+
+    return cal;
+}
+
+
+// Property that cannot appear in a Calendar property list
+Calendar* _tInvalidNonCalProp(void) 
+{
+
+    Property *prop = NULL;
+    Calendar* cal = _tCreateTestCalendar("-/SOME/PROD/ID", 2);
+    DateTime dtStamp;
+    DateTime dtStart;
+    
+    prop = _tCreateTestProp("TRIGGER", "trigger stuff");
+    _tInsertBack(cal->properties, prop);
+    
+    dtStamp = _tCreateTestDateTime("19970815","170000",true);
+    dtStart = _tCreateTestDateTime("19970815","170000",true);
+
+    Event* event = _tCreateTestEvent("SOMEUID1@EXAMPLE.COM", dtStamp, dtStart);
+    _tInsertBack(cal->events, event);
+
+    return cal;
+}
+
+//Inalid event - has calscale property
+Calendar* _tInvalidEventNonEvProp(void)
 {
     Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
     Property* prop;
-
-    prop = _tCreateTestProp("CALSCALE", "GREGORIAN");
-    _tInsertBack(calendar->properties, prop);
-    prop = _tCreateTestProp("METHOD", "REQUEST");
-    _tInsertBack(calendar->properties, prop);
 
     DateTime dtStamp = _tCreateTestDateTime("19970714","170000",false);
     DateTime dtStart = _tCreateTestDateTime("19970714","170000",false);
@@ -614,36 +657,40 @@ Calendar* _tInvalidDuration(void)
     _tInsertBack(calendar->events, event);
 
     // should not have duration
-    prop = _tCreateTestProp("DURATION", "60M");
+    prop = _tCreateTestProp("CALSCALE", "GREGORIAN");
     _tInsertBack(event->properties, prop);
     
 
     return calendar;
 }
 
-//Dup calscale
-Calendar* _tInvalidCalScale(void) {
-    Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
-    Property* prop;
+//DTSTART in Alarm
+Calendar* _tInvalidAlarmNonAlmProp(void) 
+{
+    Calendar* calendar = _tCreateTestCalendar("-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN", 2);
 
-    prop = _tCreateTestProp("CALSCALE", "GREGORIAN");
-    _tInsertBack(calendar->properties, prop);
-    prop = _tCreateTestProp("CALSCALE", "GREGORIAN");
-    _tInsertBack(calendar->properties, prop);
-    prop = _tCreateTestProp("METHOD", "REQUEST");
-    _tInsertBack(calendar->properties, prop);
-
-    DateTime dtStamp = _tCreateTestDateTime("19970714","170000",false);
-    DateTime dtStart = _tCreateTestDateTime("19970714","170000",false);
-    Event *event = _tCreateTestEvent("uid1@example.com", dtStamp, dtStart);
+    DateTime dtStamp = _tCreateTestDateTime("20160106","145812",true);
+    DateTime dtStart = _tCreateTestDateTime("20151002","100000",true);
+    Event *event = _tCreateTestEvent("332414a0-54a1-408b-9cb1-2c9d1ad3696d", dtStamp, dtStart);
 
     _tInsertBack(calendar->events, event);
+
+    //Add alarms
+    
+    //Alarm 1
+    Alarm* testAlm = _tCreateTestAlarm("AUDIO","VALUE=DATE-TIME:19970317T133000Z");
+
+    //Dup trigger
+    Property* prop = _tCreateTestProp("DTSTART", "19970317T133000Z");
+    _tInsertBack(testAlm->properties, prop);
+
+    _tInsertBack(event->alarms, testAlm);
 
     return calendar;
 }
 
 //Two triggers
-Calendar* _tInvalidAttach(void) {
+Calendar* _tInvalidAlarmDupProp(void) {
     
     Calendar* calendar = _tCreateTestCalendar("-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN", 2);
 
@@ -653,38 +700,128 @@ Calendar* _tInvalidAttach(void) {
 
     _tInsertBack(calendar->events, event);
 
-    //Add properties
-    Property* prop = _tCreateTestProp("CREATED", "20160106T145812Z");
-    _tInsertBack(event->properties, (void*)prop);
-    prop = _tCreateTestProp("LAST-MODIFIED", "20160106T145812Z");
-    _tInsertBack(event->properties, (void*)prop);
-    prop = _tCreateTestProp("SUMMARY", "Han Solo @ Naboo");
-    _tInsertBack(event->properties, (void*)prop);
-    prop = _tCreateTestProp("STATUS", "CONFIRMED");
-    _tInsertBack(event->properties, (void*)prop);
-    prop = _tCreateTestProp("ORGANIZER", "CN=Obi-Wan Kenobi;mailto:laowaion@padawan.com");
-    _tInsertBack(event->properties, (void*)prop);
-    prop = _tCreateTestProp("DTEND", "20151002T110000");
-    _tInsertBack(event->properties, (void*)prop);
-
     //Add alarms
     
     //Alarm 1
     Alarm* testAlm = _tCreateTestAlarm("AUDIO","VALUE=DATE-TIME:19970317T133000Z");
 
-    prop = _tCreateTestProp("REPEAT", "4");
-    _tInsertBack(testAlm->properties, (void*)prop);
-    prop = _tCreateTestProp("DURATION", "PT15M");
-    _tInsertBack(testAlm->properties, (void*)prop);
-    prop = _tCreateTestProp("ATTACH", "FMTTYPE=audio/basic:ftp://example.com/pub/sounds/bell-01.aud");
-    _tInsertBack(testAlm->properties, (void*)prop);
-
     //Dup trigger
-    prop = _tCreateTestProp("TRIGGER", "VALUE=DATE-TIME:19970317T133000Z");
-    _tInsertBack(testAlm->properties, (void*)prop);
+    Property* prop = _tCreateTestProp("TRIGGER", "VALUE=DATE-TIME:19970317T133000Z");
+    _tInsertBack(testAlm->properties, prop);
 
     _tInsertBack(event->alarms, testAlm);
 
+
+    return calendar;
+}
+
+/* inalid objects */
+
+Calendar* _tInvalidCalNullList1(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
+
+    DateTime dtStamp = _tCreateTestDateTime("19970714","170000",false);
+    DateTime dtStart = _tCreateTestDateTime("19970714","170000",false);
+    Event *event = _tCreateTestEvent("uid1@example.com", dtStamp, dtStart);
+
+    _tInsertBack(calendar->events, event);
+
+    calendar->properties = NULL;
+
+    return calendar;
+}
+
+Calendar* _tInvalidCalNullList2(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
+
+    calendar->events = NULL;
+
+    return calendar;
+}
+
+Calendar* _tInvalidEventNullList1(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
+
+    DateTime dtStamp = _tCreateTestDateTime("19970714","170000",false);
+    DateTime dtStart = _tCreateTestDateTime("19970714","170000",false);
+    Event *event = _tCreateTestEvent("uid1@example.com", dtStamp, dtStart);
+
+    _tInsertBack(calendar->events, event);
+
+    event->properties = NULL;
+
+    return calendar;
+}
+
+Calendar* _tInvalidEventNullList2(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
+
+    DateTime dtStamp = _tCreateTestDateTime("19970714","170000",false);
+    DateTime dtStart = _tCreateTestDateTime("19970714","170000",false);
+    Event *event = _tCreateTestEvent("uid1@example.com", dtStamp, dtStart);
+
+    _tInsertBack(calendar->events, event);
+
+    event->alarms = NULL;
+
+    return calendar;
+}
+
+Calendar* _tInvalidEventShortDate(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
+
+    DateTime dtStamp = _tCreateTestDateTime("19970714","0000",false);
+    DateTime dtStart = _tCreateTestDateTime("19970714","170000",false);
+    Event *event = _tCreateTestEvent("uid1@example.com", dtStamp, dtStart);
+
+    _tInsertBack(calendar->events, event);
+
+    return calendar;
+}
+
+Calendar* _tInvalidAlmNullTrigger(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN", 2);
+
+    DateTime dtStamp = _tCreateTestDateTime("20160106","145812",true);
+    DateTime dtStart = _tCreateTestDateTime("20151002","100000",true);
+    Event *event = _tCreateTestEvent("332414a0-54a1-408b-9cb1-2c9d1ad3696d", dtStamp, dtStart);
+
+    _tInsertBack(calendar->events, event);
+
+    //Add alarms
+    
+    //Alarm 1
+    Alarm* testAlm = _tCreateTestAlarm("AUDIO","VALUE=DATE-TIME:19970317T133000Z");
+    testAlm->trigger = NULL;
+
+    _tInsertBack(event->alarms, testAlm);
+
+    return calendar;
+}
+
+Calendar* _tInvalidAlmNullList(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//Mozilla.org/NONSGML Mozilla Calendar V1.1//EN", 2);
+
+    DateTime dtStamp = _tCreateTestDateTime("20160106","145812",true);
+    DateTime dtStart = _tCreateTestDateTime("20151002","100000",true);
+    Event *event = _tCreateTestEvent("332414a0-54a1-408b-9cb1-2c9d1ad3696d", dtStamp, dtStart);
+
+    _tInsertBack(calendar->events, event);
+
+    //Add alarms
+    
+    //Alarm 1
+    Alarm* testAlm = _tCreateTestAlarm("AUDIO","VALUE=DATE-TIME:19970317T133000Z");
+    testAlm->properties = NULL;
+
+    _tInsertBack(event->alarms, testAlm);
 
     return calendar;
 }

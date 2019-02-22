@@ -16,13 +16,17 @@ endif
 calTestA1:  
 	rm -rf bin/*; \
 	$(CC)  $(CFLAGS) $(A1_TEST) $(CAL_TEST_FILES) studentCode/*.c  -o bin/calTestsA1; \
-	
+	bin/calTestsA1
+
+runCalTestA2: calTestA2
+	bin/calTestA2
 
 calTestA2:  
 	rm -rf bin/*; \
-	$(CC)  $(CFLAGS) $(A2_TEST) $(CAL_TEST_FILES) studentCode/*.c  -o bin/calTestsAll; \
-	
+	$(CC)  $(CFLAGS) $(A2_TEST) $(CAL_TEST_FILES) studentCode/*.c  -o bin/calTestA2
 
+tmpTestA2:
+	$(CC)  $(CFLAGS) src/MemTestA2.c studentCode/*.c  -o bin/tmpTestA2
 
 leakTestA1: memTestsA1
 	valgrind --show-leak-kinds=all --leak-check=yes --track-origins=yes bin/memTest 1; \

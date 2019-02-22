@@ -146,15 +146,62 @@ ICalErrorCode writeCalendar(char* fileName, const Calendar* obj);
  **/
 ICalErrorCode validateCalendar(const Calendar* obj);
 
+
+/** Function to converting a DateTime into a JSON string
+ *@pre N/A
+ *@post DateTime has not been modified in any way
+ *@return A string in JSON format
+ *@param prop - a DateTime struct
+ **/
 char* dtToJSON(DateTime prop);
+
+/** Function to converting an Event into a JSON string
+ *@pre Event is not NULL
+ *@post Event has not been modified in any way
+ *@return A string in JSON format
+ *@param event - a pointer to an Event struct
+ **/
 char* eventToJSON(const Event* event);
+
+/** Function to converting an Event list into a JSON string
+ *@pre Event list is not NULL
+ *@post Event list has not been modified in any way
+ *@return A string in JSON format
+ *@param eventList - a pointer to an Event list
+ **/
 char* eventListToJSON(const List* eventList);
+
+/** Function to converting a Calendar into a JSON string
+ *@pre Calendar is not NULL
+ *@post Calendar has not been modified in any way
+ *@return A string in JSON format
+ *@param cal - a pointer to a Calendar struct
+ **/
 char* calendarToJSON(const Calendar* cal);
 
+/** Function to converting a JSON string into a Calendar struct
+ *@pre JSON string is not NULL
+ *@post String has not been modified in any way
+ *@return A newly allocated and partially initialized Calendar struct
+ *@param str - a pointer to a string
+ **/
 Calendar* JSONtoCalendar(const char* str);
 
+/** Function to converting a JSON string into an Event struct
+ *@pre JSON string is not NULL
+ *@post String has not been modified in any way
+ *@return A newly allocated and partially initialized Event struct
+ *@param str - a pointer to a string
+ **/
 Event* JSONtoEvent(const char* str);
 
+/** Function to adding an Event struct to an ixisting Calendar struct
+ *@pre arguments are not NULL
+ *@post The new event has been added to the calendar's events list
+ *@return N/A
+ *@param cal - a Calendar struct
+ *@param toBeAdded - an Event struct
+ **/
 void addEvent(Calendar* cal, Event* toBeAdded);
 
 // *********************************************************************

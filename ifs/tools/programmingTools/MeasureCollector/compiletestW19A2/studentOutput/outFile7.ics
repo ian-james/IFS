@@ -5,8 +5,8 @@ CALSCALE:GREGORIAN
 BEGIN:VEVENT
 UID:uid1@example.com
 DTSTAMP:19970714T170000Z
-ORGANIZER:CN=Jimmy Johnson:MAILTO:john.doe@example.com
 DTSTART:19970714T170000Z
+ORGANIZER:CN=Jimmy Johnson:MAILTO:john.doe@example.com
 DTEND:19970715T035959Z
 CLASS:PUBLIC
 SUMMARY:Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
@@ -35,18 +35,18 @@ END:VEVENT
 BEGIN:VEVENT
 UID:uid2@example.com
 DTSTAMP:19970714T170000Z
-ORGANIZER:CN=Cornelius Samuelson III:MAILTO:corneliussamsuelsoniii@gmail.com
 DTSTART:19970714T170000Z
+ORGANIZER:CN=Cornelius Samuelson III:MAILTO:corneliussamsuelsoniii@gmail.com
 DTEND:19970715T035959Z
 CLASS:PUBLIC
 SUMMARY:Lunch (Slop) at 12:30pm with the proletariat where Cornelius will discuss wage cuts.
 DESCRIPTION:The wages are much too high and Cornelius requires an addition on his mansion to host parties. Such cost will be covered through extensive wage reductions.
 END:VEVENT
 BEGIN:VEVENT
-UID:uid1@example.com
+UID:uid3@example.com
 DTSTAMP:19970714T170000Z
-ORGANIZER:CN=Jimmy Johnson:MAILTO:john.doe@example.com
 DTSTART:19970714T170000Z
+ORGANIZER:CN=Jimmy Johnson:MAILTO:john.doe@example.com
 DTEND:19970715T035959Z
 CLASS:PUBLIC
 PRIORITY:7

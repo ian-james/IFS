@@ -13,8 +13,8 @@
 
 #include "TestHarness.h"
 
-#define TESTS 11
-#define A2TESTS 11
+#define TESTS 32
+#define A2TESTS 32
 #define DEBUG 1
 #define OUT stdout
 
@@ -47,7 +47,7 @@ void addTestResult(testRec* tmpRec){
 }
 
 float calcGrade(void){
-    float weights[] = {1,1,1,1,1,1,1,1,1,1,1};
+    float weights[TESTS] = {0};
     float totalScore = 0;
     int i = 0;
     for (i = 0; i < TESTS; i++){
@@ -189,23 +189,101 @@ int main(void)
 
 
     if (DEBUG) fprintf(OUT, "Testing writeCalendar() Function...\n");
-    tmpRec = outputTest(testNo);
+    tmpRec = _tWriteTestInvArgs(testNo);
     addTestResult(tmpRec);
 
-if (DEBUG) fprintf(OUT, "Testing validateCalendar() Function...\n");
+    if (DEBUG) fprintf(OUT, "Testing writeCalendar() Function...\n");
+    tmpRec = _tValidWriteTest1(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidWriteTest2(testNo);
+    addTestResult(tmpRec);
+    
+    tmpRec = _tValidWriteTest3(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidWriteTest4(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidWriteTest5(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidWriteTest6(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidWriteTest7(testNo);
+    addTestResult(tmpRec);
+
+
+    if (DEBUG) fprintf(OUT, "Testing validateCalendar() Function...\n");
     tmpRec = _tValidateTestInvArgs(testNo);
     addTestResult(tmpRec);
 
     if (DEBUG) fprintf(OUT, "Testing validateCalendar() Function...\n");
-    tmpRec = validateTest(testNo);
+
+    tmpRec = _tValidateObjTest0(testNo);
     addTestResult(tmpRec);
 
-    if (DEBUG) fprintf(OUT, "Testing megaCal...\n");
-    tmpRec = megaCalTestWrite(testNo);
+    tmpRec = _tValidateObjTest1(testNo);
     addTestResult(tmpRec);
+
+    tmpRec = _tValidateObjTest2(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateObjTest3(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateObjTest4(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateObjTest5(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateObjTest6(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateObjTest7(testNo);
+    addTestResult(tmpRec);
+
+
+
+    tmpRec = _tValidateTest1(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateTest2(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateTest7(testNo);
+    addTestResult(tmpRec);
+
+
+
+    tmpRec = _tValidateTest3(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateTest4(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateTest5(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateTest6(testNo);
+    addTestResult(tmpRec);
+
+
+    // if (DEBUG) fprintf(OUT, "Testing megaCal...\n");
+    // tmpRec = megaCalTestWrite(testNo);
+    // addTestResult(tmpRec);
 
     if (DEBUG) fprintf(OUT, "Testing dtToJSON...\n");
     tmpRec = _tTestDTtoJSON(testNo);
+    addTestResult(tmpRec);
+
+    if (DEBUG) fprintf(OUT, "Testing eventToJSON...\n");
+    tmpRec = _tTestEvtToJSONInv(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tTestEvtToJSON(testNo);
     addTestResult(tmpRec);
 
     if (DEBUG) fprintf(OUT, "Testing addEvent...\n");
@@ -218,10 +296,6 @@ if (DEBUG) fprintf(OUT, "Testing validateCalendar() Function...\n");
 
     if (DEBUG) fprintf(OUT, "Testing JSONtoEvent...\n");
     tmpRec = _tTestJSONtoEvtInv(testNo);
-    addTestResult(tmpRec);
-
-    if (DEBUG) fprintf(OUT, "Testing eventToJSON...\n");
-    tmpRec = _tTestEvtToJSONInv(testNo);
     addTestResult(tmpRec);
 
     if (DEBUG) fprintf(OUT, "Testing eventListToJSON...\n");
