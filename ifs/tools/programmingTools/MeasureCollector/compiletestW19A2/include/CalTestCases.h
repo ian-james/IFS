@@ -60,7 +60,8 @@ testRec* megaCalTestWrite(int testNum);
 //testRec* validateTest(int testNum);
 testRec* _tValidateTestInvArgs(int testNum);
 
-testRec* _tValidateObjTest0(int testNum);
+testRec* _tValidateObjTest01(int testNum);
+testRec* _tValidateObjTest02(int testNum);
 testRec* _tValidateObjTest1(int testNum);
 testRec* _tValidateObjTest2(int testNum);
 testRec* _tValidateObjTest3(int testNum);
@@ -90,12 +91,16 @@ testRec* _tTestEvtToJSONInv(int testNum);
 testRec* _tTestEvtToJSON(int testNum);
 
 testRec* _tTestEvtListToJSONInv(int testNum);
+testRec* _tTestEvtListToJSON(int testNum);
 
 testRec* _tTestCalToJSONInv(int testNum);
+testRec* _tTestCalToJSON(int testNum);
 
 testRec* _tTestJSONtoCalInv(int testNum);
+testRec* _tTestJSONtoCalendar(int testNum);
 
 testRec* _tTestJSONtoEvtInv(int testNum);
+testRec* _tTestJSONtoEvt(int testNum);
 
 testRec* _tTestAddEvt(int testNum);
 

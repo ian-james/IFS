@@ -13,8 +13,8 @@
 
 #include "TestHarness.h"
 
-#define TESTS 32
-#define A2TESTS 32
+#define TESTS 37
+#define A2TESTS 37
 #define DEBUG 1
 #define OUT stdout
 
@@ -47,7 +47,48 @@ void addTestResult(testRec* tmpRec){
 }
 
 float calcGrade(void){
-    float weights[TESTS] = {0};
+    float weights[TESTS] = {
+        //writeCalencar
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        5,
+        //validateCalendar
+        1,
+        3,
+        3,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        //Module 3
+        4,
+        1,
+        5,
+        1,
+        4,
+        1,
+        4,
+        1,
+        4,
+        1,
+        4,
+        3
+    };
     float totalScore = 0;
     int i = 0;
     for (i = 0; i < TESTS; i++){
@@ -221,7 +262,10 @@ int main(void)
 
     if (DEBUG) fprintf(OUT, "Testing validateCalendar() Function...\n");
 
-    tmpRec = _tValidateObjTest0(testNo);
+    tmpRec = _tValidateObjTest01(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tValidateObjTest02(testNo);
     addTestResult(tmpRec);
 
     tmpRec = _tValidateObjTest1(testNo);
@@ -286,25 +330,44 @@ int main(void)
     tmpRec = _tTestEvtToJSON(testNo);
     addTestResult(tmpRec);
 
-    if (DEBUG) fprintf(OUT, "Testing addEvent...\n");
-    tmpRec = _tTestAddEvt(testNo);
-    addTestResult(tmpRec);
-
-    if (DEBUG) fprintf(OUT, "Testing JSONtoCalendar...\n");
-    tmpRec = _tTestJSONtoCalInv(testNo);
-    addTestResult(tmpRec);
-
-    if (DEBUG) fprintf(OUT, "Testing JSONtoEvent...\n");
-    tmpRec = _tTestJSONtoEvtInv(testNo);
-    addTestResult(tmpRec);
 
     if (DEBUG) fprintf(OUT, "Testing eventListToJSON...\n");
     tmpRec = _tTestEvtListToJSONInv(testNo);
     addTestResult(tmpRec);
 
+    tmpRec = _tTestEvtListToJSON(testNo);
+    addTestResult(tmpRec);
+
+
     if (DEBUG) fprintf(OUT, "Testing calendarToJSON...\n");
     tmpRec = _tTestCalToJSONInv(testNo);
     addTestResult(tmpRec);
+
+    tmpRec = _tTestCalToJSON(testNo);
+    addTestResult(tmpRec);
+
+
+
+    if (DEBUG) fprintf(OUT, "Testing JSONtoCalendar...\n");
+    tmpRec = _tTestJSONtoCalInv(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tTestJSONtoCalendar(testNo);
+    addTestResult(tmpRec);
+
+
+    if (DEBUG) fprintf(OUT, "Testing JSONtoEvent...\n");
+    tmpRec = _tTestJSONtoEvtInv(testNo);
+    addTestResult(tmpRec);
+
+    tmpRec = _tTestJSONtoEvt(testNo);
+    addTestResult(tmpRec);
+    
+
+    if (DEBUG) fprintf(OUT, "Testing addEvent...\n");
+    tmpRec = _tTestAddEvt(testNo);
+    addTestResult(tmpRec);
+
 
     int j;
     for(j=0; j<TESTS; j++)
@@ -323,7 +386,7 @@ int main(void)
     }
     //fclose(output);
     
-    printf("Score: %.0f/50\n", calcGrade());
+    printf("Score: %.0f/100\n", calcGrade());
     
     return 0;
     

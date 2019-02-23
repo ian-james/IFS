@@ -25,7 +25,7 @@ static char* _tPrintError(ICalErrorCode err){
 
 static SubTestRec _tWInvTest1(int testNum, int subTest) {
     SubTestRec result;
-    char feedback[300];
+     char feedback[6000];
     char filename[] = "testFiles/validCalendar/testCalSimpleUTC.ics";   
 
     ICalErrorCode err = writeCalendar(filename, NULL);
@@ -43,7 +43,7 @@ static SubTestRec _tWInvTest1(int testNum, int subTest) {
 
 static SubTestRec _tWInvTest2(int testNum, int subTest) {
     SubTestRec result;
-    char feedback[300];
+     char feedback[6000];
     Calendar* testCal = _tSimpleCalendar();
 
     ICalErrorCode err = writeCalendar(NULL, testCal);
@@ -61,7 +61,7 @@ static SubTestRec _tWInvTest2(int testNum, int subTest) {
 
 static SubTestRec _tWInvTest3(int testNum, int subTest) {
     SubTestRec result;
-    char feedback[300];
+     char feedback[6000];
 
     ICalErrorCode err = writeCalendar(NULL, NULL);
     
@@ -81,7 +81,7 @@ testRec* _tWriteTestInvArgs(int testNum) {
     int subTest = 1;
     char feedback[3000];
 
-    sprintf(feedback, "Test %d: Testing writeCalendar() with invalid arguments (3%%)", testNum);
+    sprintf(feedback, "Test %d (3%%): Testing writeCalendar() with invalid arguments", testNum);
     testRec* rec = initRec(testNum, numSubs, feedback);
 
 
@@ -97,7 +97,7 @@ testRec* _tWriteTestInvArgs(int testNum) {
 /* ****************************** writeCalendar() - valid args ****************************** */
 static SubTestRec _tWriteCalendarTestGeneric(int testNum, int subTest, char* outName, void* obj) {
     SubTestRec result;
-    char feedback[300];
+     char feedback[6000];
     char* filename = outName;
 
     Calendar* refObj = (Calendar*)obj;
@@ -133,9 +133,9 @@ static SubTestRec _tWriteCalendarTestGeneric(int testNum, int subTest, char* out
 static testRec* _tValidWriteTestGeneric(int testNum, Calendar* refObj, int weight, char* textStr, char* fileName){
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+     char feedback[6000];
     
-    sprintf(feedback, "Test %d (%d%%): Testing writeCalencar. Creating a .ics file from a valid reference (%s)", testNum, weight, textStr);
+    sprintf(feedback, "Test %d (%d%%): Testing writeCalencar. Creating an .ics file from a valid reference (%s)", testNum, weight, textStr);
     testRec * rec = initRec(testNum, numSubs, feedback);
     
     runSubTestWithFileAndObj(testNum, subTest, rec, fileName, refObj, &_tWriteCalendarTestGeneric);
@@ -143,38 +143,38 @@ static testRec* _tValidWriteTestGeneric(int testNum, Calendar* refObj, int weigh
 }
 
 testRec* _tValidWriteTest1(int testNum){
-    return _tValidWriteTestGeneric  (testNum, _tSimpleCalendarUTC(), 3, "minimum valid Calendar object (UTC)","studentOutput/outFile1.ics");
+    return _tValidWriteTestGeneric  (testNum, _tSimpleCalendarUTC(), 4, "minimum valid Calendar object (UTC)","studentOutput/outFile1.ics");
 }
 
 testRec* _tValidWriteTest2(int testNum){
-    return _tValidWriteTestGeneric  (testNum, _tSimpleCalendar(), 3, "minimum valid Calendar object (non-UTC)","studentOutput/outFile2.ics");
+    return _tValidWriteTestGeneric  (testNum, _tSimpleCalendar(), 4, "minimum valid Calendar object (non-UTC)","studentOutput/outFile2.ics");
 }
 
 testRec* _tValidWriteTest3(int testNum){
-    return _tValidWriteTestGeneric  (testNum, _tSimpleCalendarProps(), 3, "Calendar w. 1 Event and optional Properties","studentOutput/outFile3.ics");
+    return _tValidWriteTestGeneric  (testNum, _tSimpleCalendarProps(), 4, "Calendar w. 1 Event and optional Properties","studentOutput/outFile3.ics");
 }
 
 testRec* _tValidWriteTest4(int testNum){
-    return _tValidWriteTestGeneric  (testNum, _tMultiEventCalendar(), 3, "Calendar with multiple Events","studentOutput/outFile4.ics");
+    return _tValidWriteTestGeneric  (testNum, _tMultiEventCalendar(), 4, "Calendar with multiple Events","studentOutput/outFile4.ics");
 }
 
 testRec* _tValidWriteTest5(int testNum){
-    return _tValidWriteTestGeneric  (testNum, _tEvtPropCalendar2(), 3, "Calendar with an Event with Properties","studentOutput/outFile5.ics");
+    return _tValidWriteTestGeneric  (testNum, _tEvtPropCalendar2(), 4, "Calendar with an Event with Properties","studentOutput/outFile5.ics");
 }
 
 testRec* _tValidWriteTest6(int testNum){
-    return _tValidWriteTestGeneric  (testNum, _tAlmPropCalendar(), 3, "Calendar with Event Properties and Alarms","studentOutput/outFile6.ics");
+    return _tValidWriteTestGeneric  (testNum, _tAlmPropCalendar(), 4, "Calendar with Event Properties and Alarms","studentOutput/outFile6.ics");
 }
 
 testRec* _tValidWriteTest7(int testNum){
-    return _tValidWriteTestGeneric  (testNum, _tMegaCal(), 3, "Large Calendar with multiple Events, Properties, and Alarms","studentOutput/outFile7.ics");
+    return _tValidWriteTestGeneric  (testNum, _tMegaCal(), 5, "Large Calendar with multiple Events, Properties, and Alarms","studentOutput/outFile7.ics");
 }
 
 
 /* ******************************* validateCalendar() - invalid args ******************************* */
 static SubTestRec _tInvValArgs1(int testNum, int subTest) {
     SubTestRec result;
-    char feedback[300];   
+     char feedback[6000];   
     
     ICalErrorCode err = validateCalendar(NULL);
 
@@ -192,9 +192,9 @@ static SubTestRec _tInvValArgs1(int testNum, int subTest) {
 testRec* _tValidateTestInvArgs(int testNum) {
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+     char feedback[6000];
 
-    sprintf(feedback, "Test %d: Testing validate() - NULL arg (1%%)", testNum);
+    sprintf(feedback, "Test %d (1%%): Testing validateCalendar - NULL arg", testNum);
     testRec* rec = initRec(testNum, numSubs, feedback);
 
     runSubTest(testNum, subTest, rec, &_tInvValArgs1);
@@ -205,7 +205,7 @@ testRec* _tValidateTestInvArgs(int testNum) {
 
 static SubTestRec _tValidateCalendarSubTestHelper(int testNum, int subTest, char* errName, void* obj){
     SubTestRec result;
-    char feedback[300];
+     char feedback[6000];
     
     Calendar* refObj = (Calendar*)obj;
     ICalErrorCode refErr;
@@ -238,7 +238,7 @@ static SubTestRec _tValidateCalendarSubTestHelper(int testNum, int subTest, char
 static testRec* _tValidateCalendarGeneric(int testNum, Calendar* refObj, int weight, char* textStr, char* fileName){
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+     char feedback[6000];
     
     sprintf(feedback, "Test %d (%d%%): Testing validateCalendar (%s)", testNum, weight, textStr);
     testRec * rec = initRec(testNum, numSubs, feedback);
@@ -247,36 +247,40 @@ static testRec* _tValidateCalendarGeneric(int testNum, Calendar* refObj, int wei
     return rec;
 }
 
-testRec* _tValidateObjTest0(int testNum){
+testRec* _tValidateObjTest01(int testNum){
     return _tValidateCalendarGeneric(testNum, _tSimpleCalendarUTC(), 3, "Simple valid calendar ","OK");
 }
 
+testRec* _tValidateObjTest02(int testNum){
+    return _tValidateCalendarGeneric(testNum, _tSimpleCalendar2Props2Events(), 3, "Valid calendar with a events and properties","OK");
+}
+
 testRec* _tValidateObjTest1(int testNum){
-    return _tValidateCalendarGeneric(testNum, _tInvalidCalNullList1(), 3, "Calendar with NULL properties list","INV_CAL");
+    return _tValidateCalendarGeneric(testNum, _tInvalidCalNullList1(), 1, "Calendar with NULL properties list","INV_CAL");
 }
 
 testRec* _tValidateObjTest2(int testNum){
-    return _tValidateCalendarGeneric(testNum, _tInvalidCalNullList2(), 3, "Calendar with NULL events list","INV_CAL");
+    return _tValidateCalendarGeneric(testNum, _tInvalidCalNullList2(), 1, "Calendar with NULL events list","INV_CAL");
 }
 
 testRec* _tValidateObjTest3(int testNum){
-    return _tValidateCalendarGeneric(testNum, _tInvalidEventNullList1(), 3, "Event with NULL properties list","INV_EVENT");
+    return _tValidateCalendarGeneric(testNum, _tInvalidEventNullList1(), 1, "Event with NULL properties list","INV_EVENT");
 }
 
 testRec* _tValidateObjTest4(int testNum){
-    return _tValidateCalendarGeneric(testNum, _tInvalidEventNullList2(), 3, "Event with NULL alarms list","INV_EVENT");
+    return _tValidateCalendarGeneric(testNum, _tInvalidEventNullList2(), 1, "Event with NULL alarms list","INV_EVENT");
 }
 
 testRec* _tValidateObjTest5(int testNum){
-    return _tValidateCalendarGeneric(testNum, _tInvalidEventShortDate(), 3, "Event with a date that's too short","INV_EVENT");
+    return _tValidateCalendarGeneric(testNum, _tInvalidEventShortDate(), 1, "Event with a date that's too short","INV_EVENT");
 }
 
 testRec* _tValidateObjTest6(int testNum){
-    return _tValidateCalendarGeneric(testNum, _tInvalidAlmNullTrigger(), 3, "Alarm with a NULL trugger","INV_ALARM");
+    return _tValidateCalendarGeneric(testNum, _tInvalidAlmNullTrigger(), 1, "Alarm with a NULL trugger","INV_ALARM");
 }
 
 testRec* _tValidateObjTest7(int testNum){
-    return _tValidateCalendarGeneric(testNum, _tInvalidAlmNullList(), 3, "Alarm with a NULL properties list","INV_ALARM");
+    return _tValidateCalendarGeneric(testNum, _tInvalidAlmNullList(), 1, "Alarm with a NULL properties list","INV_ALARM");
 }
 
 
@@ -316,7 +320,7 @@ testRec* _tValidateTest6(int testNum){
 
 // static SubTestRec _tInvalidEventCalendarValidate(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     // char sourceParamsCal[] = "testFiles/validCalendar/sourceCal1.ics";
 //     // Calendar *paramsCal = NULL;
 
@@ -345,7 +349,7 @@ testRec* _tValidateTest6(int testNum){
 
 // static SubTestRec _tInvalidMultiCompValidate(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     // char sourceParamsCal[] = "testFiles/validCalendar/sourceCal1.ics";
 //     // Calendar *paramsCal = NULL;
 
@@ -375,7 +379,7 @@ testRec* _tValidateTest6(int testNum){
 
 // static SubTestRec _tInvalidDurationTest(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     // char sourceParamsCal[] = "testFiles/validCalendar/sourceCal1.ics";
 //     // Calendar *paramsCal = NULL;
 
@@ -402,7 +406,7 @@ testRec* _tValidateTest6(int testNum){
 
 // static SubTestRec _tInvalidAttachTest(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     // char sourceParamsCal[] = "testFiles/validCalendar/sourceCal1.ics";
 
 //     // Calendar *paramsCal = NULL;
@@ -431,7 +435,7 @@ testRec* _tValidateTest6(int testNum){
 
 // static SubTestRec _tInvalidCalScaleTest(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     // char sourceParamsCal[] = "testFiles/validCalendar/sourceCal1.ics";
 
 //     // Calendar *paramsCal = NULL;
@@ -460,7 +464,7 @@ testRec* _tValidateTest6(int testNum){
 // testRec* validateTest(int testNum) {
 //     const int numSubs = 5;
 //     int subTest = 1;
-//     char feedback[300];
+//      char feedback[6000];
 
 //     sprintf(feedback, "Test %d: Testing Invalid Calendar Objects using validate() (15%%)", testNum);
 //     testRec* rec = initRec(testNum, numSubs, feedback);
@@ -485,7 +489,7 @@ testRec* _tValidateTest6(int testNum){
 
 SubTestRec megaCalWrite(int testNum, int subTest) {
     SubTestRec result;
-    char feedback[300];
+     char feedback[6000];
     char filename[] = "studentOutput/megaCal.ics";
     Calendar *testCal = _tMegaCal();
     Calendar *refCal;
@@ -512,7 +516,7 @@ SubTestRec megaCalWrite(int testNum, int subTest) {
 
 SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
     SubTestRec result;
-    char feedback[300];
+     char feedback[6000];
     char filename[] = "studentOutput/megaCalFolded.ics";
     Calendar *testCal = _tMegaLineFolding();
     Calendar *refCal = NULL;
@@ -541,7 +545,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 // testRec* megaCalTestWrite(int testNum) {
 //     const int numSubs = 2;
 //     int subTest = 1;
-//     char feedback[300];
+//      char feedback[6000];
 
 //     sprintf(feedback, "Test %d: Mega Calendar Test - writing (5%%)", testNum);
 //     testRec* rec = initRec(testNum, numSubs, feedback);
@@ -560,7 +564,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 
 // static SubTestRec _tInvalidParams(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     char filename[] = "testFiles/invalidA2/XParams1.ics";
 
 //     Calendar* calendar;
@@ -582,7 +586,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 
 // static SubTestRec _tInvalidAlarm(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     char filename[] = "testFiles/invalidA2/invAlarm1.ics";
 
 //     Calendar *calendar;
@@ -605,7 +609,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 
 // static SubTestRec _tInvalidAlarmDup(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     char filename[] = "testFiles/invalidA2/invAlarmDupProps1.ics";
 
 //     Calendar *calendar;
@@ -625,7 +629,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 
 // static SubTestRec _tInvalidDupProdID(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     char filename[] = "testFiles/invCalendar/dupPRODID.ics";
 
 //     Calendar *calendar;
@@ -647,7 +651,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 
 // static SubTestRec _tInvalidRandomBegin(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     char filename[] = "testFiles/invalidA2/randomBegin1.ics";
 
 //     Calendar *calendar;
@@ -667,7 +671,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 
 // static SubTestRec _tDuplicateCalScale(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     char filename[] = "testFiles/invalidA2/doubleCalScale1.ics";
 
 //     Calendar *calendar;
@@ -688,7 +692,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 
 // static SubTestRec _tInvalidDurationEnd(int testNum, int subTest) {
 //     SubTestRec result;
-//     char feedback[300];
+//      char feedback[6000];
 //     char filename[] = "testFiles/invalidA2/dtendduration1.ics";
 
 //     Calendar *calendar;
@@ -710,7 +714,7 @@ SubTestRec megaCalFoldingWrite(int testNum, int subTest) {
 testRec* paramsTest(int testNum) {
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+     char feedback[6000];
 
     sprintf(feedback, "Test %d: Testing invalid Calendar Params (15%%)", testNum);
     testRec* rec = initRec(testNum, numSubs, feedback);

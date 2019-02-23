@@ -20,7 +20,7 @@ rm -f ./tools/programmingTools/MeasureCollector/compiletestW19A1/studentInclude/
 
 
 rm -f ./tools/programmingTools/MeasureCollector/compiletestW19A2/bin/*.o 2> /dev/null
-rm -f ./tools/programmingTools/MeasureCollector/compiletestW19A2/bin/calTestsA1 2> /dev/null
-rm -rf ./tools/programmingTools/MeasureCollector/compiletestW19A2/bin/calTestsA1.* 2> /dev/null
+rm -f ./tools/programmingTools/MeasureCollector/compiletestW19A2/bin/calTestA2 2> /dev/null
+rm -rf ./tools/programmingTools/MeasureCollector/compiletestW19A2/bin/calTestA2.* 2> /dev/null
 rm -f ./tools/programmingTools/MeasureCollector/compiletestW19A2/studentCode/*.* 2> /dev/null
 rm -f ./tools/programmingTools/MeasureCollector/compiletestW19A2/studentInclude/*.* 2> /dev/null

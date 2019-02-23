@@ -37,9 +37,12 @@ bool _tAlarmEqual(const Alarm* testAlarm, const Alarm* refAlarm);
 bool _tContainsAlarm(List* list, const Alarm* alarm);
 bool _tAlarmListEqual(List* testList, List* refList);
 bool _tEventEqual(const Event* testEvent, const Event* refEvent);
+bool _tEventJSONEqual(const Event* testEvent, const Event* refEvent);
 bool _tContainsEvent(List* list, const Event* event);
 bool _tEventListEqual(List* testList, List* refList);
 bool _tCalEqual(const Calendar* testCal, const Calendar* refCal);
+bool _tCalJSONEqual(const Calendar* testCal, const Calendar* refCal);
+
 
 //******************************** CONSTRUCTOR FUNCTIONS ********************************
 Property* _tCreateTestProp(char* propName, char* propDescr);

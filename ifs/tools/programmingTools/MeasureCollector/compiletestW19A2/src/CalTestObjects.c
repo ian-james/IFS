@@ -52,6 +52,32 @@ Calendar* _tSimpleCalendarProps(void)
 }
 
 
+Calendar* _tSimpleCalendar2Props2Events(void)
+{
+    Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);
+    Property* prop;
+
+    prop = _tCreateTestProp("CALSCALE", "GREGORIAN");
+    _tInsertBack(calendar->properties, prop);
+    prop = _tCreateTestProp("METHOD", "REQUEST");
+    _tInsertBack(calendar->properties, prop);
+
+    DateTime dtStamp = _tCreateTestDateTime("19970714","170000",false);
+    DateTime dtStart = _tCreateTestDateTime("19970714","170000",false);
+    Event *event = _tCreateTestEvent("uid1@example.com", dtStamp, dtStart);
+
+    _tInsertBack(calendar->events, event);
+
+    dtStamp = _tCreateTestDateTime("20190101","170000",true);
+    dtStart = _tCreateTestDateTime("20190108","210000",true);
+
+    event = _tCreateTestEvent("uid2@example.com", dtStamp, dtStart);
+    _tInsertBack(calendar->events, event);
+
+    return calendar;
+}
+
+
 Calendar* _tMultiEventCalendar(void) {
 
     Calendar* calendar = _tCreateTestCalendar("-//hacksw/handcal//NONSGML v1.0//EN", 2);

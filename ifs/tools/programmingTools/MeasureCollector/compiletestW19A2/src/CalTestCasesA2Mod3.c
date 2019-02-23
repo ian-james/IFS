@@ -16,7 +16,7 @@
 //******************************** dtToJSON ********************************
 
 static SubTestRec _tDTtoJ1(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     DateTime refDT = _tCreateTestDateTime("19970714","170000",false);
     char refStr[] = "{\"date\":\"19970714\",\"time\":\"170000\",\"isUTC\":false}";
@@ -37,7 +37,7 @@ static SubTestRec _tDTtoJ1(int testNum, int subTest){
 }
 
 static SubTestRec _tDTtoJ2(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     DateTime refDT = _tCreateTestDateTime("19970714","170000",true);
     char refStr[] = "{\"date\":\"19970714\",\"time\":\"170000\",\"isUTC\":true}";
@@ -60,9 +60,9 @@ static SubTestRec _tDTtoJ2(int testNum, int subTest){
 testRec* _tTestDTtoJSON(int testNum){
     const int numSubs = 2;
     int subTest = 1;
-    char feedback[300];
+    char feedback[6000];
     
-    sprintf(feedback, "Test %d (2%%): dtToJSON", testNum);
+    sprintf(feedback, "Test %d (4%%): dtToJSON", testNum);
     testRec * rec = initRec(testNum, numSubs, feedback);
     
     runSubTest(testNum, subTest, rec, &_tDTtoJ1);
@@ -74,7 +74,7 @@ testRec* _tTestDTtoJSON(int testNum){
 
 //******************************** JSONtoCalendar - invalid args ********************************
 static SubTestRec _tJtoCInv1(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     Calendar* cal;
     
@@ -96,7 +96,7 @@ static SubTestRec _tJtoCInv1(int testNum, int subTest){
 testRec* _tTestJSONtoCalInv(int testNum){
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+    char feedback[6000];
     
     sprintf(feedback, "Test %d (1%%): JSONtoCalendar (NULL arg)", testNum);
     testRec * rec = initRec(testNum, numSubs, feedback);
@@ -109,42 +109,45 @@ testRec* _tTestJSONtoCalInv(int testNum){
 
 
 //******************************** JSONtoCalendar ********************************
-// static SubTestRec _tJtoC1(int testNum, int subTest){
-//     char feedback[300];
-//     SubTestRec result;
+static SubTestRec _tJtoC1(int testNum, int subTest){
+    char feedback[6000];
+    SubTestRec result;
 
-//     Calendar* refCal = _tSimpleCalendarUTC();
-//     char refStr[300] = "{\"version\":2,\"prodID\":\"-//hacksw/handcal//NONSGML v1.0//EN\"}";
-//     Calendar* testCal; 
+    Calendar* refCal = _tSimpleCalendarUTC();
+    refCal->events = initializeList(&printEvent,&deleteEvent,&compareEvents);
+    refCal->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
 
-//     testCal = JSONtoCalendar(refStr);
+    char refStr[300] = "{\"version\":2,\"prodID\":\"-//hacksw/handcal//NONSGML v1.0//EN\"}";
+    Calendar* testCal; 
 
-//     if (testCal != NULL && _tObjEqual(refCal, testCal)){
-//         sprintf(feedback, "Subtest %d.%d: correctly created a Card from JSON string %s",testNum, subTest, refStr);
-//         result = createSubResult(SUCCESS, feedback);
-//         return result;
-//     }else{
-//         sprintf(feedback, "Subtest %d.%d: failed to correctly create a Card from JSON string %s",testNum, subTest, refStr);
-//         result = createSubResult(FAIL, feedback);
-//         return result;
-//     }
-// }
+    testCal = JSONtoCalendar(refStr);
 
-// testRec* _tTestJSONtoCalendar(int testNum){
-//     const int numSubs = 1;
-//     int subTest = 1;
-//     char feedback[300];
+    if (testCal != NULL && _tCalJSONEqual(testCal, refCal)){
+        sprintf(feedback, "Subtest %d.%d: correctly created a Calendar from JSON string %s",testNum, subTest, refStr);
+        result = createSubResult(SUCCESS, feedback);
+        return result;
+    }else{
+        sprintf(feedback, "Subtest %d.%d: failed to correctly create a Calendar from JSON string %s\n ",testNum, subTest, refStr);
+        result = createSubResult(FAIL, feedback);
+        return result;
+    }
+}
+
+testRec* _tTestJSONtoCalendar(int testNum){
+    const int numSubs = 1;
+    int subTest = 1;
+    char feedback[6000];
     
-//     sprintf(feedback, "Test %d (2%%): JSONtoCalendar", testNum);
-//     testRec * rec = initRec(testNum, numSubs, feedback);
+    sprintf(feedback, "Test %d (4%%): JSONtoCalendar", testNum);
+    testRec * rec = initRec(testNum, numSubs, feedback);
     
-//     runSubTest(testNum, subTest, rec, &_tJtoC1);
-//     return rec;
-// }
+    runSubTest(testNum, subTest, rec, &_tJtoC1);
+    return rec;
+}
 
 //******************************** JSONtoEvent - invalid args ********************************
 static SubTestRec _tJtoEInv1(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     Event* evt;
     
@@ -166,7 +169,7 @@ static SubTestRec _tJtoEInv1(int testNum, int subTest){
 testRec* _tTestJSONtoEvtInv(int testNum){
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+    char feedback[6000];
     
     sprintf(feedback, "Test %d (1%%): JSONtoEvent (NULL arg)", testNum);
     testRec * rec = initRec(testNum, numSubs, feedback);
@@ -175,9 +178,47 @@ testRec* _tTestJSONtoEvtInv(int testNum){
     return rec;
 }
 
+//******************************** JSONtoEvent - valid args ********************************
+static SubTestRec _tJtoE1(int testNum, int subTest){
+    char feedback[6000];
+    SubTestRec result;
+    char refStr[] = "\{\"UID\":\"1234\"}";
+    
+    DateTime dtStamp = _tCreateTestDateTime("19970714","170000",false);
+    DateTime dtStart = _tCreateTestDateTime("19970714","170000",false);
+
+    Event* refEvent = _tCreateTestEvent("1234", dtStamp, dtStart);
+    refEvent->alarms = initializeList(&printAlarm,&deleteAlarm,&compareAlarms);
+    refEvent->properties = initializeList(&printProperty,&deleteProperty,&compareProperties);
+    
+    Event* testEvent = JSONtoEvent(refStr);
+    
+    if (_tEventJSONEqual(testEvent, refEvent)){
+        sprintf(feedback, "Subtest %d.%d: correctly created an Event from JSON string %s",testNum, subTest, refStr);
+        result = createSubResult(SUCCESS, feedback);
+        return result;
+    }else{
+        sprintf(feedback, "Subtest %d.%d: failed to correctly create an Event from JSON string %s\n ",testNum, subTest, refStr);
+        result = createSubResult(FAIL, feedback);
+        return result;
+    }
+}
+
+testRec* _tTestJSONtoEvt(int testNum){
+    const int numSubs = 1;
+    int subTest = 1;
+    char feedback[6000];
+    
+    sprintf(feedback, "Test %d (4%%): JSONtoEvent", testNum);
+    testRec * rec = initRec(testNum, numSubs, feedback);
+    
+    runSubTest(testNum, subTest, rec, &_tJtoE1);
+    return rec;
+}
+
 //******************************** eventToJSON - invalid args ********************************
 static SubTestRec _tEtoJInv1(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     char* str;
     
@@ -199,7 +240,7 @@ static SubTestRec _tEtoJInv1(int testNum, int subTest){
 testRec* _tTestEvtToJSONInv(int testNum){
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+    char feedback[6000];
     
     sprintf(feedback, "Test %d (1%%): eventToJSON (NULL arg)", testNum);
     testRec * rec = initRec(testNum, numSubs, feedback);
@@ -210,7 +251,7 @@ testRec* _tTestEvtToJSONInv(int testNum){
 
 //******************************** eventToJSON - valid args ********************************
 static SubTestRec _tEtoJ1(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     char refStr[] = "{\"startDT\":{\"date\":\"19540203\",\"time\":\"123012\",\"isUTC\":true},\"numProps\":3,\"numAlarms\":0,\"summary\":\"\"}";
 
@@ -224,7 +265,7 @@ static SubTestRec _tEtoJ1(int testNum, int subTest){
     testStr = eventToJSON(event);
     
     if (strcmp(testStr, refStr) == 0){
-        sprintf(feedback, "Subtest %d.%d: Successfully converted Event with no alarms and optional props into a JSON string.",testNum, subTest);
+        sprintf(feedback, "Subtest %d.%d: Successfully converted Event with no alarms or optional props into a JSON string.",testNum, subTest);
         result = createSubResult(SUCCESS, feedback);
         return result;
     }
@@ -237,7 +278,7 @@ static SubTestRec _tEtoJ1(int testNum, int subTest){
 }
 
 static SubTestRec _tEtoJ2(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     char refStr[] = "{\"startDT\":{\"date\":\"19540203\",\"time\":\"123012\",\"isUTC\":true},\"numProps\":4,\"numAlarms\":2,\"summary\":\"Do taxes\"}";
 
@@ -273,9 +314,9 @@ static SubTestRec _tEtoJ2(int testNum, int subTest){
 testRec* _tTestEvtToJSON(int testNum){
     const int numSubs = 2;
     int subTest = 1;
-    char feedback[300];
+    char feedback[6000];
     
-    sprintf(feedback, "Test %d (3%%): eventToJSON", testNum);
+    sprintf(feedback, "Test %d (5%%): eventToJSON", testNum);
     testRec * rec = initRec(testNum, numSubs, feedback);
     
     runSubTest(testNum, subTest, rec, &_tEtoJ1);
@@ -287,7 +328,7 @@ testRec* _tTestEvtToJSON(int testNum){
 
 //******************************** eventListToJSON - invalid args ********************************
 static SubTestRec _tELtoJInv1(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     char* str;
     
@@ -309,7 +350,7 @@ static SubTestRec _tELtoJInv1(int testNum, int subTest){
 testRec* _tTestEvtListToJSONInv(int testNum){
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+    char feedback[6000];
     
     sprintf(feedback, "Test %d (1%%): eventListToJSON (NULL arg)", testNum);
     testRec * rec = initRec(testNum, numSubs, feedback);
@@ -318,9 +359,91 @@ testRec* _tTestEvtListToJSONInv(int testNum){
     return rec;
 }
 
-//******************************** eventListToJSON - invalid args ********************************
+//******************************** eventListToJSON - valid args ********************************
+static SubTestRec _tELtoJ1(int testNum, int subTest){
+    char feedback[6000];
+    SubTestRec result;
+    
+    char refStr[] = "[{\"startDT\":{\"date\":\"19540203\",\"time\":\"123012\",\"isUTC\":true},\"numProps\":3,\"numAlarms\":0,\"summary\":\"\"}]";
+
+    char* testStr;
+
+    DateTime dtStamp = _tCreateTestDateTime("19540203","123012",true);
+    DateTime dtStart = _tCreateTestDateTime("19540203","123012",true);
+    
+    Event* event = _tCreateTestEvent("1234",dtStamp,dtStart);
+    List* eList = initializeList(&printEvent,&deleteEvent,&compareEvents);
+    _tInsertBack(eList,event);
+    
+    testStr = eventListToJSON(eList);
+    
+    if (strcmp(testStr, refStr) == 0){
+        sprintf(feedback, "Subtest %d.%d: Successfully converted Event list (1 Event with no alarms or optional props) into a JSON string.",testNum, subTest);
+        result = createSubResult(SUCCESS, feedback);
+        return result;
+    }
+    else
+    {
+        sprintf(feedback, "Subtest %d.%d: Failed to convert Event list (1 Event with no alarms or optional props) into a JSON string.",testNum, subTest);
+        result = createSubResult(FAIL, feedback);
+        return result;
+    }
+}
+
+static SubTestRec _tELtoJ2(int testNum, int subTest){
+    char feedback[6000];
+    SubTestRec result;
+    
+    char refStr[] = "[{\"startDT\":{\"date\":\"19540203\",\"time\":\"123012\",\"isUTC\":true},\"numProps\":3,\"numAlarms\":0,\"summary\":\"\"},{\"startDT\":{\"date\":\"20190211\",\"time\":\"143012\",\"isUTC\":false},\"numProps\":3,\"numAlarms\":0,\"summary\":\"\"}]";
+
+    char* testStr;
+
+    DateTime dtStamp = _tCreateTestDateTime("19540203","123012",true);
+    DateTime dtStart = _tCreateTestDateTime("19540203","123012",true);
+    
+    Event* event = _tCreateTestEvent("1234",dtStamp,dtStart);
+    List* eList = initializeList(&printEvent,&deleteEvent,&compareEvents);
+    _tInsertBack(eList,event);
+
+    dtStamp = _tCreateTestDateTime("20190211","143012",false);
+    dtStart = _tCreateTestDateTime("20190211","143012",false);
+    
+    event = _tCreateTestEvent("1234",dtStamp,dtStart);
+    _tInsertBack(eList,event);
+    
+    testStr = eventListToJSON(eList);
+    
+    if (strcmp(testStr, refStr) == 0){
+        sprintf(feedback, "Subtest %d.%d: Successfully converted Event list (2 Events with no alarms or optional props) into a JSON string.",testNum, subTest);
+        result = createSubResult(SUCCESS, feedback);
+        return result;
+    }
+    else
+    {
+        sprintf(feedback, "Subtest %d.%d: Failed to convert Event list (2 Events with no alarms or optional props) into a JSON string.\n%s\n%s",testNum, subTest,refStr,testStr);
+        result = createSubResult(FAIL, feedback);
+        return result;
+    }
+}
+
+testRec* _tTestEvtListToJSON(int testNum){
+    const int numSubs = 2;
+    int subTest = 1;
+    char feedback[6000];
+    
+    sprintf(feedback, "Test %d (4%%): eventListToJSON", testNum);
+    testRec * rec = initRec(testNum, numSubs, feedback);
+    
+    runSubTest(testNum, subTest, rec, &_tELtoJ1);
+    testNum++;
+    runSubTest(testNum, subTest, rec, &_tELtoJ2);
+
+    return rec;
+}
+
+//******************************** calendarToJSON - invalid args ********************************
 static SubTestRec _tCtoJInv1(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
     char* str;
     
@@ -342,7 +465,7 @@ static SubTestRec _tCtoJInv1(int testNum, int subTest){
 testRec* _tTestCalToJSONInv(int testNum){
     const int numSubs = 1;
     int subTest = 1;
-    char feedback[300];
+    char feedback[6000];
     
     sprintf(feedback, "Test %d (1%%): calendarToJSON (NULL arg)", testNum);
     testRec * rec = initRec(testNum, numSubs, feedback);
@@ -351,9 +474,74 @@ testRec* _tTestCalToJSONInv(int testNum){
     return rec;
 }
 
+
+//******************************** calendarToJSON - valid args ********************************
+static SubTestRec _tCtoJ1(int testNum, int subTest){
+    char feedback[6000];
+    SubTestRec result;
+
+    char refStr[] = "{\"version\":2,\"prodID\":\"-//hacksw/handcal//NONSGML v1.0//EN\",\"numProps\":2,\"numEvents\":1}";
+    char* testStr;
+
+    Calendar* cal = _tSimpleCalendar();
+    
+    testStr = calendarToJSON(cal);
+    
+    if (strcmp(testStr, refStr) == 0){
+        sprintf(feedback, "Subtest %d.%d: Successfully converted Calendar with 1 Event and no optional props into a JSON string.",testNum, subTest);
+        result = createSubResult(SUCCESS, feedback);
+        return result;
+    }
+    else
+    {
+        sprintf(feedback, "Subtest %d.%d: Failed to convert Calendar with 1 Event and no optional props into a JSON string.",testNum, subTest);
+        result = createSubResult(FAIL, feedback);
+        return result;
+    }
+}
+
+static SubTestRec _tCtoJ2(int testNum, int subTest){
+    char feedback[6000];
+    SubTestRec result;
+    
+    char refStr[] = "{\"version\":2,\"prodID\":\"-//hacksw/handcal//NONSGML v1.0//EN\",\"numProps\":4,\"numEvents\":2}";
+    char* testStr;
+
+    Calendar* cal = _tSimpleCalendar2Props2Events();
+    
+    testStr = calendarToJSON(cal);
+    
+    if (strcmp(testStr, refStr) == 0){
+        sprintf(feedback, "Subtest %d.%d: Successfully converted Calendar with 2 Events and 2 optional props into a JSON string.",testNum, subTest);
+        result = createSubResult(SUCCESS, feedback);
+        return result;
+    }
+    else
+    {
+        sprintf(feedback, "Subtest %d.%d: Failed to convert Calendar with 2 Events and 2 optional props into a JSON string.",testNum, subTest);
+        result = createSubResult(FAIL, feedback);
+        return result;
+    }
+}
+
+testRec* _tTestCalToJSON(int testNum){
+    const int numSubs = 2;
+    int subTest = 1;
+    char feedback[6000];
+    
+    sprintf(feedback, "Test %d (4%%): calendarToJSON", testNum);
+    testRec * rec = initRec(testNum, numSubs, feedback);
+    
+    runSubTest(testNum, subTest, rec, &_tCtoJ1);
+    testNum++;
+    runSubTest(testNum, subTest, rec, &_tCtoJ2);
+    return rec;
+}
+
+
 //******************************** addEvent ********************************
 static SubTestRec _tAddEvt1(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
 
     DateTime dtStamp = _tCreateTestDateTime("19970714","170000",false);
@@ -369,7 +557,7 @@ static SubTestRec _tAddEvt1(int testNum, int subTest){
 }
 
 static SubTestRec _tAddEvt2(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
 
     Calendar* refCalendar = _tSimpleCalendar();
@@ -382,9 +570,9 @@ static SubTestRec _tAddEvt2(int testNum, int subTest){
 }
 
 static SubTestRec _tAddEvt3(int testNum, int subTest){
-    char feedback[300];
+    char feedback[6000];
     SubTestRec result;
-
+   
     Calendar* refCalendar = _tSimpleCalendar();
     Calendar* testCalendar = _tSimpleCalendar();
 
@@ -410,7 +598,7 @@ static SubTestRec _tAddEvt3(int testNum, int subTest){
 testRec* _tTestAddEvt(int testNum){
     const int numSubs = 3;
     int subTest = 1;
-    char feedback[300];
+    char feedback[6000];
     
     sprintf(feedback, "Test %d (3%%): Testing addEvent() function", testNum);
     testRec * rec = initRec(testNum, numSubs, feedback);

@@ -22,6 +22,8 @@ Calendar* _tMegaLineFolding(void);
 //A2
 // MARK: A2 TEST CASES
 
+Calendar* _tSimpleCalendar2Props2Events(void);
+
 Calendar* _tInvalidCalNullList1(void);
 Calendar* _tInvalidCalNullList2(void);
 Calendar* _tInvalidCalDupVal(void);

@@ -363,6 +363,27 @@ bool _tEventEqual(const Event* testEvent, const Event* refEvent){
     return true;
 }
 
+
+bool _tEventJSONEqual(const Event* testEvent, const Event* refEvent){
+    if (testEvent == NULL || refEvent == NULL){
+        return false;
+    }
+    
+    //Compare UID
+    if (!_tStrEqual(testEvent->UID, refEvent->UID)){
+       // printf("_tEventJSONEqual UID test:%s, ref:%s\n",testEvent->UID,refEvent->UID);
+        return false;
+    }
+    
+    //Check lists
+    if (testEvent->alarms->length != 0 || testEvent->properties->length != 0){
+        printf("JSON Incorrect evt list length\n");
+        return false;
+    }
+    
+    return true;
+}
+
 bool _tContainsEvent(List* list, const Event* event) {
     Node *ptr = list->head;
 
@@ -430,6 +451,37 @@ bool _tCalEqual(const Calendar* testCal, const Calendar* refCal){
     //Compare events
     if (!_tEventListEqual(testCal->events, refCal->events)){
         printf("Incorrect Events!\n");
+        return false;
+    }
+
+    return true;
+}
+
+bool _tCalJSONEqual(const Calendar* testCal, const Calendar* refCal){
+    
+    if (testCal == refCal && testCal == NULL){
+        return true;
+    }
+    
+    if (testCal == NULL || refCal == NULL){
+        return false;
+    }
+
+    //Compare version
+    if (testCal->version != refCal->version){
+        printf("JSON Incorrect Version\n");
+        return false;
+    }
+
+    //Compare prodID
+    if (strcmp(testCal->prodID, refCal->prodID) != 0){
+        printf("JSON Incorrect prodID\n");
+        return false;
+    }
+
+    //Check lists
+    if (testCal->events->length != 0 || testCal->properties->length != 0){
+        printf("JSON Incorrect cal list length\n");
         return false;
     }
 
