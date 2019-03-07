@@ -13,8 +13,13 @@ from MeasureCollector import measureManager
 from compiletest import compileManager
 #from jsonDecorator import decorate
 
-def writeToFile(stringToWrite, fileLocation):
-	fileLocation = fileLocation+"/feedback_Compliance_unzipped"
+def writeToFile(stringToWrite, fileLocation, assignment=""):
+	if assignemnt == "A1W19":
+		fileLocation = fileLocation+"/feedback_ComplianceA1_unzipped"
+	elif assignemnt == "A2W19":
+		fileLocation = fileLocation+"/feedback_ComplianceA2_unzipped"
+	else:
+		fileLocation = fileLocation+"/feedback_Compliance_unzipped"
 	f = open(fileLocation, "w")
 	f.write("%s" % stringToWrite)
 	f.close()
@@ -76,6 +81,7 @@ def main(argv):
 			if (chosenSubmission == "A2"):
 				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceF18A2.json"
 			elif (chosenSubmission == "A1W19"):
+				
 				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceW19A1.json"
 			elif (chosenSubmission == "A2W19"):
 				complianceFilePath = "./tools/programmingTools/MeasureCollector/complianceW19A2.json"
