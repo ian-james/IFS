@@ -9,7 +9,7 @@
            "license": "ISC License",
            "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
            "progName": "./tools/programmingTools/MeasureCollector/ifsmanager.py",
-           "cmdToolName": "ComplianceA2",
+           "cmdToolName": "Compliance",
            "runType": "programming",
            "route": "",
            "filesAllowed": "zipFile",
@@ -20,28 +20,6 @@
                
            ]
         },
-		
-        {
-           "displayName": "CIS*2750 A1 Compliance Checker",
-           "description": "Checks a submission for compliance with some of the mandatory rules for CIS*2750 A1. Only a guide, make sure to read the outline thoroughly before your final submission!",
-           "technicalDesc": "A Python suite that checks for various compliance issues in a submission of student's code agains the CIS*2750 W19 A1 rubric.",
-           "author": "IFS Development Team",
-           "copyright": "Copyright © 2018",
-           "license": "ISC License",
-           "licenseFile": "./tools/programmingTools/c_tools/LICENSE.txt",
-           "progName": "./tools/programmingTools/MeasureCollector/ifsmanager.py",
-           "cmdToolName": "ComplianceA1",
-           "runType": "programming",
-           "route": "",
-           "filesAllowed": "zipFile",
-           "parseCmd": "",
-           "defaultArg": "-s A1W19",
-           "fileArgs": "-d",
-           "options":  [
-               
-           ]
-        },
-		
         {
             "displayName": "GCC Diagnostics",
             "description": "Identifies errors and warnings from the GNU Compiler Collection.",
