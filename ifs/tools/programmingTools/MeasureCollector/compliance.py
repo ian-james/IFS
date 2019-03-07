@@ -488,7 +488,7 @@ def compareFiles(expectedFileNames, actualFileNames, firstPrint, outputString, c
 			res = decorate("Compliance", "error", "Error: Missing File", expected, "NULL", "NULL", fileMessage, firstPrint)
 			#print outputString
 			outputString += decorate("Compliance", "error", "Error: Missing File", expected, 0, 0, fileMessage, firstPrint)
-			#firstPrint = False
+			firstPrint = False
 			missingCount = missingCount +1
 		found = False
 	if (csv == False):
