@@ -8,6 +8,10 @@ var dbcfg = require('./databaseConfig');
 var dbConnect = require('./dbConnectionConfig.js')
 
 var Logger = require('./loggingConfig') ;
+var _ = require('lodash');
+var async = require('async');
+
+var accounts = require('./defaultAccounts.js').accounts;
 
 try {
     console.log("Post Database setup, making a connection ...")
@@ -17,15 +21,30 @@ try {
     // Tell mysql to use the database
     if(connection) {
         Logger.log("Post-Database creation script is running.")
+
         /* POST DATABASE CREATION SITE CONFIGURATION */
-        // set up the default roles of 'admin', 'developer', and 'student';
-        // these represent privileged users who can modify classes and
-        // assignments, ????, and normal students
-        Logger.info("Set up roles in:", dbcfg.role_table);
-        connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (1, \"admin\") ON DUPLICATE KEY UPDATE id=id;");
-        connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (2, \"developer\") ON DUPLICATE KEY UPDATE id=id;");
-        connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (3, \"instructor\") ON DUPLICATE KEY UPDATE id=id;");
-        connection.query("INSERT INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (4, \"student\") ON DUPLICATE KEY UPDATE id=id;");
+
+        // Create a couple default accounts that are already registered.
+        // N.B. First time IFS developers should double check these accounts created properly.
+        _.forEach( accounts, function( account) {
+
+            // set up the default roles of 'admin', 'developer', and 'student';
+            connection.query("INSERT IGNORE INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (" + account.roleId + ",\"" + account.role + "\")");
+
+            // Setup several default users for each account role.
+            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.users_table + "(id, username, password) VALUES (" + account.userId + ", \"" + account.email + "\", \"" + account.password + "\") ");
+
+            // Register each user
+            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.user_registration_table + "(userId, isRegistered) VALUES (\"" + account.userId + "\", 1 ) ");
+
+            // Setup the user's role after registration.
+            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.user_role_table + "(userID, roleId) VALUES (" + account.userId + "," + account.roleId + ") ");
+
+            // Add an empty student account for the registered student.
+            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.student_table + "(userId) VALUES (" + account.userId + " ) ");
+
+            // Other default setting might be necessary like survey.
+        });
 
         /* POST DATABASE CREATION: setup deletion rules for entries in the
          * verify_table; run once per hour */
