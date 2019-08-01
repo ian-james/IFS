@@ -35,6 +35,9 @@ module.exports = function (passport) {
         done(null,  { 'id': user.id, 'sessionId': user.sessionId } );
     });
 
+    // There is an error that occurs here when old session data exist and server is boot. Can't deserialize.
+    // If can't deseriialize or serialize for that matter should clear the session.
+
     passport.deserializeUser( function(user,done) {
         db.query( "SELECT id, username, sessionId FROM users where id = ? ", user.id, function(err,rows) {
             if( err )

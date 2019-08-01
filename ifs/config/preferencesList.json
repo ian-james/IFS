@@ -20,6 +20,30 @@
                 "value": ""
             },
             {
+                "displayName":"Age",
+                "info": "Add your age to the profile.",
+                "name": "student-age",
+                "type": "number",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName":"Year of Study",
+                "info": "Add your current year of study.",
+                "name": "student-yearOfStudy",
+                "type": "number",
+                "values": "",
+                "value": ""
+            },
+            {
+                "displayName":"Gender",
+                "info": "Add your gender if desired.",
+                "name": "student-gender",
+                "type": "select",
+                "values": [  "Prefer not to say","Female","Male", "Other" ],
+                "value": "Prefer not to say"
+            },
+            {
                 "displayName":"Profile Bio",
                 "info": "Write something short about yourself.",
                 "name": "student-bio",

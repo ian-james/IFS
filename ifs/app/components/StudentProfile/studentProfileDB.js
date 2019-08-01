@@ -29,9 +29,9 @@ module.exports = {
      * @param {[type]}   bio      [description]
      * @param {Function} callback [description]
      */
-    setStudentProfile: function( userId, name, bio, callback ) {
-        var q = dbHelpers.buildUpdate(dbcfg.student_table) + " SET name = ?, bio = ? WHERE userId = ? ";
-        db.query(q,[name,bio,userId],callback);
+    setStudentProfile: function( userId, name, bio, yearOfStudy, age, gender, callback ) {
+        var q = dbHelpers.buildUpdate(dbcfg.student_table) + " SET name = ?, bio = ?,  yearOfStudy = ?, age = ?, gender = ? WHERE userId = ? ";
+        db.query(q,[name,bio,yearOfStudy,age,gender,userId],callback);
     },
 
     /**
@@ -42,7 +42,7 @@ module.exports = {
      * @return {[type]}            [description]
      */
     getStudentProfileAndClasses: function(userId, callback) {
-        var q = "SELECT s.id,s.name,s.bio, c.id as courseId, c.code,c.name as courseName, c.description,c.disciplineType FROM student s, student_class sc, class c WHERE s.id = sc.studentId AND sc.classId = c.id AND s.userId = ?"; 
+        var q = "SELECT s.id,s.name,s.bio, c.id as courseId, c.code,c.name as courseName, c.description,c.disciplineType FROM student s, student_class sc, class c WHERE s.id = sc.studentId AND sc.classId = c.id AND s.userId = ?";
         db.query(q,userId,callback);
     }
 

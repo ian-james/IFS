@@ -86,11 +86,15 @@ module.exports = function(app, iosocket) {
 
 
     app.post('/preferences/profile', upload.single('student-avatar'), function(req, res, next) {
+
         var userId = req.user.id;
         var pref = req.body["pref-toolSelect"];
         var tipsOn = req.body["pref-tipsAllowed"] ? req.body["pref-tipsAllowed"] : "off";
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
+        var studentYearofStudy = req.body['student-yearOfStudy'];
+        var studentAge = req.body["student-age"];
+        var studentGender = req.body["student-gender"];
         var error = false;
 
 
@@ -119,7 +123,7 @@ module.exports = function(app, iosocket) {
                     if(!err)
                         defaultTool.setupDefaultTool(req, pref);
 
-                    profileDB.setStudentProfile(userId, studentName, studentBio, function(err, presult) {
+                    profileDB.setStudentProfile(userId, studentName, studentBio, studentYearofStudy, studentAge, studentGender, function(err, presult) {
 
                         tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "studentName", studentName));
                         tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "studentBio", studentBio));
@@ -174,12 +178,13 @@ module.exports = function(app, iosocket) {
     function setupProfile(preferenceOptions, profile) {
         if(profile && profile.length > 0) {
             var prefix = "student-"
-            var keys = ['name', 'avatarFileName','bio'];
+            var keys = ['name', 'avatarFileName','bio', 'age', 'yearOfStudy', 'gender'];
             for(var i = 0; i < keys.length; i++) {
                 var r = _.find(preferenceOptions,_.matchesProperty('name',prefix+keys[i]));
-                if(r && r.type == "text") {
+                if(r && r.type) {
                     r['prefValue'] =  profile[0][keys[i]] ? profile[0][keys[i]] : "";
                 }
+
             }
         }
     }
