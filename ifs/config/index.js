@@ -6,6 +6,7 @@ var http = require('http');
 var compression = require('compression');
 app.use(compression());
 
+//app.set('env', 'production');
 if(app.get('env') === 'production'){
     console.log("In PRODUCTION");
 }

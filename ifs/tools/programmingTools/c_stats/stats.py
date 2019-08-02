@@ -85,9 +85,25 @@ def countComments(path):
 
     return title, val, name
 
+# Displays the results to either a file for ifs to read or to standard output.
+def displayResult(options, idirectory, result):
+    cofile = "/feedback_stats_unzipped"
+    if( options['ifs'] ):
+        result = decorateData( result )
+
+        outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
+        file = open(outputfile, "w")
+        file.write(result)
+        file.close()
+    else:
+        print( result )
+
 def main (argv):
     results = []
-    options = { 'dir':'',
+    options = {
+                'ifs': True,
+                'tool':'stats',
+                'dir':'',
                 'totalLines': False,
                 'totalComments': False,
                 }
@@ -109,25 +125,25 @@ def main (argv):
             print('stats.py [-t totalLines] -d InputDirectory')
             sys.exit()
 
+    if options['dir'] == '':
+        sys.stderr.write("No directory was provided.\n")
+        return 0
 
-    if (options['totalLines']):
-        result = parse(options['dir'], countLines)
-        results.append(result)
+    result = []
+    try:
+        if (options['totalLines']):
+            result = parse(options['dir'], countLines)
+            results.append(result)
 
-    if (options['totalComments']):
-        result = parse(options['dir'], countComments)
-        results.append(result)
+        if (options['totalComments']):
+            result = parse(options['dir'], countComments)
+            results.append(result)
 
-    results = decorateData(results)
+        print(results)
+        displayResult(options,options['dir'],results)
 
-    idirectory = options['dir']
-    outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  "/feedback_stats_unzipped" ) )
-
-    file = open( outputfile, "w")
-    file.write(results)
-    file.close()
-
-    print(results)
+    except:
+        sys.stderr.write("Unable to successfully retrieve statistical information.\n")
 
 if __name__ == '__main__':
     main(sys.argv[1:])

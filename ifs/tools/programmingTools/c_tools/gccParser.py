@@ -140,6 +140,19 @@ def createCmd( options ):
     #print("Your command was:" + cmdStr + ":")
     return cmdStr
 
+# Displays the results to either a file for ifs to read or to standard output.
+def displayResult(options, idirectory, result):
+    cofile = "/feedback_gcc_unzipped"
+    if( options['ifs'] ):
+        result = decorateData( result, options )
+
+        outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
+        file = open(outputfile, "w")
+        file.write(result)
+        file.close()
+    else:
+        print( result )
+
 
 
 # main program that takes arguments
@@ -209,18 +222,8 @@ def main(argv):
                 errors = err
 
                 result = parse( errors, options )
+                displayResult(options,idirectory,result)
 
-                if( options['ifs'] ):
-                    result = decorateData( result, options )
-
-                outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  "/feedback_gcc_unzipped" ) )
-
-                file = open( outputfile, "w")
-
-                file.write(result)
-                file.close()
-
-                print( result )
             except:
                 sys.stderr.write("Unable to successfully retrieve compiler information\n")
         else:

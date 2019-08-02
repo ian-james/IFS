@@ -143,6 +143,19 @@ def createCmd( options ):
     return cmdStr
 
 
+# Displays the results to either a file for ifs to read or to standard output.
+def displayResult(options, idirectory, result):
+    cofile = "/feedback_clang_unzipped"
+    if( options['ifs'] ):
+        result = decorateData( result, options )
+
+        outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
+        file = open(outputfile, "w")
+        file.write(result)
+        file.close()
+    else:
+        print( result )
+
 
 # main program that takes arguments
 def main(argv):
@@ -215,6 +228,18 @@ def main(argv):
                 file.close()
 
                 result = parse( errors, options )
+
+
+                 if( options['ifs'] ):
+                    result = decorateData( result, options )
+
+                    outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile ) )
+
+                    file = open( outputfile, "w")
+                    file.write(result)
+                    file.close()
+                else:
+                    print(result)
 
                 if( options['ifs'] ):
                     result = decorateData( result, options )
