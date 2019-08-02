@@ -29,19 +29,19 @@ try {
         _.forEach( accounts, function( account) {
 
             // set up the default roles of 'admin', 'developer', and 'student';
-            connection.query("INSERT IGNORE INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (" + account.roleId + ",\"" + account.role + "\")");
+            connection.query("INSERT IGNORE INTO " + dbcfg.database + "." + dbcfg.role_table + "(id, role) VALUES (" + account.roleId + ",\"" + account.role + "\") ");
 
             // Setup several default users for each account role.
             connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.users_table + "(id, username, password) VALUES (" + account.userId + ", \"" + account.email + "\", \"" + account.password + "\") ");
 
             // Register each user
-            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.user_registration_table + "(userId, isRegistered) VALUES (\"" + account.userId + "\", 1 ) ");
+            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.user_registration_table + "(id, userId, isRegistered) VALUES (" + account.userId + "," + account.userId + ", 1 ) ");
 
             // Setup the user's role after registration.
-            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.user_role_table + "(userID, roleId) VALUES (" + account.userId + "," + account.roleId + ") ");
+            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.user_role_table + "(id, userID, roleId) VALUES (" + account.userId + "," + account.userId + "," + account.roleId + ") ");
 
             // Add an empty student account for the registered student.
-            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.student_table + "(userId) VALUES (" + account.userId + " ) ");
+            connection.query("INSERT IGNORE INTO " +  dbcfg.database + "." + dbcfg.student_table + "(id, userId,name) VALUES (" + account.userId + "," + account.userId + ",\"" + account.role + "\") " );
 
             // Other default setting might be necessary like survey.
         });
