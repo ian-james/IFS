@@ -22,11 +22,12 @@ function setupRegExp( targetOptions )
 
     //TODO: CHecking word boundaries might cause problems for tools that are given us ranges that include
     // partial words and spaces. However, word boundaries are more useful and cause less issues.
+    // NOTE: PROSE LINT was change and now doesn't need \b options checking other files.
     if( def.target.trim() != 0 && targetOptions.toolType == "writing")
-        def.regex = new XRegExp( "\\b" + escapeRegExp(def.target) + "\\b" , def.flags );
+        def.regex = new XRegExp( escapeRegExp(def.target) , def.flags );
     else
         def.regex = new XRegExp( escapeRegExp(def.target) , def.flags );
-        
+
     return def;
 }
 
@@ -56,11 +57,18 @@ function toolsMatch( toolName, selectedToolName ) {
 
 function replaceText(str, targetOpt )
 {
+    console.log( "Looking for targetOpts" + JSON.stringify(targetOpt) )
+    console.log( "Have str " + str )
     return  handleRegExp(str, targetOpt, function(regExp) {
+
+
+        console.log('regEXP:', regExp.regex);
+        console.log("Target pos", targetOpt.targetPos)
 
         var offset = 0;
         // Check the exact position if could search for closest but not sure if that is ideal
         if( XRegExp.test( str, regExp.regex, targetOpt.targetPos, true ) ) {
+            console.log("AT EXACT POSITION");
             str = str.substr(0, targetOpt.targetPos) + regExp.newText + str.substr(targetOpt.targetPos + targetOpt.needle.length );
         }
         else {
@@ -87,24 +95,29 @@ function replaceText(str, targetOpt )
 
                 if( index == targetOpt.targetPos ) {
                     matchFound = true;
+                    console.log("Match found " + index);
                     return regExp.newText;
                 }
                 if ( closestValue == Math.MAX_SAFE_INTEGER || Math.abs( targetOpt.targetPos - index ) < closestValue ) {
                     closestValue = Math.abs( targetOpt.targetPos - index );
                     closestIdx =  index;
+                    console.log("Math close " + closestIdx)
                 }
+                console.log("not matched yet.")
                 return match;
             });
 
 
             if( !matchFound && closestIdx >= 0 )
             {
+                console.log("Non Match found ", closestIdx);
                 if( XRegExp.test( str, regExp.regex, closestIdx, true ) ) {
                     str = str.substr(0, closestIdx) + regExp.newText + str.substr(closestIdx + targetOpt.needle.length );
                     offset =  closestIdx - targetOpt.targetPos
                 }
             }
         }
+        console.log("DONE THIS THING");
         return { content:str, offset: offset };
     });
 }
@@ -161,6 +174,7 @@ function markupFile( file, selectedTool, feedbackItems )
                 // Interestingly, calculating this value can give different answers...
                 // I think it depends on line-breaks.
                 // Momementarily setting this to always run.
+            console.log("First")
             if( !feedbackItem.filename || !feedbackItem.target ) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
@@ -169,8 +183,11 @@ function markupFile( file, selectedTool, feedbackItems )
                 // Previously tried to setup positional information and failed.
                 continue;
             }
+            console.log("H2")
             // Assumption should probably change
             var nextMatches =  checkErrorOverlap(feedbackItems, i );
+
+            console.log(nextMatches);
 
             if( nextMatches ) {
                 // We have multiple errors on this word.
@@ -184,6 +201,8 @@ function markupFile( file, selectedTool, feedbackItems )
                 // Also an array for the feedback Items array that match this error
                 matchClasses =   matchClasses == "" ? feedbackItems[i].type : matchClasses;
 
+                console.log('matchClasses', matchClasses)
+
                 //TODO JF: This helps fixes an issue, but keeping i vs idarr as it potentially reduces functionality but that functionality
                 //      Might be deprecated soon too. Essentially old method allows moving between errors on the readMore. This
                 //      fix remove that capability.
@@ -193,9 +212,19 @@ function markupFile( file, selectedTool, feedbackItems )
                 // Create a popover button at position to highlight text and count the offset.
                 // woops wont work with html sucks to suck
                 var newStr = buttonMaker.createTextButton(feedbackItem, options);
+
+                console.log( newStr );
+
                 newStr.mid = newStr.mid.replace(/(<([^>]+)>)/ig,"");
                 var str = newStr.start + newStr.mid + newStr.end;
+
+                console.log(str);
+
                 var contentObj = replaceText( content, {'needle':feedbackItem.target, 'newText':str, 'flags':"gm", 'targetPos': feedbackItem.charNum+offset, toolType: feedbackItem.runType } );
+
+                console.log(contentObj);
+
+                console.log("H5")
 
                 content = contentObj.content;
                 offset += ( (str.length  - newStr.mid.length ) + contentObj.offset);

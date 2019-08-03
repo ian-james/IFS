@@ -173,7 +173,7 @@ def main(argv):
 					outFile = os.path.normpath(os.path.join(currDirectory, options['outFile']) )
 					outErrFile = os.path.normpath(os.path.join(currDirectory, options['outErrFile']) )
 
-				code, out, err = getProcessInfo( cmd, outFile, outErrFile )
+				out, err = getProcessInfo( cmd, outFile, outErrFile )
 
                 result = parse( err, options )
 

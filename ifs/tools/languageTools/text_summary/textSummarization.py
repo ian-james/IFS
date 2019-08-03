@@ -137,6 +137,18 @@ def decorateData( result, options ):
     return json_string
 
 
+# Displays the results to either a file for ifs to read or to standard output.
+def displayResult(options, idirectory, cofile, result):
+    if( options['ifs'] ):
+        result = decorateData( result, options )
+        outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
+        file = open(outputfile, "w")
+        file.write(result)
+        file.close()
+    else:
+        print( result )
+
+
 # main program that takes arguments
 def main(argv):
 
@@ -161,16 +173,19 @@ def main(argv):
             sys.exit()
 
     if ifile != '':
-        options['file'] = ifile;
-        with open(ifile, 'r', encoding='utf-8') as myfile:
-            fileContents= myfile.read()
+        try:
+            options['file'] = ifile;
+            with open(ifile, 'r', encoding='utf-8') as myfile:
+                fileContents= myfile.read()
 
-        summarizer = FrequencySummarizer()
-        result = summarizer.summarize(fileContents, options['sentences'] )
+            summarizer = FrequencySummarizer()
+            result = summarizer.summarize(fileContents, options['sentences'] )
 
-        if( options['ifs'] ):
-            result = decorateData( result, options )
-        print( result )
+            displayResult(options, ifile, "/feedback_textSummarization_unzipped", result )
+
+        except:
+            sys.stderr.write("Unable to successfully summarize text.\n")
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])

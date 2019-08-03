@@ -29,6 +29,12 @@ from subprocess import Popen, PIPE
 import shlex
 import glob
 
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
+
 ##
 # Example output
 # {
@@ -73,10 +79,10 @@ def decorateData( result, options ):
         obj = jdata["errors"][i]
 
         json_string += "{"
-        json_string += '"target": "' + content[ obj["start"]-1 : obj["end"] ] + '",\n'
+        json_string += '"target": "' + content[ obj["start"]-1 : obj["end"]-1 ] + '",\n'
         json_string += '"lineNum": ' + str(obj["line"]) + ',\n'
-        json_string += '"charNum": ' + str(obj["start"])  + ',\n'
-        json_string += '"charPos": ' + str(obj["column"]) + ',\n'
+        json_string += '"charNum": ' + str(obj["start"]-1)  + ',\n'
+        json_string += '"charPos": ' + str(obj["column"]-1) + ',\n'
         json_string += '"severity": "' + str(obj["severity"]) + '",\n'
         json_string += '"type": "recommendation",\n'
         json_string += '"toolName": "Prose Linter",\n'
@@ -96,23 +102,6 @@ def decorateData( result, options ):
 
     return json_string
 
-    # This function runs a command output results to two files
-def getProcessInfo( cmd, outFile, errorFile ):
-    # Executing an external command, to retrieve the output
-    # This funciton is supported by several answers on StackOverflow
-    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
-
-    with open(outFile, 'w', encoding='utf-8') as fout:
-        with open(errorFile,'w', encoding='utf-8') as ferr:
-            args = shlex.split(cmd)
-
-            # Note this requires python 3.3
-            proc = Popen(args, stdout=fout, stderr=ferr)
-
-            out, err = proc.communicate()
-            exitcode = proc.returncode
-
-            return exitcode, out, err
 
 # main program that takes arguments
 def main(argv):
@@ -143,20 +132,25 @@ def main(argv):
     if ifile != '':
         options['file'] = ifile
 
+        idirectory = os.path.dirname(ifile)
+
         cmd = createCmd( options )
 
         if( cmd ):
             try:
-                outFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outFile']) )
-                outErrFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outErrFile']) )
-                code, out, err = getProcessInfo( cmd, outFile, outErrFile )
+                outFile = os.path.normpath( os.path.join( idirectory, options['outFile']) )
+                outErrFile = os.path.normpath( os.path.join( idirectory, options['outErrFile']) )
 
-                with open(outFile, 'r', encoding='utf-8') as outFile:
-                    result = outFile.read()
+                # proselin write errors to out
+                out, err = getProcessInfo( cmd, outFile, outErrFile )
 
-                    if( result and options['ifs'] ):
-                        result = decorateData( result, options )
-                    print( result )
+                out = out.decode("utf-8", "replace")
+
+                # Note ifile used as directory because displayResultsToIFS strips the filename.
+                # Programming tools have unzipped folder but writing tools do not
+                # So we don't use idirectory which already points to the top folder or it would remove that last folder.
+                displayResultToIFS(options, decorateData, ifile,"/feedback_languageChecker_" + os.path.basename(ifile), out )
+
             except:
                 sys.stderr.write("Unable to successfully retrieve assessment information.\n")
         else:

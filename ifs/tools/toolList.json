@@ -91,7 +91,7 @@
             "options" : []
         },
         {
-            "displayName": "Word Use Checker",
+            "displayName": "Diction Checker",
             "description": "Highlights commonly misused words in phrases.",
             "technicalDesc": "A Python script that uses the Unix tool diction to flag commonly misused words in phrases.",
             "author": "IFS Development Team",
@@ -99,7 +99,7 @@
             "license": "ISC License",
             "licenseFile": "./tools/langaugeTools/diction_style/LICENSE.txt",
             "progName": "./tools/languageTools/diction_style/dictionStyle.py",
-            "cmdToolName": "wordUse",
+            "cmdToolName": "dictionstyle",
             "runType": "writing",
             "route": "",
             "filesAllowed": "singleFile",

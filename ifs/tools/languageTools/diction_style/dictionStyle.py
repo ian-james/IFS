@@ -29,6 +29,12 @@ from subprocess import Popen, PIPE
 import shlex
 import glob
 
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
+
 def createCmd( options ):
     cmdStr = ""
     cmdStr = " ".join( [ options['tool'], options['arg'], options['file']])
@@ -161,25 +167,6 @@ def decorateData( result, options ):
 
     return json_string
 
-
-# This function runs a command output results to two files
-def getProcessInfo( cmd, outFile, errorFile ):
-    # Executing an external command, to retrieve the output
-    # This funciton is supported by several answers on StackOverflow
-    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
-    with open(outFile, 'w', encoding='utf-8') as fout:
-        with open(errorFile,'w', encoding='utf-8') as ferr:
-            args = shlex.split(cmd)
-
-            # Note this requires python 3.3
-            proc = Popen(args, stdout=fout, stderr=ferr)
-
-            out, err = proc.communicate()
-            exitcode = proc.returncode
-
-            return exitcode, out, err
-
-
 # main program that takes arguments
 def main(argv):
     ifile = ''
@@ -211,16 +198,13 @@ def main(argv):
 
         if( cmd ):
             try:
+                print(ifile)
                 outFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outFile']) )
                 outErrFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outErrFile']) )
-                code, out, err = getProcessInfo( cmd, outFile, outErrFile )
 
-                with open(outFile, 'r', encoding='utf-8') as outFile:
-                    result = outFile.read()
-
-                    if( result and options['ifs'] ):
-                        result = decorateData( result, options )
-                    print( result )
+                out, err = getProcessInfo( cmd, outFile, outErrFile )
+                out = out.decode("utf-8", "replace")
+                displayResultToIFS(options, decorateData, ifile,"/feedback_dictionstyle_" + os.path.basename(ifile), out )
             except:
                 sys.stderr.write("Unable to successfully retrieve assessment information.\n")
         else:
