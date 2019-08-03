@@ -80,7 +80,13 @@ def spcheck(to_check, lang, limit, hun):
                 char_pos = line.find(word, char_pos)
 
                 if not hun.spell(word):
-                    sug = [ x.decode('utf-8') for x in hun.suggest(word) ]
+
+                    sug = []
+                    try:
+                        sug = [ x.decode('utf-8', 'replace') for x in hun.suggest(word) ]
+                    except:
+                        sug = [ x for x in hun.suggest(word) ]
+
                     suggestion = (line_num, word_num, char_num+char_pos, char_pos, word_pos, (word, sug))
                     misspelled.append(suggestion)
 
@@ -247,6 +253,7 @@ def main(argv):
     path_rpm = '/usr/share/myspell/' # default hunspell dictionary path on Fedora
     lang = 'en_CA'  # default language
     limit = -1      # limit for number of errors reported
+    json_ofile = 'feedback_spellCheck_'
     json_path = ''
     infile = ''
     with_correct = False
@@ -351,8 +358,10 @@ def main(argv):
             print_data(json_data)
 
     # write to file if there is an output file specified
-    if json_path and json_data != '':
-        json_out = open(json_path, 'w')
+    if json_data != '':
+        # Changing this for IFS.
+        ofile = os.path.normpath( os.path.join( os.path.dirname(infile) , json_ofile +  os.path.basename(infile) ) )
+        json_out = open(ofile, 'w')
         json_out.write(json_data)
         json_out.close()
 

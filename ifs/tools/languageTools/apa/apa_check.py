@@ -88,6 +88,7 @@ def main(argv):
     json_path = ''
     infile = ''
     quiet = False
+    json_ofile = 'feedback_apaCheck_'
 
     # define command line arguments and check if the script call is valid
     try:
@@ -148,8 +149,10 @@ def main(argv):
         print_json(json_data)
 
     # write to file if there is an output file specified
-    if json_path and json_data:
-        json_out = open(json_path, 'w')
+    if json_data:
+           # Changing this for IFS.
+        ofile = os.path.normpath( os.path.join( os.path.dirname(infile) , json_ofile +  os.path.basename(infile) ) )
+        json_out = open(ofile, 'w')
         json_out.write(json_data)
         json_out.close()
 

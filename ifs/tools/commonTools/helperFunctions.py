@@ -58,6 +58,7 @@ def displayResultToIFS(options, prepareData, idirectory, cofile, result):
         result = prepareData( result, options )
 
         outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
+
         file = open(outputfile, "w")
         file.write(result)
         file.close()

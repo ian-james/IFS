@@ -77,7 +77,7 @@ def build_json(filename, lang, matches):
         # to represent the position of the issue as a span of char coordinates;
         # the hl_begin and hl_end attributes consist of the following structure:
         # [char pos relative to start of line, line relative to start of file]
-        # 
+        #
         # fromx = line position, line number
 
         # Meeting IFS Minimum interface
@@ -152,6 +152,7 @@ def main(argv):
     english = False # prints plain English instead of json
     quiet = False
     with_spelling = False
+    json_ofile = 'feedback_grammar_'
 
     # define command line arguments and check if the script call is valid
     try:
@@ -236,8 +237,10 @@ def main(argv):
 
 
     # write to file if there is an output file specified
-    if json_path and json_data != '':
-        json_out = open(json_path, 'w')
+    if  json_data != '':
+           # Changing this for IFS.
+        ofile = os.path.normpath( os.path.join( os.path.dirname(infile) , json_ofile +  os.path.basename(infile) ) )
+        json_out = open(ofile, 'w')
         json_out.write(json_data)
         json_out.close()
 
