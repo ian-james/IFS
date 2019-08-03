@@ -27,6 +27,12 @@ import subprocess
 import shlex
 import glob
 
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
+
 #Display data in JSON format for the IFS
 def decorateData( result, options ):
     json_string = '{\n'
@@ -40,23 +46,6 @@ def decorateData( result, options ):
     json_string += ']\n'
     json_string += '}\n'
     return json_string
-
-
-# This function runs a command output results to two files
-def getProcessInfo( cmd, outFile, errorFile ):
-    # Executing an external command, to retrieve the output
-    # This funciton is supported by several answers on StackOverflow
-    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
-
-    #print("cmd is", cmd )
-
-    args = shlex.split(cmd)
-    # Expand the wildcard to be processed as expected, gets the requested files.
-    args = args[:-1] + glob.glob(args[-1])
-    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-
-    return out, err
 
 # Parsing the output of a couple simple formats
 # Each format has a specific character split sequence such as '##' or ':'
@@ -140,20 +129,6 @@ def createCmd( options ):
     #print("Your command was:" + cmdStr + ":")
     return cmdStr
 
-# Displays the results to either a file for ifs to read or to standard output.
-def displayResult(options, idirectory, result):
-    cofile = "/feedback_gcc_unzipped"
-    if( options['ifs'] ):
-        result = decorateData( result, options )
-
-        outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
-        file = open(outputfile, "w")
-        file.write(result)
-        file.close()
-    else:
-        print( result )
-
-
 
 # main program that takes arguments
 def main(argv):
@@ -214,15 +189,14 @@ def main(argv):
         if( cmd ):
             try:
                 outFile = os.path.normpath( os.path.join( idirectory, options['outFile']) )
-
                 outErrFile = os.path.normpath( os.path.join( idirectory, options['outErrFile']) )
 
                 out, err = getProcessInfo( cmd, outFile, outErrFile )
 
-                errors = err
+                result = parse( err, options )
 
-                result = parse( errors, options )
-                displayResult(options,idirectory,result)
+                displayResultToIFS(options, decorateData, idirectory,"/feedback_gcc_unzipped", result )
+
 
             except:
                 sys.stderr.write("Unable to successfully retrieve compiler information\n")

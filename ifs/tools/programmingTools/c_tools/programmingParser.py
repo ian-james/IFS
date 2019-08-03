@@ -18,6 +18,7 @@
 #
 #
 # Usage notes: You'll have to install stopwords from nltk.download('stopwords')
+# NOTE THIS FILE IS MARKS FOR DELETION it has been replaced by individual tools files.
 
 import sys, getopt, os
 import io, json

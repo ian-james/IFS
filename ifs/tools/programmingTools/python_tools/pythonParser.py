@@ -14,7 +14,7 @@
 # LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-# 
+#
 #
 # Usage notes: You'll have to install stopwords from nltk.download('stopwords')
 
@@ -26,6 +26,12 @@ from subprocess import call
 from subprocess import Popen, PIPE
 import shlex
 import glob
+
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
 
 
 #Display data in JSON format for the IFS
@@ -51,7 +57,7 @@ def parse( text, options ):
 	types = options['splitTypes']
 
 	for line in text.splitlines():
-		
+
 		feedback = {}
 		feedback['toolName'] = options['tool']
 		sections = line.split("|")
@@ -63,34 +69,13 @@ def parse( text, options ):
 		feedback['feedback'] = sections[3]
 		feedback['type'] = 'formatting'
 
-
 		# append feedback
 		results.append(feedback)
 
 	return results
 
 
-# This function runs a command output results to two files
-def getProcessInfo( cmd, outFile, errorFile ):
-	# Executing an external command, to retrieve the output
-	# This funciton is supported by several answers on StackOverflow
-	# https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
 
-	#print("cmd is", cmd )
-
-	with open(outFile, 'w') as fout:
-		with open(errorFile,'w') as ferr:
-
-			args = shlex.split(cmd)
-			# Expand the wildcard to be processed as expected, gets the requested files.
-			args = args[:-1] + glob.glob(args[-1])
-
-			# Note this requires python 3.3
-			proc = Popen(args, stdout=fout, stderr=ferr)
-			out, err = proc.communicate();
-			exitcode = proc.returncode
-
-			return exitcode, out, err
 
 def createCmd(options):
 	srcDir = os.path.normpath( os.path.join( options['dir'], options['srcDir']) )
@@ -190,17 +175,12 @@ def main(argv):
 
 				code, out, err = getProcessInfo( cmd, outFile, outErrFile )
 
-				with open(outErrFile, 'r') as errFile:
-
-					errors = errFile.read()
-
-					result = parse( errors, options )
+                result = parse( err, options )
 
 
-					if( options['ifs'] ):
-						result = decorateData( result, options )
+              	# Did validate that the python file works. Since tool is currently or planned to be used.
+                displayResultToIFS(options, decorateData, idirectory,"/feedback_python_unzipped", result )
 
-					print(result)
 
 			except:
 				print("Unable to successfully retrieve compiler information")

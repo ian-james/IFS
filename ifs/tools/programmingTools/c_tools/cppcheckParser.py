@@ -15,9 +15,7 @@
 # LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
-#
-#
-# Usage notes: You'll have to install stopwords from nltk.download('stopwords')
+
 
 import sys, getopt, os
 import io, json
@@ -26,6 +24,14 @@ import string
 import subprocess
 import shlex
 import glob
+
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
+
+#import helperFunctions
 
 #Display data in JSON format for the IFS
 def decorateData( result, options ):
@@ -40,38 +46,6 @@ def decorateData( result, options ):
     json_string += ']\n'
     json_string += '}\n'
     return json_string
-
-
-# This function runs a command output results to two files
-def getProcessInfo( cmd, outFile, errorFile ):
-    # Executing an external command, to retrieve the output
-    # This funciton is supported by several answers on StackOverflow
-    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
-
-    #print("cmd is", cmd )
-
-    # with open(outFile, 'w') as fout:
-    #     with open(errorFile,'w') as ferr:
-
-    #         args = shlex.split(cmd)
-    #         # Expand the wildcard to be processed as expected, gets the requested files.
-    #         args = args[:-1] + glob.glob(args[-1])
-
-    #         # Note this requires python 3.3
-    #         proc = Popen(args, stdout=fout, stderr=ferr)
-    #         out, err = proc.communicate();
-    #         exitcode = proc.returncode
-
-    args = shlex.split(cmd)
-    # Expand the wildcard to be processed as expected, gets the requested files.
-    args = args[:-1] + glob.glob(args[-1])
-
-    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-
-
-
-    return out, err
 
 # Parsing the output of a couple simple formats
 # Each format has a specific character split sequence such as '##' or ':'
@@ -164,19 +138,6 @@ def createCmd( options ):
     return cmdStr
 
 
-# Displays the results to either a file for ifs to read or to standard output.
-def displayResult(options, idirectory, result):
-    cofile = "/feedback_cppCheck_unzipped"
-    if( options['ifs'] ):
-        result = decorateData( result, options )
-
-        outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
-        file = open(outputfile, "w")
-        file.write(result)
-        file.close()
-    else:
-        print( result )
-
 
 # main program that takes arguments
 def main(argv):
@@ -241,16 +202,9 @@ def main(argv):
                 outErrFile = "./" + os.path.normpath( os.path.join( idirectory, options['outErrFile']) )
 
                 out, err = getProcessInfo( cmd, outFile, outErrFile )
+                result = parse( err, options )
 
-                errors = err
-
-                file = open(outErrFile, "w")
-                file.write(errors)
-                file.close()
-
-                result = parse( errors, options )
-
-                displayResult(options,idirectory,result)
+                displayResultToIFS(options, decorateData, idirectory,"/feedback_cppCheck_unzipped", result )
 
             except:
                 sys.stderr.write("Unable to successfully retrieve compiler information\n")

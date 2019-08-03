@@ -18,7 +18,13 @@ import sys, getopt, os
 import json
 import string
 
-def decorateData(allResults):
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
+
+def decorateData(allResults, options):
     json_string = '{"feedbackStats": ['
 
     for results in allResults:
@@ -85,19 +91,6 @@ def countComments(path):
 
     return title, val, name
 
-# Displays the results to either a file for ifs to read or to standard output.
-def displayResult(options, idirectory, result):
-    cofile = "/feedback_stats_unzipped"
-    if( options['ifs'] ):
-        result = decorateData( result )
-
-        outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
-        file = open(outputfile, "w")
-        file.write(result)
-        file.close()
-    else:
-        print( result )
-
 def main (argv):
     results = []
     options = {
@@ -139,8 +132,7 @@ def main (argv):
             result = parse(options['dir'], countComments)
             results.append(result)
 
-        print(results)
-        displayResult(options,options['dir'],results)
+        displayResultToIFS(options, decorateData, options['dir'],"/feedback_stats_unzipped", results)
 
     except:
         sys.stderr.write("Unable to successfully retrieve statistical information.\n")
