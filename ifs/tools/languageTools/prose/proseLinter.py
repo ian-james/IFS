@@ -52,6 +52,8 @@ def createCmd( options ):
 
     cmdStr = ""
     cmdStr = " ".join( [ options['tool'], options['arg'], options['file']])
+    print( cmdStr )
+
     return cmdStr
 
 def decorateData( result, options ):
@@ -61,6 +63,7 @@ def decorateData( result, options ):
         jdata = json.loads(result)
     except:
         raise
+
 
     filename = os.path.basename(options['file'])
 
@@ -85,7 +88,7 @@ def decorateData( result, options ):
         json_string += '"charPos": ' + str(obj["column"]-1) + ',\n'
         json_string += '"severity": "' + str(obj["severity"]) + '",\n'
         json_string += '"type": "recommendation",\n'
-        json_string += '"toolName": "Prose Linter",\n'
+        json_string += '"toolName": "proseLinter",\n'
         json_string += '"filename": "' + filename + '",\n'
         json_string += '"feedback":' + json.dumps(obj["message"]) + ',\n'
 
@@ -144,12 +147,15 @@ def main(argv):
                 # proselin write errors to out
                 out, err = getProcessInfo( cmd, outFile, outErrFile )
 
-                out = out.decode("utf-8", "replace")
+                try:
+                    out = out.decode("utf-8", "replace")
+                except:
+                    i =0
 
                 # Note ifile used as directory because displayResultsToIFS strips the filename.
                 # Programming tools have unzipped folder but writing tools do not
                 # So we don't use idirectory which already points to the top folder or it would remove that last folder.
-                displayResultToIFS(options, decorateData, ifile,"/feedback_languageChecker_" + os.path.basename(ifile), out )
+                displayResultToIFS(options, decorateData, ifile,"/feedback_proseLinter_" + os.path.basename(ifile), out )
 
             except:
                 sys.stderr.write("Unable to successfully retrieve assessment information.\n")

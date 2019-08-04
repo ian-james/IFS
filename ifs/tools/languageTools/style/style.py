@@ -26,6 +26,12 @@ from subprocess import Popen, PIPE
 import shlex
 import glob
 
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
+
 def createCmd( options ):
 
     cmdStr = ""
@@ -193,7 +199,7 @@ def decorateData( result, options ):
         addedFeedback = True
         json_string += "{"
         json_string += '"type": "stat",\n'
-        json_string += '"toolName": "Style",\n'
+        json_string += '"toolName": "style",\n'
         json_string += '"name": "' + value['key'] + '",\n'
         json_string += '"level": "' + value['level'] + '",\n'
         json_string += '"category": "' + value['category'] + '",\n'
@@ -211,6 +217,27 @@ def decorateData( result, options ):
     json_string += '}\n'
 
     return json_string
+
+
+# This function runs a command output results to two files
+def writeProcessInfo( cmd, outFile, errorFile ):
+    # Executing an external command, to retrieve the output
+    # This funciton is supported by several answers on StackOverflow
+    # https://stackoverflow.com/questions/1996518/retrieving-the-output-of-subprocess-call/21000308#21000308
+    #
+    print("write")
+    with open(outFile, 'w', encoding='utf-8') as fout:
+        with open(errorFile,'w', encoding='utf-8') as ferr:
+
+            args = shlex.split(cmd)
+
+            # Note this requires python 3.3
+            proc = Popen(args, stdout=fout, stderr=ferr)
+
+            out, err = proc.communicate()
+            exitcode = proc.returncode
+
+            return exitcode, out, err
 
 
 # main program that takes arguments
@@ -246,11 +273,15 @@ def main(argv):
             try:
                 outFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outFile']) )
                 outErrFile = os.path.normpath( os.path.join( os.path.dirname(ifile), options['outErrFile']) )
-                out, err = getProcessInfo( cmd, outFile, outErrFile )
+                code, out, err = writeProcessInfo( cmd, outFile, outErrFile )
 
-                displayResultToIFS(options, decorateData, ifile,"/feedback_style_" + os.path.basename(ifile), out )
-            except:
+                with open(outFile, 'r', encoding='utf-8') as oFile:
+                    result = parseData(oFile, options)
+                    displayResultToIFS(options, decorateData, ifile,"/feedback_style_" + os.path.basename(ifile), result )
+
+            except Exception as e:
                 sys.stderr.write("Unable to successfully retrieve assessment information.\n")
+                sys.stderr.write(str(e))
         else:
             sys.stderr.write( 'Invalid tool selected, please select a valid tool name.\n')
     else:

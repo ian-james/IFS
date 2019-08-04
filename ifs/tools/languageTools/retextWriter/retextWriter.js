@@ -1,8 +1,9 @@
 var fs = require('fs');
+var path = require('path');
 var sort = require('vfile-sort');
 const commandLineArgs = require('command-line-args');
 
-/* Options are 
+/* Options are
     File
     List of relevant plugins from:
         https://github.com/retextjs/retext/blob/master/doc/plugins.md
@@ -68,16 +69,24 @@ function getSubstr( str, sTarget, eTarget )
 
 function main( opts )
 {
-    var file = _.get(opts,'file',""); 
+
+    console.log(opts);
+    var file = _.get(opts,'file',"");
+    console.log(file);
     if( file.length == 0 ){
-        console.error("Mean Writer is unable to locate the file.");
+        console.error("Retext Writer is unable to locate the file.");
         return 0;
     }
 
     fs.readFile( file, (err,data)=> {
 
+        var idirectory = path.dirname(file);
+        var filename = path.basename(file)
+        var ofile = path.join(idirectory, "feedback_retextWriter_" + filename );
+
         if( err ) {
-            console.error("Mean Writer is unable to process the file.");
+            console.error("Retext Writer is unable to process the file.");
+            console.error(err);
             return 0;
         }
 
@@ -86,7 +95,7 @@ function main( opts )
         var keys = _.keys(opts);
         _.forEach( keys, function( opt ){
             if( _.startsWith(opt, "retext-") ){
-                retext = retext().use( require( opt));
+                retext = retext().use( require(opt));
             }
             if( opt == 'syntax'){
                 retext = retext().use( require('retext-contractions') );
@@ -115,7 +124,7 @@ function main( opts )
                 retext = retext().use( require('retext-readability') );
             }
         })
-   
+
         var report = require('vfile-reporter');
 
         retext.process(data, function(err, rfile) {
@@ -144,7 +153,7 @@ function main( opts )
                     obj["hlEndLine"] =_.get(loc,"end.line");
                     obj["lang"] = "English";
                     obj["type"] = _.get(m,"source","").replace("retext-","");
-                    obj["toolName"] = "Retext";
+                    obj["toolName"] = "retextWriter";
                     obj["filename"] = file;
                     obj["feedback"] = _.get(m,"reason");
                     obj["severity"] = _.get(m,"fatal","warning");
@@ -154,7 +163,11 @@ function main( opts )
 
                 ifsVersion = { "feedback": feedback };
                 var ifsStr = JSON.stringify(ifsVersion);
-                console.log( ifsStr );
+
+                fs.writeFile(ofile,ifsStr, function(err){
+                    if(err)
+                        console.error("{Error:{msg:\"Unable to use tools.\"}}");
+                });
             }
             catch(err){
                 console.error("{Error:{msg:\"Unable to use tools.\"}}");
