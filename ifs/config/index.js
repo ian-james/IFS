@@ -26,6 +26,7 @@ global.__modelPath = path.join(__dirname, '../app/models');
 global.__EXPERIMENT_ON = true;
 
 var port = process.env.PORT || 3000;
+
 // Set App variables.
 app.set('port', port);
 app.set('case sensitive routing', true);
@@ -153,7 +154,6 @@ if(app.get('env') === 'development'){
 }
 
 // Start the app listening
-var processPort = process.env.NODE_APP_INSTANCE || 0;
-server.listen(parseInt(app.get('port')) + parseInt(processPort), function() {
-    console.log("Listening on port " + app.get('port'));
+server.listen(port, function() {
+    console.log("Listening on port " + port);
 });
