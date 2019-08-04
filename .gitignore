@@ -19,3 +19,4 @@ ifs/tools/programmingTools/MeasureCollector/*.pyc
 
 # vim swap files
 *.sw[a-p]
+*.pyc
