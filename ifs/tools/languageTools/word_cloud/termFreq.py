@@ -26,6 +26,13 @@ from nltk.probability import FreqDist
 from nltk.corpus import stopwords
 from nltk.tokenize import wordpunct_tokenize
 
+
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
+
 def decorateData( result, options ):
     json_string = ""
     json_string += '{\n'
@@ -93,13 +100,14 @@ def main(argv):
 
     if ifile != '':
         options['file'] = ifile
+        # Open the content file
         with open(ifile, 'r', encoding='utf-8') as myfile:
             fileContents= myfile.read().replace('\n','')
 
         result = termFreq(fileContents, options )
-        if( options['ifs'] ):
-            result = decorateData( result, options )
-        print( result )
+
+        displayResultToIFS(options, decorateData, ifile,"/feedback_termFreq_" + os.path.basename(ifile), result )
+
     else:
         sys.stderr.write( 'Please provide a file to evaluate.\n')
         sys.exit()

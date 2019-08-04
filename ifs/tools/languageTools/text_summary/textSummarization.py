@@ -43,6 +43,14 @@ from collections import defaultdict
 from heapq import nlargest
 from string import punctuation
 
+
+# Include common helper files.
+# Note: IFS runs this files from the main IFS/ifs folder.
+helperFunctionPath = "./tools/commonTools/"
+sys.path.append( os.path.abspath(helperFunctionPath) )
+from helperFunctions import *
+
+
 class FrequencySummarizer:
 
     def __init__(self, options  = None ):
@@ -137,18 +145,6 @@ def decorateData( result, options ):
     return json_string
 
 
-# Displays the results to either a file for ifs to read or to standard output.
-def displayResult(options, idirectory, cofile, result):
-    if( options['ifs'] ):
-        result = decorateData( result, options )
-        outputfile = os.path.normpath( os.path.join( os.path.dirname(idirectory) +  cofile  ) )
-        file = open(outputfile, "w")
-        file.write(result)
-        file.close()
-    else:
-        print( result )
-
-
 # main program that takes arguments
 def main(argv):
 
@@ -181,11 +177,10 @@ def main(argv):
             summarizer = FrequencySummarizer()
             result = summarizer.summarize(fileContents, options['sentences'] )
 
-            displayResult(options, ifile, "/feedback_textSummarization_unzipped", result )
+            displayResultToIFS(options, decorateData, ifile,"/feedback_textSummarization_" + os.path.basename(ifile), result )
 
         except:
             sys.stderr.write("Unable to successfully summarize text.\n")
-
 
 if __name__ == '__main__':
     main(sys.argv[1:])
