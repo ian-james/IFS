@@ -16,6 +16,12 @@
 # LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
 # OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 # PERFORMANCE OF THIS SOFTWARE.
+#
+#
+# ****************************************************************************************
+# NOTE: This tool requires Java8 (possibly 9), otherwise install of language-check fails.
+# GITHub has a fix for this but it's not in the main branch yet.
+# # ****************************************************************************************
 
 import sys
 import getopt
