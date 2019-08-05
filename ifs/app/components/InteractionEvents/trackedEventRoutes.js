@@ -2,7 +2,6 @@ var path = require('path');
 var viewPath = path.join( __dirname + "/");
 var fs = require("fs");
 
-var Constants = require( __components + "Constants/programConstants");
 var Errors = require(__components + "Errors/errors");
 var Logger = require( __configs + "loggingConfig");
 
@@ -17,7 +16,7 @@ var _ = require('lodash');
 
 
 module.exports = function (app, iosocket ) {
-   
+
     app.get( '/trackedEvent', function(req,res){
         res.render( viewPath + "trackedEvents", {title:"Tracked Events Logger"});
     });
@@ -40,7 +39,7 @@ module.exports = function (app, iosocket ) {
     function handleQueries( queries, callback ) {
 
         async.map(queries, function( query, _callback ) {
-            
+
             db.query( query.request, query.data, function(err,data){
                 if(err)
                     _callback("\nErrored on query:" +  query.request, null);
@@ -53,7 +52,7 @@ module.exports = function (app, iosocket ) {
             if(err)
                 callback({});
             else {
-               
+
                 var usageSummary = {};
 
                 for( var i = 0; i < results.length; i++ ){

@@ -1,0 +1,4 @@
+{
+    "Programming":["md", "json", "c", "cpp", "cc", "cxx", "h", "hpp", "zip", "tar", "py"],
+    "Writing": ["txt", "text", "doc", "docx", "odt", "pdf"]
+}

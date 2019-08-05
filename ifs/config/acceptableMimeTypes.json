@@ -1,0 +1,31 @@
+{
+    "Writing":[
+        "text/plain",
+        "text/markdown",
+        "application/json",
+        "application/msword",
+        "application/vnd.oasis.opendocument.text",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/pdf",
+        "application/octet-stream"
+    ],
+    "Programming": [
+        "text/plain",
+        "text/markdown",
+        "text/x-csrc",
+        "text/x-chdr",
+        "text/x-c++src",
+        "text/x-c++hdr",
+        "text/x-python",
+        "text/x-python-script",
+        "application/json",
+        "application/zip",
+        "application/x-compressed-zip",
+        "application/x-zip-compressed",
+        "application/x-gzip",
+        "application/x-tar",
+        "application/x-gzip",
+        "application/gzip",
+        "application/octet-stream"
+    ]
+}

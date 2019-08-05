@@ -16,10 +16,6 @@ var studentSkill = require(__components + "StudentProfile/studentSkillDB");
 
 var preferencesDB = require( __components + 'Preferences/preferenceDB.js');
 
-//var Constants = require( __components + "Constants/programConstants");
-//var SurveyBuilder = require(__components + "Survey/surveyBuilder");
-//var Survey = require( __components + "Survey/survey");
-
 module.exports = function(app) {
     app.get('/profile/data', function(req,res) {
         var userObj = req.user;

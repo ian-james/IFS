@@ -6,8 +6,6 @@ const path= require('path');
 
 // Identify if we're in development mode or production mode
 const env = process.env.NODE_ENV || 'dev';
-console.log("ENV HERE IS ", env);
-
 //Loggin directory.
 const logDir = "logs";
 
@@ -28,7 +26,7 @@ const tsFormat = () => (new Date()).toLocaleTimeString();
 
 /* Winston might need to be substitued out after looking at a number of issues in GitHub that are simply
    not being address. NPMLOG is an alternative that was recommended with much more recent activity.
-   Let keep on eye on this and change if needed, the feature listed below should be available in whatever we pick.   
+   Let keep on eye on this and change if needed, the feature listed below should be available in whatever we pick.
    -JF
 */
 

@@ -10,7 +10,6 @@ var defaultTool = require(__components + 'Preferences/setupDefaultToolType.js');
 var event = require(__components + "InteractionEvents/buildEvent.js");
 var tracker = require(__components + "InteractionEvents/trackEvents.js");
 
-var Constants = require(__components + "Constants/programConstants");
 var SurveyManager = require(__components + "Survey/helpers/surveyManager");
 var SurveyBuilder = require(__components + "Survey/helpers/surveyBuilder");
 var Survey = require(__components + "Survey/models/survey");

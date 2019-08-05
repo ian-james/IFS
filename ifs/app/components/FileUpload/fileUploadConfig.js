@@ -17,45 +17,16 @@ var limits = {
 
 var Helpers = require('./fileUploadHelpers');
 
+const allowFileTypes = require( __configs + "acceptableFileTypes.json" );
+const allowMimeTypes= require( __configs + "acceptableMimeTypes.json" );
+
 function acceptableFileTypes() {
-    return {
-        'Programming':['md', 'json', "c", "cpp", "cc", "cxx", "h", "hpp", 'zip', 'tar', 'py'],
-        'Writing': ['txt', 'text', 'doc', 'docx', 'odt', 'pdf']
-    };
+
+    return allowFileTypes;
 }
 
 function acceptableMimeType() {
-    return {
-        'Writing':[
-            'text/plain',
-            'text/markdown',
-            'application/json',
-            'application/msword',
-            'application/vnd.oasis.opendocument.text',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/pdf',
-            'application/octet-stream'
-        ],
-        "Programming": [
-            'text/plain',
-            'text/markdown',
-            'text/x-csrc',
-            'text/x-chdr',
-            'text/x-c++src',
-            'text/x-c++hdr',
-            'text/x-python',
-            'text/x-python-script',
-            'application/json',
-            'application/zip',
-            'application/x-compressed-zip',
-            'application/x-zip-compressed',
-            'application/x-gzip',
-            'application/x-tar',
-            'application/x-gzip',
-            'application/gzip',
-            'application/octet-stream'
-        ]
-    };
+    return allowMimeTypes
 }
 
 /* Setup a file filter for upload*/

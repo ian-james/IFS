@@ -9,7 +9,6 @@ const Errors = require(__components + "Errors/errors");
 const Logger = require(__configs + "loggingConfig");
 
 const SurveyPreferences = require(__components + "Survey/models/surveyPreferences");
-const Constants = require(__components + "Constants/programConstants");
 const Survey = require(__components + "Survey/models/survey");
 const Question = require(__components + "Survey/models/question");
 const Serializers = require(path.join(__components, 'Survey/helpers/Serializer'));
@@ -19,6 +18,19 @@ const { getStudentIdForUser } = require(path.join(__modelPath, 'student'));
 const { getPulseSurveyState } = require(path.join(__modelPath, 'survey'));
 const { resetPulseProgress } = require(path.join(__modelPath, 'surveyPreference'));
 const { getPulseQuestions } = require(path.join(__modelPath, 'question'));
+
+/**
+ * Default settings for the surveys currently included in IFS.
+ * @return {[obj]} [Setting options for surveys.]
+ */
+let surveyDisplayDefaultOptions = ()  => {
+    return {
+        "range":[0,100],
+        "questionsPerPage":4,
+        "splitQuestionTypes": true,
+        "pulseQuestions": 2,
+    };
+};
 
 /**
  * Default parameters for our surveys, add more as necessary.
@@ -129,7 +141,7 @@ let buildPulseSurvey = async (toolType, userId, callback) => {
 
 
 let setDefaultDisplaySurveyOptions = (questionsPerPage = 4, splitQuestionTypes = true, range = [0, 100]) => {
-  let opts = Constants.surveyDisplayDefaultOptions();
+  let opts = surveyDisplayDefaultOptions();
 
   range[0] = range[0] || opts.range[0];
   range[1] = range[1] || opts.range[1];
