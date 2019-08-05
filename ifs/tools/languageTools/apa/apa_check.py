@@ -139,14 +139,11 @@ def main(argv):
 
     matches = []
     linecount = 1
+    json_data = {}
     for line in text.splitlines():
         matches += apacheck(line)
         json_data = build_json(matches, infile, linecount)
         linecount += 1
-
-    # print(to console)
-    if not quiet:
-        print_json(json_data)
 
     # write to file if there is an output file specified
     if json_data:

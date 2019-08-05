@@ -33,7 +33,8 @@ function acceptableMimeType() {
             'application/msword',
             'application/vnd.oasis.opendocument.text',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/pdf'
+            'application/pdf',
+            'application/octet-stream'
         ],
         "Programming": [
             'text/plain',
@@ -89,7 +90,7 @@ var storage = multer.diskStorage({
         var submissionFolder = path.join( dest,userID.toString() );
 
 				submissionFolder = path.join(submissionFolder, String(submissionTime));
-        
+
         fse.ensureDir(submissionFolder, function(err) {
             if(err) {
                 Logger.error("Unable to create or clean folder for submission");
