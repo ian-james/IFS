@@ -1,5 +1,5 @@
 const path = require('path');
-const _ = require('lodash');
+const async = require('async');
 const viewPath = path.join(__components, 'SurveyAdmin/views/');
 const { Survey } = require(path.join(__modelPath, 'survey'));
 const { Question } = require(path.join(__modelPath, 'question'));
@@ -24,8 +24,7 @@ module.exports = {
         fullSurveyFile: req.file.originalname
       });
     /* Insert parsed questions associated with new survey */
-
-    _.map(questions, async (question, index) => {
+    async.eachOfSeries(questions, async (question, index, cb ) => {
       await Question.query()
         .insert({
           surveyId: survey.id,
