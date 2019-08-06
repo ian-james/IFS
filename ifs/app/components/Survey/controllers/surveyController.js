@@ -31,6 +31,7 @@ module.exports = {
     if (await optedIn(userId)) {
       const studentId = await getStudentIdForUser(userId);
       let surveys = await getAvailableSurveys(studentId);
+
       /* Format date so pug will play nice */
       surveys = _.map(surveys, (obj) => {
         const rev = obj['lastRevision'];
@@ -128,7 +129,7 @@ module.exports = {
               "surveyId": surveyId,
               "questionIds": qids,
               "questionsAnswered": qids.length,
-              "lastQuestion": lastId,
+              "lastQuestion": curIndex,
               "surveyIndex": surveyIndex
             }));
 
@@ -139,7 +140,7 @@ module.exports = {
               });
 
               // Check if survey was finished update counter, user survey preferences.
-              if ( lastId == surveyLastIndex) {
+              if ( curIndex == surveyLastIndex) {
                 SurveyPreferences.incrementSurveyIndex(userId, surveyId, function (err, qData) {
                   if (err)
                     Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);

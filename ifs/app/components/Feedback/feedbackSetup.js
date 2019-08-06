@@ -68,7 +68,7 @@ function readFeedbackFormat( feedback , options) {
         // Tool should always be selected unless it's defaulted too.
         var toolIsSelected = ( options && options['tool'] || toolsUsed.length >= 1);
         var selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
-       
+
         // For each file, read in the content and mark it up for display.
         for( var i = 0; i < files.length; i++ )
         {
@@ -79,15 +79,8 @@ function readFeedbackFormat( feedback , options) {
             //TODO: Positional setup information should be moved to the feedback filtering and organization
             // This decopules the task of highlights and positioning.
             if( toolIsSelected ) {
-  
-                if (feedbackItems[0].runType == "writing")
-                {
-                    // Normal highlighting scheme for writing file
-                    file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-                    setupFilePositionInformation(file, selectedTool,feedbackItems);
-                    file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
-                }
-                else
+
+                if (feedbackItems[0].runType == "programming")
                 {
                     // Syntax highlighting for programming file
                     file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
@@ -95,14 +88,22 @@ function readFeedbackFormat( feedback , options) {
                     setupFilePositionInformation(file, selectedTool,feedbackItems);
                     file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
                 }
-                
+                else
+                {
+                    // Normal highlighting scheme for writing file
+                    file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
+                    setupFilePositionInformation(file, selectedTool,feedbackItems);
+                    file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
+                }
+
             }
             else{
                 file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-                if (toolType.toLowerCase() != "writing")
-                    file.markedUp = high.highlightAuto(he.decode(file.content)).value;
-                else
+                if (toolType.toLowerCase() != "programming")
                     file.markedUp = file.content;
+                else
+                    file.markedUp = high.highlightAuto(he.decode(file.content)).value;
+
             }
         }
 
@@ -197,9 +198,23 @@ function filesMatch( filename, feedbackFilename, usePath = false) {
     return path.basename(filename) == path.basename(feedbackFilename);
 }
 
+/**
+ * Wrapper to check if tools name or the selected tool is all.
+ * @param  {[str]} toolName         [toolname in quesiton]
+ * @param  {[str]} selectedToolName [current toolname]
+ * @return {[bool]}                  [If tool names match or are equal to all.]
+ */
 function toolsMatch( toolName, selectedToolName ) {
     return ( selectedToolName == "All" || toolName == selectedToolName );
 }
+
+
+/**
+ * Extract the feedback stats based on the filename and stat for display.
+ * If stats is empty pass back empty object, otherwise object has array.
+ * @param  {[type]} visualTools [description]
+ * @return {[type]}             [description]
+ */
 
 function setupFeedbackStats(feedbackStats) {
 

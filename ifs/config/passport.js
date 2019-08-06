@@ -124,29 +124,21 @@ module.exports = function (passport) {
                             // TODO: This needs to be moved to a default account setup.
                             // // perrN and pdata1 isn't named to indicate not used.
                             studentProfile.insertStudentProfile(newUser.id, firstname + " " + lastname, "", function(profileErr, studentSet) {
-                                preferencesDB.setStudentPreferences(newUser.id, prefToolType, toolTypeKey, defaultToolType, function(prefErr, prefData){
-                                    preferencesDB.setStudentPreferences(newUser.id, "Option", 'pref-tipsIndex', "1", function(perr1, pdata1) {
-                                        preferencesDB.setStudentPreferences(newUser.id, "Option", 'pref-tipsAllowed', "on", function(perr2, pdata2){
-                                            defaultTool.setupDefaultTool(req);
-                                            SurveyBuilder.setSignupSurveyPreferences(newUser.id, function(err,data){
-                                                // generate verification token (and insert it into the database) and send email
-                                                verifySend.generateLink('verify', newUser.id, function(err, link) {
-                                                    if (err)
-                                                        Logger.error(err);
-                                                    if (link) {
-                                                        var message = 'Please follow the link below to complete your account registration:';
-                                                        var subject = "Complete your registration";
-                                                        verifySend.sendLink(newUser.username, link, subject, message);
+                                // generate verification token (and insert it into the database) and send email
+                                verifySend.generateLink('verify', newUser.id, function(err, link) {
+                                    if (err)
+                                        Logger.error(err);
+                                    if (link) {
+                                        var message = 'Please follow the link below to complete your account registration:';
+                                        var subject = "Complete your registration";
+                                        verifySend.sendLink(newUser.username, link, subject, message);
 
-                                                        newUser.sessionId = 0;
-                                                        req.flash('success', 'Check your email for a verification link.');
-                                                    }
-                                                    return done(null, newUser);
-                                                });
-                                            });
-                                        });
-                                    });
+                                        newUser.sessionId = 0;
+                                        req.flash('success', 'Check your email for a verification link.');
+                                    }
+                                    return done(null, newUser);
                                 });
+
                             });
                         });
                     }
@@ -196,32 +188,44 @@ module.exports = function (passport) {
                             req.flash('errorMessage', 'Check your email to complete registration.');
                             return done(null, false);
                         }
-                            // Increment sessionId for user
-                            db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,r1) {
-                                if (err)
-                                    Logger.error(err);
-                            });
 
-                            var loginQuery = dbHelpers.buildInsert(dbcfg.login_table) + dbHelpers.buildValues(["userId", "sessionId"]);
-                            db.query( loginQuery, [ uid, rows[0].sessionId + 1],  function(err,r5) {
-                                if (err)
-                                    Logger.error(err);
-                            });
+                        preferencesDB.setStudentPreferences(uid, prefToolType, toolTypeKey, defaultToolType, function(prefErr, prefData){
+                            preferencesDB.setStudentPreferences(uid, "Option", 'pref-tipsIndex', "1", function(perr1, pdata1) {
+                              preferencesDB.setStudentPreferences(uid, "Option", 'pref-tipsAllowed', "on", function(perr2, pdata2){
+                                    SurveyBuilder.setSignupSurveyPreferences(uid, function(err,data){
 
-                            // Increment local copy, instead of reading from DB.
-                            rows[0].sessionId += 1;
+                                        // Increment sessionId for user
+                                        db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,r1) {
+                                            if (err)
+                                                Logger.error(err);
+                                        });
 
-                            //Set a single preference on login to load their toolType preferences (defaults to programming)
-                            preferencesDB.getStudentPreferencesByToolName(rows[0].id,  toolTypeKey, function(toolErr, result) {
-                                if (toolErr || !result || result.length == 0)
-                                    defaultTool.setupDefaultTool(req);
-                                else
-                                    defaultTool.setupDefaultTool(req, result[0].toolValue);
-                                return done(null, rows[0]);
+                                        var loginQuery = dbHelpers.buildInsert(dbcfg.login_table) + dbHelpers.buildValues(["userId", "sessionId"]);
+                                        db.query( loginQuery, [ uid, rows[0].sessionId + 1],  function(err,r5) {
+                                            if (err)
+                                                Logger.error(err);
+                                        });
+
+                                        // Increment local copy, instead of reading from DB.
+                                        rows[0].sessionId += 1;
+
+                                        //Set a single preference on login to load their toolType preferences (defaults to programming)
+                                        preferencesDB.getStudentPreferencesByToolName(rows[0].id,  toolTypeKey, function(toolErr, result) {
+                                            if (toolErr || !result || result.length == 0)
+                                                defaultTool.setupDefaultTool(req);
+                                            else
+                                                defaultTool.setupDefaultTool(req, result[0].toolValue);
+                                            return done(null, rows[0]);
+                                        });
+                                    });
+                                });
                             });
+                        });
                    });
                 });
             }
         )
     );
 };
+
+

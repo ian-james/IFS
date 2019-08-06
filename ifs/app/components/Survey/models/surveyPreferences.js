@@ -7,7 +7,7 @@ var Errors = require(__components + "Errors/errors");
 var moment = require('moment');
 
 function insertSurveyPrefs( surveyPrefData, callback ) {
-    var req = "INSERT INTO " + dbcfg.survey_preferences_table + " (userId, surveyId,lastRevision,lastIndex) values (?,?,?,?)";
+    var req = "INSERT INTO " + dbcfg.survey_preferences_table + " (userId, surveyId,lastRevision,lastIndex) values (?,?,?,?)  ON Duplicate Key update surveyId=surveyId";
     db.query(req, surveyPrefData, function(err,data){
         callback(err,data);
     });
@@ -23,7 +23,7 @@ function setQuestionCounter( userId, surveyId, questionIndex, callback ) {
 
 function incrementSurveyIndex( userId, surveyId, callback ) {
     var d = moment( new Date()).format("YYYY-MM-DD HH:mm:ss");
-    var req = "Update " + dbcfg.survey_preferences_table  + " set lastRevision = ?, currentSurveyIndex = currentSurveyIndex+1  where  userId = ? and surveyId = ?";
+    var req = "Update " + dbcfg.survey_preferences_table  + " set lastRevision = ?,  currentSurveyIndex = currentSurveyIndex+1  where  userId = ? and surveyId = ?";
     db.query(req, [d,userId,surveyId], function(err,data){
         callback(err,data);
     });

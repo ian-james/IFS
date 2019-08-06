@@ -1,0 +1,74 @@
+{
+ [
+    {
+      "name":"CPSEPS",
+      "authors":"Unknown",
+      "title":"Computer Programming Self-Efficacy Survey",
+      "questionFile":"data/surveys/CPSEPS.json",
+      "numQuestions":28,
+      "field":"programming",
+      "freq":"req",
+      "surveyFile":"data/surveys/surveyCPSEPS.json"
+    },
+    {
+      "name":"GSE",
+      "authors":"Unknown",
+      "title":"General Self-Efficacy Survey",
+      "questionFile":"data/surveys/GSE.json",
+      "numQuestions":10,
+      "field":"general",
+      "freq":"req",
+      "surveyFile":"data/surveys/surveyGSE.json"
+    },
+    {
+      "name":"SEWS",
+      "authors":"Unknown",
+      "title":"Self-Efficacy Writing Scale",
+      "questionFile":"data/surveys/SEWS.json",
+      "numQuestions":16,
+      "field":"writing",
+      "freq":"req",
+      "surveyFile":"data/surveys/surveySEWS.json"
+    },
+    {
+      "name":"ACQ",
+      "authors":"Unknown",
+      "title":"CAchievement Goal Orientation",
+      "questionFile":"data/surveys/ACQ.json",
+      "numQuestions":12,
+      "field":"general",
+      "freq":"set",
+      "surveyFile":"data/surveys/surveyACQ.json"
+    },
+    {
+      "name":"OSE",
+      "authors":"Unknown",
+      "title":"Online Student Engagement Scale",
+      "questionFile":"data/surveys/OSE.json",
+      "numQuestions":19,
+      "field":"general",
+      "freq":"req",
+      "surveyFile":"data/surveys/surveyOSE.json"
+    },
+    {
+      "name":"SCEQ",
+      "authors":"Unknown",
+      "title":"Student Course Engagement Questionnaire",
+      "questionFile":"data/surveys/SCEQ.json",
+      "numQuestions":23,
+      "field":"general",
+      "freq":"set",
+      "surveyFile":"data/surveys/surveySCEQ.json"
+    },
+    {
+      "name":"GRIT",
+      "authors":"Unknown",
+      "title":"Computer Programming Self-Efficacy Survey",
+      "questionFile":"data/surveys/CPSEPS.json",
+      "numQuestions":8,
+      "field":"general",
+      "freq":"set",
+      "surveyFile":"data/surveys/GRIT.json"
+    }
+  ]
+}
