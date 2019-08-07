@@ -92,8 +92,8 @@ module.exports = function(app, iosocket) {
         var tipsOn = req.body["pref-tipsAllowed"] ? req.body["pref-tipsAllowed"] : "off";
         var studentName = req.body['student-name'];
         var studentBio = req.body['student-bio'];
-        var studentYearofStudy = req.body['student-yearOfStudy'];
-        var studentAge = req.body["student-age"];
+        var studentYearofStudy = req.body['student-yearOfStudy'] || '0' ;
+        var studentAge = req.body["student-age"] || '0';
         var studentGender = req.body["student-gender"];
         var error = false;
 
