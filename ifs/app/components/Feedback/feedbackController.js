@@ -22,6 +22,7 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     }
 
     $scope.setSelectedItem = function(event) {
+
         // Array of items matching this error are passed
         if( event.target.getAttribute("data-feedback")){
             $scope.selectedArray = event.target.getAttribute("data-feedback");
@@ -65,6 +66,8 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.feedbackItems=[];
     $scope.feedbackStats=[];
     $scope.filterByTool =null;
+    $scope.visualTools = [];
+    $scope.runType = "";
 
     $scope.allowFeedbackType = function(feedbackItem) {
         return ( $scope.filterByTool == "All" || feedbackItem.toolName == $scope.filterByTool);
@@ -85,11 +88,29 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
         return result;
     };
 
+    $scope.displayFeedback = function(file) {
+        return $sce.trustAsHtml(file.markedUp);
+    }
+
     $http.get("/feedback/data").then(function(res) {
         $scope.feedbackItems = res.data.feedbackItems;
         $scope.files = res.data.files;
         $scope.toolsUsed = res.data.toolsUsed;
         $scope.feedbackStats = res.data.feedbackStats;
         $scope.filterByTool = res.data.selectedTool;
+        $scope.visualTools = res.data.visualTools;
+        $scope.runType = res.data.runType;
     });
+
+}).directive('initBind', function($compile) {
+return {
+        restrict: 'A',
+        link : function (scope, element, attr) {
+            attr.$observe('ngBindHtml',function(){
+                if(attr.ngBindHtml){
+                     $compile(element[0].children)(scope);
+                }
+            })
+        }
+    };
 });

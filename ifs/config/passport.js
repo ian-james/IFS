@@ -150,6 +150,13 @@ module.exports = function (passport) {
         )
     );
 
+    /**
+     * [loginSession description] - This function set login information for when a user logins into the system. Including sessionId and preferences.
+     * @param  {[type]}   req      [Request object
+     * @param  {[type]}   user     User obj for user tryng to log in.
+     * @param  {Function} callback LocalStractey done callback
+     * @return {[type]}            returns callback with the user and key information set in the database.
+     */
     function loginSession( req, user, callback ) {
         db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", user.id, function(err,r1) {
             if (err)

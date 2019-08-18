@@ -131,12 +131,6 @@ function readFeedbackFormat( feedback , options) {
 
 }
 
-
-function readFiles( filename , options) {
-    var feedback = fs.readFileSync( filename, 'utf-8');
-    return readFeedbackFormat( feedback , options );
-}
-
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
     // Setup positionsal information for all
     for( var i = 0; i < feedbackItems.length; i++ ) {
@@ -261,6 +255,5 @@ function setupVisualFeedback(visualTools) {
 }
 
 module.exports.setupFeedback = readFeedbackFormat;
-module.exports.readFileAndSetupFeedback = readFiles;
 module.exports.setupFeedbackStats = setupFeedbackStats;
 module.exports.setupVisualFeedback = setupVisualFeedback;

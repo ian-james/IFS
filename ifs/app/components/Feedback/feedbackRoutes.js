@@ -11,6 +11,7 @@ var _ = require('lodash');
 
 var feedbackEvents = require(__components + "InteractionEvents/feedbackEvents");
 
+var now = require("performance-now");
 
 
 module.exports = function( app ) {
@@ -35,6 +36,8 @@ module.exports = function( app ) {
             res.end();
             return;
         }
+
+        var t0 = now(), t1=t0;
 
         //TODO Feedback could be received by type (optimizaiton)
         var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
@@ -68,6 +71,8 @@ module.exports = function( app ) {
                             results = _.assign(result,visualTools);
                             _.extend(results, {'runType': req.session.toolSelect.toLowerCase()})
                             callback(results);
+                            t1 = now();
+                            Logger.info("Feedback Setup took : " + (t1 - t0) + " milliseconds");
                         });
                     });
                 });
@@ -84,10 +89,7 @@ module.exports = function( app ) {
 
     app.get('/feedback', function(req, res) {
         var opt = {};
-
-        showFeedback(req,res,opt, function(results) {      
-            res.render( viewPath + "feedback", results );
-        });
+        res.render( viewPath + "feedback", { title: 'Submission Feedback', 'files':[], 'feedbackItems': [], 'toolsUsed':[], 'selectedTool':"" } );
     });
 
     app.post('/feedback', function(req, res, next) {
