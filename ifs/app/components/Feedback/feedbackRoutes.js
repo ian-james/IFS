@@ -89,13 +89,12 @@ module.exports = function( app ) {
 
     app.get('/feedback', function(req, res) {
         var opt = {};
-        res.render( viewPath + "feedback", { title: 'Submission Feedback', 'files':[], 'feedbackItems': [], 'toolsUsed':[], 'selectedTool':"" } );
+        res.render( viewPath + "feedback", getDefaultPage() );
     });
 
     app.post('/feedback', function(req, res, next) {
         var opt = { 'tool': req.body.toolSelector };
         req.session.activeTool = req.body.toolSelector;
-
         showFeedback(req,res,opt, function(results) {
             res.render( viewPath + "feedback", results );
         });

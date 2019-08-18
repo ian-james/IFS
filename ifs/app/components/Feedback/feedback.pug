@@ -24,8 +24,8 @@ block content
                         label(for="toolSelector").uk-form-label View feedback from tool:
                         div.uk-form-controls
                             select(onchange="this.form.submit()" name="toolSelector")#toolSelectorId.uk-select
-                                option(selected="All"==selectedTool ) All
-                                option( ng-repeat='tool in toolsUsed' ng-selected="tool==selectedTool" ) {{ tool }}
+                                option(selected="filterByTool == All") All
+                                option( ng-repeat='tool in toolsUsed' ng-selected="tool==filterByTool" ) {{ tool }}
                     hr
                     div
                         a(ng-repeat="vtool in visualTools" href="{{vtool.route}}").uk-button.uk-button-default {{ vtool.name }}
