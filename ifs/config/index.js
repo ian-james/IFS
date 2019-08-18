@@ -6,11 +6,6 @@ var http = require('http');
 var compression = require('compression');
 app.use(compression());
 
-//app.set('env', 'production');
-if(app.get('env') === 'production'){
-    console.log("In PRODUCTION");
-}
-
 // Set our paths for finding our code.
 var path = require('path');
 //var appPath = path.join( __dirname + "/../app/");
@@ -23,7 +18,10 @@ global.__tools = path.join(__dirname , "../tools/");
 global.__components = path.join(__dirname, "../app/components/");
 global.__appPath = path.join(__dirname, "../app/");
 global.__modelPath = path.join(__dirname, '../app/models');
-global.__EXPERIMENT_ON = true;
+
+// Experiment settings
+const experimentSettings = require( __configs + "experimentConfig.json" );
+global.__EXPERIMENT_ON = experimentSettings.active;
 
 var port = process.env.PORT || 3000;
 
@@ -115,12 +113,8 @@ function onAuthorizeSuccess(data, accept){
 }
 
 function onAuthorizeFail(data, message, error, accept){
-
-  //console.log("onAuthoFailM-", message);
   if(error)
     throw new Error(message);
-  // We use this callback to log all of our failed connections.
-  //console.log('failed connection to socket.io:', message);
   accept(null, false);
 }
 

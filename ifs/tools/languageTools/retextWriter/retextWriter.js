@@ -69,10 +69,8 @@ function getSubstr( str, sTarget, eTarget )
 
 function main( opts )
 {
-
-    console.log(opts);
     var file = _.get(opts,'file',"");
-    console.log(file);
+
     if( file.length == 0 ){
         console.error("Retext Writer is unable to locate the file.");
         return 0;
@@ -136,7 +134,6 @@ function main( opts )
                 var messages = _.get(rfile,"messages");
                 _.forEach( messages, function( m )
                 {
-                    //console.log("M Was ", m);
                     // Target needs to be parsed to a odd format.
                     // Note sure if it's consistent between al retext tools yet.
                     var target = _.get(m,"message");

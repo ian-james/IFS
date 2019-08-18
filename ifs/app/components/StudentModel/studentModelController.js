@@ -18,7 +18,7 @@ app.controller( "studentModelCtrl", function($scope, $http) {
     // Data to show
     $scope.selectedData = {};
     $scope.dataOptions =[];
-    
+
     // Color Schemes
     $scope.selectedColorScheme = 0;
     $scope.colorSchemes = [];
@@ -83,7 +83,7 @@ app.controller( "studentModelCtrl", function($scope, $http) {
                 $scope.graphData = res.data;
             }
         }, function(err){
-            console.log("ERROR:", err);
+            Logger.log("Styudent Model ERROR:", err);
         });
     }
 
@@ -94,5 +94,5 @@ app.controller( "studentModelCtrl", function($scope, $http) {
         $scope.graphData = res.data;
     });
 
-  
+
 });

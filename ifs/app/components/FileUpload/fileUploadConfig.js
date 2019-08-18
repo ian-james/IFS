@@ -20,10 +20,11 @@ var Helpers = require('./fileUploadHelpers');
 const allowFileTypes = require( __configs + "acceptableFileTypes.json" );
 const allowMimeTypes= require( __configs + "acceptableMimeTypes.json" );
 
+/*
 function acceptableFileTypes() {
 
     return allowFileTypes;
-}
+}*/
 
 function acceptableMimeType() {
     return allowMimeTypes
@@ -59,8 +60,7 @@ var storage = multer.diskStorage({
         var userID = req.user.id;
 
         var submissionFolder = path.join( dest,userID.toString() );
-
-				submissionFolder = path.join(submissionFolder, String(submissionTime));
+		submissionFolder = path.join(submissionFolder, String(submissionTime));
 
         fse.ensureDir(submissionFolder, function(err) {
             if(err) {

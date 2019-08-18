@@ -1,0 +1,31 @@
+{
+    "ifs": "ifs",
+    "programming" : "Programming",
+    "writing" : "Writing",
+    "visual"  : "Visual",
+    "stats"   : "Stats",
+    "programSrc" : "ProgrammingSrc",
+    "defaultToolType" : "Programming",
+
+    "emailDomain": "uoguelph.ca",
+    "lockEmailDomain": true,
+
+    "paths": {
+        "users":"users",
+        "tools":"tools"
+    },
+
+
+    "toolGenre": [
+        {
+            "name": "Programming",
+            "file": "./tools/toolListProgramming.json",
+            "parser": "programmingParser"
+        },
+        {
+            "name": "Writing",
+            "file": "./tools/toolList.json",
+            "parser": "writingParser"
+        }
+    ]
+}

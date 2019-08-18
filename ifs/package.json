@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "pretest": "node ./config/createDatabase.js; npx knex migrate:latest --knexfile config/knexfile.js --cwd ; node ./config/postCreateDatabase.js ",
-    "test": "nodemon ./config/index.js --inspect --ignore 'logs/*' --ignore 'data/*' --ignore 'uploads/*' --ignore 'logs/*' --ignore 'tests/*' --ignore 'tools/*' --ignore users/* --ignore 'app/shared/img/user/*'",
+    "test": "nodemon ./config/index.js --inspect --ignore 'logs/*' --ignore 'users/*' --ignore 'data/*' --ignore 'uploads/*' --ignore 'logs/*' --ignore 'tests/*' --ignore 'tools/*' --ignore 'app/shared/img/user/*'",
     "prestart": "node ./config/createDatabase.js; npx knex migrate:latest --knexfile config/knexfile.js --cwd ; node ./config/postCreateDatabase.js ",
     "start": "pm2 start  ecosystem.config.js",
     "restart": "pm2 start ecosystem.config.js",

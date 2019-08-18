@@ -64,7 +64,7 @@ module.exports = {
 
           fs.readFile(surveyFile, "utf-8", function (err, fileData) {
             if (err)
-              console.log("Can't read file:", surveyFile);
+              Logger.error("Can't read file:", surveyFile);
             else {
               var jsonData = JSON.parse(fileData);
               // For each question insert
@@ -107,7 +107,7 @@ module.exports = {
 
           fs.readFile(surveyFile, "utf-8", function (err, fileData) {
             if (err)
-              console.log("Can't read file:", surveyFile);
+              Logger.log("Can't read file:", surveyFile);
             else {
               var jsonData = JSON.parse(fileData);
               // For each question insert
@@ -129,7 +129,7 @@ module.exports = {
                   Question.insertQuestion,
                   function (err) {
                     if (err)
-                      console.log("Insert failed with error", err);
+                      Logger.log("Insert failed with error", err);
                     res.end();
                   }
                 );

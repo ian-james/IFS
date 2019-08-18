@@ -128,6 +128,10 @@ $(function() {
 
         }).fail(function(xhr,error) {
             div.toggleClass("uk-hidden",false);
+            //console.log( xhr.responseText );
+            //console.log( "**************************************************\n" );
+            //console.log(JSON.parse(xhr.responseText).msg)
+
             div.first().text(JSON.parse(xhr.responseText).msg);
 
             title.text("Files failed to upload");

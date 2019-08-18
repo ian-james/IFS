@@ -55,7 +55,6 @@ module.exports = {
 
      NOT USED(?)
     insertStudentAssignmentTask: function( studentId, assignmentTaskId, isComplete, callback ) {
-        console.log(" Student Task DB");
         var q = dbHelpers.buildInsert(dbcfg.student_assignment_task_table) + dbHelpers.buildValues(["studentId","assignmentTaskId", "isComplete"]) + "ON Duplicate Key update isComplete=Values(isComplete)";
         db.query(q,[studentId, assignmentTaskId, isComplete], callback);
     },

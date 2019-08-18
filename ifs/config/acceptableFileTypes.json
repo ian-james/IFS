@@ -1,4 +1,5 @@
 {
     "Programming":["md", "json", "c", "cpp", "cc", "cxx", "h", "hpp", "zip", "tar", "py"],
+    "ProgrammingSrc":["md", "json", "c", "cpp", "cc", "cxx", "h", "hpp"],
     "Writing": ["txt", "text", "doc", "docx", "odt", "pdf"]
 }

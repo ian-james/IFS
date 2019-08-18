@@ -1,0 +1,11 @@
+{
+    "experimentMode": "ifs",
+    "version": "1.0",
+    "active": true,
+    "options": {
+        "collectGender": true,
+        "collect1stGen": false,
+        "collectRace": false,
+        "saveSubmissions": true
+    }
+}

@@ -19,6 +19,8 @@ var mkdirp = require('mkdirp');
 var cp = require('cp-file');
 var Logger = require( path.join( __dirname, "/loggingConfig") );
 
+var appDefaults = require( __configs + "appDefaults.json" );
+
 var SurveyBuilder = require( __components + "Survey/helpers/surveyBuilder");
 var preferencesDB = require( __components + "Preferences/preferenceDB.js");
 var studentProfile = require(__components + "StudentProfile/studentProfileDB")
@@ -27,7 +29,7 @@ var defaultTool = require( __components + "Preferences/setupDefaultToolType.js")
 
 module.exports = function (passport) {
     // TODO: Default ToolType is should be set somewhere else with greater visbility.
-    var defaultToolType = "Programming";
+    var defaultToolType = appDefaults.defaultToolType;
     var toolTypeKey = "pref-toolSelect";
     var prefToolType = "Option";
 
@@ -159,7 +161,6 @@ module.exports = function (passport) {
             function (req, username, password, done) {
 
                 if (!validator.isEmail(username)) {
-                    console.log(username);
                     req.flash('errorMessage', 'Error. You must use a valid email address.');
                     return done(null, false);
                 } else {

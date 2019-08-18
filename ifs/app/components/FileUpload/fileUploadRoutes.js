@@ -229,7 +229,7 @@ module.exports = function (app, iosocket) {
                 res.send({
                     'value': assignment
                 });
-                console.log(err.stack);
+                Logger.error(err.stack);
                 return;
             });
 
@@ -249,7 +249,6 @@ module.exports = function (app, iosocket) {
         saveToolSelectionPreferences(req.user.id, req.session.toolSelect, req.body);
 
         submissionEvent.addSubmission( user, function(subErr, succSubmission) {
-
             //obtain last submission from the requesting user
             var submissionRequest = submissionEvent.getLastSubmissionId(user.userId, user.sessoinId);
 

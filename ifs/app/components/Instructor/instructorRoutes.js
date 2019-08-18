@@ -26,7 +26,6 @@ module.exports = function( app ) {
      */
     function isInstructor(req, res, next) {
         var user = _.get(req, "session.passport.user",req.user);
-        console.log( user );
         if (req && req.user) {
             instructorDB.getRole(req.user.id, function(err, role) {
                 if (role.length > 0 && role[0].value == "instructor"){
@@ -244,7 +243,6 @@ module.exports = function( app ) {
         // parses sequelize
         var data = qs.parse(req.body.formData);
         if (req.body.form == 'createCourse'){ // create course
-            console.log("CSkillS", data.cskills)
             if (!Array.isArray(data.cskills)) data.cskills = [data.cskills];
             var arr = [data.ccode, data.cname, data.cdesc, data.ctype,
                        req.user.id, data.cyear, data.csemester];
@@ -259,7 +257,6 @@ module.exports = function( app ) {
         }
         else if (req.body.form == 'createAssign'){ // create assignment
             if (!Array.isArray(data.askills)) data.askills = [data.askills];
-            console.log(data.cnameA);
             var courseInfo = JSON.parse(data.cnameA);
             var arr = [courseInfo.cid, data.aname, data.atitle, data.adesc, data.adate];
             instructorDB.insertAssignment(arr, function(err, queryInfo){

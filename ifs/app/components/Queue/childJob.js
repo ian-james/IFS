@@ -52,8 +52,6 @@ function runSingleTool(job, done)
     // Spawn a child to handle process
     child = spawn(splitCMD[0], splitCMD.slice(1));
 
-    console.log("splitcmd: " + splitCMD[0] + " " + splitCMD.slice(1));
-
     var error = false;
 
     // Event to handle stderr

@@ -37,8 +37,6 @@ $(document).ready(function() {
                 optsStr += "<option value='None'" + ((res.selectedId == -1 )? " selected " : "" ) + ">None</option>"
                 for(var i = 0; i < res.result.length; i++)
                 {
-                    console.log("onece", res.selectedId, " ", i );
-                    console.log( res.selectedId == 0 );
                     optsStr += "<option value='" + res.result[i] + "'" + ((res.selectedId == i )? " selected " : "" ) + " >" + res.result[i] + "</option>";
                 }
                 course.append( optsStr );

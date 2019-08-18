@@ -7,6 +7,10 @@ const execSync = require('child_process').execSync;
 var Logger = require(__configs + "loggingConfig");
 var Errors = require(__components + "Errors/errors");
 
+const helpers = require( __configs + "configHelpers.js" );
+const allowFileTypes = require( __configs + "acceptableFileTypes.json" );
+const appDefaults = require( __configs + "appDefaults.json" );
+
 module.exports = {
     /* Helper functions */
     getYearMonthDayStr: function() {
@@ -47,7 +51,7 @@ module.exports = {
     },
 
     isSrcExt: function(filename) {
-        var ext = ["c", "cpp", "cc", "cxx", "h", "hpp", "py"];
+        var ext =  allowFileTypes.ProgrammingSrc
         return _.includes(ext, this.getExt(filename));
     },
 
@@ -84,7 +88,7 @@ module.exports = {
                 'dir': '/unzipped'
             };
 
-            
+
             var directory = filesInfo[0].destination;
             var zipDir = path.join(directory, options['dir']);
             var folderCreated = mkdirp.sync(zipDir);
@@ -136,7 +140,8 @@ module.exports = {
         }
 
         var toolType = req.session.toolSelect;
-        if (toolType == "Programming") {
+
+        if ( helpers.isProgramming(toolType) ) {
             var validate = this.validateProgrammingFiles(uploadedFiles);
             if (Errors.hasErr(validate)) {
                 Errors.logErr(validate);
@@ -155,7 +160,7 @@ module.exports = {
             } else {
                 uploadedFiles = this.createProgrammingProject(uploadedFiles);
             }
-        } else if (toolType == "Writing") {
+        } else if ( helpers.isWriting(toolType) ) {
             var validate = this.validateWritingFiles(uploadedFiles);
             if (Errors.hasErr(validate)) {
                 Errors.logErr(res);
@@ -241,7 +246,7 @@ module.exports = {
 
                         var zipDir = path.join(path.dirname(zipfile), '/unzipped');
                         // Move all files types to directory
-                        var fileTypes =  ["c", "cpp", "cc", "cxx", "h", "hpp"];
+                        var fileTypes =  allowFileTypes.ProgrammingSrc;
                         _.forOwn( fileGroups, function(value,key) {
                             if(fileTypes.indexOf(key) >= 0 )
                             {
@@ -367,7 +372,7 @@ module.exports = {
     // Minor validation of the project, including checking for a makefile, *c and *.h files
     validateProjectStructure: function(zipDir, groupedFiles) {
         if (groupedFiles) {
-            var programmingType = ["c", "cpp", "cc", "cxx", "h", "hpp"];
+            var programmingType = allowFileTypes.programSrc;
             var sum = 0;
 
             for(var i = 0; i< programmingType.length; i++) {

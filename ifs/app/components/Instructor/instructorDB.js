@@ -257,7 +257,6 @@ module.exports = {
      * @param {Function} callback
      */
     insertCourse: function(courseData, callback) {
-        console.log( courseData );
         var q = dbHelpers.buildInsert(dbcfg.class_table) + dbHelpers.buildValues(["code","name","description","disciplineType", "instructorId", "year", "semester"]);
         db.query(q, courseData, callback);
     },

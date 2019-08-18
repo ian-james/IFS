@@ -102,7 +102,6 @@ module.exports = {
   /* Given a param ID, delete a specific survey and all associated questions and responses */
   deleteSpecificSurvey: async (req, res) => {
     const surveyId = req.params.surveyId;
-    console.log(surveyId);
 
     if (!surveyId) {
       res.status(500).send({});

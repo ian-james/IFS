@@ -9,6 +9,7 @@
  * solution to building blacklists of characters and validating strings.
  **/
 var validator = require('validator');
+const appDefaults = require( __configs + "appDefaults.json" );
 
 // for each option: true adds sets of characters to blacklist;
 // setting the categories: brackets, operators, punct, special to true will
@@ -190,8 +191,8 @@ function validateGuelphEmail( email ) {
         if( esplits.length == 2 )
         {
             var userId = esplits[0];
-            var domain = "uoguelph.ca"
-            return userId.length >= 1 && domain == esplits[1] && validateText(userId, 'title');
+            var domain = appDefaults.emailDomain;
+            return userId.length >= 1 && (!appDefaults.lockEmailDomain || domain == esplits[1] ) && validateText(userId, 'title');
         }
     }
     return false;

@@ -26,43 +26,6 @@ function makeManagerJob(toolOptions) {
    and return a result. Essentially, this starts all the assessment tools  on a second cJob queue
    and waits for the feedback.
 */
-
-function cTest(jobList)
-{
-    // console.log(jobList);
-
-    var argStr = "";
-    var cmdArr = [];
-
-    for (var i = 0; i < jobList.length; i++)
-    {
-        argStr = "\"" + jobList[i].runCmd + "\"";
-        cmdArr.push(argStr);
-
-    }
-
-
-    var child = spawn("./test", cmdArr);
-
-    child.stdout.on('data', function(data) {
-        console.log('stdout: ' + data);
-        //Here is where the output goes
-    });
-
-    child.stderr.on('data', function(data) {
-        console.log('stderr: ' + data);
-        //Here is where the error output goes
-    });
-
-    child.on('close', function(code) {
-        console.log('closing code: ' + code);
-        //Here you can get the exit code of the script
-    });
-
-
-
-}
-
 function loadAllTools(job, done) {
     job.emit('start');
 
@@ -79,9 +42,6 @@ function loadAllTools(job, done) {
         promises.push( cjob.makeJob( jobsInfo[i] ));
     }
 
-    // this was to test efficiency of running the tools with C
-    // cTest(jobsInfo);
-
     cjob.runJob();
 
     var count = 0;
@@ -94,7 +54,7 @@ function loadAllTools(job, done) {
         t1 = now();
 
         // printing time it takes to run the tools
-        console.log("time taken to run jobs is: " + (t1 - t0) + " milliseconds");
+        Logger.info("time taken to run jobs is: " + (t1 - t0) + " milliseconds");
 
         // return everything that passed and was fulfilled
         var passed =[], failed = [];

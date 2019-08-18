@@ -9,6 +9,12 @@ var Logger = require( __configs + "loggingConfig");
 
 var Helpers = require( __components+ "FileUpload/fileUploadHelpers");
 
+const allowFileTypes = require( __configs + "acceptableFileTypes.json" );
+const allowMimeTypes= require( __configs + "acceptableMimeTypes.json" );
+const appDefaults = require( __configs + "appDefaults.json" );
+
+const helpers = require( __configs + "configHelpers.js" );
+
 
 var ProgrammingParser = require('./parsers/programmingParser').ProgrammingParser;
 var WritingParser = require('./parsers/writingParser').WritingParser;
@@ -20,7 +26,7 @@ function loadFiles( directory, options ) {
     if( fs.lstatSync(directory).isDirectory() ) {
 
         // TODO: How should this be handled
-        options = options || {'groups': ["c", "cpp", "cc", "cxx", "h", "hpp"] };
+        options = options || {'groups': allowFileTypes.ProgrammingSrc };
 
         var files = Helpers.findFilesSync(directory);
         var fileGroups = _.groupBy(files, Helpers.getExt);
@@ -61,6 +67,7 @@ function readFeedbackFormat( feedback , options) {
         var toolsUsed = _.uniq(_.map(feedbackItems,'toolName'));
 
         // Suggestions are stringified json, convert back to array.
+        var countItems = feedbackItems.length ;
         for(var i = 0; i < feedbackItems.length; i++){
             feedbackItems[i]['suggestions'] = JSON.parse(feedbackItems[i]['suggestions']);
         }
@@ -80,7 +87,7 @@ function readFeedbackFormat( feedback , options) {
             // This decopules the task of highlights and positioning.
             if( toolIsSelected ) {
 
-                if (feedbackItems[0].runType == "programming")
+                if ( countItems > 0 &&  helpers.isProgramming( feedbackItems[0].runType ) )
                 {
                     // Syntax highlighting for programming file
                     file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
@@ -99,7 +106,7 @@ function readFeedbackFormat( feedback , options) {
             }
             else{
                 file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-                if (toolType.toLowerCase() != "programming")
+                if ( helpers.isProgramming( toolType ) )
                     file.markedUp = file.content;
                 else
                     file.markedUp = high.highlightAuto(he.decode(file.content)).value;
@@ -147,7 +154,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                 // Without a target you have to use the line or a range
                 if( !feedbackItem.target ) {
                     // if we are marking up a programming file, then only get the line
-                    if (feedbackItem.runType == "programming") {
+                    if ( helpers.isProgramming(feedbackItem.runType)) {
                         var programmingParser = new ProgrammingParser();
                         programmingParser.setupContent(file.content);
                         programmingParser.tokenize();
