@@ -5,8 +5,6 @@ module.exports = function (app, iosocket) {
     var componentsPath = __components
     var passport = require('passport');
 
-    // i18n Translation routes
-    //require( path.join( __dirname, "/i18nRoutes"))(app);
     require( componentsPath + "/InteractionEvents/eventRoutes")(app, iosocket);
 
     require(componentsPath + "/Admin/adminRoutes")(app);
@@ -70,7 +68,7 @@ module.exports = function (app, iosocket) {
 
     // Survey Stats/Admin panel
     require(componentsPath + '/SurveyAdmin/routes')(app,iosocket);
-    // Announcement Routes 
+    // Announcement Routes
     require (componentsPath + '/Announcements/routes')(app,iosocket);
 
     // Instructor route
