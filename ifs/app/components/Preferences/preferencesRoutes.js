@@ -97,7 +97,6 @@ module.exports = function(app, iosocket) {
         var studentGender = req.body["student-gender"];
         var error = false;
 
-
         if (!sanitization.validateText(studentName, 'title')) {
             res.redirect(url.format({
                 pathname:"/preferences",
@@ -120,8 +119,9 @@ module.exports = function(app, iosocket) {
                     tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-toolSelect", pref));
                     tracker.trackEvent( iosocket, event.changeEvent(req.user.sessionId, req.user.id, "pref-tipsAllowed", tipsOn));
 
-                    if(!err)
+                    if(!err) {
                         defaultTool.setupDefaultTool(req, pref);
+                    }
 
                     profileDB.setStudentProfile(userId, studentName, studentBio, studentYearofStudy, studentAge, studentGender, function(err, presult) {
 

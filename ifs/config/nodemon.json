@@ -5,7 +5,7 @@
         "logs/*",
         "tests/*",
         "tools/*",
-        "users/",
+        "users/*",
         "app/shared/img/user/*"
     ],
     "verbose" : true

@@ -16,16 +16,16 @@
     },
 
 
-    "toolGenre": [
-        {
+    "toolGenre": {
+        "ProgrammingTools": {
             "name": "Programming",
-            "file": "./tools/toolListProgramming.json",
+            "toolListFile": "./tools/toolListProgramming.json",
             "parser": "programmingParser"
         },
-        {
+        "WritingTools":{
             "name": "Writing",
-            "file": "./tools/toolList.json",
+            "toolListFile": "./tools/toolList.json",
             "parser": "writingParser"
         }
-    ]
+    }
 }

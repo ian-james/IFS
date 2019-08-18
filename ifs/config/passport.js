@@ -33,6 +33,7 @@ module.exports = function (passport) {
     var toolTypeKey = "pref-toolSelect";
     var prefToolType = "Option";
 
+
     passport.serializeUser ( function(user,done) {
         done(null,  { 'id': user.id, 'sessionId': user.sessionId } );
     });
@@ -149,6 +150,32 @@ module.exports = function (passport) {
         )
     );
 
+    function loginSession( req, user, callback ) {
+        db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", user.id, function(err,r1) {
+            if (err)
+                Logger.error(err);
+        });
+
+        var loginQuery = dbHelpers.buildInsert(dbcfg.login_table) + dbHelpers.buildValues(["userId", "sessionId"]);
+        db.query( loginQuery, [ user.id, user.sessionId + 1],  function(err,r5) {
+            if (err)
+                Logger.error(err);
+        });
+
+        // Increment local copy, instead of reading from DB.
+        user.sessionId += 1;
+
+        //Set a single preference on login to load their toolType preferences (defaults to programming)
+        preferencesDB.getStudentPreferencesByToolName(user.id,  toolTypeKey, function(toolErr, result) {
+            if (toolErr || !result || result.length == 0)
+                defaultTool.setupDefaultTool(req);
+            else
+                defaultTool.setupDefaultTool(req, result[0].toolValue);
+            return callback(null, user);
+        });
+
+    }
+
     // This is the initialization of the local-login strategy used by passport, it calls this callback upon
     // an attempted login, basically a simple check to see if user exists.
     passport.use('local-login',
@@ -182,6 +209,7 @@ module.exports = function (passport) {
                     }
                     // verify the user has completed registration
                     var uid = rows[0].id;
+                    var completedSetup = rows[0].sessionId > 0;
                     var isreg = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(["userId"]);
                     db.query(isreg, uid, function(err, data) {
                         if (err || !data || data.length == 0) {
@@ -190,38 +218,20 @@ module.exports = function (passport) {
                             return done(null, false);
                         }
 
-                        preferencesDB.setStudentPreferences(uid, prefToolType, toolTypeKey, defaultToolType, function(prefErr, prefData){
-                            preferencesDB.setStudentPreferences(uid, "Option", 'pref-tipsIndex', "1", function(perr1, pdata1) {
-                              preferencesDB.setStudentPreferences(uid, "Option", 'pref-tipsAllowed', "on", function(perr2, pdata2){
-                                    SurveyBuilder.setSignupSurveyPreferences(uid, function(err,data){
-
-                                        // Increment sessionId for user
-                                        db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", rows[0].id, function(err,r1) {
-                                            if (err)
-                                                Logger.error(err);
-                                        });
-
-                                        var loginQuery = dbHelpers.buildInsert(dbcfg.login_table) + dbHelpers.buildValues(["userId", "sessionId"]);
-                                        db.query( loginQuery, [ uid, rows[0].sessionId + 1],  function(err,r5) {
-                                            if (err)
-                                                Logger.error(err);
-                                        });
-
-                                        // Increment local copy, instead of reading from DB.
-                                        rows[0].sessionId += 1;
-
-                                        //Set a single preference on login to load their toolType preferences (defaults to programming)
-                                        preferencesDB.getStudentPreferencesByToolName(rows[0].id,  toolTypeKey, function(toolErr, result) {
-                                            if (toolErr || !result || result.length == 0)
-                                                defaultTool.setupDefaultTool(req);
-                                            else
-                                                defaultTool.setupDefaultTool(req, result[0].toolValue);
-                                            return done(null, rows[0]);
+                        if( completedSetup ) {
+                            return loginSession( req, rows[0], done );
+                        }
+                        else {
+                            preferencesDB.setStudentPreferences( uid, prefToolType, toolTypeKey, appDefaults.defaultToolType, function( perr, pdata ){
+                                preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsIndex', "1", function( perr, pdata ) {
+                                    preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsAllowed', "on", function( perr, pdata ) {
+                                        SurveyBuilder.setSignupSurveyPreferences(uid, function( perr, pdata ) {
+                                            return loginSession( req, rows[0] , done );
                                         });
                                     });
                                 });
                             });
-                        });
+                        }
                    });
                 });
             }
