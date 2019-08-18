@@ -58,6 +58,6 @@ div(ng-if="option.type == 'number'")
             div(uk-dropdown="pos: left-center; delay-hide: 100")
                 span {{ option.info }}
     div(uk-form-custom="target: true")
-        input(type="number" name="{{option.name}}" id="{{option.name}}" value="{{option.prefValue}}" min="0" max="100" step="1").uk-input
+        input(type="number" name="{{option.name}}" id="{{option.name}}" ng-value="option.prefValue" min="0" max="100" step="1").uk-input
     br
     br

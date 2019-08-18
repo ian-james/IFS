@@ -182,9 +182,8 @@ module.exports = function(app, iosocket) {
             for(var i = 0; i < keys.length; i++) {
                 var r = _.find(preferenceOptions,_.matchesProperty('name',prefix+keys[i]));
                 if(r && r.type) {
-                    r['prefValue'] =  profile[0][keys[i]] ? profile[0][keys[i]] : "";
+                    r['prefValue'] =  profile[0][keys[i]] != null ? profile[0][keys[i]] : "";
                 }
-
             }
         }
     }
