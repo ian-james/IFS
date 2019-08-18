@@ -137,7 +137,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
         var feedbackItem = feedbackItems[i];
 
         if( filesMatch(file.originalname, feedbackItem.filename) && toolsMatch(feedbackItem.toolName,selectedTool) ) {
-            if( !feedbackItem.filename || !feedbackItem.lineNum ) {
+            if( !feedbackItem.filename || feedbackItem.lineNum == null ) {
                 // TODO: This should be handed a generic or global error system.
                 continue;
             }

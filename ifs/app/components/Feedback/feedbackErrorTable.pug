@@ -1,39 +1,43 @@
 h4 Generalized Feedback
 table.uk-table
-    thead
-            tr
-                th Tool Name
-                th Type
-                th Feedback
-                th File
-                th Line
-                th Char
+    thead(ng-if="isProgramming() && feedbackItems.length > 0")
+        tr
+            th Tool Name
+            th Type
+            th Feedback
+            th File
+            th Line
+
+        // programming feedback
+    tbody(ng-if="isProgramming() && feedbackItems.length > 0")
+        tr(ng-repeat="f in feedbackItems | filter:allowFeedbackType")
+            td {{ f.toolName }}
+            td {{ f.type }}
+            td {{ f.feedback }}
+            td {{ f.filename }}
+            td {{ f.lineNum }}
+            td {{}}
+
+    thead(ng-if="isProgramming() == false && feedbackItems.length > 0")
+        tr
+            th Tool Name
+            th Type
+            th Feedback
+            th File
+            th Line : Char
+            th Word
+
+        // writing feeback
+    tbody(ng-if="isProgramming() == false && feedbackItems.length > 0")
+        tr(ng-repeat="f in feedbackItems | filter:allowFeedbackType")
+            td {{f.toolName}}
+            td {{f.type}}
+            td {{f.feedback}}
+            td {{f.filename}}
+            td {{f.lineNum}} : {{f.charNum}}
+            td {{f.decodedTarget}}
 
 
-            // writing feeback
-            tbody(ng-if="feedbackItems.length > 0")
-                each f in feedbackItems
-                    if f.filename === ""
-                        tr
-                            td #{f.toolName}
-                            td #{f.type}
-                            td #{f.feedback}
-                            td ""
-                            td ""
-                            td ""
-
-
-            // programming feedback
-            tbody(ng-if="feedbackItems.length > 0")
-                tr(ng-repeat="f in feedbackItems | filter:allowFeedbackType")
-                    td {{ f.toolName }}
-                    td {{ f.type }}
-                    td {{ f.feedback }}
-                    td {{ f.filename }}
-                    td {{ f.lineNum }}
-                    td {{ f.charPos }}
-
-
-            tbody(ng-if="feedbackItems.length == 0")
-               tr
-                    td Congratulations, no errors were found!
+    tbody(ng-if="feedbackItems.length == 0")
+        tr
+            td Congratulations, no errors were found!

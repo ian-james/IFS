@@ -69,9 +69,13 @@ app.controller( "feedbackCtrl", function($scope, $http, $sce) {
     $scope.visualTools = [];
     $scope.runType = "";
 
+    $scope.isProgramming = function() {
+        return $scope.runType == "programming" || $scope.runType == "Programming";
+    }
+
     $scope.allowFeedbackType = function(feedbackItem) {
         return ( $scope.filterByTool == "All" || feedbackItem.toolName == $scope.filterByTool);
-    }
+    };
 
     $scope.inDisplayStats = function(feedbackItem) {
         var result = [];

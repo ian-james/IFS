@@ -58,7 +58,7 @@ block content
                 uib-tabset(active="active")
                     uib-tab(ng-repeat="file in files track by $index" heading="{{file.originalname}}" disable="{{tab.disabled}}")
                         div(autocomplete="false" autocheck="false" spellcheck="false" contenteditable="false")#ifsText.uk-padding-bottom
-                            pre(ng-class="{{runType}} == programming ? 'hljs' : ''")
+                            pre(ng-class="isProgramming() ? 'hljs' : ''")
                                 code(ng-bind-html="displayFeedback(file)" init-bind)
                         br
 
