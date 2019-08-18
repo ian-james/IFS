@@ -158,29 +158,32 @@ module.exports = function (passport) {
      * @return {[type]}            returns callback with the user and key information set in the database.
      */
     function loginSession( req, user, callback ) {
-        db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", user.id, function(err,r1) {
-            if (err)
-                Logger.error(err);
+
+        SurveyBuilder.setSignupSurveyPreferences(user.id, function( perr, pdata ) {
+
+            db.query(dbHelpers.buildUpdate(dbcfg.users_table) +  " set sessionId = sessionId+1 WHERE id = ?", user.id, function(err,r1) {
+                if (err)
+                    Logger.error(err);
+            });
+
+            var loginQuery = dbHelpers.buildInsert(dbcfg.login_table) + dbHelpers.buildValues(["userId", "sessionId"]);
+            db.query( loginQuery, [ user.id, user.sessionId + 1],  function(err,r5) {
+                if (err)
+                    Logger.error(err);
+            });
+
+            // Increment local copy, instead of reading from DB.
+            user.sessionId += 1;
+
+            //Set a single preference on login to load their toolType preferences (defaults to programming)
+            preferencesDB.getStudentPreferencesByToolName(user.id,  toolTypeKey, function(toolErr, result) {
+                if (toolErr || !result || result.length == 0)
+                    defaultTool.setupDefaultTool(req);
+                else
+                    defaultTool.setupDefaultTool(req, result[0].toolValue);
+                return callback(null, user);
+            });
         });
-
-        var loginQuery = dbHelpers.buildInsert(dbcfg.login_table) + dbHelpers.buildValues(["userId", "sessionId"]);
-        db.query( loginQuery, [ user.id, user.sessionId + 1],  function(err,r5) {
-            if (err)
-                Logger.error(err);
-        });
-
-        // Increment local copy, instead of reading from DB.
-        user.sessionId += 1;
-
-        //Set a single preference on login to load their toolType preferences (defaults to programming)
-        preferencesDB.getStudentPreferencesByToolName(user.id,  toolTypeKey, function(toolErr, result) {
-            if (toolErr || !result || result.length == 0)
-                defaultTool.setupDefaultTool(req);
-            else
-                defaultTool.setupDefaultTool(req, result[0].toolValue);
-            return callback(null, user);
-        });
-
     }
 
     // This is the initialization of the local-login strategy used by passport, it calls this callback upon
@@ -232,9 +235,7 @@ module.exports = function (passport) {
                             preferencesDB.setStudentPreferences( uid, prefToolType, toolTypeKey, appDefaults.defaultToolType, function( perr, pdata ){
                                 preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsIndex', "1", function( perr, pdata ) {
                                     preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsAllowed', "on", function( perr, pdata ) {
-                                        SurveyBuilder.setSignupSurveyPreferences(uid, function( perr, pdata ) {
-                                            return loginSession( req, rows[0] , done );
-                                        });
+                                        return loginSession( req, rows[0] , done );
                                     });
                                 });
                             });
