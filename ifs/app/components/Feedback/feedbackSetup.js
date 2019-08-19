@@ -170,44 +170,38 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
 
             if (!feedbackItem.target) {
                 // Try to fill out positional information first.
+                if ( helpers.isProgramming(feedbackItem.runType)) {
+                    var programmingParser = new ProgrammingParser();
+                    programmingParser.setupContent(file.content);
+                    programmingParser.tokenize();
 
-                // Without a target you have to use the line or a range
-                if( !feedbackItem.target ) {
-                    // if we are marking up a programming file, then only get the line
-                    if ( helpers.isProgramming(feedbackItem.runType)) {
-                        var programmingParser = new ProgrammingParser();
-                        programmingParser.setupContent(file.content);
-                        programmingParser.tokenize();
-                        // Try to fill out positional information first.
-
-                        if( !feedbackItem.charNum ) {
-                            feedbackItem.charNum = programmingParser.getCharNumFromLineNumCharPos(feedbackItem);
-                        }
-                        feedbackItem.target = programmingParser.getLine(feedbackItem, false);
+                    if( !feedbackItem.charNum ) {
+                        feedbackItem.charNum = programmingParser.getCharNumFromLineNumCharPos(feedbackItem);
                     }
-                    else{
-                        var writingParser = new WritingParser();
-                        writingParser.setupContent(file.content);
-                        writingParser.tokenize();
+                    feedbackItem.target = programmingParser.getLine(feedbackItem, false);
+                }
+                else{
+                    var writingParser = new WritingParser();
+                    writingParser.setupContent(file.content);
+                    writingParser.tokenize();
 
-                        // Try to fill out positional information first.
-                        if( !feedbackItem.charNum ) {
-                            feedbackItem.charNum = writingParser.getCharNumFromLineNumCharPos(feedbackItem);
-                        }
-
-                        if( feedbackItem.hlBeginChar ) {
-                            // Section to highlight
-                            feedbackItem.target = fileParser.getRange( feedbackItem );
-                        }
-                        else if( feedbackItem.charPos ) {
-                            // You can get a target better than the line.
-                            feedbackItem.target = fileParser.getLineSection( feedbackItem );
-                        }
-                        else {
-                            feedbackItem.target = fileParser.getLine(feedbackItem,false);
-                        }
-
+                    // Try to fill out positional information first.
+                    if( !feedbackItem.charNum ) {
+                        feedbackItem.charNum = writingParser.getCharNumFromLineNumCharPos(feedbackItem);
                     }
+
+                    if( feedbackItem.hlBeginChar ) {
+                        // Section to highlight
+                        feedbackItem.target = fileParser.getRange( feedbackItem );
+                    }
+                    else if( feedbackItem.charPos ) {
+                        // You can get a target better than the line.
+                        feedbackItem.target = fileParser.getLineSection( feedbackItem );
+                    }
+                    else {
+                        feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                    }
+
                 }
             }
             // Set up a decoded target for Bootstrap UI Popover
