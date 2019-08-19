@@ -2,7 +2,7 @@ var fs = require('fs');
 var _ = require('lodash');
 var he = require('he');
 var path = require('path');
-var high = require('highlight.js');
+var async = require('async');
 
 var fbHighlighter = require('./feedbackHighlighter');
 var Logger = require( __configs + "loggingConfig");
@@ -24,8 +24,6 @@ var WritingParser = require('./parsers/writingParser').WritingParser;
 */
 function loadFiles( directory, options ) {
     if( fs.lstatSync(directory).isDirectory() ) {
-
-        // TODO: How should this be handled
         options = options || {'groups': allowFileTypes.ProgrammingSrc };
 
         var files = Helpers.findFilesSync(directory);
@@ -42,93 +40,121 @@ function loadFiles( directory, options ) {
     return [];
 }
 
+/**
+ * [sortFeedbackFiles description] - This function sorts the feedback files, it will loads feedback files if given a directory .
+ * @param  {[type]} files [description]
+ * @return {[type]}       [description]
+ */
+function sortFeedbackFiles( files ) {
 
-/* This function loads the selected tool, loads file content and requests highlight */
-function readFeedbackFormat( feedback , options) {
-
-    try {
-        var feedbackFormat = JSON.parse(feedback);
-        var feedbackItems = feedbackFormat.feedback;
-        var toolType = feedbackFormat.runType;
-        var files = feedbackFormat.files;
-
-        // setup Project and organize.
-        if(files && files.length > 0 && fs.lstatSync(files[0].filename).isDirectory()) {
-            var r = loadFiles(files[0].filename);
-            if( r.length > 0 ) {
-                files = _.sortBy(r, ['originalname']);
-            }
-
+    var rfiles = [];
+    // setup Project and organize.
+    if(files && files.length > 0 ) {
+        var r = loadFiles(files[0].filename);
+        if( r.length > 0 ) {
+            rfiles = _.sortBy(r, ['originalname']);
+            return rfiles;
         }
-        else
-            files = _.sortBy(files, ['filename']);
+    }
+    rfiles = _.sortBy(files, ['filename']);
+    return rfiles;
+}
+
+/**
+ * [getFeedbackObj This function loads/parses key information about the feedback object.
+ * @param  {[type]} feedback [description]
+ * @return {[type]}          [description]
+ */
+function getFeedbackObj( feedback ) {
+    var result = {};
+    try {
+        result.feedbackFormat = JSON.parse(feedback);
+        result.feedbackItems = result.feedbackFormat.feedback;
+        result.toolType = result.feedbackFormat.runType;
+        result.files = result.feedbackFormat.files;
+
+         // Suggestions are stringified json, convert back to array.
+        var countItems = result.feedbackItems.length ;
+        for(var i = 0; i < result.feedbackItems.length; i++){
+            result.feedbackItems[i]['suggestions'] = JSON.parse(result.feedbackItems[i]['suggestions']);
+        }
+    }
+    catch(e) {
+        Logger.error(e);
+        return {};
+    }
+    return result;
+}
+
+
+/**
+ * [setupFeedbackFiles description] - This function reads the feedback object, sets feedback files, and setup tools;
+ * @param  {[type]} feedback [description]
+ * @param  {[type]} options  [description]
+ * @return {[type]}          [description]
+ */
+function setupFeedbackFiles( feedback, options ) {
+    try {
+
+        var feedbackObj = getFeedbackObj( feedback );
+        var res = sortFeedbackFiles( feedbackObj.files );
+        feedbackObj.files = res;
 
         // A Unique list of tools used for UI
-        var toolsUsed = _.uniq(_.map(feedbackItems,'toolName'));
-
-        // Suggestions are stringified json, convert back to array.
-        var countItems = feedbackItems.length ;
-        for(var i = 0; i < feedbackItems.length; i++){
-            feedbackItems[i]['suggestions'] = JSON.parse(feedbackItems[i]['suggestions']);
-        }
-
-        // Tool should always be selected unless it's defaulted too.
-        var toolIsSelected = ( options && options['tool'] || toolsUsed.length >= 1);
-        var selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
-
-        // For each file, read in the content and mark it up for display.
-        for( var i = 0; i < files.length; i++ )
-        {
-            var file = files[i];
-
-            //file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-
-            //TODO: Positional setup information should be moved to the feedback filtering and organization
-            // This decopules the task of highlights and positioning.
-            if( toolIsSelected ) {
-
-                if ( countItems > 0 &&  helpers.isProgramming( feedbackItems[0].runType ) )
-                {
-                    // Syntax highlighting for programming file
-                    file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-                    file.content= high.highlightAuto(he.decode(file.content)).value;
-                    setupFilePositionInformation(file, selectedTool,feedbackItems);
-                    file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
-                }
-                else
-                {
-                    // Normal highlighting scheme for writing file
-                    file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-                    setupFilePositionInformation(file, selectedTool,feedbackItems);
-                    file.markedUp = fbHighlighter.markupFile( file, selectedTool, feedbackItems );
-                }
-
-            }
-            else{
-                file.content = he.encode(fs.readFileSync(file.filename, 'utf-8'), true);
-                if ( helpers.isProgramming( toolType ) )
-                    file.markedUp = file.content;
-                else
-                    file.markedUp = high.highlightAuto(he.decode(file.content)).value;
-
-            }
-        }
-
-        var result =  { 'files':files, 'feedbackItems': feedbackItems, 'toolsUsed':toolsUsed, 'selectedTool':selectedTool };
-        if(selectedTool){
-            var i =  selectedTool == "All" ? 0 : _.findIndex(feedbackItems,['toolName',selectedTool]);
-            if( i >= 0 && feedbackItems.length > i)
-                result['toolType'] = feedbackItems[i]['runType'];
-        }
-        return result;
+        feedbackObj.toolsUsed = _.uniq(_.map(feedbackObj.feedbackItems,'toolName'));
+        feedbackObj.selectedTool =  ( options && options['tool'] ) ?  options['tool'] : "All"
+        return feedbackObj;
     }
     catch( e ) {
         Logger.error(e);
+         throw new Error("Error: Unable to setup feedback files.");
+    }
+}
+
+/* This function loads the selected tool, loads file content and requests highlight */
+function readFeedbackFormat( feedback , options, callback ) {
+
+    try {
+        var feedbackObj = setupFeedbackFiles( feedback, options );
+    }
+    catch(e){
+        Logger.error(e);
+        callback(e);
     }
 
-    // Error return message.
-    return { "err": "Unable to process files, no feedback could be provided."};
+    // Tool should always be selected unless it's defaulted too.
+    var toolIsSelected = ( options && options['tool'] || feedbackObj.toolsUsed.length >= 1);
 
+    // For each file read and setup for presentation.
+    async.eachOf( feedbackObj.files, function(file,index,cb){
+        fs.readFile( file.filename, 'utf-8', function(err, contents ){
+
+            file.content = contents;
+            file.coded = he.encode(contents, true);
+            if( toolIsSelected ) {
+                setupFilePositionInformation(file, feedbackObj.selectedTool, feedbackObj.feedbackItems);
+                file.markedUp = fbHighlighter.markupFile( file, feedbackObj.selectedTool, feedbackObj.feedbackItems );
+            }
+            else {
+                file.markedUp = file.content;
+            }
+            cb(null,file);
+        })
+    },
+    function(err) {
+        if( err ) {
+            callback(err);
+        }
+        else {
+            var results =  { 'files': feedbackObj.files , 'feedbackItems': feedbackObj.feedbackItems, 'toolsUsed': feedbackObj.toolsUsed, 'selectedTool':feedbackObj.selectedTool };
+            if(feedbackObj.selectedTool){
+                   var i =  feedbackObj.selectedToolselectedTool == "All" ? 0 : _.findIndex(feedbackObj.feedbackItems,['toolName',feedbackObj.selectedTool]);
+                    if( i >= 0 && feedbackObj.feedbackItems.length > i)
+                    results['toolType'] = feedbackObj.feedbackItems[i]['runType'];
+            }
+            callback(null, results);
+        }
+    });
 }
 
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
@@ -153,6 +179,7 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
                         programmingParser.setupContent(file.content);
                         programmingParser.tokenize();
                         // Try to fill out positional information first.
+
                         if( !feedbackItem.charNum ) {
                             feedbackItem.charNum = programmingParser.getCharNumFromLineNumCharPos(feedbackItem);
                         }

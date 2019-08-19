@@ -37,7 +37,12 @@ module.exports = function( app ) {
             return;
         }
 
+        // Timers for the total process.
         var t0 = now(), t1=t0;
+        var tsf0 = now(), tsf1 = tsf0; // Time setup Feedback
+        var tfs0 = now(), tfs1 = tfs0; // Time feedback stats
+        var tvf0 = now(), tvf1 = tvf0; // Time Visual Feedback
+
 
         //TODO Feedback could be received by type (optimizaiton)
         var r = feedbackEvents.getMostRecentFeedbackNonVisual( req.user.id );
@@ -55,26 +60,39 @@ module.exports = function( app ) {
                     +"}\n";
 
                     var page = getDefaultPage();
-                    var feedback = Feedback.setupFeedback(feedbackFile, opt);
-                    var result = _.assign(page,feedback);
+                    var feedback = Feedback.setupFeedback(feedbackFile, opt, function( err, feedback) {
 
-                    var rstats = feedbackEvents.getMostRecentFeedbackStats( req.user.id );
-                    db.query(rstats.request,r.data, function(err, statData) {
+                        tsf1 = now();
+                        Logger.info("Feedback Setup took : " + (tsf1 - tsf0) + " milliseconds");
 
-                        var stats = Feedback.setupFeedbackStats(statData);
-                        result = _.assign(result,stats);
+                        var result = _.assign(page,feedback);
 
-                        var rvisualTools = feedbackEvents.getMostRecentVisualTools( req.user.id );
-                        db.query(rvisualTools.request,rvisualTools.data, function(errTools,visualTools) {
+                        var rstats = feedbackEvents.getMostRecentFeedbackStats( req.user.id );
+                        db.query(rstats.request,r.data, function(err, statData) {
 
-                            var visualTools = Feedback.setupVisualFeedback(visualTools);
-                            results = _.assign(result,visualTools);
-                            _.extend(results, {'runType': req.session.toolSelect.toLowerCase()})
-                            callback(results);
-                            t1 = now();
-                            Logger.info("Feedback Setup took : " + (t1 - t0) + " milliseconds");
+                            tfs1 = now();
+                            Logger.info("Total Feedback Stats took : " + (tfs1 - tfs0) + " milliseconds");
+
+                            var stats = Feedback.setupFeedbackStats(statData);
+                            result = _.assign(result,stats);
+
+                            var rvisualTools = feedbackEvents.getMostRecentVisualTools( req.user.id );
+                            db.query(rvisualTools.request,rvisualTools.data, function(errTools,visualTools) {
+
+                                tvf1 = now();
+                                Logger.info("Total Feedback Stats took : " + (tvf1 - tvf0) + " milliseconds");
+
+                                var visualTools = Feedback.setupVisualFeedback(visualTools);
+                                result = _.assign(result,visualTools);
+                                _.extend(result, {'runType': req.session.toolSelect.toLowerCase()})
+                                callback(result);
+                                t1 = now();
+                                Logger.info("Total show Feedback took : " + (t1 - t0) + " milliseconds");
+                            });
                         });
+
                     });
+
                 });
             }
         });
