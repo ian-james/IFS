@@ -28,8 +28,6 @@
   },
   "homepage": "https://github.com/ian-james/ifs#readme",
   "dependencies": {
-    "adm-zip": "^0.4.7",
-    "amqplib": "^0.5.2",
     "angular": "^1.6.1",
     "angular-chart.js": "^1.1.1",
     "angular-file-upload": "^2.4.1",
@@ -39,7 +37,6 @@
     "async": "^2.1.4",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.2",
-    "browserify": "^13.3.0",
     "chart.js": "^2.6.0",
     "cluster": "^0.7.7",
     "code-prettify": "^0.1.0",
