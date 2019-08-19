@@ -3,16 +3,12 @@ var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
 var job = require('./generalJob');
 var Q = require('q');
-var cluster = require('cluster');
-
 var path = require('path');
 var fs = require('fs');
 var _ = require('lodash');
 
 const jobType = 'cJob';
 const JobConCurrent = 10;
-
-var clusterSize = require('os').cpus().length;
 
 /* Tool Options
     Should present a number of values in the obj, should be validated in some way.

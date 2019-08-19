@@ -7,7 +7,6 @@ var path = require('path');
 var Logger = require( __configs  + "loggingConfig");
 var now = require("performance-now");
 var _ = require('lodash');
-var cluster = require('cluster')
 var spawn = require('child_process').spawn;
 
 // This is just a regular reference, it needed a name for managerJob.
