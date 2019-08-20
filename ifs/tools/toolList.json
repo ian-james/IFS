@@ -1,6 +1,24 @@
 {
     "tools": [
          {
+            "displayName": "CIS3750 Tool",
+            "description": "Checks for spelling errors in a text.",
+            "technicalDesc": "A simple R script that uses Hunspell to process text and provide suggestions for spelling correction.",
+            "author": "IFS Development Team",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/spell_check/LICENSE.txt",
+            "progName": "R CMD BATCH ./tools/languageTools/cis3750/BB_Requirements_Checker_V2.R",
+            "cmdToolName": "BB_Requirements_Checker_V2",
+            "runType": "writing",
+            "route": "",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "",
+            "fileArgs": "",
+            "options" : []
+        },
+        {
             "displayName": "Spell Checker",
             "description": "Checks for spelling errors in a text.",
             "technicalDesc": "A simple Python script that uses Hunspell to process text and provide suggestions for spelling correction.",
@@ -220,6 +238,33 @@
                     "values": "",
                     "arg": "-z",
                     "params": ""
+                }
+            ]
+        },
+        {
+            "displayName": "Test Tool",
+            "description": "Checks for spelling errors in a text.",
+            "technicalDesc": "A simple Python script that uses Hunspell to process text and provide suggestions for spelling correction.",
+            "author": "IFS Development Team",
+            "copyright": "Copyright © 2017",
+            "license": "ISC License",
+            "licenseFile": "./tools/langaugeTools/spell_check/LICENSE.txt",
+            "progName": "./tools/languageTools/spell_check/spell_check.py",
+            "cmdToolName": "spellCheck",
+            "runType": "writing",
+            "route": "",
+            "filesAllowed": "singleFile",
+            "parseCmd": "",
+            "defaultArg": "-d 256",
+            "fileArgs": "-i",
+            "options" : [
+                {
+                    "displayName": "Dictionary",
+                    "type": "select",
+                    "values": ["en_US", "en_CA","en_GB"],
+                    "name": "opt-spellDictionary",
+                    "arg": "-l",
+                    "params":""
                 }
             ]
         }

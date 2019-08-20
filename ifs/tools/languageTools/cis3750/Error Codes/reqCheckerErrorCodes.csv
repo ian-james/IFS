@@ -1,0 +1,50 @@
+errorCode,description,codeAssociated,textBookRef
+1,\n\nYour filename does not follow the assignment-specified naming convention.\n,req<-read.csv(doc) #Line 97 [CONDITION FOR ERROR HAS NOT YET BEEN WRITTEN],Refer to the CIS3750 Report Outline.pdf that is available on Moodle (LINK)
+2,\n\nYour column names are not named properly.\n,if (same.names<length(c.names)) {[ERROR MESSAGE HERE]} #Line 136                                   ,Refer to Assignment 1 outline (CIS3750 Assignment 1.pdf)
+3,\n\nFormat error: Your documentation contains non-alphanumeric characters.\n," req$Dependencies<-as.numeric(gsub(""([,-])|[[:punct:]]"", """", req$Dependencies))
+  req$Priority<-as.numeric(gsub(""([.-])|[[:punct:]]"", ""\\1"", req$Priority))
+  req$TimeEstimate<-as.numeric(gsub(""([.-])|[[:punct:]]"", ""\\1"", req$TimeEstimate))
+  req$ID<-as.numeric(gsub(""\\D+"", """", req$ReqID)) #Lines 155-158 [CONDITION FOR ERROR HAS NOT YET BEEN WRITTEN]",Formatting
+4,\n\nYou have too few requirements.\n,if (num.req<Num.Requirements.Min) {[ERROR MESSAGE HERE]}   #Line 164,Assignment 1 - maybe no extra feedback here
+5,\n\nYou have duplicate requirement IDs.\n,if (is.duplicate) {[ERROR MESSAGE HERE]} #Line 178,Formatting - refer to CIS3750 Assignment1.pdf
+6,\n\nYour maximum requirement ID does not match the total number of requirements.\n,if (!num.requirements) {[ERROR MESSAGE HERE]} #Line 194,Formatting - refer to CIS3750 Assignment1.pdf
+7,\n\nYou have requirements that appear to be compound requirements.\n,"  if (Check.Compound)
+  {
+    req$And<-grepl("" and "", req$Requirement, ignore.case=TRUE)*1
+  
+    if (sum(req$And, na.rm=TRUE)>0)
+    {[ERROR MESSAGE HERE]} #Lines 208-212",Chapter 3 Section 2 - What Makes Good Software
+8,\n\nYou are missing >= 1 of the MuSCoW categories. Please check if you have spelled them correctly.\nCorrect spellings are:\n\tMust\tShould\n\tCould\tWont\n,  if (!required.categories.present) {[ERROR MESSAGE HERE]} #Line 235,Chapter 3 Section 7 - Importance
+9,\n\nYou have extra MuSCoW categories.\n,"  extra.categories.present<-sum(is.na(category.labels))>0
+  
+  if (extra.categories.present)
+  {[ERROR MESSAGE HERE]} #Lines 254-256",Chapter 3 Section 7 - Importance
+10,\n\nYour valid MuSCoW categories aren't sorted properly.\n,"  categories.sorted<-(sum(sort(category.labels[!is.na(category.labels)])==category.labels[!is.na(category.labels)]))==length(category.labels[!is.na(category.labels)])
+
+  if(!categories.sorted)
+  {[ERROR MESSAGE HERE]} #Lines 269-271 ",Chapter 3 Section 7 - Importance
+11,\n\nYou have invalid prioritization values.\n,"  if (Check.Priorities)
+  {
+    priorities.valid<-(sum(req$Priority%%10, na.rm=TRUE)==0) & (max(req$Priority, na.rm=TRUE)<=50)
+  
+    if (!priorities.valid)
+    {[ERROR MESSAGE HERE]} #Lines 287-291",Chapter 3 Section 8 - Prioritization
+12,\n\nYour priorities do not make sense.\n,"    for (i in 2:(length(priorities$order<4)))
+    {
+      priorities$checked[i]<-(priorities$min[i]>=priorities$max[i-1])*1
+      if (priorities$checked[i]==0)
+      {[ERROR MESSAGE HERE]}} #Lines 342-345",Chapter 3
+13,\n\nYou've prioritized 'wont' requirements. All 'wont' requirements must have a priority value of 'NA'.\n,"    wont.priority.invalid<-sum(!is.na(req$Priority[req$Category==category[4]]))>0
+
+    if (wont.priority.invalid)
+    {[ERROR MESSAGE HERE]} #Lines 354-356",Chapter 3 Section 9.3
+14,\n\nYou have illogical dependencies.\n,"    if (sum(req$BadDep, na.rm=TRUE)>0)
+    {[ERROR MESSAGE HERE]} #Line 379",Chapter 3 Section 9
+15,\n\nYou have dependencies with illogical prioritizations.\n,"    if (sum(bad.prior.req$BadDepPrior, na.rm=TRUE)>0)
+    {[ERROR MESSAGE HERE]} #Line 415",Chapter 3 Section 9.3
+16,\n\nYou have dependencies with illogical categorizations.\n,"    if (sum(bad.cat.req$BadDepCat, na.rm=TRUE)>0)
+    {[ERROR MESSAGE HERE]} #Line 453",Chapter 3 Section 9.2
+17,\n\nYou have time estimates that are too long.\n,"    if (sum(req$Long.Time, na.rm=TRUE)>0)
+    {[ERROR MESSAGE HERE]} #Line 476",Chapter 4
+18,\n\nYou have spelling errors.\n,"  if (length(incorrectWords)>0)
+  {[ERROR MESSAGE HERE]} #Line 503",See dictionary.
