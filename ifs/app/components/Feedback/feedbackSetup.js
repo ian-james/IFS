@@ -158,7 +158,20 @@ function readFeedbackFormat( feedback , options, callback ) {
 }
 
 function setupFilePositionInformation(file, selectedTool, feedbackItems) {
-    // Setup positionsal information for all
+
+    // Setup the parser for this file, content should already be loaded.
+    var parser = null;
+    if( feedbackItems && feedbackItems.length > 0){
+        if( helpers.isProgramming( feedbackItems[0].runType) )
+            parser = new ProgrammingParser();
+        else
+            parser = new WritingParser();
+
+        parser.setupContent(file.content);
+        parser.tokenize();
+    }
+
+
     for( var i = 0; i < feedbackItems.length; i++ ) {
         var feedbackItem = feedbackItems[i];
 
@@ -169,39 +182,29 @@ function setupFilePositionInformation(file, selectedTool, feedbackItems) {
             }
 
             if (!feedbackItem.target) {
-                // Try to fill out positional information first.
-                if ( helpers.isProgramming(feedbackItem.runType)) {
-                    var programmingParser = new ProgrammingParser();
-                    programmingParser.setupContent(file.content);
-                    programmingParser.tokenize();
 
-                    if( !feedbackItem.charNum ) {
-                        feedbackItem.charNum = programmingParser.getCharNumFromLineNumCharPos(feedbackItem);
-                    }
-                    feedbackItem.target = programmingParser.getLine(feedbackItem, false);
+                // Try to fill out positional information first.
+                if( !feedbackItem.charNum ) {
+                    feedbackItem.charNum = parser.getCharNumFromLineNumCharPos(feedbackItem);
+                }
+
+                // Different behavior if programming.
+                if ( helpers.isProgramming(feedbackItem.runType)) {
+                    feedbackItem.target = parser.getLine(feedbackItem, false);
                 }
                 else{
-                    var writingParser = new WritingParser();
-                    writingParser.setupContent(file.content);
-                    writingParser.tokenize();
-
-                    // Try to fill out positional information first.
-                    if( !feedbackItem.charNum ) {
-                        feedbackItem.charNum = writingParser.getCharNumFromLineNumCharPos(feedbackItem);
-                    }
-
+                    // Some tools provide highlight sections.
                     if( feedbackItem.hlBeginChar ) {
                         // Section to highlight
-                        feedbackItem.target = fileParser.getRange( feedbackItem );
+                        feedbackItem.target = parser.getRange( feedbackItem );
                     }
                     else if( feedbackItem.charPos ) {
                         // You can get a target better than the line.
-                        feedbackItem.target = fileParser.getLineSection( feedbackItem );
+                        feedbackItem.target = parser.getLineSection( feedbackItem );
                     }
                     else {
-                        feedbackItem.target = fileParser.getLine(feedbackItem,false);
+                        feedbackItem.target = parser.getLine( feedbackItem, false );
                     }
-
                 }
             }
             // Set up a decoded target for Bootstrap UI Popover

@@ -29,14 +29,13 @@ function ProgrammingParser() {
     this.file = "";
     this.content = "";
     this.sentences = [];
-    
 
     // Create instance of file info
     this.fileInfo = new FileInfo();
 
     /**
      * Sets up the filename
-     * @param {string} filename 
+     * @param {string} filename
      */
     this.setup = function(filename) {
         this.file = filename;
@@ -44,7 +43,7 @@ function ProgrammingParser() {
 
     /**
      * Sets up the content
-     * @param {string} content 
+     * @param {string} content
      */
     this.setupContent = function( content ) {
         this.content = content;
@@ -62,8 +61,9 @@ function ProgrammingParser() {
      * Reads the file.
      */
     this.readFile = function ( ) {
-        if( this.file )
+        if( this.file ) {
             this.content = fs.readFileSync( this.file, 'utf-8');
+        }
         return this.content == "";
     };
 
@@ -85,7 +85,7 @@ function ProgrammingParser() {
 
     /**
      * Checks if the line is a valid line number
-     * @param {integer} position 
+     * @param {integer} position
      */
     this.validLineNum = function (position) {
         if( this.hasLine(position) ) {
@@ -96,8 +96,8 @@ function ProgrammingParser() {
 
     /**
      * Fetches the line.
-     * @param {integer} position 
-     * @param {boolean} is0Based 
+     * @param {integer} position
+     * @param {boolean} is0Based
      */
     this.getLine = function( position, is0Based = true ) {
         if( this.validLineNum(position ) ) {
@@ -117,8 +117,8 @@ function ProgrammingParser() {
 
     /**
      * Fetches line by call.
-     * @param {integer} i 
-     * @param {boolean} is0Based 
+     * @param {integer} i
+     * @param {boolean} is0Based
      */
     this.getLineI = function( i, is0Based = true ) {
         if( i < this.fileInfo.numLines && i >= 0 ) {
