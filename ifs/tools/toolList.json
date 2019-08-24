@@ -1,14 +1,14 @@
 {
     "tools": [
          {
-            "displayName": "CIS3750 Tool",
-            "description": "Checks for spelling errors in a text.",
-            "technicalDesc": "A simple R script that uses Hunspell to process text and provide suggestions for spelling correction.",
+            "displayName": "CIS3750 Requirements Tool",
+            "description": "Checks to see if a file meets requirements for CIS3750.",
+            "technicalDesc": "A simple R script that uses Hunspell to process text and provide suggestions.",
             "author": "IFS Development Team",
             "copyright": "Copyright © 2017",
             "license": "ISC License",
             "licenseFile": "./tools/langaugeTools/spell_check/LICENSE.txt",
-            "progName": "R CMD BATCH ./tools/languageTools/cis3750/BB_Requirements_Checker_V2.R",
+            "progName": "Rscript ./tools/languageTools/cis3750req/BB_Requirements_Checker_V2.R",
             "cmdToolName": "BB_Requirements_Checker_V2",
             "runType": "writing",
             "route": "",
