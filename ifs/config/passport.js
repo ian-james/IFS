@@ -232,6 +232,7 @@ module.exports = function (passport) {
                             return loginSession( req, rows[0], done );
                         }
                         else {
+                            //TODO: Add User-Registration date call here.
                             preferencesDB.setStudentPreferences( uid, prefToolType, toolTypeKey, appDefaults.defaultToolType, function( perr, pdata ){
                                 preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsIndex', "1", function( perr, pdata ) {
                                     preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsAllowed', "on", function( perr, pdata ) {

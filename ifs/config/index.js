@@ -21,6 +21,7 @@ global.__modelPath = path.join(__dirname, '../app/models');
 
 // Experiment settings
 const experimentSettings = require( __configs + "experimentConfig.json" );
+global.__experimentSettings = experimentSettings;
 global.__EXPERIMENT_ON = experimentSettings.active;
 
 var port = process.env.PORT || 3000;
