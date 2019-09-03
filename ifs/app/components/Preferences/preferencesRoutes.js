@@ -17,6 +17,12 @@ var validator = require('validator');
 var event = require(__components + "InteractionEvents/buildEvent.js" );
 var tracker = require(__components + "InteractionEvents/trackEvents.js" );
 
+var surveyTests = require(__components +  "Survey/helpers/prePostSurvey");
+const async = require('async');
+var dbcfg = require(__configs + "databaseConfig");
+var db = require(__configs + "database");
+var dbHelpers = require(__components + "Databases/dbHelpers");
+
 // multer config
 var limits = { fileSize: 51200 };
 var fileFilter = function(req, file, cb) {
@@ -85,6 +91,14 @@ module.exports = function(app, iosocket) {
     });
 
 
+    /**
+     * [description] This function updates the user preference changes.
+     *                 It validates answers and returns the user to the tool page or survey page.
+     * @param  {[type]} req   [description]
+     * @param  {[type]} res   [description]
+     * @param  {[type]} next) {                   var userId [description]
+     * @return {[type]}       [description]
+     */
     app.post('/preferences/profile', upload.single('student-avatar'), function(req, res, next) {
 
         var userId = req.user.id;
@@ -131,9 +145,34 @@ module.exports = function(app, iosocket) {
                         if(err)
                             Logger.log("ERROR SETTING STUDENT PROFILE");
                         else {
-                            res.redirect(url.format({
-                                pathname: '/tool'
-                            }));
+                            async.series([
+                                function(callback) {
+                                    var q = "select completedSetup from " + dbcfg.user_registration_table + " where userId = ?";
+                                    db.query(q, [req.user.id], function(err, data) {
+                                        callback(null,data);
+                                    });
+                                },
+                                function(callback) {
+                                    var q = dbHelpers.buildUpdate(dbcfg.user_registration_table)
+                                                    + 'SET completedSetup = ? WHERE userId = ?';
+                                    db.query(q, [1, req.user.id], function(err, data) {
+                                        callback(null,data);
+                                    });
+                                }
+                            ],
+                            function (err, results ){
+                                if(results && results.length >= 1 && results[0].length >=1 && results[0][0].completedSetup == 0) {
+                                    surveyTests.completedRecentSurveyTest(req.user.id, function(err,data){
+                                        if(err) {
+                                            res.redirect('/tool');
+                                        }
+                                        else
+                                            res.redirect('/surveysRequest');
+                                    });
+                                }
+                                else
+                                    res.redirect('/tool');
+                            });
                         }
 
                     });

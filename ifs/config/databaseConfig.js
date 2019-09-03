@@ -37,6 +37,7 @@ module.exports = {
     'upcoming_event_table':             'upcoming_event',
     'class_choices_table':              'class_choices',
     'class_options_table':              'class_options',
+    'class_survey_table':               'class_survey',
 
     // Assignments
     'assignment_table':                 'assignment',
@@ -50,6 +51,8 @@ module.exports = {
     'survey_results_table':             'survey_result',
     'survey_preferences_table':         'survey_preferences',
     'question_table':                   'questions',
+    'prePostSurvey_table':              'prePostSurvey',
+
 
     // Feedback
     'feedback_table':                   'feedback',

@@ -12,6 +12,8 @@ var db = require(__configs + "database");
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var adminDB = require(__components + "Admin/adminDB.js");
 
+var surveyTests = require(__components +  "Survey/helpers/prePostSurvey");
+
 var _ = require('lodash');
 
 module.exports = function( app, passport ) {
@@ -98,16 +100,28 @@ module.exports = function( app, passport ) {
             }
 
             if (!data[0].completedSetup){
-                if(__EXPERIMENT_ON)
+                if(__EXPERIMENT_ON) {
                     res.redirect('/setup');
+                }
                 else
                     res.redirect("/courses");
             }
-            else
-                res.redirect('/tool');
-            res.end();
+            else {
+                if(__EXPERIMENT_ON) {
+                    surveyTests.completedRecentSurveyTest(uid, function(err,data){
+                        if(err) {
+                            Logger.log( err );
+                            res.redirect('/tool');
+                        }
+                        else
+                            res.redirect('/surveysRequest');
+                    });
+                }
+                else
+                    res.redirect('/tool');
+            }
         });
-});
+    });
 
     app.get('/register', function ( req,res ) {
         res.render(viewPath + 'register', {title: "Signup Screen", message:"ok"});

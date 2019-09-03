@@ -23,7 +23,85 @@ const { getAvailableSurveys } = require(path.join(__modelPath,'survey'));
 const { getStudentIdForUser } = require(path.join(__modelPath, 'student'));
 const { getQuestionOrder } = require(path.join(__modelPath, 'question'));
 
+const PrePostSurvey = require(path.join(componentPath, "helpers/prePostSurvey"));
+var dbcfg = require(__configs + "databaseConfig");
+var db = require(__configs + "database");
+
 module.exports = {
+
+
+  /**
+   * [description] Based on the experiment information that all surveys should be run within a time period.
+   *               This functions determines which functions should have been run and haven't been.
+   * @param  {[type]} req [description]
+   * @param  {[type]} res [description]
+   * @return {[type]}     [description]
+   */
+  missingSurveyList: async (req, res) => {
+    const userId = req.user.id;
+    var processed = false;
+
+    if (await optedIn(userId)) {
+      const studentId = await getStudentIdForUser(userId);
+      let surveys = await getAvailableSurveys(studentId);
+
+      /* Format date so pug will play nice */
+      surveys = _.map(surveys, (obj) => {
+        const rev = obj['lastRevision'];
+        if (rev){
+          obj['lastRevision'] = moment(obj['lastRevision']).format("YYYY-MM-DD");
+        }
+        return obj;
+      });
+
+      var metaData = PrePostSurvey.getSurveyMeta( __experimentSettings.options.surveyMeta.testMeta );
+      if( metaData ) {
+
+        var activeDate = PrePostSurvey.getActiveSurveyTestDate( metaData );
+        if( activeDate ) {
+          processed = true;
+          var q = "select surveyId, surveyName from " + dbcfg.prePostSurvey_table + " where userId = ? and testCompletedDate >= ? "
+          db.query( q, [userId, activeDate] , function(err, finishedSurveys){
+            if( err )
+            {
+              // Surveys could not be identified, skip to tool page.
+              res.redirect('/tool');
+            }
+            else if(finishedSurveys && finishedSurveys.length == 0) {
+              // No surveys have been completed show full list.
+              res.render(viewPath + 'surveyList', {
+                  'title': "Survey List",
+                  "surveys": surveys
+              });
+            }
+            else
+            {
+              // Pass only surveys that have not been completed.
+              async.filter( surveys, function(survey,callback){
+                  // Check for matching survey ids.
+                  var result = _.find(finishedSurveys, {surveyId: survey.id});
+                  if( result )
+                    return callback(null, false);
+                  callback(null,true);
+              },
+              function(err, missingSurveys){
+                  if(missingSurveys && missingSurveys.length > 0 )
+                    res.render(viewPath + 'surveyList', { 'title': "Survey List", "surveys": missingSurveys });
+                  else
+                    res.redirect('/tool');
+              });
+            }
+          });
+        }
+      }
+    }
+
+    // Either no experiment is running or no surveys are available skip to tool page.
+    if(!processed)
+      res.redirect('/tool');
+  },
+
+
   /* Returns a list of surveys */
   surveyList: async (req, res) => {
     const userId = req.user.id;
@@ -35,8 +113,9 @@ module.exports = {
       /* Format date so pug will play nice */
       surveys = _.map(surveys, (obj) => {
         const rev = obj['lastRevision'];
-        if (rev)
-          obj['lastRevision'] = moment(obj['lastRevision']).format("hh:mm a DD-MM-YYYY");
+        if (rev){
+          obj['lastRevision'] = moment(obj['lastRevision']).format("YYYY-MM-DD");
+        }
         return obj;
       });
 
@@ -69,7 +148,8 @@ module.exports = {
           Logger.error("ERRR< GETTING TITLE", err);
         }
         if (data && data.length > 0) {
-          const surveyId = data[0].id;
+          const surveyData = data[0];
+          const surveyId = surveyData.id;
           const userId = req.user.id || req.passport.user;
           SurveyPreferences.getSurveyPreferences(userId, surveyId, async function (err, surveyPrefData) {
             if (err) {
@@ -145,7 +225,14 @@ module.exports = {
                   if (err)
                     Logger.error("Unable to increment survey counter:" + surveyId + ": userId" + userId);
                 });
+
+                PrePostSurvey.insertPrePostSurveyResult(userId, surveyId, surveyData.surveyName, function(err, ppsData){
+                   if (err)
+                    Logger.error("Unable to store survey completion result for :" + surveyId + ": userId" + userId);
+                });
               }
+
+
           });
         }
       });

@@ -82,20 +82,11 @@ module.exports = function(app) {
                 }
             });
         }
-
-        var q = dbHelpers.buildUpdate(dbcfg.user_registration_table) + 'SET completedSetup = ? WHERE userId = ?';
-        db.query(q, [1, req.user.id], function(err, data) {
-            if (!err)
-                Logger.info("UID " + req.user.id + " completed setup.");
-            else
-                Logger.error("ERROR", err);
-            res.redirect('/preferences');
-        });        
-        
+        res.redirect('/preferences');
     });
 
     // this route exists to mark that set-up has been completed for the user
     app.post('/complete-setup', function(req, res, next) {
-       
+
     });
 }

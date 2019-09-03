@@ -1,11 +1,13 @@
 {
     "ifs": "ifs",
+    "dateFormat": "YYYY-MM-DD",
     "programming" : "Programming",
     "writing" : "Writing",
     "visual"  : "Visual",
     "stats"   : "Stats",
     "programSrc" : "ProgrammingSrc",
     "defaultToolType" : "Programming",
+
 
     "emailDomain": "uoguelph.ca",
     "lockEmailDomain": true,

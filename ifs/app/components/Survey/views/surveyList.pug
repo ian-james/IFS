@@ -10,6 +10,8 @@ block content
 
         div
             h2 IFS Surveys
+            h3 Thank you for contributing to this research!
+            h4.uk-text-muted This page is automatically displayed near the start and end of the semester until completed when your responses are most helpful. The IFS will request that students complete several voluntary surveys. Please note all surveys are optional. Your answers can help us improve the student experience and learning process.
             if surveys && surveys.length > 0
                 table.uk-table.uk-table-hover
                     caption
@@ -27,7 +29,7 @@ block content
                                         span(uk-icon="icon: close").uk-margin-small-right.uk-margin-small-top.uk-text-danger
                                     else
                                         span(uk-icon="icon: check").uk-margin-small-right.uk-margin-small-top.uk-text-success
-                                
+
                                 td.uk-table-expand
                                     a(href="survey/" + s.id, class="uk-button") #{ s.title }
                                 td
