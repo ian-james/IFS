@@ -1,5 +1,6 @@
 {
     "Writing":[
+        "text/csv",
         "text/plain",
         "text/markdown",
         "application/json",

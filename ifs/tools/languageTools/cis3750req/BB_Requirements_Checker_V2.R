@@ -4,7 +4,7 @@
 # Casey August
 # July 2019
 #
-# Requirements 
+# Requirements
 # Checker for CIS3750
 # (adapted for student
 #  usage)
@@ -23,23 +23,65 @@
 # pulled from an excel spreadsheet (i.e. a .csv) containing all error codes
 #######################################################################################
 
+# Environment variables.
+installFirst = FALSE
+# Print statements only in debug. Temporary.
+debugMode = FALSE
+
+#############################
+#IFS or client
+#############################
+use.ifs = TRUE
+use.ifs.input = "PLACEHOLDER"
+
 ########################
 # Clear Memory
 ########################
-remove(list=ls())
+if(!use.ifs) {
+  remove(list=ls())
+}
 
 ########################
 # Required Packages
 ########################
 
-#install.packages("hunspell")
+if(installFirst) {
+	install.packages("hunspell")
+	install.packages("pracma")
+}
+
 library(hunspell)
 library(pracma)
+
 ########################
 # Set Global Variables
 ########################
 fileName = "CIS3750"
+toolName = "reqChecker"
+errorType = "" #TODO: Set a errorType this will something like generalRequirement
 category = c("Must", "Should", "Could", "Wont")
+
+# TODO: There is significant repetition in producing the JSON. This is fine to get the script working.
+# However, we should really clean this up to use functions to create a feedbackItem.
+# Ex. This line is repeated quite frequently.
+# cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
+#
+# It would improve readability to have the output data stored in some sort of class (or dataframe )
+# and only put into JSON and written at the end.
+#
+# Example)
+#
+#     Initial processing steps ( spell check, requirements, dependencies ...etc )
+#
+#     if( use.IFS )
+#         data = convert data or class to JSON
+#         write to file
+#     else
+#       print( data )
+#
+#
+
+#What are some of these variables?
 Iteration.Length = 10
 Burn.Down.Rate = 0.8
 Max.Req.Length = Iteration.Length*Burn.Down.Rate*0.5
@@ -47,12 +89,6 @@ Grade.Deduct = 2
 Num.Requirements.Min = 70
 Num.Requirements.To.Pull = 15
 Grade.Basis = 70
-use.ifs = TRUE
-use.ifs.input = "PLACEHOLDER"
-
-#############################
-#IFS or client
-#############################
 
 
 ########################
@@ -97,25 +133,37 @@ Check.Requirements = TRUE
 
 # Create Errorlist
 if(use.ifs == TRUE) {
-  
+
   # Read in file name
   args = commandArgs(trailingOnly = TRUE)
-  
+
   # Grab path to input file from passed argument
   userFile.path = args[1]
   userFile = basename(userFile.path)
   outputPath = normalizePath(dirname(userFile.path)) # Path to user's directory
-  
+  if(debugMode) {
+    print(args[1])
+    print(outputPath)
+  }
+
   # Open output file
-  outputName = paste("feedback_cis3750tool_", userFile, sep = "")
+  outputName = paste("feedback_", toolName, "_", userFile, sep = "")
   fileName = paste(outputPath, outputName, sep = "/")
-  print(fileName) 
+  if(debugMode) {
+    print(fileName)
+  }
+
   file.open = file(fileName, "w")
+  if(debugMode) {
+    print("Before csv read")
+    print( userFile.path )
+  }
+
   req = read.csv(userFile.path)
   cat('{ "feedback": [ ', file = file.open, sep = "")
 
-  okay.words = read.csv(file = "tools/languageTools/cis3750req/Dictionary/CIS3750_Dictionary.csv", header = TRUE)
-  errorCodes = read.csv(file = "tools/languageTools/cis3750req/Error Codes/reqCheckerErrorCodes.csv", header=TRUE, sep=",")
+  okay.words = read.csv(file = "./tools/languageTools/cis3750req/Dictionary/CIS3750_Dictionary.csv", header = TRUE)
+  errorCodes = read.csv(file = "./tools/languageTools/cis3750req/Error Codes/reqCheckerErrorCodes.csv", header=TRUE, sep=",")
 } else {
   fileName = paste("Results/output_Original.txt", sep="")
   file.open = file(fileName, "w")
@@ -125,12 +173,11 @@ if(use.ifs == TRUE) {
   errorCodes = read.csv(file="Error Codes/reqCheckerErrorCodes.csv", header=TRUE, sep=",")
 }
 
-class(errorCodes)
-
+# class(errorCodes)
 if(grepl("CIS3750_A2_Requirements_", userFile) == FALSE) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[1]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[1]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
@@ -139,7 +186,7 @@ if(grepl("CIS3750_A2_Requirements_", userFile) == FALSE) {
     cat(as.character(errorCodes$textBookRef[1]), file = file.open)
   }
 }
-  
+
 ###################
 # CHECK COLUMN
 # NAMES
@@ -151,13 +198,13 @@ same.names = sum(c.names==c.names.test)
 if (same.names<length(c.names)) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[2]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[2]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[2]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[2]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[2]), file = file.open)
   }
 }
 
@@ -168,13 +215,13 @@ if (same.names<length(c.names)) {
 if(is.numeric(req$Dependencies) == FALSE) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[3]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[3]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[3]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[3]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[3]), file = file.open)
   }
 }
 req$Dependencies = as.numeric(gsub("([,-])|[[:punct:]]", "", req$Dependencies))
@@ -182,13 +229,13 @@ req$Dependencies = as.numeric(gsub("([,-])|[[:punct:]]", "", req$Dependencies))
 if(is.numeric(req$Priority) == FALSE) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[3]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[3]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[3]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[3]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[3]), file = file.open)
   }
 }
 req$Priority = as.numeric(gsub("([.-])|[[:punct:]]", "\\1", req$Priority))
@@ -196,13 +243,13 @@ req$Priority = as.numeric(gsub("([.-])|[[:punct:]]", "\\1", req$Priority))
 if(is.numeric(req$TimeEstimate) == FALSE) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[3]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[3]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[3]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[3]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[3]), file = file.open)
   }
 }
 req$TimeEstimate = as.numeric(gsub("([.-])|[[:punct:]]", "\\1", req$TimeEstimate))
@@ -210,13 +257,13 @@ req$TimeEstimate = as.numeric(gsub("([.-])|[[:punct:]]", "\\1", req$TimeEstimate
 if(is.numeric(req$ReqID) == FALSE) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[3]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[3]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[3]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[3]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[3]), file = file.open)
   }
 }
 req$ReqID = as.numeric(gsub("\\D+", "", req$ReqID))
@@ -230,13 +277,13 @@ num.req<-length(req$ReqID)
 if (num.req<Num.Requirements.Min) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[4]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[4]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[4]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[4]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[4]), file = file.open)
   }
 }
 
@@ -251,13 +298,13 @@ duplicates = duplicates[duplicates$dup.Freq>1, ]
 if (is.duplicate) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[5]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[5]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[5]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[5]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[5]), file = file.open)
   }
 }
 
@@ -267,30 +314,30 @@ num.requirements = (length(req$ReqID)==max(req$ReqID, na.rm=TRUE))
 if (!num.requirements) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[6]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[6]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[6]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[6]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[6]), file = file.open)
   }
 }
 
 # Check requirements for the word "and" or "And"
 if (Check.Compound) {
   req$And = grepl(" and ", req$Requirement, ignore.case=TRUE)*1
-  
+
   if (sum(req$And, na.rm=TRUE)>0) {
     if(use.ifs == TRUE){
       cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-      cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+      cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
       cat('"feedback": "', as.character(errorCodes$description[7]), '",', "\n", file = file.open, sep = "", append = TRUE)
       cat('"suggestions": "', as.character(errorCodes$textBookRef[7]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
     }
     else {
       cat(as.character(errorCodes$description[7]), file = file.open)
-      cat(as.character(errorCodes$textBookRef[7]), file = file.open) 
+      cat(as.character(errorCodes$textBookRef[7]), file = file.open)
     }
   }
 }
@@ -314,13 +361,13 @@ if (!required.categories.present) {
 
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[8]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[8]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[8]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[8]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[8]), file = file.open)
   }
 }
 
@@ -330,13 +377,13 @@ extra.categories.present = sum(is.na(category.labels))>0
 if (extra.categories.present) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[9]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[9]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[9]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[9]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[9]), file = file.open)
   }
 }
 
@@ -346,13 +393,13 @@ categories.sorted = (sum(sort(category.labels[!is.na(category.labels)])==categor
 if(!categories.sorted) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[10]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[10]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[10]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[10]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[10]), file = file.open)
   }
 }
 
@@ -364,17 +411,17 @@ if(!categories.sorted) {
 #(note: error messages should only state that priorities are invalid-- NO SPECIFICS!)
 if (Check.Priorities) {
   priorities.valid = (sum(req$Priority%%10, na.rm=TRUE)==0) & (max(req$Priority, na.rm=TRUE)<=50)
-  
+
   if (!priorities.valid) {
     if(use.ifs == TRUE){
       cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-      cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+      cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
       cat('"feedback": "', as.character(errorCodes$description[11]), '",', "\n", file = file.open, sep = "", append = TRUE)
       cat('"suggestions": "', as.character(errorCodes$textBookRef[11]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
     }
     else {
       cat(as.character(errorCodes$description[11]), file = file.open)
-      cat(as.character(errorCodes$textBookRef[11]), file = file.open) 
+      cat(as.character(errorCodes$textBookRef[11]), file = file.open)
     }
   }
 }
@@ -403,13 +450,13 @@ for (i in 2:(length(priorities$order<4))) {
   if (priorities$checked[i]==0) {
     if(use.ifs == TRUE){
       cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-      cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+      cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
       cat('"feedback": "', as.character(errorCodes$description[12]), '",', "\n", file = file.open, sep = "", append = TRUE)
       cat('"suggestions": "', as.character(errorCodes$textBookRef[12]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
     }
     else {
       cat(as.character(errorCodes$description[12]), file = file.open)
-      cat(as.character(errorCodes$textBookRef[12]), file = file.open) 
+      cat(as.character(errorCodes$textBookRef[12]), file = file.open)
     }
   }
 }
@@ -420,13 +467,13 @@ wont.priority.invalid = sum(!is.na(req$Priority[req$Category==category[4]]))>0
 if (wont.priority.invalid) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[13]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[13]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[13]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[13]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[13]), file = file.open)
   }
 }
 
@@ -446,26 +493,26 @@ bad.req = req[req$BadDep==1 & !is.na(req$BadDep), ]
 if (sum(req$BadDep, na.rm=TRUE)>0) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[14]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[14]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[14]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[14]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[14]), file = file.open)
   }
 }
 
 # Check dependency prioritizations are valid
 for (dep in 1:(length(req$ReqID))) {
-  
+
   if (!is.na(req$Dependencies[dep])) {
-    
+
     temp.dependency = req$Dependencies[dep]
     current.priority = req$Priority[dep]
     dependency.priority = req$Priority[temp.dependency]
     req$DepPrior[dep] = dependency.priority
-    
+
     if (is.na(current.priority) || is.na(dependency.priority)) {
       req$BadDepPrior[dep] = 1
     }
@@ -480,13 +527,13 @@ bad.prior.req = req[req$BadDepPrior==1 & !is.na(req$BadDepPrior), ]
 if (sum(bad.prior.req$BadDepPrior, na.rm=TRUE)>0) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[15]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[15]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[15]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[15]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[15]), file = file.open)
   }
 }
 
@@ -494,14 +541,14 @@ if (sum(bad.prior.req$BadDepPrior, na.rm=TRUE)>0) {
 req$CategoryLabels = match(req$Category, category)
 
 for (dep in 1:(length(req$ReqID))) {
-  
+
   if (!is.na(req$Dependencies[dep])) {
-    
+
     temp.dependency = req$Dependencies[dep]
     current.category = req$CategoryLabels[dep]
     dependency.category = req$CategoryLabels[temp.dependency]
     req$CatPrior[dep] = category[req$Category[temp.dependency]]
-    
+
     if (is.na(current.category) || is.na(dependency.category)) {
       req$BadDepCat[dep] = 1
     }
@@ -509,39 +556,39 @@ for (dep in 1:(length(req$ReqID))) {
       req$BadDepCat[dep] = (dependency.category>current.category)*1
     }
   }
-}  
+}
 
 bad.cat.req = req[req$BadDepCat==1 & !is.na(req$BadDepCat), ]
 
 if (sum(bad.cat.req$BadDepCat, na.rm=TRUE)>0) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[16]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[16]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[16]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[16]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[16]), file = file.open)
   }
 }
 
 ###################
 # TIME ESTIMATES
-################### 
+###################
 if (Check.Time) {
   req$Long.Time = (req$TimeEstimate>Max.Req.Length)*1
-  
+
   if (sum(req$Long.Time, na.rm=TRUE)>0) {
     if(use.ifs == TRUE){
       cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-      cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+      cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
       cat('"feedback": "', as.character(errorCodes$description[17]), '",', "\n", file = file.open, sep = "", append = TRUE)
       cat('"suggestions": "', as.character(errorCodes$textBookRef[17]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
     }
     else {
       cat(as.character(errorCodes$description[17]), file = file.open)
-      cat(as.character(errorCodes$textBookRef[17]), file = file.open) 
+      cat(as.character(errorCodes$textBookRef[17]), file = file.open)
     }
   }
 }
@@ -561,13 +608,13 @@ incorrectWords = incorrectWords[!(incorrectWords%in%okay.words[, 1])]
 if (length(incorrectWords)>0) {
   if(use.ifs == TRUE){
     cat('{"target": \"\",', '"lineNum": \"\",', '"charNum": \"\",', '"charPos": \"\",', '"severity": \"\",', '"type": \"\",', '"toolName": "reqChecker",', file = file.open, sep = "\n", append =  TRUE)
-    cat('"fileName": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
+    cat('"filename": "', userFile, '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"feedback": "', as.character(errorCodes$description[18]), '",', "\n", file = file.open, sep = "", append = TRUE)
     cat('"suggestions": "', as.character(errorCodes$textBookRef[18]), '"', "\n", "},", file = file.open, sep = "", append = TRUE)
   }
   else {
     cat(as.character(errorCodes$description[18]), file = file.open)
-    cat(as.character(errorCodes$textBookRef[18]), file = file.open) 
+    cat(as.character(errorCodes$textBookRef[18]), file = file.open)
   }
 }
 
@@ -575,7 +622,7 @@ if(use.ifs == TRUE) {
   json.output = read.delim(fileName, header = FALSE, quote = "")
   close(file.open)
   file.open = file(fileName, "w")
-  
+
   for(i in 1:(nrow(json.output) - 1)) {
     cat(as.character(json.output$V1[i]), "\n", file = file.open, sep = "", append = TRUE)
   }
