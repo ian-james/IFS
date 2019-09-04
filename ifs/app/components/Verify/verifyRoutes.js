@@ -2,7 +2,7 @@ var path = require('path');
 var viewPath = path.join(__dirname + "/");
 var Logger = require(__configs + "loggingConfig");
 
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcryptjs');
 var verifySend = require(__components + "Verify/verifySend");
 var passport = require(__configs + "passport");
 
@@ -152,32 +152,31 @@ module.exports = function(app) {
             }
         });
         // now update password
-        var password = bcrypt.hashSync(passwd1, null, null);
-
-        var update = dbHelpers.buildUpdate(dbcfg.users_table) + ' SET password = ? ' + dbHelpers.buildWhere(['id', 'username']);
-        db.query(update, [password, uid, email], function(err, data) {
-            if (err) {
-                Logger.error(err);
-                res.render(viewPath + "reset", { title: title, message: "An internal error occurred. Please retry using the link from your email." + " (-1)", valid: false });
-                res.end();
-            }
-            // remove the reset link from the datbase and alert the user of success
-            var del = dbHelpers.buildDelete(dbcfg.verify_table) + dbHelpers.buildWhere(['userId', 'type', 'token']);
-            db.query(del, [uid, 'reset', tok], function(err, data) {
+        bcrypt.hash(passwd1, 8, function(err, password) {
+            var update = dbHelpers.buildUpdate(dbcfg.users_table) + ' SET password = ? ' + dbHelpers.buildWhere(['id', 'username']);
+            db.query(update, [password, uid, email], function(err, data) {
                 if (err) {
                     Logger.error(err);
                     res.render(viewPath + "reset", { title: title, message: "An internal error occurred. Please retry using the link from your email." + " (-1)", valid: false });
                     res.end();
-                } else {
-                    var subject = 'Your password was just changed';
-                    var message = 'This is an alert to let you know that your account password was just changed. If you did not request this change, please visit the link below and contact support.';
-                    verifySend.sendLink(email, 'http://' + mailcfg.host + '/forgot', subject, message);
-                    res.render(viewPath + "reset", { title: title, message: "Success! Your password was updated. You may now log in using your new password.", valid: false });
-                    res.end();
                 }
+                // remove the reset link from the datbase and alert the user of success
+                var del = dbHelpers.buildDelete(dbcfg.verify_table) + dbHelpers.buildWhere(['userId', 'type', 'token']);
+                db.query(del, [uid, 'reset', tok], function(err, data) {
+                    if (err) {
+                        Logger.error(err);
+                        res.render(viewPath + "reset", { title: title, message: "An internal error occurred. Please retry using the link from your email." + " (-1)", valid: false });
+                        res.end();
+                    } else {
+                        var subject = 'Your password was just changed';
+                        var message = 'This is an alert to let you know that your account password was just changed. If you did not request this change, please visit the link below and contact support.';
+                        verifySend.sendLink(email, 'http://' + mailcfg.host + '/forgot', subject, message);
+                        res.render(viewPath + "reset", { title: title, message: "Success! Your password was updated. You may now log in using your new password.", valid: false });
+                        res.end();
+                    }
+                });
             });
         });
-
     });
 
     // this route is for checking url parameters, intended to verify an emailed
@@ -227,7 +226,6 @@ module.exports = function(app) {
                         res.render(viewPath + "verify", { title: title, message: error + " (-1)"});
                         res.end();
                     }
-                    console.log("DATA:", JSON.stringify(data));
                     if (data[0]) {
                         res.render(viewPath + "verify", { title: title, message: regd + " (3)"});
                         res.end();

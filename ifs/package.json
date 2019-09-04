@@ -35,7 +35,7 @@
     "angular-summernote": "^0.8.1",
     "angular-ui-bootstrap": "^2.4.0",
     "async": "^2.1.4",
-    "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.15.2",
     "chart.js": "^2.6.0",
     "cluster": "^0.7.7",

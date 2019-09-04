@@ -1,7 +1,7 @@
 var LocalStrategy = require('passport-local').Strategy;
 
 var mysql = require('mysql');
-var bcrypt = require('bcrypt-nodejs');
+var bcrypt = require('bcryptjs');
 var db = require('./database');
 var dbHelpers = require(__components + "Databases/dbHelpers");
 var dbcfg = require(__configs + 'databaseConfig');
@@ -101,7 +101,7 @@ module.exports = function (passport) {
                         Logger.info("Adding new user");
                         var newUser = {
                             username: username,
-                            password: bcrypt.hashSync(password, null, null)
+                            password:  bcrypt.hashSync(password, 8)
                         };
 
                         // set up new user
@@ -213,39 +213,41 @@ module.exports = function (passport) {
                         req.flash('errorMessage', 'Incorrect username or password');
                         return done( null, false);
                     }
-                    if (!bcrypt.compareSync(password, rows[0].password)){
-                        req.flash('errorMessage', 'Incorrect username or password');
-                        return done( null, false);
-                    }
-                    // verify the user has completed registration
-                    var uid = rows[0].id;
-                    var completedSetup = rows[0].sessionId > 0;
-                    var isreg = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(["userId"]);
-                    db.query(isreg, uid, function(err, data) {
-                        if (err || !data || data.length == 0) {
-                            Logger.error(err);
-                            req.flash('errorMessage', 'Check your email to complete registration.');
-                            return done(null, false);
-                        }
-
-                        if( completedSetup ) {
-                            return loginSession( req, rows[0], done );
+                    bcrypt.compare(password, rows[0].password, function(err,res) {
+                        if(err) {
+                            req.flash('errorMessage', 'Incorrect username or password');
+                            return done( null, false);
                         }
                         else {
-                            //TODO: Add User-Registration date call here.
-                            preferencesDB.setStudentPreferences( uid, prefToolType, toolTypeKey, appDefaults.defaultToolType, function( perr, pdata ){
-                                preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsIndex', "1", function( perr, pdata ) {
-                                    preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsAllowed', "on", function( perr, pdata ) {
-                                        return loginSession( req, rows[0] , done );
+                            // verify the user has completed registration
+                            var uid = rows[0].id;
+                            var completedSetup = rows[0].sessionId > 0;
+                            var isreg = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(["userId"]);
+                            db.query(isreg, uid, function(err, data) {
+                                if (err || !data || data.length == 0) {
+                                    Logger.error(err);
+                                    req.flash('errorMessage', 'Check your email to complete registration.');
+                                    return done(null, false);
+                                }
+
+                                if( completedSetup ) {
+                                    return loginSession( req, rows[0], done );
+                                }
+                                else {
+                                    //TODO: Add User-Registration date call here.
+                                    preferencesDB.setStudentPreferences( uid, prefToolType, toolTypeKey, appDefaults.defaultToolType, function( perr, pdata ){
+                                        preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsIndex', "1", function( perr, pdata ) {
+                                            preferencesDB.setStudentPreferences( uid, "Option", 'pref-tipsAllowed', "on", function( perr, pdata ) {
+                                                return loginSession( req, rows[0] , done );
+                                            });
+                                        });
                                     });
-                                });
-                            });
+                                }
+                           });
                         }
-                   });
+                    });
                 });
             }
         )
     );
 };
-
-
