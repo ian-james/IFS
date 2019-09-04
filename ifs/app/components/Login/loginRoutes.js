@@ -78,7 +78,8 @@ module.exports = function( app, passport ) {
     app.get('/login', function(req,res) {
         if(req && req.user)
             res.redirect('/login-redirect');
-        res.render(viewPath + "login", {title: 'Login Screen'});
+        else
+            res.render(viewPath + "login", {title: 'Login Screen'});
     });
 
     //Login request, pass off to the correct link, set coookie session info.

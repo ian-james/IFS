@@ -66,7 +66,7 @@ $(function() {
         $.ajax({
             type: "post",
             url: '/assignment',
-            async: false,
+            async: true,
             data: {
                 course: code
             },

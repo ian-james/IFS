@@ -103,17 +103,19 @@ app.use( passport.initialize() );
 app.use( passport.session() );
 
 var server = http.Server(app);
-var io = require('socket.io')(server,{'transports':['polling', 'websocket'], pingInterval:25000,pingTimeout:60000});
+var io = require('socket.io')(server,{'transports':['websocket','polling'], pingInterval:25000,pingTimeout:60000});
 global.ioGlob = io;
 var passportSocketIO = require('passport.socketio');
 
 function onAuthorizeSuccess(data, accept){
   // The accept-callback still allows us to decide whether to
   // accept the connection or not.
+  console.log("ON SUCCESS SOCKET");
   accept(null, true);
 }
 
 function onAuthorizeFail(data, message, error, accept){
+  console.log("ON FAIL SOCKET AUTHO");
   if(error)
     throw new Error(message);
   accept(null, false);

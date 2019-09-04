@@ -1,4 +1,4 @@
-var socket = io(); 
+var socket = io();
 $(function() {
     $("a").on('click', function(e) {
         // Check if link relates to nav-bar, ie changing viewing file.
