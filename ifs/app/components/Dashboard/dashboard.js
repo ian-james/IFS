@@ -1,4 +1,4 @@
- var socket = io(); 
+ var socket = io();
 
 /**
  * This function emits a messages that student assignment task has changed.
