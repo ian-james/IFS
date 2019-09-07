@@ -26,6 +26,8 @@ global.__EXPERIMENT_ON = experimentSettings.active;
 
 var port = process.env.PORT || 3000;
 
+
+
 // Set App variables.
 app.set('port', port);
 app.set('case sensitive routing', true);
@@ -147,6 +149,11 @@ Model.knex(knex);
 // Error handling in common format (err,req,res,next)
 var errorHandler = require('errorhandler');
 if(app.get('env') === 'development'){
+
+    // Helpful warning for identifying maxEmitter issues.
+    process.on('warning', e => console.warn(e.stack));
+
+    // Catch Errors.
     app.use(errorHandler());
 }
 

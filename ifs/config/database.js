@@ -27,27 +27,12 @@ function handleConnectionError(err, connection){
 function query(queryStr, args, callback) {
    //Logger.info("Database query started");
    //console.log("DATABASE QUERY STARTED", queryStr);
-   pool.getConnection(function(err,connection) {
-        if(connection){
-	        connection.on('error', function(err) {
-	            console.log("DB Connection error handled");
-	            handleConnectionError(err,connection);
-	        });
-            connection.query( queryStr, args, function(err,data) {
-                connection.release();
-                if(err) {
-                    console.log("ERROR FOR STRING: ", err, " >>> " , queryStr);
-                    callback(err);
-                    return;
-                }
-                callback(err, data);
-            });
-        }
-        else {
-            handleConnectionError(err);
-            callback(err);
-        }
-   });
+
+    pool.query( queryStr, args, function(err,data) {
+        if(err)
+            console.log("ERROR FOR STRING: ", err, " >>> " , queryStr);
+        callback(err, data);
+    });
 }
 
 const knexCfg = require('knex')({
