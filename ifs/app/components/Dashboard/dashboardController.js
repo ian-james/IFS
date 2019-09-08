@@ -34,6 +34,22 @@ app.controller( "dashboardCtrl", function($scope, $http) {
         $scope.assignmentSelect = null;
     }
 
+    $scope.allChecked = function() {
+        if ($scope.hasFocusItem() ) {
+            for( var i =0; i < $scope.assignmentTasks.length;i++ )
+            {
+                if( $scope.courseSelect.courseId == $scope.assignmentTasks[i].courseId &&
+                   $scope.assignmentSelect.assignmentId == $scope.assignmentTasks[i].assignmentId )
+                {
+                    if( $scope.assignmentTasks[i].isComplete == 0 )
+                        return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Send an http request to server to indicate a focus has been set.
      * This can then be saved as today's focus for the session

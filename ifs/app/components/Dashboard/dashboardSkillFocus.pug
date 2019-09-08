@@ -44,7 +44,7 @@ div#studentFocus
                             h4 Assignment description
                             p {{assignmentSelect.description}}
 
-            button(id="assignmentCompleteId" type="button" ng-click="assignmentComplete()").uk-button.uk-button-primary.uk-align-center.uk-hidden Finish Assignment
+            button(id="assignmentCompleteId" type="button" ng-click="assignmentComplete()" ng-class=" allChecked() ? '' : 'uk-hidden' ").uk-button.uk-button-primary.uk-align-center Finish Assignment
 
     div(ng-show="activeStudentFocus==3")#assignmentAccomplished.uk-card.uk-card-default.uk-card-hover
         button(type="button" uk-close ng-click="resetSelectedFocus($event)").uk-modal-close-default

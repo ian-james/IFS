@@ -41,8 +41,8 @@ module.exports = {
      */
     getAssigmentAndTaskList: function( userId, callback ) {
         var q = "select a.id as assignmentId, a.name as assignmentName, a.description as description, c.id as courseId, d.id as assignmentTaskId, d.name as taskName, d.description as at_desc, d.taskId as taskId, d.value as isComplete" +
-               " from class c, assignment a, student s, (select at.*,b.id as taskId, ifnull(b.isComplete, 0) as value from assignment_task at LEFT Join student_assignment_task b on at.id = b.assignmentTaskId) d " +
-               " where s.userId = ? and a.classId = c.id and a.id = d.assignmentId";
+                " from class c, assignment a, student s, (select at.*,b.id as taskId, b.studentId, ifnull(b.isComplete, 0) as value from assignment_task at LEFT Join student_assignment_task b on at.id = b.assignmentTaskId and b.studentId = ?) d " +
+                " where s.userId = d.studentId and a.classId = c.id and a.id = d.assignmentId";
         db.query(q,userId,callback);
     },
 
@@ -60,7 +60,7 @@ module.exports = {
 
     insertStudentAssignmentTask: function( studentId, assignmentTaskId, isComplete, callback ) {
         var q = dbHelpers.buildInsert(dbcfg.student_assignment_task_table) + dbHelpers.buildValues(["studentId","assignmentTaskId", "isComplete"]) + " ON Duplicate Key update isComplete=Values(isComplete)";
-        db.query(q,[studentId, assignmentTaskId, isComplete], callback);
+        db.query(q,[studentId, assignmentTaskId, isComplete ? 1 : 0], callback);
     },
 
     getStudentAssignmentsAndTasks: function( studentId, callback ) {
