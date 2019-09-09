@@ -13,7 +13,7 @@ app.controller( "socialModelCtrl", function($scope, $http) {
     // Data to show
     $scope.selectedData = {};
     $scope.dataOptions =[];
-    
+
     // Color Schemes
     $scope.selectedColorScheme = 0;
     $scope.colorSchemes = [];
@@ -51,8 +51,8 @@ app.controller( "socialModelCtrl", function($scope, $http) {
         $scope.selectedData = 0;
         $scope.dataOptions = [
             { 'name': 'Weekly Submissions', 'key': 'nsubs' },
-            { 'name': 'Feedback Items Per Submission', 'key': 'nerrs' },
-            { 'name': 'Feedback Items Viewed Per Submission', 'key': 'nfiv' }
+            { 'name': 'Feedback Items Per Week', 'key': 'nerrs' },
+            { 'name': 'Feedback Items Viewed Per Week', 'key': 'nfiv' }
         ];
     }
 
