@@ -34,20 +34,25 @@ module.exports = function(app) {
             if (err) {
                 Logger.error(err);
                 res.render(viewPath + "forgot", { title: title, error: 'Error looking up email.', success: false })
+                res.end();
+                return
             }
             if (!data[0]) {
                 res.render(viewPath + "forgot", { title: title, error: "Error. Couldn't find an account with the provided email address.", success: false });
+                res.end();
+                return;
             } else {
                 var uid = data[0].id; // get the user id from the database
                 verifySend.generateLinkReplTok('reset', uid, function(err, link) {
                     if (err) {
                         Logger.error(err);
                         res.render(viewPath + 'forgot', { title: title, error: "Error. OH ", success: false });
-                        return done(null, false);
+                        res.end();
                     } else {
                         var message = "Somebody requested a password change for your account. Please follow the link below to reset your password. Note that this link will expire in 12 hours. If you did not request this change, you may ignore this email.";
                          verifySend.sendLink(email, link, 'Reset your password', message);
                         res.render(viewPath + "forgot", { title: 'Forgotten Password', error: false, success: "Sucess! Please check your email for a password reset link." });
+                        res.end();
                     }
                 });
             }
@@ -61,13 +66,15 @@ module.exports = function(app) {
         // do not allow client access to this page if user is logged in
         if (req.user) {
             res.render(viewPath + "forgot", { title: 'Oops!', error: 'You cannot access this page right now. Try again later.', success: false });
-            return done(null, false);
+            res.end();
+            return;
         }
 
         // check url is in a valid format
         if (!req.query.id || !req.query.t) {
             res.render(viewPath + "reset", { title: 'Oops!', message: "Your verification link is invalid!"});
-            return done(null, false);
+            res.end();
+            return;
         }
 
         let title = "Password Reset";
@@ -148,7 +155,7 @@ module.exports = function(app) {
             if (!data[0]) {
                 res.status(403).render(viewPath + "reset", { title: title, message: "You are unauthorized to perform this action.", valid: false });
                 res.end();
-                return done(null, false);
+                return;
             }
         });
         // now update password
@@ -186,12 +193,14 @@ module.exports = function(app) {
         // do not allow access to this page if a user is logged in
         if (req.user) {
             res.render(viewPath + "forgot", { title: 'Oops!', error: 'You cannot access this page right now. Try again later.', success: false });
-            return done(null, false);
+            res.end();
+            return;
         }
         // check the link is in a valid format
         if (!req.query.id || !req.query.t) {
             res.render(viewPath + "verify", { title: 'Oops!', message: "Your verification link is invalid!"});
-            return done(null, false);
+            res.end();
+            return;
         }
 
         let title = "Account Verification";
@@ -203,8 +212,13 @@ module.exports = function(app) {
         tok = tok.replace(/\W/g, ''); // ensure alphanumeric and underscores
         let debug = "uid: "+ uid + ", token: " + tok;
 
-        if (isNaN(uid))
+
+
+        if (isNaN(uid)) {
             res.render(viewPath + "verify", { title: title, message: error});
+            res.end();
+            return
+        }
 
         // look up the uid and compare it with the token
         var q = dbHelpers.buildSelect(dbcfg.verify_table) + dbHelpers.buildWhere(['userId', 'type']);
@@ -213,10 +227,13 @@ module.exports = function(app) {
                 var lookup = data[0].token;
             else {
                 res.render(viewPath + "verify", { title: title, message: error + " (1)"});
+                res.end()
+                return
             }
             if (!lookup || lookup != tok) {
                 res.render(viewPath + "verify", { title: title, message: error + " (2)"});
                 res.end();
+                return
             } else { // looked up correct account, now complete registration and remove entry from verify table
                 // check not already registered
                 var check = dbHelpers.buildSelect(dbcfg.user_registration_table) + dbHelpers.buildWhere(['userId']);
