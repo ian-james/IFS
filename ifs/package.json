@@ -57,7 +57,7 @@
     "jquery-validation": "^1.16.0",
     "json2csv": "^4.1.5",
     "json2xls": "^0.1.2",
-    "knex": "^0.15.1",
+    "knex": "^0.20.0",
     "kue": "^0.11.5",
     "kue-ui-express": "^1.0.2",
     "lodash": "^4.17.4",
